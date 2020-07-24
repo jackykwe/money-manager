@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/iconRing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/basic_circle"
+        android:tint="@color/black" />
+
+    <ImageView
+        android:id="@+id/iconBG"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        android:src="@drawable/basic_circle"
+        android:tint="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/iconTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/material_design_icons"
+        android:gravity="center"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:text="@string/html_legacy_mdi_help"
+        android:textColor="@color/white" />
+
+    <!--    <net.steamcrafted.materialiconlib.MaterialIconView-->
+    <!--        android:id="@+id/tbsdIconIcon"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:adjustViewBounds="true"-->
+    <!--        android:scaleX="0.6"-->
+    <!--        android:scaleY="0.6"-->
+    <!--        android:scaleType="fitCenter"-->
+    <!--        app:materialIcon="arrow_down_bold_circle"-->
+    <!--        app:materialIconColor="#ffffff" />-->
+
+</merge>

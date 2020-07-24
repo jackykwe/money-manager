@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface DatabaseXEDao {
+interface XEDatabaseDao {
     /*
     @Insert
     fun insertXERow(databaseXeRow: DatabaseXERow)

@@ -5,7 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.kaeonx.moneymanager.R
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.kaeonx.moneymanager.activities.AuthViewModel
+import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
+import com.kaeonx.moneymanager.txnrepository.domain.Transaction
 
 private const val TAG = "transactionFrag"
 
@@ -14,19 +20,21 @@ private const val TAG = "transactionFrag"
 //class TransactionsFragment : Fragment(), TransactionBottomSheetDialogFragment.TBSDFListener {
 class TransactionsFragment : Fragment() {
 
-//    private val viewModel: TransactionsFragmentViewModel by viewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
+    private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(requireActivity().application, authViewModel.currentUser.value!!.uid) }
+    private val viewModel: TransactionsFragmentViewModel by viewModels { viewModelFactory }
+
+    private lateinit var binding: FragmentTransactionsBinding
 //    private lateinit var transactionsRVAdapter: TransactionsRVAdapter
     private var isExpanded = false
     private var firstLoad = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_transactions, container, false)
+        binding = FragmentTransactionsBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+        return binding.root
     }
-
-//    private fun readDataFromJSON(uid: String, calendar: Calendar): ArrayList<DayTransactions>? {
-//        Log.d(TAG, "readDataFromJSON called with month ${calendar.get(Calendar.MONTH)}")
-//        return JSONHandler.readDayTransactions(uid, calendar)
-//    }
 
     /*
     private fun setMonthYearPickerListeners() {
@@ -86,10 +94,9 @@ class TransactionsFragment : Fragment() {
     }
      */
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-////        (requireActivity() as AppCompatActivity).setSupportActionBar(rootTransactionsFragmentAppBar)
-//
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
 //        // Setup of Toolbar
 //        requireActivity().mainActivityToolbar.inflateMenu(R.menu.main)
 //        requireActivity().mainActivityToolbar.setOnMenuItemClickListener {
@@ -101,14 +108,14 @@ class TransactionsFragment : Fragment() {
 //                else -> { false }
 //            }
 //        }
-//
-//        // Setup of FAB
-//        requireActivity().mainActivityFAB.setOnClickListener {
-//            TransactionBottomSheetDialogFragment(
-//                this as TransactionBottomSheetDialogFragment.TBSDFListener,
-//                null
-//            ).show(childFragmentManager, null)
-//
+
+        // Setup of FAB
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
+            findNavController().navigate(TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(Transaction()))
+        }
+    }
+}
+
 ////            // Courtesy of https://medium.com/androiddevelopers/appcompat-v23-2-daynight-d10f90c83e94
 ////            val newMode = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
 ////                Configuration.UI_MODE_NIGHT_NO -> {
@@ -125,23 +132,3 @@ class TransactionsFragment : Fragment() {
 ////            }
 ////            Toast.makeText(requireContext(), "Switching to mode $newMode", Toast.LENGTH_LONG).show()
 ////            AppCompatDelegate.setDefaultNightMode(newMode)
-//        }
-//
-//        transactionsRV.layoutManager = LinearLayoutManager(requireActivity())
-//
-//        // When month has been changed
-//        viewModel.transactionDisplayMonthLD.observe(viewLifecycleOwner, Observer {
-//            transactionsRVAdapter = TransactionsRVAdapter(requireContext(), requireActivity(), this, readDataFromJSON((requireActivity() as MainActivity).loadedUserId!!, it))
-//            transactionsRV.adapter = transactionsRVAdapter
-//            transactionsRVAdapter.notifyDataSetChanged()
-//        })
-//    }
-
-//    override fun onTBSDFResult(successful: Boolean, newTransaction: Transaction) {
-//        if (successful) {
-//            transactionsRVAdapter.loadNewData(readDataFromJSON((requireActivity() as MainActivity).loadedUserId!!, viewModel.transactionDisplayMonthLD.value!!))
-//        } else {
-//            Toast.makeText(requireContext(), "Save FAILED", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-}

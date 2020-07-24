@@ -28,9 +28,9 @@
         android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsFragment"
         android:label="Transactions"
         tools:layout="@layout/fragment_transactions" >
-<!--        <action-->
-<!--            android:id="@+id/action_transactionsFragment_to_transactionEditFragment"-->
-<!--            app:destination="@id/transactionEditFragment" />-->
+        <action
+            android:id="@+id/action_transactionsFragment_to_transactionsBSDF"
+            app:destination="@id/transactionsBSDF" />
     </fragment>
 
     <fragment
@@ -44,6 +44,15 @@
         android:name="com.kaeonx.moneymanager.fragments.debt.DebtFragment"
         android:label="Debt"
         tools:layout="@layout/fragment_debt" />
+
+    <dialog
+        android:id="@+id/transactionsBSDF"
+        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDF"
+        android:label="TransactionsBSDF" >
+        <argument
+            android:name="oldTransaction"
+            app:argType="com.kaeonx.moneymanager.txnrepository.domain.Transaction" />
+    </dialog>
 
     <!--    <fragment-->
     <!--        android:id="@+id/accountsFragment"-->

@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [DatabaseXERow::class], version = 1)
 abstract class XEDatabase : RoomDatabase() {
     // You can have multiple tables and multiple daos
-    abstract val databaseXEDao: DatabaseXEDao
+    abstract val xeDatabaseDao: XEDatabaseDao
 
     companion object {
 
@@ -16,7 +16,7 @@ abstract class XEDatabase : RoomDatabase() {
         private lateinit var INSTANCE: XEDatabase
 
         fun getInstance(context: Context): XEDatabase {
-            synchronized(XEDatabase::class.java) {
+            synchronized(this) {
                 if (!Companion::INSTANCE.isInitialized) {
                     // Opening a connection to a database is expensive!
                     INSTANCE = Room.databaseBuilder(

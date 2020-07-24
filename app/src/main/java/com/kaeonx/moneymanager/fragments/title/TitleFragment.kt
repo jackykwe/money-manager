@@ -48,7 +48,7 @@ class TitleFragment : Fragment() {
             } else {
                 if (newLogin) {
                     binding.titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
-                    Snackbar.make(requireView(), "Hello, ${authViewModel.currentUser.value!!.displayName}!", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), "Hello, ${it.displayName}!", Snackbar.LENGTH_SHORT).show()
                     Handler(Looper.getMainLooper()).postDelayed({
                         findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToTransactionsFragment())
                     }, 1200)

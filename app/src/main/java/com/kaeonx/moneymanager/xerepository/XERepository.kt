@@ -33,7 +33,7 @@ class XERepository(application: Application) {
     // Load from cache
     // A LiveData anyone can use to observe XERows from the repository
     // LiveData is smart and only runs queries when someone is observing it
-    private val _xeRows = database.databaseXEDao.getAllXERows()
+    private val _xeRows = database.xeDatabaseDao.getAllXERows()
     val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) { it.toDomain() }
 
     // Refresh cache
@@ -50,7 +50,7 @@ class XERepository(application: Application) {
             val networkXEContainer = XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
             Log.d("ntwksvc", "WARNING: NETWORK CALL DONE")
             Log.d("ntwksvc", "WARNING: UPSERT CALL HAPPENING RIGHT NOW")
-            database.databaseXEDao.upsertAll(*networkXEContainer.toDatabase())
+            database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase())
             Log.d("ntwksvc", "WARNING: UPSERT DONE")
         }
     }
