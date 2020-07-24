@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/top_level_nav_graph"
+    app:startDestination="@id/titleFragment">
+
+    <fragment
+        android:id="@+id/titleFragment"
+        android:name="com.kaeonx.moneymanager.fragments.title.TitleFragment"
+        android:label="Title Screen"
+        tools:layout="@layout/fragment_title">
+        <action
+            android:id="@+id/action_titleFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:popUpTo="@id/titleFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_titleFragment"
+        app:destination="@id/titleFragment"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/top_level_nav_graph"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsFragment"
+        android:label="Transactions"
+        tools:layout="@layout/fragment_transactions" >
+<!--        <action-->
+<!--            android:id="@+id/action_transactionsFragment_to_transactionEditFragment"-->
+<!--            app:destination="@id/transactionEditFragment" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/BudgetFragment"
+        android:name="com.kaeonx.moneymanager.fragments.budget.BudgetFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_budget" />
+
+    <fragment
+        android:id="@+id/debtFragment"
+        android:name="com.kaeonx.moneymanager.fragments.debt.DebtFragment"
+        android:label="Debt"
+        tools:layout="@layout/fragment_debt" />
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/accountsFragment"-->
+    <!--        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsFragment"-->
+    <!--        android:label="Accounts"-->
+    <!--        tools:layout="@layout/fragment_accounts" >-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_accountsFragment_to_accountEditFragment"-->
+    <!--            app:destination="@id/accountEditFragment" />-->
+    <!--    </fragment>-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/categoriesFragment"-->
+    <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"-->
+    <!--        android:label="Categories"-->
+    <!--        tools:layout="@layout/fragment_categories" >-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
+    <!--            app:destination="@id/categoryEditFragment" />-->
+    <!--    </fragment>-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/categoryEditFragment"-->
+    <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"-->
+    <!--        android:label="Edit Category"-->
+    <!--        tools:layout="@layout/fragment_category_edit" >-->
+    <!--        <argument-->
+    <!--            android:name="type"-->
+    <!--            app:argType="string" />-->
+    <!--        <argument-->
+    <!--            android:name="category"-->
+    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Category" />-->
+    <!--    </fragment>-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/accountEditFragment"-->
+    <!--        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountEditFragment"-->
+    <!--        android:label="Edit Account"-->
+    <!--        tools:layout="@layout/fragment_account_edit">-->
+    <!--        <argument-->
+    <!--            android:name="account"-->
+    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Account" />-->
+    <!--    </fragment>-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/transactionEditFragment"-->
+    <!--        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionEditFragment"-->
+    <!--        android:label="View Transaction" >-->
+    <!--        <argument-->
+    <!--            android:name="transaction"-->
+    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Transaction" />-->
+    <!--    </fragment>-->
+</navigation>

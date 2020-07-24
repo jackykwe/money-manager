@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "605063853022",
+    "firebase_url": "https://moneymanager-kaeonx.firebaseio.com",
+    "project_id": "moneymanager-kaeonx",
+    "storage_bucket": "moneymanager-kaeonx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:605063853022:android:928a9b1f302e25cbe3234f",
+        "android_client_info": {
+          "package_name": "com.kaeonx.moneymanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "605063853022-6645vac957rm735fsbu7ae8n9cv2gkj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kaeonx.moneymanager",
+            "certificate_hash": "0a8d779330fef7ae03ca332c001e5108dd11fbd7"
+          }
+        },
+        {
+          "client_id": "605063853022-h33o7udk2t2or2b7oed4tnk7spr03f37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLkn6Z6uMrJ8VN3GgD-TXLIjmOd8ng1sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "605063853022-h33o7udk2t2or2b7oed4tnk7spr03f37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
