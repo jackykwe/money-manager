@@ -164,7 +164,7 @@ class TransactionsBSDFViewModel(application: Application, internal val oldTransa
             // If the code reaches here, operand1 has successfully been updated to a new value
             // Added a check to prevent negative values
             _amountTVText.value = if (operand1 < BigDecimal.ZERO) {
-                _showToastText.value = "Negative values are not allowed."
+                _showToastText.value = "Negative values are not allowed"
                 "0"
             } else operand1.toDisplayString()
         }
