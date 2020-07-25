@@ -44,6 +44,8 @@
 
     <!-- TransactionsFragment RV -->
     <string name="placeholder_amount">13.16</string>
-    <string name="placeholder_memo">dinner @ kopitiam blah blah blah blah blah.</string>
+    <string name="placeholder_memo">dinner @ kopitiam blah blah blah blah blah. I\'m going to make it super long.</string>
+    <string name="rv_item_transactions_day_header_income_hint">Income:</string>
+    <string name="rv_item_transactions_day_header_expenses_hint">Expenses:</string>
 
 </resources>

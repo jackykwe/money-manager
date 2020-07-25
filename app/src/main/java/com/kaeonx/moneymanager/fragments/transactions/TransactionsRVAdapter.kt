@@ -1,26 +1,23 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.customclasses.toFormattedString
 import com.kaeonx.moneymanager.customclasses.toIconHex
+import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
+import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
+import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
-import kotlinx.android.synthetic.main.icon_transaction.view.*
-import kotlinx.android.synthetic.main.rv_ll_item_transaction.view.*
+import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.util.*
 
 private const val SUMMARY = 0
 private const val DAY_TRANSACTIONS = 1
 private const val TAG = "trva"
 
-class TransactionsRVAdapter : ListAdapter<DayTransactions, RecyclerView.ViewHolder>(DayTransactionsDiffCallback()) {
+class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickListener) : ListAdapter<DayTransactions, RecyclerView.ViewHolder>(DayTransactionsDiffCallback()) {
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
@@ -42,87 +39,35 @@ class TransactionsRVAdapter : ListAdapter<DayTransactions, RecyclerView.ViewHold
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TransactionsDayViewHolder -> holder.rebind(getItem(position - 1))
+            is TransactionsDayViewHolder -> holder.rebind(getItem(position - 1), itemOnClickListener)
             is TransactionsSummaryViewHolder -> { }
         }
     }
 
-    class TransactionsDayViewHolder private constructor(private val containerView: View) : RecyclerView.ViewHolder(containerView) {
-        var dayDateTV: TextView = containerView.findViewById(R.id.dayDateTV)
-        var dayIncomeHintTV: TextView = containerView.findViewById(R.id.dayIncomeHintTV)
-        var dayIncomeCurrencyTV: TextView = containerView.findViewById(R.id.dayIncomeCurrencyTV)
-        var dayIncomeAmountTV: TextView = containerView.findViewById(R.id.dayIncomeAmountTV)
-        var dayExpensesHintTV: TextView = containerView.findViewById(R.id.dayExpensesHintTV)
-        var dayExpensesCurrencyTV: TextView = containerView.findViewById(R.id.dayExpensesCurrencyTV)
-        var dayExpensesAmountTV: TextView = containerView.findViewById(R.id.dayExpensesAmountTV)
-        var dayTransactionsLL: LinearLayout = containerView.findViewById(R.id.dayTransactionsLL)
+    class TransactionsDayViewHolder private constructor(private val binding: RvItemTransactionsDayBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(item: DayTransactions) {
-            // due to the check in getItemCount, once the code reaches here,
-            // monthTransactions must be non-null.
-            dayDateTV.text = item.ymdCalendar.toFormattedString("EEE ddMMyy")
+        fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
+            binding.dayTransactions = item
+            binding.executePendingBindings()
+            // It is always a good idea to execute pending bindings when using binding adapters
+            // in a RecyclerView, since it can be slightly faster to size the views.
 
-            if (item.dayIncome != null) {
-                dayIncomeHintTV.visibility = View.VISIBLE
-                dayIncomeCurrencyTV.apply {
-                    visibility = if (item.incomeAllHome && false) {  //false for hide if home currency match
-                        View.GONE
-                    } else {
-                        text = "SGD" // todo: home currency
-                        View.VISIBLE
-                    }
-                }
-                dayIncomeAmountTV.apply {
-                    visibility = View.VISIBLE
-                    text = item.dayIncome
-                }
-            } else {  // Necessary, because the ViewHolders are reused!!!
-                dayIncomeHintTV.visibility = View.GONE
-                dayIncomeCurrencyTV.visibility = View.GONE
-                dayIncomeAmountTV.visibility = View.GONE
-            }
-
-            if (item.dayExpenses != null) {
-                dayExpensesHintTV.visibility = View.VISIBLE
-                dayExpensesCurrencyTV.apply {
-                    visibility = if(item.expensesAllHome && false) {  //false for hide if home currency match
-                        View.GONE
-                    } else {
-                        text = "SGD" // todo: home currency
-                        View.VISIBLE
-                    }
-                }
-                dayExpensesAmountTV.apply {
-                    visibility = View.VISIBLE
-                    text = item.dayExpenses
-                }
-            } else {  // Necessary, because the ViewHolders are reused!!!
-                dayExpensesHintTV.visibility = View.GONE
-                dayExpensesCurrencyTV.visibility = View.GONE
-                dayExpensesAmountTV.visibility = View.GONE
-            }
-
-            dayTransactionsLL.removeAllViews()
+            binding.dayTransactionsLL.removeAllViews()
+            val layoutInflater = LayoutInflater.from(binding.dayTransactionsLL.context)
             for (transaction in item.transactions) {
-                val childView = LayoutInflater.from(containerView.context).inflate(R.layout.rv_ll_item_transaction, null)
-                dayTransactionsLL.addView(childView)
-                childView.transactionMemoTV.text = "[${transaction.txnId}] ${transaction.memo}"
-
-                if (transaction.originalCurrency == "SGD" && false) {
-                    childView.transactionCurrencyTV.visibility = View.GONE
-                } else {
-                    childView.transactionCurrencyTV.visibility = View.VISIBLE
-                    childView.transactionCurrencyTV.text = transaction.originalCurrency
-                }
-                childView.transactionValueTV.text = transaction.originalAmount
+                val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
+                itemBinding.transaction = transaction
+                itemBinding.onClickListener = itemOnClickListener
+                itemBinding.executePendingBindings()
+                binding.dayTransactionsLL.addView(itemBinding.root)
 
 //                val category = CategoryIconHandler.getCategory(context, firebaseViewModel.currentUserLD.value!!.uid, transaction.type, transaction.category)
-//                childView.iconBG.drawable.setTint(ColourHandler.getColourObject(context.resources, category.colourString))
-                childView.iconTV.text = "F0011".toIconHex() //CategoryIconHandler.hexToIcon(category.iconHex)
+//                itemBinding.iconBG.drawable.setTint(ColourHandler.getColourObject(context.resources, category.colourString))
+                itemBinding.categoryIconInclude.iconTV.text = "F0011".toIconHex() //CategoryIconHandler.hexToIcon(category.iconHex)
 
 //                val account = AccountHandler.getAccount(context, firebaseViewModel.currentUserLD.value!!.uid, transaction.account)
-//                childView.iconRing.drawable.setTint(ColourHandler.getColourObject(context.resources, account.colourString))
-//                childView.setOnClickListener {
+//                itemBinding.iconRing.drawable.setTint(ColourHandler.getColourObject(context.resources, account.colourString))
+//                itemBinding.setOnClickListener {
 //                    fragment.findNavController().navigate(RootTransactionsFragmentDirections.actionRootTransactionsFragmentToRootTransactionEditFragment(transaction))
 //                }
             }
@@ -130,21 +75,24 @@ class TransactionsRVAdapter : ListAdapter<DayTransactions, RecyclerView.ViewHold
 
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsDayViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_item_transactions_day, parent, false)
-                return TransactionsDayViewHolder(view)
+                val layoutInflater = LayoutInflater.from(parent.context)
+//                val view = layoutInflater.inflate(R.layout.rv_item_transactions_day, parent, false)
+                val binding = RvItemTransactionsDayBinding.inflate(layoutInflater, parent, false)
+                return TransactionsDayViewHolder(binding)
             }
         }
     }
 
-    class TransactionsSummaryViewHolder private constructor(containerView: View) : RecyclerView.ViewHolder(containerView) {
+    class TransactionsSummaryViewHolder private constructor(binding: RvItemTransactionsSummaryBinding) : RecyclerView.ViewHolder(binding.root) {
 //    var summaryMonthTV: TextView = containerView.findViewById(R.id.summaryMonthTV)
 //    var summaryLeftArrowTV: TextView = containerView.findViewById(R.id.summaryLeftArrowTV)
 //    var summaryRightArrowTV: TextView = containerView.findViewById(R.id.summaryRightArrowTV)
 
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsSummaryViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_item_transactions_summary, parent, false)
-                return TransactionsSummaryViewHolder(view)
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = RvItemTransactionsSummaryBinding.inflate(layoutInflater, parent, false)
+                return TransactionsSummaryViewHolder(binding)
             }
         }
     }
@@ -158,4 +106,8 @@ class DayTransactionsDiffCallback : DiffUtil.ItemCallback<DayTransactions>() {
     override fun areContentsTheSame(oldItem: DayTransactions, newItem: DayTransactions): Boolean {
         return oldItem == newItem
     }
+}
+
+class TransactionOnClickListener(val clickListener: (transaction: Transaction) -> Unit) {
+    fun onClick(transaction: Transaction) = clickListener(transaction)
 }

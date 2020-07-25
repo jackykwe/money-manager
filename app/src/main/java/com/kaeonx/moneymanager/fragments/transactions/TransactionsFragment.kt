@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -34,7 +35,9 @@ class TransactionsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
 
-        binding.transactionsRV.adapter = TransactionsRVAdapter()
+        binding.transactionsRV.adapter = TransactionsRVAdapter(TransactionOnClickListener { transaction ->
+            Toast.makeText(requireContext(), "Oh? You want ${transaction.txnId}?", Toast.LENGTH_SHORT).show()
+        })
         viewModel.dayTransactions.observe(viewLifecycleOwner) {
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitList(it)
         }

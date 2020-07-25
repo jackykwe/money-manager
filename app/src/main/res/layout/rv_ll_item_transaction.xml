@@ -1,48 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/transactionLL"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
-        android:id="@+id/CategoryIconFL"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:padding="0dp">
+    <data>
+        <variable
+            name="transaction"
+            type="com.kaeonx.moneymanager.userrepository.domain.Transaction" />
+        <variable
+            name="onClickListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
+    </data>
 
-        <include layout="@layout/icon_transaction" />
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/transactionMemoTV"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/transactionLL"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingStart="8dp"
-        android:singleLine="true"
-        android:textSize="14sp"
-        tools:ignore="RtlSymmetry"
-        tools:text="@string/placeholder_memo" />
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:onClick="@{() -> onClickListener.onClick(transaction)}"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/transactionCurrencyTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="8dp"
-        android:paddingEnd="4dp"
-        android:text="@string/placeholder_currency"
-        android:textSize="12sp" />
+        <FrameLayout
+            android:id="@+id/CategoryIconFL"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:padding="0dp">
 
-    <TextView
-        android:id="@+id/transactionValueTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/placeholder_amount"
-        android:textSize="14sp" />
-</LinearLayout>
+            <include
+                android:id="@+id/categoryIconInclude"
+                layout="@layout/icon_transaction" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/transactionMemoTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingHorizontal="8dp"
+            android:singleLine="true"
+            android:text="@{transaction.memo}"
+            android:textSize="14sp"
+            tools:text="@string/placeholder_memo" />
+
+        <TextView
+            android:id="@+id/transactionCurrencyTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:text="@{transaction.originalCurrency}"
+            android:textSize="12sp"
+            app:currencyVisibility="@{transaction}"
+            app:hideCurrencyIfHome="@{false}"
+            tools:ignore="RtlSymmetry"
+            tools:text="@string/placeholder_currency" />
+
+        <TextView
+            android:id="@+id/transactionValueTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{transaction.originalAmount}"
+            android:textSize="14sp"
+            tools:text="@string/placeholder_amount" />
+    </LinearLayout>
+</layout>
