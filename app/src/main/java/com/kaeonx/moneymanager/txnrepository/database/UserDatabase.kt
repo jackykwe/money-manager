@@ -9,16 +9,15 @@ import androidx.room.RoomDatabase
 private const val TAG = "dtb"
 
 @Database(entities = [DatabaseTxn::class], version = 1)
-abstract class TxnDatabase : RoomDatabase() {
-    abstract val txnDatabaseDao: TxnDatabaseDao
+abstract class UserDatabase : RoomDatabase() {
+    abstract val userDatabaseDao: UserDatabaseDao
 
     companion object {
 
         @Volatile
-//        private lateinit var INSTANCE: TxnDatabase
-        private var INSTANCE: TxnDatabase? = null
+        private var INSTANCE: UserDatabase? = null
 
-        fun getInstance(context: Context, userID: String): TxnDatabase {
+        fun getInstance(context: Context, userID: String): UserDatabase {
             Log.d(TAG, "getInstance: called")
             synchronized(this) {
                 var instance = INSTANCE
@@ -27,7 +26,7 @@ abstract class TxnDatabase : RoomDatabase() {
                     // Opening a connection to a database is expensive!
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        TxnDatabase::class.java,
+                        UserDatabase::class.java,
                         "txn_database_$userID"
                     ).build()
                     INSTANCE = instance

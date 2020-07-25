@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
-interface TxnDatabaseDao {
+interface UserDatabaseDao {
     /*
     @Query("SELECT * FROM currency_conversion_table WHERE `key` = :key")
     fun getTxnRow(key: Long): DatabaseTxnRow

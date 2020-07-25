@@ -1,15 +1,15 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.text.SpannedString
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.bold
-import androidx.core.text.buildSpannedString
-import androidx.core.widget.addTextChangedListener
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -18,8 +18,6 @@ import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
 import kotlinx.android.synthetic.main.dialog_fragment_transactions_bsdf.*
 import kotlinx.android.synthetic.main.icon_transaction.*
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 private const val TAG = "TBSDF"
@@ -31,77 +29,9 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //    CategoryPickerDialogFragment.CatPickerListener,
 //    AccountDisplayDialogFragment.AccountPickerListener {
 
-//    interface TBSDFListener {
-//        fun onTBSDFResult(successful: Boolean, newTransaction: Transaction)
-//    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Date & Time Manipulation
-     */
-    ////////////////////////////////////////////////////////////////////////////////
-
-    private fun getFormattedString(calendar: Calendar, pattern: String): String {
-        val dateFormat = DateFormat.getDateTimeInstance() as SimpleDateFormat
-        dateFormat.applyPattern(pattern)
-        return dateFormat.format(calendar.time)
-    }
-
-    internal val currentCalendar: Calendar by lazy {
-        val c = Calendar.getInstance()
-        c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND))
-        c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND))
-        c
-    }
-
-    private fun displayTimeAndDate(calendar: Calendar): SpannedString {
-        val time = getFormattedString(calendar, "HHmm")
-        val date = getFormattedString(calendar, "ddMMyy")
-        return buildSpannedString {
-            bold {
-                append(time)
-            }
-            append("\n$date")
-        }
-    }
-
-    private fun changeTime(hourOfDay: Int, minute: Int) {
-        currentCalendar.apply {
-            set(Calendar.HOUR_OF_DAY, hourOfDay)
-            set(Calendar.MINUTE, minute)
-        }
-        tbsdBTDateTime.text = displayTimeAndDate(currentCalendar)
-    }
-
-    private fun changeDate(year: Int, month: Int, dayOfMonth: Int) {
-        currentCalendar.apply {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month)
-            set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        }
-        tbsdBTDateTime.text = displayTimeAndDate(currentCalendar)
-    }
-
-//    override fun onDatePickerResult(year: Int, month: Int, dayOfMonth: Int) {
-//        changeDate(year, month, dayOfMonth)
-//        TimePickerDialogFragment(
-//            this,
-//            currentCalendar
-//        ).show(childFragmentManager, "timePicker")
-//    }
-//
-//    override fun onTimePickerResult(hourOfDay: Int, minute: Int) {
-//        changeTime(hourOfDay, minute)
-//    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    /**
-     * MAIN
-     */
-    ////////////////////////////////////////////////////////////////////////////////
-
     private val args: TransactionsBSDFArgs by navArgs()
-    private val viewModel: TransactionsBSDFViewModel by viewModels()
+    private val viewModelFactory by lazy { TransactionsBSDFViewModelFactory(requireActivity().application, args.oldTransaction) }
+    private val viewModel: TransactionsBSDFViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: DialogFragmentTransactionsBsdfBinding
 
@@ -116,53 +46,63 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog?.setOnShowListener {
-            // When you set STATE_EXPANDED: the corners will animate away. This was intended by Material. https://stackoverflow.com/questions/43852562/round-corner-for-bottomsheetdialogfragment#comment104183618_57627229
-            // Expands dialog fully when created: https://stackoverflow.com/questions/35937453/set-state-of-bottomsheetdialogfragment-to-expanded
-            it as BottomSheetDialog
-            val sheetInternal: View = it.findViewById(com.google.android.material.R.id.design_bottom_sheet)!!
-            BottomSheetBehavior.from(sheetInternal).peekHeight = sheetInternal.height
-        }
         binding = DialogFragmentTransactionsBsdfBinding.inflate(inflater, container, false)
-//        binding.lifecycleOwner = this
-//        binding.viewModel = viewModel
-        binding.tbsdBTBackspace.setOnLongClickListener { viewModel.backspaceLongPressed() }
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         binding.tbsdMemoET.fixCursorFocusProblems()
+
+        binding.tbsdBTDateTime.setOnClickListener {
+            pickDateTime(viewModel.calendar.value!!)
+        }
+
         return binding.root
     }
 
-//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-////        val dialog = super.onCreateDialog(savedInstanceState)
-//
-//        // Courtesy of https://stackoverflow.com/a/59748011/7254995
-//        val dialog = object : BottomSheetDialog(requireContext(), theme) {
-//            override fun cancel() {
-////                super.cancel()
-//                if (tbsdAccountTV.text.toString() != tbsdStartAccount
-//                    || chosenType != tbsdStartType
-//                    || tbsdCategoryTV.text.toString() != tbsdStartCategory
-//                    || currentCalendar.timeInMillis != tbsdStartMillis
-//                    || tbsdMemoET.text.toString().trim() != tbsdStartMemo
-//                    || tbsdCurrencyTV.text.toString() != tbsdStartCurrency
-//                    || tbsdAmountTV.text.toString() != tbsdStartAmount) {
-//                    AlertDialog.Builder(requireContext())
-//                        .setMessage("Abandon unsaved changes?")
-//                        .setPositiveButton(R.string.ok) { _, _ -> dismiss() }
-//                        .setNegativeButton(R.string.cancel) { _, _ -> }
-//                        .create()
-//                        .show()
-//                } else {
-//                    dismiss()
-//                }
-//            }
-//        }
-//        (dialog as BottomSheetDialog).behavior.isHideable = false
-//        return dialog
-//    }
+    override fun onCreateDialog(savedInstanceState: Bundle?): BottomSheetDialog {
+        // Courtesy of https://stackoverflow.com/a/59748011/7254995
+        val dialog = object : BottomSheetDialog(requireContext()) {
+            override fun cancel() {
+                Log.d(TAG, "BSDF cancelled")
+                dismiss()
+            }
+        }
+//        dialog.behavior.skipCollapsed = true
+        dialog.behavior.isHideable = false
+        dialog.behavior.peekHeight = 1980
+        dialog.setOnShowListener {
+            // When you set STATE_EXPANDED: the corners will animate away. This was intended by Material. https://stackoverflow.com/questions/43852562/round-corner-for-bottomsheetdialogfragment#comment104183618_57627229
+            // Expands dialog fully when created: https://stackoverflow.com/questions/35937453/set-state-of-bottomsheetdialogfragment-to-expanded
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        return dialog
+    }
+
+    // Courtesy of https://stackoverflow.com/a/57449808
+    private fun pickDateTime(calendar: Calendar) {
+        val startYear = calendar.get(Calendar.YEAR)
+        val startMonth = calendar.get(Calendar.MONTH)
+        val startDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        val startHourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
+        val startMinute = calendar.get(Calendar.MINUTE)
+
+        DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+
+            TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                viewModel.updateCalendar(calendar)
+            }, startHourOfDay, startMinute, true).show()
+
+        }, startYear, startMonth, startDayOfMonth).show()
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+/*
 //        // Setup TBSD view
 //        if (oldTransaction == null) {
 //            // New transaction
@@ -226,16 +166,9 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //
 //            mode = TransactionBSDFMode.EDIT
 //        }
+*/
 
 
-
-//        // date & time listeners
-//        tbsdBTDateTime.setOnClickListener {
-//            DatePickerDialogFragment(
-//                this,
-//                currentCalendar
-//            ).show(childFragmentManager, "datePicker")
-//        }
 
 //        // currencyTV listener
 //        tbsdCurrencyTV.setOnClickListener {
@@ -249,18 +182,12 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //                .show()
 //        }
 
-//        viewModel.showToastTextLD.observe(viewLifecycleOwner) {
-//            if (it != null) {
-//                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-//                viewModel.toastShown()
-//            }
-//        }
-
-        // detect MemoET isNullOrBlank for submit button listener
-        tbsdMemoET.addTextChangedListener {
-            Log.d(TAG, "TextChangedListener CALLED WARN 1")
-            viewModel.updateMemoIsNullOrBlankMLD(it)
-        } // todo : TWO WAY BINDING
+        viewModel.showToastText.observe(viewLifecycleOwner) {
+            if (it != null) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.toastShown()
+            }
+        }
 
 //
 //        tbsdAccountTV.setOnClickListener {

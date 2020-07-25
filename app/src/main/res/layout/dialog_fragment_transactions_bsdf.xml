@@ -1,545 +1,574 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tbsdRootCL"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusableInTouchMode="false"
-    android:paddingTop="8dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
-        android:id="@+id/tbsdFL"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel" />
+    </data>
 
-        <ImageView
-            android:id="@+id/tbsdHorizontalBarIVTop"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="top"
-            android:layout_marginTop="12dp"
-            android:scaleType="fitXY"
-            android:tint="@color/grey_500"
-            app:srcCompat="@drawable/basic_rectangle" />
-
-        <ImageView
-            android:id="@+id/tbsdHorizontalBarIVBottom"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="12dp"
-            android:scaleType="fitXY"
-            android:tint="@color/grey_500"
-            app:srcCompat="@drawable/basic_rectangle" />
-
-        <FrameLayout
-            android:id="@+id/tbsdIconFL"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="12dp">
-
-            <include layout="@layout/icon_transaction" />
-        </FrameLayout>
-
-        <TextView
-            android:id="@+id/tbsdAccountTV"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="top"
-            android:layout_marginStart="144dp"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/fira_sans"
-            android:gravity="center_vertical"
-            android:text="Account"
-            android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tbsdCategoryTV"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="144dp"
-            android:layout_marginBottom="12dp"
-            android:fontFamily="@font/fira_sans"
-            android:gravity="center_vertical"
-            android:text="@string/category_placeholder"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tbsdTypeTV"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginStart="144dp"
-            android:layout_marginBottom="12dp"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/material_design_icons"
-            android:gravity="center"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
-            android:text="&#xF0BA6;"
-            android:textColor="@color/white" />
-    </FrameLayout>
-
-    <TableLayout
-        android:id="@+id/tbsdTL"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tbsdRootCL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/black"
-        android:paddingTop="8dp"
-        android:showDividers="middle|beginning"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tbsdFL">
+        android:focusableInTouchMode="false"
+        android:paddingTop="8dp">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:minHeight="48dp"
-            android:paddingHorizontal="8dp">
+        <FrameLayout
+            android:id="@+id/tbsdFL"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <!--TODO: See if you can fix this and use normal EditText-->
-            <com.kaeonx.moneymanager.customclasses.ClearFocusEditText
-                android:id="@+id/tbsdMemoET"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="Memo (required)"
-                android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
-                android:maxLines="1"
-                android:nextFocusDown="@id/tbsdAmountTV"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:singleLine="true"
-                android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/tbsdHorizontalBarIVTop"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="12dp"
+                android:scaleType="fitXY"
+                android:tint="@color/grey_500"
+                app:srcCompat="@drawable/basic_rectangle" />
 
-            <TextView
-                android:id="@+id/tbsdCurrencyTV"
+            <ImageView
+                android:id="@+id/tbsdHorizontalBarIVBottom"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="12dp"
+                android:scaleType="fitXY"
+                android:tint="@color/grey_500"
+                app:srcCompat="@drawable/basic_rectangle" />
+
+            <FrameLayout
+                android:id="@+id/tbsdIconFL"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="4dp"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_marginStart="12dp">
+
+                <include layout="@layout/icon_transaction" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tbsdAccountTV"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="top"
+                android:layout_marginStart="144dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/fira_sans"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:paddingHorizontal="4dp"
-                android:singleLine="true"
-                android:text="@string/placeholder_currency"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="14sp"
-                android:visibility="visible" />
+                android:text="Account"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tbsdAmountTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="314A"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24sp" />
+                android:id="@+id/tbsdCategoryTV"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="144dp"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/fira_sans"
+                android:gravity="center_vertical"
+                android:text="@string/category_placeholder"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tbsdPendingOpTV"
-                tools:text="+"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="plus"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24sp" />
+                android:id="@+id/tbsdTypeTV"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginStart="144dp"
+                android:layout_marginBottom="12dp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/material_design_icons"
+                android:gravity="center"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:text="&#xF0BA6;"
+                android:textColor="@color/white" />
+        </FrameLayout>
 
-            <TextView
-                android:id="@+id/tbsdPendingAmtTV"
-                tools:text="36"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="NIMAMA"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="24sp" />
-
-        </TableRow>
-
-        <TableRow
+        <TableLayout
+            android:id="@+id/tbsdTL"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/colorPrimary"
-            android:minHeight="52dp"
-            android:showDividers="middle">
+            android:layout_height="wrap_content"
+            android:divider="@color/black"
+            android:paddingTop="8dp"
+            android:showDividers="middle|beginning"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tbsdFL">
 
-            <Button
-                android:id="@+id/tbsdBT7"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_7"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
+                android:gravity="center_vertical"
+                android:minHeight="48dp"
+                android:paddingHorizontal="8dp">
 
-            <Button
-                android:id="@+id/tbsdBT8"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
+                <!--TODO: See if you can fix this and use normal EditText-->
+                <com.kaeonx.moneymanager.customclasses.ClearFocusEditText
+                    android:id="@+id/tbsdMemoET"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:hint="Memo (required)"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:text="@={viewModel.memoText}"
+                    android:nextFocusDown="@id/tbsdAmountTV"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tbsdCurrencyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:paddingHorizontal="4dp"
+                    android:singleLine="true"
+                    android:text="@string/placeholder_currency"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp"
+                    android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}" />
+
+                <TextView
+                    android:id="@+id/tbsdAmountTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@{viewModel.amountTVText}"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tbsdPendingOpTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@{viewModel.pendingOpTVText}"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp"
+                    tools:text="+" />
+
+                <TextView
+                    android:id="@+id/tbsdPendingAmtTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@{viewModel.pendingAmtTVText}"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp"
+                    tools:text="36" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_8"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBT9"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_9"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBTDateTime"
-                style="?attr/materialButtonOutlinedStyle"
-                tools:text="0003\n030520"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="-24dp"
-                android:insetBottom="-24dp"
-                android:minHeight="0dp"
-                android:textAllCaps="false"
-                android:textSize="14sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/colorPrimary"
-            android:minHeight="52dp"
-            android:showDividers="middle">
-
-            <Button
-                android:id="@+id/tbsdBT4"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_4"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBT5"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_5"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBT6"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_6"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:divider="@color/colorPrimary"
-                android:orientation="horizontal"
+                android:minHeight="52dp"
                 android:showDividers="middle">
 
                 <Button
-                    android:id="@+id/tbsdBTPlus"
+                    android:id="@+id/tbsdBT7"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="false"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
                     android:fontFamily="sans-serif-light"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="@string/button_plus"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`7`)}"
+                    android:text="@string/button_7"
                     android:textAllCaps="false"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     android:typeface="normal"
                     app:cornerRadius="0dp"
                     app:strokeWidth="0dp" />
 
                 <Button
-                    android:id="@+id/tbsdBTMinus"
+                    android:id="@+id/tbsdBT8"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="false"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
                     android:fontFamily="sans-serif-light"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="@string/button_minus"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`8`)}"
+                    android:text="@string/button_8"
                     android:textAllCaps="false"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     android:typeface="normal"
                     app:cornerRadius="0dp"
                     app:strokeWidth="0dp" />
 
-            </LinearLayout>
+                <Button
+                    android:id="@+id/tbsdBT9"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`9`)}"
+                    android:text="@string/button_9"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
 
-        </TableRow>
+                <Button
+                    android:id="@+id/tbsdBTDateTime"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="2"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="-24dp"
+                    android:insetBottom="-24dp"
+                    android:text="@{viewModel.dateTimeBTText}"
+                    android:minHeight="0dp"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp"
+                    tools:text="0003\n030520" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/colorPrimary"
-            android:minHeight="52dp"
-            android:showDividers="middle">
+            </TableRow>
 
-            <Button
-                android:id="@+id/tbsdBT1"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_1"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBT2"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_2"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <Button
-                android:id="@+id/tbsdBT3"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_3"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:divider="@color/colorPrimary"
-                android:orientation="horizontal"
+                android:minHeight="52dp"
                 android:showDividers="middle">
 
                 <Button
-                    android:id="@+id/tbsdBTMultiply"
+                    android:id="@+id/tbsdBT4"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="false"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
                     android:fontFamily="sans-serif-light"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="@string/button_multiply"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`4`)}"
+                    android:text="@string/button_4"
                     android:textAllCaps="false"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     android:typeface="normal"
                     app:cornerRadius="0dp"
                     app:strokeWidth="0dp" />
 
                 <Button
-                    android:id="@+id/tbsdBTDivide"
+                    android:id="@+id/tbsdBT5"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:enabled="false"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
                     android:fontFamily="sans-serif-light"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
-                    android:text="@string/button_divide"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`5`)}"
+                    android:text="@string/button_5"
                     android:textAllCaps="false"
                     android:textSize="24sp"
-                    android:textStyle="bold"
                     android:typeface="normal"
                     app:cornerRadius="0dp"
                     app:strokeWidth="0dp" />
 
-            </LinearLayout>
+                <Button
+                    android:id="@+id/tbsdBT6"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`6`)}"
+                    android:text="@string/button_6"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
 
-        </TableRow>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:divider="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@color/colorPrimary"
-            android:minHeight="52dp"
-            android:showDividers="middle">
+                    <Button
+                        android:id="@+id/tbsdBTPlus"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.error == null ? true : false}"
+                        android:fontFamily="sans-serif-light"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:onClick="@{() -> viewModel.operatorPressed(`+`)}"
+                        android:text="@string/button_plus"
+                        android:textAllCaps="false"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        app:cornerRadius="0dp"
+                        app:strokeWidth="0dp" />
 
-            <Button
-                android:id="@+id/tbsdBTDecimal"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
+                    <Button
+                        android:id="@+id/tbsdBTMinus"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.error == null ? true : false}"
+                        android:fontFamily="sans-serif-light"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:onClick="@{() -> viewModel.operatorPressed(`-`)}"
+                        android:text="@string/button_minus"
+                        android:textAllCaps="false"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        app:cornerRadius="0dp"
+                        app:strokeWidth="0dp" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_decimal"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
+                android:divider="@color/colorPrimary"
+                android:minHeight="52dp"
+                android:showDividers="middle">
 
-            <Button
-                android:id="@+id/tbsdBT0"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
+                <Button
+                    android:id="@+id/tbsdBT1"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`1`)}"
+                    android:text="@string/button_1"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
+
+                <Button
+                    android:id="@+id/tbsdBT2"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`2`)}"
+                    android:text="@string/button_2"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
+
+                <Button
+                    android:id="@+id/tbsdBT3"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`3`)}"
+                    android:text="@string/button_3"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:divider="@color/colorPrimary"
+                    android:orientation="horizontal"
+                    android:showDividers="middle">
+
+                    <Button
+                        android:id="@+id/tbsdBTMultiply"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.error == null ? true : false}"
+                        android:fontFamily="sans-serif-light"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:onClick="@{() -> viewModel.operatorPressed(`×`)}"
+                        android:text="@string/button_multiply"
+                        android:textAllCaps="false"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        app:cornerRadius="0dp"
+                        app:strokeWidth="0dp" />
+
+                    <Button
+                        android:id="@+id/tbsdBTDivide"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:enabled="@{viewModel.error == null ? true : false}"
+                        android:fontFamily="sans-serif-light"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:onClick="@{() -> viewModel.operatorPressed(`÷`)}"
+                        android:text="@string/button_divide"
+                        android:textAllCaps="false"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:typeface="normal"
+                        app:cornerRadius="0dp"
+                        app:strokeWidth="0dp" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:enabled="false"
-                android:fontFamily="sans-serif-light"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/button_0"
-                android:textAllCaps="false"
-                android:textSize="24sp"
-                android:typeface="normal"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
+                android:divider="@color/colorPrimary"
+                android:minHeight="52dp"
+                android:showDividers="middle">
 
-            <Button
-                android:id="@+id/tbsdBTBackspace"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:fontFamily="@font/material_design_icons"
-                android:gravity="center"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="BS"
-                android:textSize="24sp"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
+                <Button
+                    android:id="@+id/tbsdBTDecimal"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`.`)}"
+                    android:text="@string/button_decimal"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
 
-            <Button
-                android:id="@+id/tbsdBTSubmit"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:enabled="false"
-                android:fontFamily="@font/material_design_icons"
-                android:gravity="center"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="SUBMIT"
-                android:textSize="28sp"
-                app:cornerRadius="0dp"
-                app:strokeWidth="0dp" />
-        </TableRow>
-    </TableLayout>
+                <Button
+                    android:id="@+id/tbsdBT0"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="sans-serif-light"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/button_0"
+                    android:textAllCaps="false"
+                    android:textSize="24sp"
+                    android:typeface="normal"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/tbsdBTBackspace"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:fontFamily="@font/material_design_icons"
+                    android:gravity="center"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.backspacePressed()}"
+                    android:onLongClick="@{() -> viewModel.backspaceLongPressed()}"
+                    android:text="@{viewModel.backspaceBTText}"
+                    android:textSize="24sp"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
+
+                <Button
+                    android:id="@+id/tbsdBTSubmit"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:enabled="@{viewModel.error == null ? true : false}"
+                    android:fontFamily="@font/material_design_icons"
+                    android:gravity="center"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.submitBTOnClick()}"
+                    android:text="@{viewModel.submitBTText}"
+                    android:textSize="28sp"
+                    app:cornerRadius="0dp"
+                    app:strokeWidth="0dp" />
+            </TableRow>
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

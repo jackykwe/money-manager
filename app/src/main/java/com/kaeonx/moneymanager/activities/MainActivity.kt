@@ -20,7 +20,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
-import com.kaeonx.moneymanager.txnrepository.database.TxnDatabase
+import com.kaeonx.moneymanager.txnrepository.database.UserDatabase
 
 // TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
 // I'm dealing with all dialogs using the not so new method - supportFragmentManager / childFragmentManager
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
             if (it == null) {
                 // Logout logic. Login logic is controlled from within RootTitleFragment.
                 navController.navigate(TopLevelNavGraphDirections.actionGlobalTitleFragment())
-                TxnDatabase.dropInstance()
+                UserDatabase.dropInstance()
             }
         }
     }
