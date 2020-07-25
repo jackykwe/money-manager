@@ -1,16 +1,16 @@
-package com.kaeonx.moneymanager.txnrepository
+package com.kaeonx.moneymanager.userrepository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.kaeonx.moneymanager.txnrepository.database.UserDatabase
-import com.kaeonx.moneymanager.txnrepository.database.toDomain
-import com.kaeonx.moneymanager.txnrepository.domain.Transaction
-import com.kaeonx.moneymanager.txnrepository.domain.toDatabase
+import com.kaeonx.moneymanager.userrepository.database.UserDatabase
+import com.kaeonx.moneymanager.userrepository.database.toDomain
+import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import com.kaeonx.moneymanager.userrepository.domain.toDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TxnRepository(application: Application, userId: String) {
+class UserRepository(application: Application, userId: String) {
 
     // TODO: Check for security holes
     private val database = UserDatabase.getInstance(application, userId)

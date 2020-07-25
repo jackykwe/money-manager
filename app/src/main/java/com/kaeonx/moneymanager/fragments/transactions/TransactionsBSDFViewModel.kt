@@ -1,14 +1,13 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.app.Application
-import android.util.Log
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.lifecycle.*
 import com.kaeonx.moneymanager.customclasses.toDisplayString
 import com.kaeonx.moneymanager.customclasses.toFormattedString
 import com.kaeonx.moneymanager.customclasses.toIconHex
-import com.kaeonx.moneymanager.txnrepository.domain.Transaction
+import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -16,24 +15,33 @@ import java.util.*
 
 private const val TAG = "BDVM"
 
-class TransactionsBSDFViewModel(application: Application, private val oldTransaction: Transaction): AndroidViewModel(application) {
+class TransactionsBSDFViewModel(application: Application, internal val oldTransaction: Transaction): AndroidViewModel(application) {
+
+    private val initCalendar: Calendar by lazy {
+        val c = Calendar.getInstance()
+        c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND))
+        c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND))
+        c
+    }
 
     init {
         if (oldTransaction.txnId == null) {
             // New transaction
             oldTransaction.apply {
-                timestamp = System.currentTimeMillis()
-                timeZone = "YES"
+                timestamp = initCalendar.timeInMillis
                 type = "Expenses" // TODO: Tie to default
-                category = ""
-                account = "Cash"  // TODO: Tie to default
+                category = "CATPLACEHOLDER"
+                account = "ACCPLACEHOLDER"  // TODO: Tie to default
                 memo = ""
                 originalCurrency = "SGD"  // TODO: Tie to home currency
                 originalAmount = "0"  // MAKE SURE THIS ISN'T AN EMPTY STRING. BigDecimal("") will give problems.
             }
         }
     }
-    private val currentTransaction by lazy { oldTransaction.copy() }
+    internal val currentTransaction by lazy { oldTransaction.copy() }
+    fun changesWereMade(): Boolean {
+        return oldTransaction != currentTransaction
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -73,7 +81,10 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
     private val _operand1IsZero = Transformations.map(_amountTVText) { BigDecimal(it).compareTo(BigDecimal.ZERO) == 0 }
     private fun updateAmountTVText(): String {
         return when (_error.value) {
-            null -> _amountTVText.value!!
+            null -> {
+                currentTransaction.originalAmount = BigDecimal(_amountTVText.value!!).toDisplayString()
+                _amountTVText.value!!
+            }
             ErrorType.OVERFLOW -> "e: overflow"
             ErrorType.DIV_ZERO -> "e: div zero"
         }
@@ -149,8 +160,13 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
         if (operand1 >= BigDecimal("1E$MAX_INT")) {
             _error.value = ErrorType.OVERFLOW
             _pendingOperation.value = null
-        } else { // If the code reaches here, operand1 has successfully been updated to a new value
-            _amountTVText.value = operand1.toDisplayString()
+        } else {
+            // If the code reaches here, operand1 has successfully been updated to a new value
+            // Added a check to prevent negative values
+            _amountTVText.value = if (operand1 < BigDecimal.ZERO) {
+                _showToastText.value = "Negative values are not allowed."
+                "0"
+            } else operand1.toDisplayString()
         }
     }
 
@@ -192,17 +208,11 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private val initCalendar: Calendar by lazy {
-        val c = Calendar.getInstance()
-        c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND))
-        c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND))
-        c
-    }
     private val _calendar = MutableLiveData<Calendar>(initCalendar)
     val calendar: LiveData<Calendar>
         get() = _calendar
     val dateTimeBTText = Transformations.map(_calendar) {
-        Log.d(TAG, "${_calendar.value!!.timeInMillis}")
+        currentTransaction.timestamp = it.timeInMillis
         val time = it.toFormattedString("HHmm")
         val date = it.toFormattedString("ddMMyy")
         buildSpannedString {
@@ -262,11 +272,11 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
         READY
     }
 
-    private val _categoryIsNull = MutableLiveData(true)
+    private val _categoryIsNull = MutableLiveData(false)
 
     val memoText = MutableLiveData<String>("")
     private val _memoIsNullOrBlank = Transformations.map(memoText) {
-        Log.d(TAG, "it.isNullOrBlank() is ${it.isNullOrBlank()}")
+        currentTransaction.memo = it
         it.isNullOrBlank()
     }
 
@@ -282,8 +292,8 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
             _error.value != null -> SubmitReadyState.NOT_READY_ERROR
             _pendingOperation.value != null -> SubmitReadyState.NOT_READY_PENDING_OP
             _categoryIsNull.value!! -> SubmitReadyState.NOT_READY_CATEGORY_EMPTY
-            _operand1IsZero.value!! -> SubmitReadyState.NOT_READY_OPERAND1_ZERO
-            _memoIsNullOrBlank.value!! -> SubmitReadyState.NOT_READY_MEMO_EMPTY
+            _operand1IsZero.value ?: true -> SubmitReadyState.NOT_READY_OPERAND1_ZERO
+            _memoIsNullOrBlank.value ?: true -> SubmitReadyState.NOT_READY_MEMO_EMPTY
             else -> SubmitReadyState.READY
         }
     }
@@ -307,7 +317,7 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
             SubmitReadyState.NOT_READY_CATEGORY_EMPTY -> _showToastText.value = "Please select a category."
             SubmitReadyState.NOT_READY_OPERAND1_ZERO -> _showToastText.value = "Please enter an amount."
             SubmitReadyState.NOT_READY_MEMO_EMPTY -> _showToastText.value = "Please enter a memo."
-            SubmitReadyState.READY -> { } // submitTransactionAndDismiss()
+            SubmitReadyState.READY -> { _submitTrigger.value = currentTransaction }
             else -> throw IllegalStateException("Unknown SubmitReadyState reached: $state")
         }
     }
@@ -316,5 +326,11 @@ class TransactionsBSDFViewModel(application: Application, private val oldTransac
         get() = _showToastText
     fun toastShown() {
         _showToastText.value = null
+    }
+    private val _submitTrigger = MutableLiveData<Transaction?>(null)
+    val submitTrigger: LiveData<Transaction?>
+        get() = _submitTrigger
+    fun submitHandled() {
+        _submitTrigger.value = null
     }
 }

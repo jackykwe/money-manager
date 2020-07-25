@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
-import com.kaeonx.moneymanager.txnrepository.domain.Transaction
+import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
 private const val TAG = "transactionFrag"
 
@@ -31,9 +33,29 @@ class TransactionsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+
+        binding.transactionsRV.adapter = TransactionsRVAdapter()
+        viewModel.dayTransactions.observe(viewLifecycleOwner) {
+            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitList(it)
+        }
+
+//        binding.lifecycleOwner = this
+//        binding.viewModel = viewModel
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // After a configuration change or process death, the currentBackStackEntry
+        // points to the dialog destination, so you must use getBackStackEntry()
+        // with the specific ID of your destination to ensure we always
+        // get the right NavBackStackEntry
+        findNavController()
+            .getBackStackEntry(R.id.transactionsFragment)
+            .savedStateHandle
+            .getLiveData<Transaction>("tbsdf_result")
+            .observe(viewLifecycleOwner) {
+                viewModel.addTxn(it)
+            }
     }
 
     /*

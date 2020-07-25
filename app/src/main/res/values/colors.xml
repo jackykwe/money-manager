@@ -4,13 +4,14 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
+    <color name="stroke_color">@color/colorPrimaryDark</color>  <!-- for RV_item_transactions_day -->
     <!--
     Google Material Design Color Palette for Android http://www.google.com/design/spec/style/color.html#color-ui-color-palette
     Spreadsheet used to create this reosurce - http://bit.ly/mdcolor_spreadsheet
     Link to this colors.xml resource file - http://bit.ly/mdcolorsxml
     Harshad Kale
     https://github.com/kalehv
--->
+    -->
 
     <color name="red_50">#FFEBEE</color>
     <color name="red_100">#FFCDD2</color>

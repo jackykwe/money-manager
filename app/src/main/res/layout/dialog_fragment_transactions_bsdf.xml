@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel" />
@@ -51,7 +53,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="12dp">
 
-                <include layout="@layout/icon_transaction" />
+                <include
+                    android:id="@+id/tbsdIconInclude"
+                    layout="@layout/icon_transaction" />
             </FrameLayout>
 
             <TextView
@@ -128,11 +132,11 @@
                     android:imeOptions="actionDone"
                     android:inputType="textCapSentences"
                     android:maxLines="1"
-                    android:text="@={viewModel.memoText}"
                     android:nextFocusDown="@id/tbsdAmountTV"
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:singleLine="true"
+                    android:text="@={viewModel.memoText}"
                     android:textSize="14sp" />
 
                 <TextView
@@ -259,8 +263,8 @@
                     android:fontFamily="sans-serif-light"
                     android:insetTop="-24dp"
                     android:insetBottom="-24dp"
-                    android:text="@{viewModel.dateTimeBTText}"
                     android:minHeight="0dp"
+                    android:text="@{viewModel.dateTimeBTText}"
                     android:textAllCaps="false"
                     android:textSize="14sp"
                     android:typeface="normal"
@@ -527,6 +531,7 @@
                     android:fontFamily="sans-serif-light"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
+                    android:onClick="@{() -> viewModel.digitDecimalPressed(`0`)}"
                     android:text="@string/button_0"
                     android:textAllCaps="false"
                     android:textSize="24sp"

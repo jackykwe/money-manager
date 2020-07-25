@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.txnrepository.database
+package com.kaeonx.moneymanager.userrepository.database
 
 import android.content.Context
 import android.util.Log

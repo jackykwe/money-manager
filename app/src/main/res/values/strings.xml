@@ -38,6 +38,12 @@
     <string name="button_decimal">.</string>
     <string name="category_placeholder">\?</string>
 
+    <!-- Confirm exit dialogs -->
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+
+    <!-- TransactionsFragment RV -->
+    <string name="placeholder_amount">13.16</string>
+    <string name="placeholder_memo">dinner @ kopitiam blah blah blah blah blah.</string>
+
 </resources>

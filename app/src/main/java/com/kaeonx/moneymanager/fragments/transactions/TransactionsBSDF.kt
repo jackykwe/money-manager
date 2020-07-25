@@ -3,31 +3,26 @@ package com.kaeonx.moneymanager.fragments.transactions
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
-import kotlinx.android.synthetic.main.dialog_fragment_transactions_bsdf.*
-import kotlinx.android.synthetic.main.icon_transaction.*
 import java.util.*
 
 private const val TAG = "TBSDF"
 
 class TransactionsBSDF : BottomSheetDialogFragment() {
-//    BottomSheetDialogFragment(),
-//    TimePickerDialogFragment.TimePickerListener,
-//    DatePickerDialogFragment.DatePickerListener,
-//    CategoryPickerDialogFragment.CatPickerListener,
-//    AccountDisplayDialogFragment.AccountPickerListener {
 
     private val args: TransactionsBSDFArgs by navArgs()
     private val viewModelFactory by lazy { TransactionsBSDFViewModelFactory(requireActivity().application, args.oldTransaction) }
@@ -36,26 +31,19 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     private lateinit var binding: DialogFragmentTransactionsBsdfBinding
 
     private fun setAccountColor(color: Int) {
-        tbsdHorizontalBarIVTop.drawable.setTint(color)
-        iconRing.drawable.setTint(color)
+        binding.tbsdHorizontalBarIVTop.drawable.setTint(color)
+        binding.tbsdIconInclude.iconRing.drawable.setTint(color)
     }
 
     private fun setCategoryColor(color: Int) {
-        tbsdHorizontalBarIVBottom.drawable.setTint(color)
-        iconBG.drawable.setTint(color)
+        binding.tbsdHorizontalBarIVBottom.drawable.setTint(color)
+        binding.tbsdIconInclude.iconBG.drawable.setTint(color)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogFragmentTransactionsBsdfBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-
-        binding.tbsdMemoET.fixCursorFocusProblems()
-
-        binding.tbsdBTDateTime.setOnClickListener {
-            pickDateTime(viewModel.calendar.value!!)
-        }
-
         return binding.root
     }
 
@@ -63,8 +51,16 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         // Courtesy of https://stackoverflow.com/a/59748011/7254995
         val dialog = object : BottomSheetDialog(requireContext()) {
             override fun cancel() {
-                Log.d(TAG, "BSDF cancelled")
-                dismiss()
+                if (viewModel.changesWereMade()) {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("Abandon unsaved changes?")
+                        .setPositiveButton(R.string.ok) { _, _ -> dismiss() }
+                        .setNegativeButton(R.string.cancel) { _, _ -> }
+                        .create()
+                        .show()
+                } else {
+                    dismiss()
+                }
             }
         }
 //        dialog.behavior.skipCollapsed = true
@@ -87,11 +83,12 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         val startMinute = calendar.get(Calendar.MINUTE)
 
         DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            viewModel.updateCalendar(calendar)
 
             TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
                 viewModel.updateCalendar(calendar)
@@ -100,8 +97,30 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         }, startYear, startMonth, startDayOfMonth).show()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.tbsdMemoET.fixCursorFocusProblems()
+
+        binding.tbsdBTDateTime.setOnClickListener { pickDateTime(viewModel.calendar.value!!) }
+
+        viewModel.showToastText.observe(viewLifecycleOwner) {
+            if (it != null) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.toastShown()
+            }
+        }
+
+        viewModel.submitTrigger.observe(viewLifecycleOwner) {
+            if (it != null) {
+                findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle.set("tbsdf_result", it)
+                viewModel.submitHandled()
+                findNavController().navigateUp()
+            }
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
 /*
 //        // Setup TBSD view
 //        if (oldTransaction == null) {
@@ -168,8 +187,6 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //        }
 */
 
-
-
 //        // currencyTV listener
 //        tbsdCurrencyTV.setOnClickListener {
 //            AlertDialog.Builder(requireContext())
@@ -181,13 +198,6 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //                .create()
 //                .show()
 //        }
-
-        viewModel.showToastText.observe(viewLifecycleOwner) {
-            if (it != null) {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                viewModel.toastShown()
-            }
-        }
 
 //
 //        tbsdAccountTV.setOnClickListener {
@@ -220,33 +230,6 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 //    override fun onAccountSelected(account: Account) {
 //        tbsdAccountTV.text = account.name
 //        setAccountColor(ColourHandler.getColourObject(resources, account.colourString))
-//    }
-
-//    private fun submitTransactionAndDismiss() {
-//        val transaction = Transaction(
-//            id=oldTransaction?.id,
-//            timestamp=currentCalendar.timeInMillis,
-//            timeZone=currentCalendar.timeZone.id,
-//            type=chosenType ?: throw java.lang.IllegalStateException("You shouldn't reach this code! type must not be null"),
-//            category=tbsdCategoryTV.text.toString(),
-//            account=tbsdAccountTV.text.toString(),
-//            memo=tbsdMemoET.text.toString().trim(),
-//            originalCurrency=tbsdCurrencyTV.text.toString(),
-//            originalAmount=CurrencyHandler.bigDecimalDisplay(tbsdAmountTV.text.toString().toBigDecimal())
-//        )
-//        Log.d(TAG, "tbsdAmountTV.text.toString() = ${tbsdAmountTV.text.toString()}")
-//        val result = when (mode) {
-//            TransactionBSDFMode.NEW -> {
-//                Log.d(TAG, "Saving transaction: ${CalendarHandler.getFormattedString(currentCalendar, "HHmmss:S ddMMyy")}")
-//                JSONHandler.addTransaction((requireActivity() as MainActivity).loadedUserId!!, transaction)
-//            }
-//            TransactionBSDFMode.EDIT -> {
-//                Log.d(TAG, "Editing transaction: ${CalendarHandler.getFormattedString(currentCalendar, "HHmmss:S ddMMyy")}")
-//                JSONHandler.modifyTransaction((requireActivity() as MainActivity).loadedUserId!!, transaction)
-//            }
-//        }
-//        listener.onTBSDFResult(result, transaction)
-//        dismiss()
 //    }
 }
 

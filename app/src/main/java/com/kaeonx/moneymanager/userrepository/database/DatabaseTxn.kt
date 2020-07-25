@@ -1,15 +1,14 @@
-package com.kaeonx.moneymanager.txnrepository.database
+package com.kaeonx.moneymanager.userrepository.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kaeonx.moneymanager.txnrepository.domain.Transaction
+import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
 @Entity(tableName = "txn_table")
 data class DatabaseTxn(
     @PrimaryKey(autoGenerate = true) val txnId: Long = 0L,
     val timestamp: Long,
-    @ColumnInfo(name = "time_zone") val timeZone: String,
     val type: String,
     val category: String,
     val account: String,
@@ -22,7 +21,6 @@ fun List<DatabaseTxn>.toDomain(): List<Transaction> {
         Transaction(
             txnId = it.txnId,
             timestamp = it.timestamp,
-            timeZone = it.timeZone,
             type = it.type,
             category = it.category,
             account = it.account,

@@ -51,7 +51,7 @@
         android:label="TransactionsBSDF" >
         <argument
             android:name="oldTransaction"
-            app:argType="com.kaeonx.moneymanager.txnrepository.domain.Transaction" />
+            app:argType="com.kaeonx.moneymanager.userrepository.domain.Transaction" />
     </dialog>
 
     <!--    <fragment-->

@@ -20,7 +20,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
-import com.kaeonx.moneymanager.txnrepository.database.UserDatabase
+import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 
 // TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
 // I'm dealing with all dialogs using the not so new method - supportFragmentManager / childFragmentManager
