@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import com.kaeonx.moneymanager.customclasses.toDisplayString
 import com.kaeonx.moneymanager.customclasses.toFormattedString
 import com.kaeonx.moneymanager.customclasses.toIconHex
+import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.math.BigDecimal
 import java.math.MathContext
@@ -38,7 +39,7 @@ class TransactionsBSDFViewModel(application: Application, internal val oldTransa
             }
         }
     }
-    internal val currentTransaction by lazy { oldTransaction.copy() }
+    private val currentTransaction by lazy { oldTransaction.copy() }
     fun changesWereMade(): Boolean {
         return oldTransaction != currentTransaction
     }
@@ -227,39 +228,19 @@ class TransactionsBSDFViewModel(application: Application, internal val oldTransa
         _calendar.value = calendar
     }
 
-//
-//    private fun changeTime(hourOfDay: Int, minute: Int) {
-//        currentCalendar.apply {
-//            set(Calendar.HOUR_OF_DAY, hourOfDay)
-//            set(Calendar.MINUTE, minute)
-//        }
-//        tbsdBTDateTime.text = displayTimeAndDate(currentCalendar)
-//    }
-//
-//    private fun changeDate(year: Int, month: Int, dayOfMonth: Int) {
-//        currentCalendar.apply {
-//            set(Calendar.YEAR, year)
-//            set(Calendar.MONTH, month)
-//            set(Calendar.DAY_OF_MONTH, dayOfMonth)
-//        }
-//        tbsdBTDateTime.text = displayTimeAndDate(currentCalendar)
-//    }
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Account and Category Manipulation
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    fun updateCategory(category: Category) {
+        currentTransaction.category = category.name
+    }
 
-//    override fun onDatePickerResult(year: Int, month: Int, dayOfMonth: Int) {
-//        changeDate(year, month, dayOfMonth)
-//        TimePickerDialogFragment(
-//            this,
-//            currentCalendar
-//        ).show(childFragmentManager, "timePicker")
-//    }
-//
-//    override fun onTimePickerResult(hourOfDay: Int, minute: Int) {
-//        changeTime(hourOfDay, minute)
-//    }
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
-     * General
+     * Submit Checks
      */
     ////////////////////////////////////////////////////////////////////////////////
 

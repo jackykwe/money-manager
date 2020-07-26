@@ -27,6 +27,8 @@ class TransactionsFragment : Fragment() {
     private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(requireActivity().application, authViewModel.currentUser.value!!.uid) }
     private val viewModel: TransactionsFragmentViewModel by viewModels { viewModelFactory }
 
+    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }
+
     private var isExpanded = false
     private var firstLoad = true
 
@@ -36,9 +38,9 @@ class TransactionsFragment : Fragment() {
         binding.transactionsRV.adapter = TransactionsRVAdapter(TransactionOnClickListener { transaction ->
             Toast.makeText(requireContext(), "Oh? You want ${transaction.transactionId}?", Toast.LENGTH_SHORT).show()
         })
+
         viewModel.dayTransactions.observe(viewLifecycleOwner) {
-            binding.transactionsRV.scrollToPosition(0)
-            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitList(it)
+            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(it)
         }
 
 //        binding.lifecycleOwner = this
@@ -51,13 +53,13 @@ class TransactionsFragment : Fragment() {
         // points to the dialog destination, so you must use getBackStackEntry()
         // with the specific ID of your destination to ensure we always
         // get the right NavBackStackEntry
-        findNavController()
-            .getBackStackEntry(R.id.transactionsFragment)
-            .savedStateHandle
-            .getLiveData<Transaction>("tbsdf_result")
-            .observe(viewLifecycleOwner) {
+        savedStateHandle.getLiveData<Transaction?>("tbsdf_result").observe(viewLifecycleOwner) {
+            if (it != null) {
                 viewModel.addTransaction(it)
+                // To prevent re-adding of transaction when navigating to another fragment and back
+                savedStateHandle.set("tbsdf_result", null)
             }
+        }
     }
 
     /*

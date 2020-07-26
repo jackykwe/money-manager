@@ -78,7 +78,10 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
         val c = initCalendar.clone() as Calendar
         c.set(Calendar.DAY_OF_MONTH, d)  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
         result.add(
-            DayTransactions(ymdCalendar = c)
+            DayTransactions(
+                dayOfMonth = d.toLong(),
+                ymdCalendar = c
+            )
         )
     }
 

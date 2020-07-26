@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.categories
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +12,30 @@ import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
 
 private const val TAG = "catFrag"
 
-// The counterpart to this Fragment is CategoryPickerDF
+// The counterpart to this Fragment is CategoriesDF
 class CategoriesFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoriesBinding
 
+    private fun enableCatPickerVPAnimation() {
+        // Courtesy of https://stackoverflow.com/a/56310461/7254995
+        binding.catPickerVP.setPageTransformer { page, _ ->
+            page.apply {
+                alpha = 0f
+                animate()
+                    .alpha(1f)
+                    .setDuration(page.resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                    .setListener(null)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentCategoriesBinding.inflate(inflater, container, false)
-
-        binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, true, CategoryOnClickListener { type, category ->
-            Toast.makeText(requireContext(), "Oh? You want ${category.name}?", Toast.LENGTH_SHORT).show()
+        binding.catPickerVP.offscreenPageLimit = 1
+//        enableCatPickerVPAnimation()
+        binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, true, CategoryOnClickListener { category ->
+            Toast.makeText(requireContext(), "Oh? You want $category?", Toast.LENGTH_SHORT).show()
 //            findNavController().navigate(
 //                CategoriesFragmentDirections.actionRootCategoriesFragmentToRootCategoryEditFragment(
 //                    type,
@@ -30,8 +43,11 @@ class CategoriesFragment : Fragment() {
 //                )
 //            )
         })
-//        binding.catPickerVP.setCurrentItem(1, false)
+//        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //        TabLayoutMediator(view.catPickerTL, view.catPickerVP) { tab, position ->
         TabLayoutMediator((requireActivity() as MainActivity).binding.appBarMainInclude.catPickerTLExtendedAppBar, binding.catPickerVP) { tab, position ->
             tab.text = when (position) {
@@ -40,32 +56,5 @@ class CategoriesFragment : Fragment() {
                 else -> throw IllegalArgumentException("Unknown tab position ($position) reached. Position should be 0 or 1 only.")
             }
         }.attach()
-
-        return binding.root
-    }
-
-    override fun onStart() {
-        Log.d(TAG, "onStart(): called")
-        super.onStart()
-    }
-
-    override fun onStop() {
-        Log.d(TAG, "onStop(): called")
-        super.onStop()
-    }
-
-    override fun onResume() {
-        Log.d(TAG, "onResume(): called")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.d(TAG, "onPause(): called")
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        Log.d(TAG, "onDestroy(): called")
-        super.onDestroy()
     }
 }

@@ -11,22 +11,36 @@ import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val SUMMARY = 0
 private const val DAY_TRANSACTIONS = 1
 private const val TAG = "trva"
 
-class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickListener) : ListAdapter<DayTransactions, RecyclerView.ViewHolder>(DayTransactionsDiffCallback()) {
+class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickListener) :
+    ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
-    override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> SUMMARY
-            else -> DAY_TRANSACTIONS
+    fun submitListAndAddHeader(list: List<DayTransactions>) {
+        CoroutineScope(Dispatchers.Default).launch {
+            val submittable = when {
+                list.isEmpty() -> listOf(RVItem.RVItemHeader)
+                else -> listOf(RVItem.RVItemHeader) + list.map { RVItem.RVItemDayTransactions(it) }
+            }
+            withContext(Dispatchers.Main) {
+                submitList(submittable)
+            }
         }
     }
 
-    override fun getItemCount() = currentList.size + 1
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is RVItem.RVItemHeader -> SUMMARY
+            is RVItem.RVItemDayTransactions -> DAY_TRANSACTIONS
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -38,7 +52,10 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TransactionsDayViewHolder -> holder.rebind(getItem(position - 1), itemOnClickListener)
+            is TransactionsDayViewHolder -> {
+                val item = (getItem(position) as RVItem.RVItemDayTransactions).dayTransactions
+                holder.rebind(item, itemOnClickListener)
+            }
             is TransactionsSummaryViewHolder -> { }
         }
     }
@@ -97,16 +114,28 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
     }
 }
 
-class DayTransactionsDiffCallback : DiffUtil.ItemCallback<DayTransactions>() {
-    override fun areItemsTheSame(oldItem: DayTransactions, newItem: DayTransactions): Boolean {
-        return oldItem.ymdCalendar.get(Calendar.DAY_OF_MONTH) == newItem.ymdCalendar.get(Calendar.DAY_OF_MONTH)
+class RVItemDiffCallback : DiffUtil.ItemCallback<RVItem>() {
+    override fun areItemsTheSame(oldItem: RVItem, newItem: RVItem): Boolean {
+        return oldItem.rvItemId == newItem.rvItemId
     }
 
-    override fun areContentsTheSame(oldItem: DayTransactions, newItem: DayTransactions): Boolean {
+    override fun areContentsTheSame(oldItem: RVItem, newItem: RVItem): Boolean {
         return oldItem == newItem
     }
 }
 
 class TransactionOnClickListener(val clickListener: (transaction: Transaction) -> Unit) {
     fun onClick(transaction: Transaction) = clickListener(transaction)
+}
+
+sealed class RVItem {
+    data class RVItemDayTransactions(val dayTransactions: DayTransactions) : RVItem() {
+        override val rvItemId: Long = dayTransactions.dayOfMonth
+    }
+
+    object RVItemHeader : RVItem() {
+        override val rvItemId: Long = Long.MIN_VALUE
+    }
+
+    abstract val rvItemId: Long
 }

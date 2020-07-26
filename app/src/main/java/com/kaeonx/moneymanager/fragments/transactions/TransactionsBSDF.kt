@@ -18,17 +18,20 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
+import com.kaeonx.moneymanager.userrepository.domain.Category
 import java.util.*
 
 private const val TAG = "TBSDF"
 
 class TransactionsBSDF : BottomSheetDialogFragment() {
 
+    private lateinit var binding: DialogFragmentTransactionsBsdfBinding
+
     private val args: TransactionsBSDFArgs by navArgs()
     private val viewModelFactory by lazy { TransactionsBSDFViewModelFactory(requireActivity().application, args.oldTransaction) }
     private val viewModel: TransactionsBSDFViewModel by viewModels { viewModelFactory }
 
-    private lateinit var binding: DialogFragmentTransactionsBsdfBinding
+    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle }
 
     private fun setAccountColor(color: Int) {
         binding.tbsdHorizontalBarIVTop.drawable.setTint(color)
@@ -101,6 +104,9 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         binding.tbsdMemoET.fixCursorFocusProblems()
 
         binding.tbsdBTDateTime.setOnClickListener { pickDateTime(viewModel.calendar.value!!) }
+        binding.tbsdCategoryTV.setOnClickListener {
+            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+        }
 
         viewModel.showToastText.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -114,6 +120,13 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
                 findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle.set("tbsdf_result", it)
                 viewModel.submitHandled()
                 findNavController().navigateUp()
+            }
+        }
+
+        savedStateHandle.getLiveData<Category?>("categories_df_result").observe(viewLifecycleOwner) {
+            if (it != null) {
+                viewModel.updateCategory(it)
+                savedStateHandle.set("categories_df_result", null)
             }
         }
     }

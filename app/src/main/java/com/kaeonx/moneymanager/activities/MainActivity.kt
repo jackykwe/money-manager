@@ -20,6 +20,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
+import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 
 // TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
@@ -58,11 +59,11 @@ class MainActivity : AppCompatActivity() {
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
                     R.id.menuExport -> {
-                        Snackbar.make(findViewById(R.id.rootDL), "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.rootDL, "Function not available yet", Snackbar.LENGTH_SHORT).show()
                         false
                     }
                     R.id.menuSettings -> {
-                        Snackbar.make(findViewById(R.id.rootDL), "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.rootDL, "Function not available yet", Snackbar.LENGTH_SHORT).show()
 //                    startActivity(Intent(this, SettingsActivity::class.java))
 //                    startActivityForResult(Intent(this, SettingsActivity::class.java), 0)
                         false
@@ -137,6 +138,7 @@ class MainActivity : AppCompatActivity() {
             if (it == null) {
                 // Logout logic. Login logic is controlled from within RootTitleFragment.
                 navController.navigate(TopLevelNavGraphDirections.actionGlobalTitleFragment())
+                UserRepository.dropInstance()
                 UserDatabase.dropInstance()
             }
         }

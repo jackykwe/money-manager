@@ -14,6 +14,7 @@ import com.kaeonx.moneymanager.userrepository.domain.Transaction
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("dayDateTV_text")
 fun TextView.setDayDateTVText(dayTransactions: DayTransactions) {
+    // TODO: tie to default date format (EEE <default date format>)
     text = dayTransactions.ymdCalendar.toFormattedString("EEE ddMMyy")
 }
 

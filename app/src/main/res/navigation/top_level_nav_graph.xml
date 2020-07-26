@@ -27,7 +27,7 @@
         android:id="@+id/transactionsFragment"
         android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsFragment"
         android:label="Transactions"
-        tools:layout="@layout/fragment_transactions" >
+        tools:layout="@layout/fragment_transactions">
         <action
             android:id="@+id/action_transactionsFragment_to_transactionsBSDF"
             app:destination="@id/transactionsBSDF" />
@@ -48,11 +48,20 @@
     <dialog
         android:id="@+id/transactionsBSDF"
         android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDF"
-        android:label="TransactionsBSDF" >
+        android:label="TransactionsBSDF"
+        tools:layout="@layout/dialog_fragment_transactions_bsdf">
         <argument
             android:name="oldTransaction"
             app:argType="com.kaeonx.moneymanager.userrepository.domain.Transaction" />
+        <action
+            android:id="@+id/action_transactionsBSDF_to_categoriesDF"
+            app:destination="@id/categoriesDF" />
     </dialog>
+    <dialog
+        android:id="@+id/categoriesDF"
+        android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesDF"
+        android:label="CategoriesDF"
+        tools:layout="@layout/dialog_fragment_category_picker"/>
 
     <!--    <fragment-->
     <!--        android:id="@+id/accountsFragment"-->
@@ -64,16 +73,17 @@
     <!--            app:destination="@id/accountEditFragment" />-->
     <!--    </fragment>-->
 
-        <fragment
-            android:id="@+id/categoriesFragment"
-            android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"
-            android:label="Categories"
-            tools:layout="@layout/fragment_categories" >
-<!--            <action-->
-<!--                android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
-<!--                app:destination="@id/categoryEditFragment" />-->
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"
+        android:label="Categories"
+        tools:layout="@layout/fragment_categories">
+        <!--            <action-->
+        <!--                android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
+        <!--                app:destination="@id/categoryEditFragment" />-->
 
-        </fragment>
+    </fragment>
+
     <!--    <fragment-->
     <!--        android:id="@+id/categoryEditFragment"-->
     <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"-->
