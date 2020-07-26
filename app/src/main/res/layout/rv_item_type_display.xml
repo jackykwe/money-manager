@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="category"
+            type="com.kaeonx.moneymanager.userrepository.domain.Category" />
+        <variable
+            name="onClickListener"
+            type="com.kaeonx.moneymanager.fragments.categories.CategoryOnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:onClick="@{() -> onClickListener.onClick(`fudge`, category)}"
+        android:orientation="vertical"
+        android:paddingHorizontal="4dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <FrameLayout
+            android:id="@+id/CategoryIconFL"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp">
+
+            <include
+                android:id="@+id/categoryIconInclude"
+                layout="@layout/icon_transaction" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/categoryNameTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:text="@{category.name}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textSize="11sp"
+            tools:text="Example Text" />
+
+    </LinearLayout>
+</layout>

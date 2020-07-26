@@ -25,7 +25,7 @@ class TransactionsBSDFViewModel(application: Application, internal val oldTransa
     }
 
     init {
-        if (oldTransaction.txnId == null) {
+        if (oldTransaction.transactionId == null) {
             // New transaction
             oldTransaction.apply {
                 timestamp = initCalendar.timeInMillis

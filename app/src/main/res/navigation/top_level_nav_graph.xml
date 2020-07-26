@@ -63,15 +63,17 @@
     <!--            android:id="@+id/action_accountsFragment_to_accountEditFragment"-->
     <!--            app:destination="@id/accountEditFragment" />-->
     <!--    </fragment>-->
-    <!--    <fragment-->
-    <!--        android:id="@+id/categoriesFragment"-->
-    <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"-->
-    <!--        android:label="Categories"-->
-    <!--        tools:layout="@layout/fragment_categories" >-->
-    <!--        <action-->
-    <!--            android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
-    <!--            app:destination="@id/categoryEditFragment" />-->
-    <!--    </fragment>-->
+
+        <fragment
+            android:id="@+id/categoriesFragment"
+            android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"
+            android:label="Categories"
+            tools:layout="@layout/fragment_categories" >
+<!--            <action-->
+<!--                android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
+<!--                app:destination="@id/categoryEditFragment" />-->
+
+        </fragment>
     <!--    <fragment-->
     <!--        android:id="@+id/categoryEditFragment"-->
     <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"-->

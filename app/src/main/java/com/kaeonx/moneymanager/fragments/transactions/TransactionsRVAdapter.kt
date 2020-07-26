@@ -27,7 +27,6 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
     }
 
     override fun getItemCount() = currentList.size + 1
-//    override fun getItemCount() = currentList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {

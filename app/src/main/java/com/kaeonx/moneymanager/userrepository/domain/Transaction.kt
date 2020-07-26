@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.kaeonx.moneymanager.customclasses.convertFrom
 import com.kaeonx.moneymanager.customclasses.toCalendar
 import com.kaeonx.moneymanager.customclasses.toDisplayStringNullable
-import com.kaeonx.moneymanager.userrepository.database.DatabaseTxn
+import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 import java.util.*
@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 
 @Parcelize
 data class Transaction(
-    var txnId: Long? = null,
+    val transactionId: Long? = null,
     var timestamp: Long = 0L,
     var type: String = "",
     var category: String = "",
@@ -21,8 +21,8 @@ data class Transaction(
     var originalCurrency: String = "",
     var originalAmount: String = "") : Parcelable
 
-fun Transaction.toDatabase(): DatabaseTxn {
-    return DatabaseTxn(
+fun Transaction.toDatabase(): DatabaseTransaction {
+    return DatabaseTransaction(
         timestamp = this.timestamp,
         type = this.type,
         category = this.category,

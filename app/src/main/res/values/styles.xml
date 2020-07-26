@@ -1,9 +1,6 @@
 <resources>
     <!-- ActionBar required for SettingsActivity -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyApp.LargeComponent
-        </item>
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -30,12 +27,6 @@
     <!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
     <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
-
-    <style name="ShapeAppearance.MyApp.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">8dp</item>
-        <item name="behavior_peekHeight">400dp</item>
-    </style>
 
     <!-- tbsdf -->
     <style name="TBSDFButton" parent="Widget.MaterialComponents.Button.OutlinedButton">

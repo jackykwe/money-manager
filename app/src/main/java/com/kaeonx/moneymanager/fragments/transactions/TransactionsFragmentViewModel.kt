@@ -19,19 +19,19 @@ class TransactionsFragmentViewModel(application: Application, userId: String) : 
 //    val mainText = MutableLiveData<String>("HELLO TRANS FRAG")
 
     private val userRepository = UserRepository(application, userId)
-    val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.txns) {
+    val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.transactions) {
         it.toDayTransactions("SGD")
     }
     val homeCurrency = MutableLiveData<String>("SGD")
 
-    fun addTxn(transaction: Transaction) {
+    fun addTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            userRepository.addTxn(transaction)
+            userRepository.addTransaction(transaction)
         }
     }
 
-    fun addTxnFixed() {
-        addTxn(
+    fun addTransactionFixed() {
+        addTransaction(
             Transaction(
                 timestamp = 12345,
                 type = "Expenses",

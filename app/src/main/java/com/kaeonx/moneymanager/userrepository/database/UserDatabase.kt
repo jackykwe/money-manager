@@ -8,7 +8,15 @@ import androidx.room.RoomDatabase
 
 private const val TAG = "dtb"
 
-@Database(entities = [DatabaseTxn::class], version = 1)
+@Database(
+    entities = [
+        DatabaseTransaction::class,
+        DatabaseAccount::class,
+        DatabaseIncomeCategory::class,
+        DatabaseExpensesCategory::class
+    ],
+    version = 1
+)
 abstract class UserDatabase : RoomDatabase() {
     abstract val userDatabaseDao: UserDatabaseDao
 
@@ -27,8 +35,10 @@ abstract class UserDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         UserDatabase::class.java,
-                        "txn_database_$userID"
-                    ).build()
+                        "user_database_$userID"
+                    )
+                        .createFromAsset("database/preload.db")
+                        .build()
                     INSTANCE = instance
                 }
                 return instance

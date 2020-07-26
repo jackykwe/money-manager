@@ -20,15 +20,13 @@ private const val TAG = "transactionFrag"
 
 // TODO: navigate back to current day / month (when month selector is active)
 
-//class TransactionsFragment : Fragment(), TransactionBottomSheetDialogFragment.TBSDFListener {
 class TransactionsFragment : Fragment() {
 
+    private lateinit var binding: FragmentTransactionsBinding
     private val authViewModel: AuthViewModel by activityViewModels()
     private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(requireActivity().application, authViewModel.currentUser.value!!.uid) }
     private val viewModel: TransactionsFragmentViewModel by viewModels { viewModelFactory }
 
-    private lateinit var binding: FragmentTransactionsBinding
-//    private lateinit var transactionsRVAdapter: TransactionsRVAdapter
     private var isExpanded = false
     private var firstLoad = true
 
@@ -36,9 +34,10 @@ class TransactionsFragment : Fragment() {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
 
         binding.transactionsRV.adapter = TransactionsRVAdapter(TransactionOnClickListener { transaction ->
-            Toast.makeText(requireContext(), "Oh? You want ${transaction.txnId}?", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Oh? You want ${transaction.transactionId}?", Toast.LENGTH_SHORT).show()
         })
         viewModel.dayTransactions.observe(viewLifecycleOwner) {
+            binding.transactionsRV.scrollToPosition(0)
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitList(it)
         }
 
@@ -57,7 +56,7 @@ class TransactionsFragment : Fragment() {
             .savedStateHandle
             .getLiveData<Transaction>("tbsdf_result")
             .observe(viewLifecycleOwner) {
-                viewModel.addTxn(it)
+                viewModel.addTransaction(it)
             }
     }
 

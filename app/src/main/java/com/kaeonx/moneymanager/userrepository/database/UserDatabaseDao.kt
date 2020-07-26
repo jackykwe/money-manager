@@ -5,32 +5,75 @@ import androidx.room.*
 
 @Dao
 interface UserDatabaseDao {
-    /*
-    @Query("SELECT * FROM currency_conversion_table WHERE `key` = :key")
-    fun getTxnRow(key: Long): DatabaseTxnRow
 
-//    @Delete
-//    fun deleteTxnRows(rows: List<TxnRow>): Int
-
-    @Query("SELECT * FROM currency_conversion_table ORDER BY `key` DESC")
-    fun getAllTxnRows(): LiveData<List<DatabaseTxnRow>>
-    */
-
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Transactions
+     */
+    ////////////////////////////////////////////////////////////////////////////////
     @Insert
-    suspend fun insertTxn(databaseTxn: DatabaseTxn)
-//
+    suspend fun insertTransaction(databaseTransaction: DatabaseTransaction)
+
     @Update
-    suspend fun updateTxn(databaseTxn: DatabaseTxn)  // Key must be the same
+    suspend fun updateTransaction(databaseTransaction: DatabaseTransaction)  // Key must be the same
 
     @Delete
-    suspend fun deleteTxn(databaseTxn: DatabaseTxn)
+    suspend fun deleteTransaction(databaseTransaction: DatabaseTransaction)
 
     // TODO: WARN USER IF THEY WILL PERFORM THIS ACTION
-    @Query("DELETE FROM txn_table")
+    @Query("DELETE FROM transactions_table")
     suspend fun clearAllData()
 
-    @Query("SELECT * FROM txn_table")
-    fun getAllTxns(): LiveData<List<DatabaseTxn>>
+    @Query("SELECT * FROM transactions_table")
+    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
 
-    // TODO: REPOPULATION HOLY F YES https://developer.android.com/training/data-storage/room/prepopulate#from-asset
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Accounts
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    @Insert
+    suspend fun insertAccount(databaseAccount: DatabaseAccount)
+
+    @Update
+    suspend fun updateAccount(databaseAccount: DatabaseAccount)  // Key must be the same
+
+    @Delete
+    suspend fun deleteAccount(databaseAccount: DatabaseAccount)
+
+    // TODO: RESET ACCOUNTS TO PRESET: Delete and overwrite in a database Transaction
+//    @Query("DELETE FROM transactions_table")
+//    suspend fun clearAllData()
+
+    @Query("SELECT * FROM accounts_table")
+    fun getAllAccounts(): LiveData<List<DatabaseAccount>>
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Categories
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    @Insert
+    suspend fun insertIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
+    @Insert
+    suspend fun insertExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
+
+    @Update
+    suspend fun updateIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)  // Key must be the same
+    @Update
+    suspend fun updateExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)  // Key must be the same
+
+    @Delete
+    suspend fun deleteIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
+    @Delete
+    suspend fun deleteExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
+
+    // TODO: RESET ACCOUNTS TO PRESET: Delete and overwrite in a database Transaction
+//    @Query("DELETE FROM transactions_table")
+//    suspend fun clearAllData()
+
+    @Query("SELECT * FROM income_categories_table")
+    fun getAllIncomeCategories(): LiveData<List<DatabaseIncomeCategory>>
+    @Query("SELECT * FROM expenses_categories_table")
+    fun getAllExpensesCategories(): LiveData<List<DatabaseExpensesCategory>>
 }
