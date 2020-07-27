@@ -25,7 +25,7 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserDatabase? = null
 
-        fun getInstance(userID: String): UserDatabase {
+        fun getInstance(userId: String): UserDatabase {
             Log.d(TAG, "getInstance: called")
             synchronized(this) {
                 var instance = INSTANCE
@@ -35,7 +35,7 @@ abstract class UserDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         App.context,
                         UserDatabase::class.java,
-                        "user_database_$userID"
+                        "user_database_$userId"
                     )
                         .createFromAsset("database/preload.db")
                         .build()

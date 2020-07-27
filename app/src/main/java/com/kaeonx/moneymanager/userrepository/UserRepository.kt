@@ -8,7 +8,6 @@ import com.kaeonx.moneymanager.userrepository.database.toDomain
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
-import com.kaeonx.moneymanager.userrepository.domain.toDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -63,14 +62,14 @@ class UserRepository private constructor(userId: String) {
         @Volatile
         private var INSTANCE: UserRepository? = null
 
-        fun getInstance(userID: String): UserRepository {
+        fun getInstance(userId: String): UserRepository {
             Log.d(TAG, "getInstance: called")
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
                     // Opening a connection to a database is expensive!
-                    instance = UserRepository(userID)
+                    instance = UserRepository(userId)
                     INSTANCE = instance
                 }
                 return instance

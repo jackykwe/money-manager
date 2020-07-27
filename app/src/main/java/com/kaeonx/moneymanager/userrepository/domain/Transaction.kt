@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.kaeonx.moneymanager.customclasses.convertFrom
 import com.kaeonx.moneymanager.customclasses.toCalendar
 import com.kaeonx.moneymanager.customclasses.toDisplayStringNullable
+import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -19,18 +20,30 @@ data class Transaction(
     var account: String = "",
     var memo: String = "",
     var originalCurrency: String = "",
-    var originalAmount: String = "") : Parcelable
+    var originalAmount: String = "") : Parcelable {
 
-fun Transaction.toDatabase(): DatabaseTransaction {
-    return DatabaseTransaction(
-        timestamp = this.timestamp,
-        type = this.type,
-        category = this.category,
-        account = this.account,
-        memo = this.memo,
-        originalCurrency = this.originalCurrency,
-        originalAmount = this.originalAmount
-    )
+    fun toDatabase(): DatabaseTransaction {
+        return DatabaseTransaction(
+            timestamp = this.timestamp,
+            type = this.type,
+            category = this.category,
+            account = this.account,
+            memo = this.memo,
+            originalCurrency = this.originalCurrency,
+            originalAmount = this.originalAmount
+        )
+    }
+
+    fun toIconDetail(userId: String): IconDetail {
+        val repository = UserRepository.getInstance(userId)
+        val categoryObj = when (type) {
+            "Income" -> repository.incomeCategories.value!!.find { it.name == this.category }
+            "Expenses" -> repository.expensesCategories.value!!.find { it.name == this.category }
+            else -> throw java.lang.IllegalArgumentException("Unknown type $type")
+        } ?: Category(type)
+        val accountObj = repository.accounts.value!!.find { it.name == this.account } ?: Account()
+        return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
+    }
 }
 
 fun List<Transaction>.typeAllHomeCurrency(type: String, homeCurrency: String): Boolean {
