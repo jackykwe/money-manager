@@ -1,9 +1,8 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import android.os.Parcelable
-import com.kaeonx.moneymanager.customclasses.convertFrom
-import com.kaeonx.moneymanager.customclasses.toCalendar
-import com.kaeonx.moneymanager.customclasses.toDisplayStringNullable
+import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
 import kotlinx.android.parcel.Parcelize
@@ -60,22 +59,24 @@ fun List<Transaction>.calculateIncomeExpenses(homeCurrency: String): IncomeExpen
                 income = if (it.originalCurrency == homeCurrency) {
                     income.plus(BigDecimal(it.originalAmount))
                 } else {
-                    income.plus(BigDecimal(it.originalAmount).convertFrom(it.originalCurrency, homeCurrency))
+                    val value = CurrencyHandler.convertAmount(BigDecimal(it.originalAmount), it.originalCurrency, homeCurrency)
+                    income.plus(value)
                 }
             }
             "Expenses" -> {
                 expenses = if (it.originalCurrency == homeCurrency) {
                     expenses.plus(BigDecimal(it.originalAmount))
                 } else {
-                    expenses.plus(BigDecimal(it.originalAmount).convertFrom(it.originalCurrency, homeCurrency))
+                    val value = CurrencyHandler.convertAmount(BigDecimal(it.originalAmount), it.originalCurrency, homeCurrency)
+                    expenses.plus(value)
                 }
             }
             else -> throw IllegalArgumentException("Unknown type given: ${it.type}")
         }
     }
     return IncomeExpenses(
-        income.toDisplayStringNullable(),
-        expenses.toDisplayStringNullable()
+        CurrencyHandler.displayAmountNullable(income),
+        CurrencyHandler.displayAmountNullable(expenses)
     )
 }
 
@@ -83,7 +84,7 @@ fun List<Transaction>.calculateIncomeExpenses(homeCurrency: String): IncomeExpen
 fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransactions> {
     val initCalendar = Calendar.getInstance()  // so that calculations below won't shift when done at 23:59:59
     if (this.isEmpty()) return listOf()
-    val daysInMonth = this[0].timestamp.toCalendar().getActualMaximum(Calendar.DAY_OF_MONTH)
+    val daysInMonth = CalendarHandler.getCalendar(this[0].timestamp).getActualMaximum(Calendar.DAY_OF_MONTH)
 
     // Generates 1 DayTransaction per day
     var result = ArrayList<DayTransactions>()
@@ -101,7 +102,7 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
     //// Filters transactions within firstMillis <= transaction.timestamp <= lastMillis - NOT NECESSARY - SQL will handle this
     // Puts transactions them into the relevant DayTransactions
     this.forEach {
-        result[it.timestamp.toCalendar().get(Calendar.DAY_OF_MONTH) - 1].transactions.add(it)
+        result[CalendarHandler.getCalendar(it.timestamp).get(Calendar.DAY_OF_MONTH) - 1].transactions.add(it)
     }
 
     // Removes DayTransactions without any transactions

@@ -3,9 +3,9 @@ package com.kaeonx.moneymanager.fragments.transactions
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.lifecycle.*
-import com.kaeonx.moneymanager.customclasses.toDisplayString
-import com.kaeonx.moneymanager.customclasses.toFormattedString
-import com.kaeonx.moneymanager.customclasses.toIconHex
+import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.handlers.CurrencyHandler
+import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.math.BigDecimal
@@ -69,8 +69,8 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         get() = _error
     val backspaceBTText = Transformations.map(_error) {
         when (it) {
-            null -> "F0B5C".toIconHex()  // BACKSPACE_OUTLINE
-            else -> "F006E".toIconHex()  // BACKSPACE_BLACK
+            null -> IconHandler.getDisplayHex("F0B5C")  // BACKSPACE_OUTLINE
+            else -> IconHandler.getDisplayHex("F006E")  // BACKSPACE_BLACK
         }
     }
 
@@ -83,7 +83,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
     private fun updateAmountTVText(): String {
         return when (_error.value) {
             null -> {
-                currentTransaction.originalAmount = BigDecimal(_amountTVText.value!!).toDisplayString()
+                currentTransaction.originalAmount = CurrencyHandler.displayAmount(BigDecimal(_amountTVText.value!!))
                 _amountTVText.value!!
             }
             ErrorType.OVERFLOW -> "e: overflow"
@@ -167,7 +167,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             _amountTVText.value = if (operand1 < BigDecimal.ZERO) {
                 _showToastText.value = "Negative values are not allowed"
                 "0"
-            } else operand1.toDisplayString()
+            } else CurrencyHandler.displayAmount(operand1)
         }
     }
 
@@ -214,8 +214,8 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         get() = _calendar
     val dateTimeBTText = Transformations.map(_calendar) {
         currentTransaction.timestamp = it.timeInMillis
-        val time = it.toFormattedString("HHmm")
-        val date = it.toFormattedString("ddMMyy")
+        val time = CalendarHandler.getFormattedString(it, "HHmm")
+        val date = CalendarHandler.getFormattedString(it, "ddMMyy")
         buildSpannedString {
             bold {
                 append(time)
@@ -284,11 +284,11 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
     val submitBTText = Transformations.map(_submitReady) {
         when (it) {
             SubmitReadyState.NOT_READY_ERROR,
-            SubmitReadyState.NOT_READY_PENDING_OP -> "F01FC".toIconHex()  // EQUAL
+            SubmitReadyState.NOT_READY_PENDING_OP -> IconHandler.getDisplayHex("F01FC")  // EQUAL
             SubmitReadyState.NOT_READY_CATEGORY_EMPTY,
             SubmitReadyState.NOT_READY_OPERAND1_ZERO,
-            SubmitReadyState.NOT_READY_MEMO_EMPTY -> "F05E1".toIconHex()  // CHECK_CIRCLE_OUTLINE
-            SubmitReadyState.READY -> "F05E0".toIconHex()  // CHECK_CIRCLE
+            SubmitReadyState.NOT_READY_MEMO_EMPTY -> IconHandler.getDisplayHex("F05E1")  // CHECK_CIRCLE_OUTLINE
+            SubmitReadyState.READY -> IconHandler.getDisplayHex("F05E0")  // CHECK_CIRCLE
             else -> throw IllegalStateException("Unknown SubmitReadyState reached: $it")
         }
     }

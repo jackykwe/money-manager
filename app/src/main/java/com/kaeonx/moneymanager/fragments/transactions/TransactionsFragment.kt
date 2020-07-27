@@ -6,12 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
@@ -23,9 +21,7 @@ private const val TAG = "transactionFrag"
 class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
-    private val authViewModel: AuthViewModel by activityViewModels()
-    private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(authViewModel.currentUser.value!!.uid) }
-    private val viewModel: TransactionsFragmentViewModel by viewModels { viewModelFactory }
+    private val viewModel: TransactionsFragmentViewModel by viewModels()
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }
 

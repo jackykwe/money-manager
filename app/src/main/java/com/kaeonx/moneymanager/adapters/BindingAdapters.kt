@@ -3,7 +3,7 @@ package com.kaeonx.moneymanager.adapters
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.kaeonx.moneymanager.customclasses.toFormattedString
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
@@ -15,7 +15,7 @@ import com.kaeonx.moneymanager.userrepository.domain.Transaction
 @BindingAdapter("dayDateTV_text")
 fun TextView.setDayDateTVText(dayTransactions: DayTransactions) {
     // TODO: tie to default date format (EEE <default date format>)
-    text = dayTransactions.ymdCalendar.toFormattedString("EEE ddMMyy")
+    text = CalendarHandler.getFormattedString(dayTransactions.ymdCalendar, "EEE ddMMyy")
 }
 
 @BindingAdapter("incomeCurrencyTV_visibility")

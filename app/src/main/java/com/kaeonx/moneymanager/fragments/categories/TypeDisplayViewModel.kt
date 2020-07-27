@@ -3,7 +3,7 @@ package com.kaeonx.moneymanager.fragments.categories
 import androidx.lifecycle.ViewModel
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
-class TypeDisplayViewModel(userId: String, type: String) : ViewModel() {
+class TypeDisplayViewModel(type: String) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
     val categories = when (type) {

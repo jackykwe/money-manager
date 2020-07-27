@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.fragments.transactions
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
@@ -10,7 +11,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "tfvm"
 
-class TransactionsFragmentViewModel(userId: String) : ViewModel() {
+class TransactionsFragmentViewModel : ViewModel() {
     init {
         Log.d(TAG, "TFVM started, with userId $userId")
     }

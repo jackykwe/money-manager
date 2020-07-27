@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 @Suppress("UNCHECKED_CAST")
-class TypeDisplayViewModelFactory(private val userId: String, private val type: String) : ViewModelProvider.Factory {
+class TypeDisplayViewModelFactory(private val type: String) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TypeDisplayViewModel::class.java)) {
-            return TypeDisplayViewModel(userId, type) as T
+            return TypeDisplayViewModel(type) as T
         }
         throw IllegalArgumentException("Unable to instantiate TypeDisplayViewModel: Unknown ViewModel class provided: ${modelClass.canonicalName}")
     }
