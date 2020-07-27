@@ -64,8 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{`SGD`}"
-                        app:incomeCurrencyVisibility="@{dayTransactions}"
-                        app:hideCurrencyIfHome="@{false}"
+                        app:incomeCurrencyTV_visibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
 
@@ -94,8 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{`SGD`}"
-                        app:expensesCurrencyVisibility="@{dayTransactions}"
-                        app:hideCurrencyIfHome="@{true}"
+                        app:dayExpensesCurrencyTV_visibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
 

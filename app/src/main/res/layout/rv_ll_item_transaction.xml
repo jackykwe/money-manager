@@ -52,8 +52,7 @@
             android:paddingEnd="4dp"
             android:text="@{transaction.originalCurrency}"
             android:textSize="12sp"
-            app:currencyVisibility="@{transaction}"
-            app:hideCurrencyIfHome="@{false}"
+            app:transactionCurrencyTV_visibility="@{transaction}"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
 
