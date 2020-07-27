@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.userrepository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
@@ -28,11 +29,29 @@ class UserRepository private constructor() {
 
     private val _incomeCategories = database.userDatabaseDao.getAllIncomeCategories()
     val incomeCategories: LiveData<List<Category>> =
-        Transformations.map(_incomeCategories) { it.toDomain() }
+        Transformations.map(_incomeCategories) {
+            it.toDomain()
+        }
 
     private val _expensesCategories = database.userDatabaseDao.getAllExpensesCategories()
     val expensesCategories: LiveData<List<Category>> =
         Transformations.map(_expensesCategories) { it.toDomain() }
+
+    private val liveDataActivator = Observer<Any> { }
+
+    init {
+        // These values are observed statically (not bound to views like transactions in
+        // TransactionsFragment. We need to call these functions to make them alive.
+        accounts.observeForever(liveDataActivator)
+        incomeCategories.observeForever(liveDataActivator)
+        expensesCategories.observeForever(liveDataActivator)
+    }
+    private fun clearPermanentObservers() {
+        accounts.removeObserver(liveDataActivator)
+        incomeCategories.removeObserver(liveDataActivator)
+        expensesCategories.removeObserver(liveDataActivator)
+    }
+
 
     suspend fun addTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
@@ -66,7 +85,6 @@ class UserRepository private constructor() {
         fun getInstance(): UserRepository {
             synchronized(this) {
                 if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
-                Log.d(TAG, "getInstance: called")
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
@@ -81,6 +99,7 @@ class UserRepository private constructor() {
         // Used when logging out
         fun dropInstance() {
             Log.d(TAG, "WARN: REPOSITORY INSTANCE DROPPED")
+            INSTANCE?.clearPermanentObservers()
             INSTANCE = null
         }
     }

@@ -29,7 +29,6 @@ abstract class UserDatabase : RoomDatabase() {
         fun getInstance(): UserDatabase {
             synchronized(this) {
                 if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
-                Log.d(TAG, "getInstance: called")
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE")

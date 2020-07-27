@@ -39,7 +39,7 @@ data class Transaction(
             "Income" -> repository.incomeCategories.value?.find { it.name == this.category }
             "Expenses" -> repository.expensesCategories.value?.find { it.name == this.category }
             else -> throw java.lang.IllegalArgumentException("Unknown type $type")
-        } ?: Category(type)
+        } ?: Category(type, "", "F0001", "Red,500")
         val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account()
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }

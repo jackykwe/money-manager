@@ -24,6 +24,7 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
     fun submitListAndAddHeader(list: List<DayTransactions>) {
+        Log.d(TAG, "subListAndAddHeader called")
         CoroutineScope(Dispatchers.Default).launch {
             val submittable = when {
                 list.isEmpty() -> listOf(RVItem.RVItemHeader)
@@ -71,9 +72,6 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
             binding.dayTransactionsLL.removeAllViews()
             val layoutInflater = LayoutInflater.from(binding.dayTransactionsLL.context)
             for (transaction in item.transactions) {
-                Log.d(TAG, "transaction row: $transaction")
-                Log.d(TAG, "with icondetail: ${transaction.toIconDetail()}")
-
                 val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
                 itemBinding.transaction = transaction
                 itemBinding.onClickListener = itemOnClickListener

@@ -10,6 +10,8 @@ import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
+private const val TAG = "biad"
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * For rv_item_transactions_day.xml
