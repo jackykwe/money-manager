@@ -1,8 +1,12 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
+import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
@@ -20,7 +24,7 @@ class TransactionsFragmentViewModel : ViewModel() {
     val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.transactions) {
         it.toDayTransactions("SGD")
     }
-    val homeCurrency = MutableLiveData<String>("SGD")
+    val homeCurrency = MutableLiveData2("SGD")
 
     fun addTransaction(transaction: Transaction) {
         Log.d(TAG, "addTransaction: called")

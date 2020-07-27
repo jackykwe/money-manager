@@ -180,7 +180,8 @@
             android:onClick="@{() -> viewModel.operatorPressed(`-`)}"
             android:text="@string/button_minus"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/tbsdBTDateTime" app:layout_constraintStart_toEndOf="@+id/tbsdBTPlus"
+            app:layout_constraintEnd_toEndOf="@+id/tbsdBTDateTime"
+            app:layout_constraintStart_toEndOf="@+id/tbsdBTPlus"
             app:layout_constraintTop_toTopOf="@+id/tbsdBTPlus" />
 
         <Button
@@ -190,7 +191,8 @@
             android:onClick="@{() -> viewModel.operatorPressed(`÷`)}"
             android:text="@string/button_divide"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/tbsdBTDateTime" app:layout_constraintStart_toEndOf="@+id/tbsdBTMultiply"
+            app:layout_constraintEnd_toEndOf="@+id/tbsdBTDateTime"
+            app:layout_constraintStart_toEndOf="@+id/tbsdBTMultiply"
             app:layout_constraintTop_toTopOf="@+id/tbsdBTMultiply" />
 
         <Button
@@ -201,7 +203,8 @@
             android:text="@string/button_multiply"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tbsdBTSubmit"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdBTDivide" app:layout_constraintStart_toEndOf="@+id/tbsdBT3"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdBTDivide"
+            app:layout_constraintStart_toEndOf="@+id/tbsdBT3"
             app:layout_constraintStart_toStartOf="@+id/tbsdBTPlus"
             app:layout_constraintTop_toBottomOf="@+id/tbsdBTPlus" />
 
@@ -226,7 +229,8 @@
             android:text="@string/button_plus"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tbsdBTMultiply"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdBTMinus" app:layout_constraintStart_toStartOf="@+id/tbsdBTDateTime"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdBTMinus"
+            app:layout_constraintStart_toStartOf="@+id/tbsdBTDateTime"
             app:layout_constraintTop_toBottomOf="@+id/tbsdBTDateTime" />
 
         <com.kaeonx.moneymanager.customclasses.ClearFocusEditText
@@ -243,7 +247,10 @@
             android:paddingStart="8dp"
             android:text="@={viewModel.memoText}"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdCurrencyTV" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdCurrencyTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tbsdFL"
             tools:ignore="RtlSymmetry" />
 
@@ -253,14 +260,25 @@
             android:layout_height="48dp"
             android:gravity="center"
             android:maxLines="1"
-            android:paddingEnd="8dp"
             android:text="@{viewModel.pendingAmtTVText}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/tbsdPendingOpTV"
+            android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toStartOf="@+id/endPadding"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tbsdPendingOpTV"
             app:layout_constraintTop_toTopOf="@+id/tbsdMemoET"
             tools:ignore="RtlSymmetry"
             tools:text="0.01" />
+
+        <View
+            android:id="@+id/endPadding"
+            android:layout_width="8dp"
+            android:layout_height="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tbsdPendingAmtTV"
+            app:layout_constraintTop_toTopOf="@+id/tbsdMemoET" />
 
         <TextView
             android:id="@+id/tbsdPendingOpTV"
@@ -272,7 +290,10 @@
             android:text="@{viewModel.pendingOpTVText}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdPendingAmtTV" app:layout_constraintStart_toEndOf="@+id/tbsdAmountTV"
+            android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdPendingAmtTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tbsdAmountTV"
             app:layout_constraintTop_toTopOf="@+id/tbsdMemoET"
             tools:text="+" />
 
@@ -289,7 +310,9 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp"
             android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdAmountTV" app:layout_constraintStart_toEndOf="@+id/tbsdMemoET"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdAmountTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tbsdMemoET"
             app:layout_constraintTop_toTopOf="@+id/tbsdMemoET" />
 
         <TextView
@@ -298,10 +321,12 @@
             android:layout_height="48dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@{viewModel.amountTVText}"
+            android:text="@={viewModel.amountTVText}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
-            app:layout_constraintEnd_toStartOf="@+id/tbsdPendingOpTV" app:layout_constraintStart_toEndOf="@+id/tbsdCurrencyTV"
+            app:layout_constraintEnd_toStartOf="@+id/tbsdPendingOpTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tbsdCurrencyTV"
             app:layout_constraintTop_toTopOf="@+id/tbsdMemoET"
             tools:text="1.11" />
 
@@ -332,7 +357,8 @@
                 android:layout_marginBottom="12dp"
                 android:scaleType="fitXY"
                 android:tint="@color/grey_500"
-                app:srcCompat="@drawable/basic_rectangle" />
+                app:srcCompat="@drawable/basic_rectangle"
+                app:tbsdHorizontalBarIVBottom_tint="@{viewModel.currentTransaction.toIconDetail().iconBGColourString}" />
 
             <FrameLayout
                 android:id="@+id/tbsdIconFL"
@@ -342,8 +368,8 @@
 
                 <include
                     android:id="@+id/tbsdIconInclude"
-                    app:iconDetail="@{viewModel.currentTransaction.toIconDetail()}"
-                    layout="@layout/icon_transaction" />
+                    layout="@layout/icon_transaction"
+                    app:iconDetail="@{viewModel.currentTransaction.toIconDetail()}" />
             </FrameLayout>
 
             <TextView
@@ -369,7 +395,7 @@
                 android:layout_marginBottom="12dp"
                 android:fontFamily="@font/fira_sans"
                 android:gravity="center_vertical"
-                android:text="@string/category_placeholder"
+                android:text="@{viewModel.currentTransaction.category}"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />

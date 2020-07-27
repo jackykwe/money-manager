@@ -27,7 +27,7 @@ class FirstFragmentViewModel(application: Application) : AndroidViewModel(applic
 //        DONE
 //    }
 
-//    private val _status = MutableLiveData<NetworkFetchStatus>()
+//    private val _status = MutableLiveData2<NetworkFetchStatus>()
 //    val status: LiveData<NetworkFetchStatus>
 //        get() = _status
 

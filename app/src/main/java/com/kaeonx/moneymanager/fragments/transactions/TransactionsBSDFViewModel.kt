@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.fragments.transactions
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.lifecycle.*
+import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
@@ -17,6 +18,7 @@ private const val TAG = "BDVM"
 
 class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewModel() {
 
+    // Not initialised unless necessary
     private val initCalendar: Calendar by lazy {
         val c = Calendar.getInstance()
         c.set(Calendar.SECOND, c.getActualMinimum(Calendar.SECOND))
@@ -30,7 +32,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             oldTransaction.apply {
                 timestamp = initCalendar.timeInMillis  // OK UPDATABLE FROM DATETIMEPICKER
                 type = "Expenses" // TODO: Tie to default  //OK UPDATABLE FROM PICKER
-                category = "Gift"  // OK UPDATEABLE FROM PICKER
+                category = "?"  // OK UPDATEABLE FROM PICKER
                 account = "Cash"  // TODO: Tie to default
                 memo = ""  // OK UPDATABLE FROM ET
                 originalCurrency = "SGD"  // TODO: Tie to home currency
@@ -39,9 +41,11 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         }
     }
 
-    var currentTransaction = oldTransaction.copy()
+    private var _currentTransaction = MutableLiveData2(oldTransaction.copy())
+    val currentTransaction: LiveData<Transaction>
+        get() = _currentTransaction
     fun changesWereMade(): Boolean {
-        return oldTransaction != currentTransaction
+        return oldTransaction != _currentTransaction.value
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -60,11 +64,24 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         DIV_ZERO
     }
 
-    private val _pendingOperation = MutableLiveData<String?>(null)
+    private fun updateAmountTVText(): String {
+        return when (_error.value) {
+            null -> _currentTransaction.value.originalAmount
+            ErrorType.OVERFLOW -> "e: overflow"
+            ErrorType.DIV_ZERO -> "e: div zero"
+        }
+    }
+
+    private val _pendingOperation = MutableLiveData2<String?>(null)
     val pendingOpTVText: LiveData<String?>
         get() = _pendingOperation
 
-    private val _error = MutableLiveData<ErrorType?>(null)
+    // the only other possible values are valid values of _amountTVText
+    private val _pendingAmtTVText = MutableLiveData2<String?>(null)
+    val pendingAmtTVText: LiveData<String?>
+        get() = _pendingAmtTVText
+
+    private val _error = MutableLiveData2<ErrorType?>(null)
     val error: LiveData<ErrorType?>
         get() = _error
     val backspaceBTText = Transformations.map(_error) {
@@ -74,67 +91,49 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         }
     }
 
-    private val _amountTVText = MutableLiveData<String?>(oldTransaction.originalAmount)  // Actually not nullable
+    private val operand1IsZero = Transformations.map(_currentTransaction) {
+        BigDecimal(it.originalAmount).compareTo(BigDecimal.ZERO) == 0
+    }
     val amountTVText = MediatorLiveData<String>().apply {
-        addSource(_amountTVText) { value = updateAmountTVText() }
+        addSource(_currentTransaction) { value = updateAmountTVText() }
         addSource(_error) { value = updateAmountTVText() }
     }
-    private val _operand1IsZero = Transformations.map(_amountTVText) { BigDecimal(it).compareTo(BigDecimal.ZERO) == 0 }
-    private fun updateAmountTVText(): String {
-        return when (_error.value) {
-            null -> {
-                currentTransaction.originalAmount = CurrencyHandler.displayAmount(BigDecimal(_amountTVText.value!!))
-                _amountTVText.value!!
-            }
-            ErrorType.OVERFLOW -> "e: overflow"
-            ErrorType.DIV_ZERO -> "e: div zero"
-        }
-    }
-
-    // the only other possible values are valid values of _amountTVText
-    private val _pendingAmtTVText = MutableLiveData<String?>(null)
-    val pendingAmtTVText: LiveData<String?>
-        get() = _pendingAmtTVText
 
 
-    // Used when adding characters to the MLD string.
-    private fun typeInto(mld: MutableLiveData<String?>, newChar: String) {
-        val oldValue = mld.value
-        if (oldValue.isNullOrEmpty()) {
-            // Initialise value for _pendingAmtTVText
-            mld.value = if (newChar == ".") "0." else newChar
-        } else if (mld.value == "0" && newChar != ".") {
-            // Replaces 0 with 1~9
-            mld.value = newChar
-        } else if (oldValue.contains(".")) {
-            // If decimal
+    private fun determineNewText(oldValue: String?, newChar: String): String {
+        return if (oldValue.isNullOrEmpty()) {
+            if (newChar == ".") "0." else newChar  // Initialise value for _pendingAmtTVText
+        } else if (oldValue == "0" && newChar != ".") {
+            newChar  // Replaces 0 with 1~9
+        } else if (oldValue.contains(".")) {  // If decimal
             if ((oldValue.substring(oldValue.indexOf(".") + 1).length < MAX_DP) && newChar != ".") {
                 // If less than 2 dp && newChar is not .
-                mld.value = oldValue + newChar
-            }
-        } else {
-            // If not decimal
-            if (oldValue.length != MAX_INT || newChar == ".") {
+                oldValue + newChar
+            } else oldValue
+        } else {  // If not decimal
+            if (oldValue.length < MAX_INT || newChar == ".") {
                 // Not allowed to add if length == 6 && newChar != "."
-                mld.value = oldValue + newChar
-            }
+                oldValue + newChar
+            } else oldValue
         }
     }
 
     fun digitDecimalPressed(digitDecimal: String) {
         if (_pendingOperation.value == null) {
-            typeInto(_amountTVText, digitDecimal)
+            _currentTransaction.value = _currentTransaction.value.copy(
+                originalAmount = determineNewText(_currentTransaction.value.originalAmount, digitDecimal)
+            )
         } else {
-            typeInto(_pendingAmtTVText, digitDecimal)
+            _pendingAmtTVText.value = determineNewText(_pendingAmtTVText.value, digitDecimal)
         }
     }
 
     // Arithmetic handled in here
     fun operatorPressed(operator: String) {
-        var operand1 = BigDecimal(_amountTVText.value!!)  // _operand1 will never be null
+        var operand1 = BigDecimal(_currentTransaction.value.originalAmount)
         if (!_pendingAmtTVText.value.isNullOrEmpty()) {
             // Perform arithmetic
-            val operand2 = BigDecimal(_pendingAmtTVText.value!!)  // operand2 will not be null/empty by the time the code reaches here
+            val operand2 = BigDecimal(_pendingAmtTVText.value)
             when (_pendingOperation.value) {
                 "+" -> operand1 = operand1.plus(operand2)
                 "-" -> operand1 = operand1.minus(operand2)
@@ -142,7 +141,6 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
                 "÷" -> {
                     if (operand2.compareTo(BigDecimal.ZERO) == 0) {
                         _error.value = ErrorType.DIV_ZERO
-                        _pendingOperation.value = null
                         return
                     } else {
                         operand1 = operand1.divide(operand2, MathContext(9, RoundingMode.HALF_UP))  // div operator uses RoundingMode.HALF_EVEN
@@ -154,20 +152,19 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             _pendingAmtTVText.value = null
         }
 
-        // Must be done after arithmetic, as the old pendingOperationMLD.value is used in the arithmetic.
+        // Must be done after arithmetic, as the old _pendingOperation.value is used in the arithmetic.
         _pendingOperation.value = if (operator == "=") null else operator
 
         // Check if there's overflow after arithmetic. If not, check if operand1 is zero
         if (operand1 >= BigDecimal("1E$MAX_INT")) {
             _error.value = ErrorType.OVERFLOW
-            _pendingOperation.value = null
         } else {
-            // If the code reaches here, operand1 has successfully been updated to a new value
-            // Added a check to prevent negative values
-            _amountTVText.value = if (operand1 < BigDecimal.ZERO) {
-                _showToastText.value = "Negative values are not allowed"
-                "0"
-            } else CurrencyHandler.displayAmount(operand1)
+            _currentTransaction.value = _currentTransaction.value.copy(
+                originalAmount = if (operand1 < BigDecimal.ZERO) {
+                    _showToastText.value = "Negative values are not allowed"
+                    "0"
+                } else CurrencyHandler.displayAmount(operand1)
+            )
         }
     }
 
@@ -178,11 +175,11 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         } else {
             // There is no error
             if (_pendingOperation.value == null) {
-                // Handle _amountTVText
-                val text = _amountTVText.value!!
-                _amountTVText.value = if (text.length == 1) "0" else text.substring(0, text.length - 1)
+                val text = _currentTransaction.value.originalAmount
+                _currentTransaction.value = _currentTransaction.value.copy(
+                    originalAmount = if (text.length == 1) "0" else text.substring(0, text.length - 1)
+                )
             } else {
-                // Handle _pendingAmtTVText
                 val text = _pendingAmtTVText.value
                 if (text.isNullOrEmpty()) {
                     _pendingOperation.value = null
@@ -195,11 +192,12 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
 
     fun backspaceLongPressed(): Boolean {
         // Reset everything (EXCEPT memo and category) to initial state
+        _currentTransaction.value = _currentTransaction.value.copy(
+            originalAmount = "0"
+        )
         _pendingOperation.value = null
-        _error.value = null
-        _amountTVText.value = "0"
         _pendingAmtTVText.value = null
-//        submitReadyMLD.value = SubmitReadyState.NOT_READY_OPERAND1_ZERO
+        _error.value = null
         return true
     }
 
@@ -209,13 +207,12 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private val _calendar = MutableLiveData<Calendar>(initCalendar)
-    val calendar: LiveData<Calendar>
-        get() = _calendar
-    val dateTimeBTText = Transformations.map(_calendar) {
-        currentTransaction.timestamp = it.timeInMillis
-        val time = CalendarHandler.getFormattedString(it, "HHmm")
-        val date = CalendarHandler.getFormattedString(it, "ddMMyy")
+    val calendar = Transformations.map(_currentTransaction) {
+        CalendarHandler.getCalendar(it.timestamp)
+    }
+    val dateTimeBTText = Transformations.map(_currentTransaction) {
+        val time = CalendarHandler.getFormattedString(it.timestamp, "HHmm")
+        val date = CalendarHandler.getFormattedString(it.timestamp, "ddMMyy")
         buildSpannedString {
             bold {
                 append(time)
@@ -225,7 +222,9 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
     }
 
     fun updateCalendar(calendar: Calendar) {
-        _calendar.value = calendar
+        _currentTransaction.value = _currentTransaction.value.copy(
+            timestamp = calendar.timeInMillis
+        )
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -233,12 +232,15 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
      * Account and Category Manipulation
      */
     ////////////////////////////////////////////////////////////////////////////////
+
     fun updateCategory(newCategory: Category) {
-        currentTransaction.apply {
-            type = newCategory.type
+        _currentTransaction.value = _currentTransaction.value.copy(
+            type =  newCategory.type,
             category = newCategory.name
-        }
-        currentTransaction = currentTransaction
+        )
+    }
+    private val categoryNotInitiated = Transformations.map(_currentTransaction) {
+        it.category == "?"
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -256,28 +258,28 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         READY
     }
 
-    private val _categoryIsNull = MutableLiveData(false)
-
-    val memoText = MutableLiveData<String>("")
-    private val _memoIsNullOrBlank = Transformations.map(memoText) {
-        currentTransaction.memo = it
+    val memoText = MutableLiveData<String>("")  // Exception where MutableLiveData2 fails - two-way data binding
+    private val memoIsNullOrBlank = Transformations.map(memoText) {
+        _currentTransaction.value = _currentTransaction.value.copy(
+            memo = it
+        )
         it.isNullOrBlank()
     }
 
     private val _submitReady = MediatorLiveData<SubmitReadyState>().apply {
         addSource(_error) { value = updateSubmitReady() }
         addSource(_pendingOperation) { value = updateSubmitReady() }
-        addSource(_categoryIsNull) { value = updateSubmitReady() }
-        addSource(_operand1IsZero) { value = updateSubmitReady() }
-        addSource(_memoIsNullOrBlank) { value = updateSubmitReady() }
+        addSource(categoryNotInitiated) { value = updateSubmitReady() }
+        addSource(operand1IsZero) { value = updateSubmitReady() }
+        addSource(memoIsNullOrBlank) { value = updateSubmitReady() }
     }
     private fun updateSubmitReady(): SubmitReadyState {
         return when {
             _error.value != null -> SubmitReadyState.NOT_READY_ERROR
             _pendingOperation.value != null -> SubmitReadyState.NOT_READY_PENDING_OP
-            _categoryIsNull.value!! -> SubmitReadyState.NOT_READY_CATEGORY_EMPTY
-            _operand1IsZero.value ?: true -> SubmitReadyState.NOT_READY_OPERAND1_ZERO
-            _memoIsNullOrBlank.value ?: true -> SubmitReadyState.NOT_READY_MEMO_EMPTY
+            categoryNotInitiated.value ?: true -> SubmitReadyState.NOT_READY_CATEGORY_EMPTY
+            operand1IsZero.value ?: true -> SubmitReadyState.NOT_READY_OPERAND1_ZERO
+            memoIsNullOrBlank.value ?: true -> SubmitReadyState.NOT_READY_MEMO_EMPTY
             else -> SubmitReadyState.READY
         }
     }
@@ -301,17 +303,21 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             SubmitReadyState.NOT_READY_CATEGORY_EMPTY -> _showToastText.value = "Please select a category."
             SubmitReadyState.NOT_READY_OPERAND1_ZERO -> _showToastText.value = "Please enter an amount."
             SubmitReadyState.NOT_READY_MEMO_EMPTY -> _showToastText.value = "Please enter a memo."
-            SubmitReadyState.READY -> { _submitTrigger.value = currentTransaction }
+            SubmitReadyState.READY -> {
+                _submitTrigger.value = _currentTransaction.value.copy(
+                    originalAmount = CurrencyHandler.displayAmount(BigDecimal(_currentTransaction.value.originalAmount))
+                )
+            }
             else -> throw IllegalStateException("Unknown SubmitReadyState reached: $state")
         }
     }
-    private val _showToastText = MutableLiveData<String?>(null)
+    private val _showToastText = MutableLiveData2<String?>(null)
     val showToastText: LiveData<String?>
         get() = _showToastText
     fun toastShown() {
         _showToastText.value = null
     }
-    private val _submitTrigger = MutableLiveData<Transaction?>(null)
+    private val _submitTrigger = MutableLiveData2<Transaction?>(null)
     val submitTrigger: LiveData<Transaction?>
         get() = _submitTrigger
     fun submitHandled() {

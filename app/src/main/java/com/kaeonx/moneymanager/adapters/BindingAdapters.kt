@@ -66,3 +66,13 @@ fun ImageView.setIconBGTint(colourString: String) {
 fun TextView.setIconTVText(iconHex: String) {
     text = IconHandler.getDisplayHex(iconHex)
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * For dialog_fragment_transactions_bsdf.xml
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("tbsdHorizontalBarIVBottom_tint")
+fun ImageView.setTbsdHorizontalBarIVBottomTint(colourString: String) {
+    drawable.setTintList(ColourHandler.getColorStateList(colourString))
+}

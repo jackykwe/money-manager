@@ -2,7 +2,6 @@ package com.kaeonx.moneymanager.activities
 
 import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
@@ -10,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 
 private const val TAG = "authVM"
 
@@ -27,7 +27,7 @@ class AuthViewModel : ViewModel() {
     ////////////////////////////////////////////////////////////////////////////////
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val _currentUser = MutableLiveData<FirebaseUser?>()
+    private val _currentUser = MutableLiveData2<FirebaseUser?>(null)
     val currentUser = Transformations.map(_currentUser) {
         userId = _currentUser.value?.uid
         Log.d(TAG, "userId is $userId")

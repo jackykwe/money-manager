@@ -39,7 +39,7 @@ class TransactionsFragment : Fragment() {
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(it)
         }
 
-//        binding.lifecycleOwner = this
+//        binding.lifecycleOwner = viewLifeCycleOwner
 //        binding.viewModel = viewModel
         return binding.root
     }
