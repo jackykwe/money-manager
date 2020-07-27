@@ -1,9 +1,12 @@
 package com.kaeonx.moneymanager.adapters
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.handlers.ColourHandler
+import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
@@ -42,4 +45,24 @@ fun TextView.setCurrencyVisibility(transaction: Transaction) {
     // TODO: SEE XML. hideCurrencyIfHome is always false. Tie it to the setting! (open connection to repo in adapter)?
 //    visibility = if (transaction.originalCurrency == "SGD" && hideCurrencyIfHome) View.GONE else View.VISIBLE
     visibility = if (transaction.originalCurrency == "SGD" && false) View.GONE else View.VISIBLE
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * For icon_transaction.xml
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("iconRing_tint")
+fun ImageView.setIconRingTint(colourString: String) {
+    imageTintList = ColourHandler.getColorStateList(colourString)
+}
+
+@BindingAdapter("iconBG_tint")
+fun ImageView.setIconBGTint(colourString: String) {
+    imageTintList = ColourHandler.getColorStateList(colourString)
+}
+
+@BindingAdapter("iconTV_text")
+fun TextView.setIconTVText(iconHex: String) {
+    text = IconHandler.getDisplayHex(iconHex)
 }

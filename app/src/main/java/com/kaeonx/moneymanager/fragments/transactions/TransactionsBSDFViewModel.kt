@@ -30,8 +30,8 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             oldTransaction.apply {
                 timestamp = initCalendar.timeInMillis  // OK UPDATABLE FROM DATETIMEPICKER
                 type = "Expenses" // TODO: Tie to default  //OK UPDATABLE FROM PICKER
-                category = "CATPLACEHOLDER"  // OK UPDATEABLE FROM PICKER
-                account = "ACCPLACEHOLDER"  // TODO: Tie to default
+                category = "Gift"  // OK UPDATEABLE FROM PICKER
+                account = "Cash"  // TODO: Tie to default
                 memo = ""  // OK UPDATABLE FROM ET
                 originalCurrency = "SGD"  // TODO: Tie to home currency
                 originalAmount = "0"  // MAKE SURE THIS ISN'T AN EMPTY STRING. BigDecimal("") will give problems.  // OK UPDATABLE FROM CALC
@@ -39,7 +39,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         }
     }
 
-    private val currentTransaction by lazy { oldTransaction.copy() }
+    var currentTransaction = oldTransaction.copy()
     fun changesWereMade(): Boolean {
         return oldTransaction != currentTransaction
     }
@@ -238,6 +238,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             type = newCategory.type
             category = newCategory.name
         }
+        currentTransaction = currentTransaction
     }
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -342,6 +342,7 @@
 
                 <include
                     android:id="@+id/tbsdIconInclude"
+                    app:iconDetail="@{viewModel.currentTransaction.toIconDetail()}"
                     layout="@layout/icon_transaction" />
             </FrameLayout>
 
