@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import java.util.*
 
@@ -103,8 +104,21 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.tbsdMemoET.fixCursorFocusProblems()
 
-        binding.tbsdBTDateTime.setOnClickListener { pickDateTime(viewModel.calendar.value!!) }
+        binding.tbsdBTDateTime.setOnClickListener {
+            pickDateTime(
+                CalendarHandler.getCalendar(viewModel.currentTransaction.value!!.timestamp)
+            )
+        }
+        binding.tbsdAccountTV.setOnClickListener {
+
+        }
+        binding.tbsdIconInclude.iconRing.setOnClickListener {
+
+        }
         binding.tbsdCategoryTV.setOnClickListener {
+            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+        }
+        binding.tbsdIconInclude.iconBG.setOnClickListener {
             findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
         }
 

@@ -207,9 +207,6 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    val calendar = Transformations.map(_currentTransaction) {
-        CalendarHandler.getCalendar(it.timestamp)
-    }
     val dateTimeBTText = Transformations.map(_currentTransaction) {
         val time = CalendarHandler.getFormattedString(it.timestamp, "HHmm")
         val date = CalendarHandler.getFormattedString(it.timestamp, "ddMMyy")

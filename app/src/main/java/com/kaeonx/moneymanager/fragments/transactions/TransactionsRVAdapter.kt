@@ -1,5 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
-import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.CoroutineScope
@@ -64,29 +64,23 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
 
         fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
             binding.dayTransactions = item
-            binding.executePendingBindings()
+//            binding.executePendingBindings()
             // It is always a good idea to execute pending bindings when using binding adapters
             // in a RecyclerView, since it can be slightly faster to size the views.
 
             binding.dayTransactionsLL.removeAllViews()
             val layoutInflater = LayoutInflater.from(binding.dayTransactionsLL.context)
             for (transaction in item.transactions) {
+                Log.d(TAG, "transaction row: $transaction")
+                Log.d(TAG, "with icondetail: ${transaction.toIconDetail()}")
+
                 val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
                 itemBinding.transaction = transaction
                 itemBinding.onClickListener = itemOnClickListener
-                itemBinding.executePendingBindings()
+//                itemBinding.executePendingBindings()
                 binding.dayTransactionsLL.addView(itemBinding.root)
-
-//                val category = CategoryIconHandler.getCategory(context, firebaseViewModel.currentUserLD.value!!.uid, transaction.type, transaction.category)
-//                itemBinding.iconBG.drawable.setTint(ColourHandler.getColourObject(context.resources, category.colourString))
-                itemBinding.categoryIconInclude.iconTV.text = IconHandler.getDisplayHex("F0011")  //CategoryIconHandler.hexToIcon(category.iconHex)
-
-//                val account = AccountHandler.getAccount(context, firebaseViewModel.currentUserLD.value!!.uid, transaction.account)
-//                itemBinding.iconRing.drawable.setTint(ColourHandler.getColourObject(context.resources, account.colourString))
-//                itemBinding.setOnClickListener {
-//                    fragment.findNavController().navigate(RootTransactionsFragmentDirections.actionRootTransactionsFragmentToRootTransactionEditFragment(transaction))
-//                }
             }
+            binding.executePendingBindings()
         }
 
         companion object {
