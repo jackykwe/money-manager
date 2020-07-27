@@ -15,7 +15,7 @@ class TransactionsFragmentViewModel(userId: String) : ViewModel() {
         Log.d(TAG, "TFVM started, with userId $userId")
     }
 
-    private val userRepository = UserRepository.getInstance(userId)
+    private val userRepository = UserRepository.getInstance()
     val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.transactions) {
         it.toDayTransactions("SGD")
     }

@@ -34,8 +34,8 @@ data class Transaction(
         )
     }
 
-    fun toIconDetail(userId: String): IconDetail {
-        val repository = UserRepository.getInstance(userId)
+    fun toIconDetail(): IconDetail {
+        val repository = UserRepository.getInstance()
         val categoryObj = when (type) {
             "Income" -> repository.incomeCategories.value!!.find { it.name == this.category }
             "Expenses" -> repository.expensesCategories.value!!.find { it.name == this.category }

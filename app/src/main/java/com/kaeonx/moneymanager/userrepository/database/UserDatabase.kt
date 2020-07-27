@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.kaeonx.moneymanager.activities.App
+import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 
 private const val TAG = "dtb"
 
@@ -25,9 +26,10 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserDatabase? = null
 
-        fun getInstance(userId: String): UserDatabase {
-            Log.d(TAG, "getInstance: called")
+        fun getInstance(): UserDatabase {
             synchronized(this) {
+                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
+                Log.d(TAG, "getInstance: called")
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE")
@@ -47,6 +49,7 @@ abstract class UserDatabase : RoomDatabase() {
 
         // Used when logging out
         fun dropInstance() {
+            Log.d(TAG, "WARN: DATABASE INSTANCE DROPPED")
             INSTANCE = null
         }
 

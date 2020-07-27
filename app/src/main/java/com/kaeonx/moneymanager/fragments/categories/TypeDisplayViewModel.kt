@@ -5,7 +5,7 @@ import com.kaeonx.moneymanager.userrepository.UserRepository
 
 class TypeDisplayViewModel(userId: String, type: String) : ViewModel() {
 
-    private val userRepository = UserRepository.getInstance(userId)
+    private val userRepository = UserRepository.getInstance()
     val categories = when (type) {
         "Income" -> userRepository.incomeCategories
         "Expenses" -> userRepository.expensesCategories

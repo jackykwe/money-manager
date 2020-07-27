@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.userrepository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
 import com.kaeonx.moneymanager.userrepository.domain.Account
@@ -13,10 +14,10 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "repository"
 
-class UserRepository private constructor(userId: String) {
+class UserRepository private constructor() {
 
     // TODO: Check for security holes
-    private val database = UserDatabase.getInstance(userId)
+    private val database = UserDatabase.getInstance()
 
     private val _transactions = database.userDatabaseDao.getAllTransactions()
     val transactions: LiveData<List<Transaction>> =
@@ -62,14 +63,15 @@ class UserRepository private constructor(userId: String) {
         @Volatile
         private var INSTANCE: UserRepository? = null
 
-        fun getInstance(userId: String): UserRepository {
-            Log.d(TAG, "getInstance: called")
+        fun getInstance(): UserRepository {
             synchronized(this) {
+                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
+                Log.d(TAG, "getInstance: called")
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
                     // Opening a connection to a database is expensive!
-                    instance = UserRepository(userId)
+                    instance = UserRepository()
                     INSTANCE = instance
                 }
                 return instance
@@ -78,6 +80,7 @@ class UserRepository private constructor(userId: String) {
 
         // Used when logging out
         fun dropInstance() {
+            Log.d(TAG, "WARN: REPOSITORY INSTANCE DROPPED")
             INSTANCE = null
         }
     }

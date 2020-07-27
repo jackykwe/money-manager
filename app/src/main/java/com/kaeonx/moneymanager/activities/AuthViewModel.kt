@@ -1,8 +1,9 @@
 package com.kaeonx.moneymanager.activities
 
 import android.content.Intent
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -14,18 +15,27 @@ private const val TAG = "authVM"
 
 class AuthViewModel : ViewModel() {
 
+    companion object {
+        var userId: String? = null
+            private set
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      *  Authentication Related
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var _currentUser = MutableLiveData<FirebaseUser?>()
-    val currentUser: LiveData<FirebaseUser?>
-        get() = _currentUser
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val _currentUser = MutableLiveData<FirebaseUser?>()
+    val currentUser = Transformations.map(_currentUser) {
+        userId = _currentUser.value?.uid
+        Log.d(TAG, "userId is $userId")
+        it
+    }
 
     init {
+        Log.d(TAG, "userId is $userId")
         refreshAuthMLD()
     }
 
