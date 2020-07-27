@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.xerepository
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -26,9 +25,9 @@ import kotlinx.coroutines.withContext
 // Actually I feel like passing in the application here would be better:
 // then the view model won't need to know about the database in the first place.
 //class XERepository(private val database: XEDatabase) {
-class XERepository(application: Application) {
+class XERepository() {
 
-    private val database = XEDatabase.getInstance(application)
+    private val database = XEDatabase.getInstance()
 
     // Load from cache
     // A LiveData anyone can use to observe XERows from the repository

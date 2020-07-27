@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.app.Application
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.lifecycle.*
@@ -16,7 +15,7 @@ import java.util.*
 
 private const val TAG = "BDVM"
 
-class TransactionsBSDFViewModel(application: Application, internal val oldTransaction: Transaction): AndroidViewModel(application) {
+class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewModel() {
 
     private val initCalendar: Calendar by lazy {
         val c = Calendar.getInstance()

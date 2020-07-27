@@ -23,7 +23,7 @@ class TypeDisplayFragment : Fragment() {
     }
     private lateinit var binding: FragmentTypeDisplayBinding
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val viewModelFactory by lazy { TypeDisplayViewModelFactory(requireActivity().application, authViewModel.currentUser.value!!.uid, type) }
+    private val viewModelFactory by lazy { TypeDisplayViewModelFactory(authViewModel.currentUser.value!!.uid, type) }
     private val viewModel: TypeDisplayViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

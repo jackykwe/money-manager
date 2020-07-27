@@ -24,7 +24,7 @@ class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
     private val authViewModel: AuthViewModel by activityViewModels()
-    private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(requireActivity().application, authViewModel.currentUser.value!!.uid) }
+    private val viewModelFactory by lazy { TransactionsFragmentViewModelFactory(authViewModel.currentUser.value!!.uid) }
     private val viewModel: TransactionsFragmentViewModel by viewModels { viewModelFactory }
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }

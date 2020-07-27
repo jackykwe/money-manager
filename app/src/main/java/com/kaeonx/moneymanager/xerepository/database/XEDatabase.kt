@@ -1,9 +1,9 @@
 package com.kaeonx.moneymanager.xerepository.database
 
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kaeonx.moneymanager.activities.App
 
 @Database(entities = [DatabaseXERow::class], version = 1)
 abstract class XEDatabase : RoomDatabase() {
@@ -15,12 +15,12 @@ abstract class XEDatabase : RoomDatabase() {
         @Volatile
         private lateinit var INSTANCE: XEDatabase
 
-        fun getInstance(context: Context): XEDatabase {
+        fun getInstance(): XEDatabase {
             synchronized(this) {
                 if (!Companion::INSTANCE.isInitialized) {
                     // Opening a connection to a database is expensive!
                     INSTANCE = Room.databaseBuilder(
-                        context.applicationContext,
+                        App.context,
                         XEDatabase::class.java,
                         "xe_database"
                     ).build()

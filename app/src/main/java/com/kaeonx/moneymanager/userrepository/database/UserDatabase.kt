@@ -1,10 +1,10 @@
 package com.kaeonx.moneymanager.userrepository.database
 
-import android.content.Context
 import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.kaeonx.moneymanager.activities.App
 
 private const val TAG = "dtb"
 
@@ -25,7 +25,7 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserDatabase? = null
 
-        fun getInstance(context: Context, userID: String): UserDatabase {
+        fun getInstance(userID: String): UserDatabase {
             Log.d(TAG, "getInstance: called")
             synchronized(this) {
                 var instance = INSTANCE
@@ -33,7 +33,7 @@ abstract class UserDatabase : RoomDatabase() {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE")
                     // Opening a connection to a database is expensive!
                     instance = Room.databaseBuilder(
-                        context.applicationContext,
+                        App.context,
                         UserDatabase::class.java,
                         "user_database_$userID"
                     )

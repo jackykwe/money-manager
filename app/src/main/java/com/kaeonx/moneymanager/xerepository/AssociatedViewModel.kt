@@ -33,7 +33,7 @@ class FirstFragmentViewModel(application: Application) : AndroidViewModel(applic
 
     //    private val database = XEDatabase.getXEDatabaseInstance(application)
 //    private val xeRepository = XERepository(database)
-    private val xeRepository = XERepository(application)
+    private val xeRepository = XERepository()
 
     init {
         viewModelScope.launch {

@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -11,12 +10,12 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "tfvm"
 
-class TransactionsFragmentViewModel(application: Application, userId: String) : AndroidViewModel(application) {
+class TransactionsFragmentViewModel(userId: String) : ViewModel() {
     init {
         Log.d(TAG, "TFVM started, with userId $userId")
     }
 
-    private val userRepository = UserRepository.getInstance(application, userId)
+    private val userRepository = UserRepository.getInstance(userId)
     val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.transactions) {
         it.toDayTransactions("SGD")
     }

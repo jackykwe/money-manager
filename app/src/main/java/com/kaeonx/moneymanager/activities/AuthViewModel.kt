@@ -1,10 +1,9 @@
 package com.kaeonx.moneymanager.activities
 
-import android.app.Application
 import android.content.Intent
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -13,7 +12,7 @@ import com.google.firebase.storage.ktx.storage
 
 private const val TAG = "authVM"
 
-class AuthViewModel(application: Application) : AndroidViewModel(application) {
+class AuthViewModel : ViewModel() {
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -50,7 +49,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     internal fun logout() {
         AuthUI.getInstance()
-            .signOut(getApplication())
+            .signOut(App.context)
             .addOnCompleteListener {
                 refreshAuthMLD()
             }

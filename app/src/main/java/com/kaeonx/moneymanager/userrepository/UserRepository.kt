@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.userrepository
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -15,10 +14,10 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "repository"
 
-class UserRepository private constructor(application: Application, userId: String) {
+class UserRepository private constructor(userId: String) {
 
     // TODO: Check for security holes
-    private val database = UserDatabase.getInstance(application, userId)
+    private val database = UserDatabase.getInstance(userId)
 
     private val _transactions = database.userDatabaseDao.getAllTransactions()
     val transactions: LiveData<List<Transaction>> =
@@ -64,14 +63,14 @@ class UserRepository private constructor(application: Application, userId: Strin
         @Volatile
         private var INSTANCE: UserRepository? = null
 
-        fun getInstance(application: Application, userID: String): UserRepository {
+        fun getInstance(userID: String): UserRepository {
             Log.d(TAG, "getInstance: called")
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
                     // Opening a connection to a database is expensive!
-                    instance = UserRepository(application, userID)
+                    instance = UserRepository(userID)
                     INSTANCE = instance
                 }
                 return instance

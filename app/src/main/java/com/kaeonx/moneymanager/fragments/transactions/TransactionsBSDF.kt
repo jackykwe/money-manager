@@ -28,7 +28,7 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     private lateinit var binding: DialogFragmentTransactionsBsdfBinding
 
     private val args: TransactionsBSDFArgs by navArgs()
-    private val viewModelFactory by lazy { TransactionsBSDFViewModelFactory(requireActivity().application, args.oldTransaction) }
+    private val viewModelFactory by lazy { TransactionsBSDFViewModelFactory(args.oldTransaction) }
     private val viewModel: TransactionsBSDFViewModel by viewModels { viewModelFactory }
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle }
