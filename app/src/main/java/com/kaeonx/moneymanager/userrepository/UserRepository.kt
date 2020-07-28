@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.userrepository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
@@ -28,31 +29,44 @@ class UserRepository private constructor() {
     val accounts: LiveData<List<Account>> = Transformations.map(_accounts) { it.toDomain() }
 
     private val _incomeCategories = database.userDatabaseDao.getAllIncomeCategories()
-    val incomeCategories: LiveData<List<Category>> =
+    private val _expensesCategories = database.userDatabaseDao.getAllExpensesCategories()
+    val categories = MediatorLiveData<List<Category>>().apply {
+        addSource(_incomeCategories) { value = updateCategories() }
+        addSource(_expensesCategories) { value = updateCategories() }
+    }
+    val incomeCategories: LiveData<List<Category>> =  // DON'T USE UNLESS ABSOLUTELY NECESSARY. USE categories.
         Transformations.map(_incomeCategories) {
             it.toDomain()
         }
+    val expensesCategories: LiveData<List<Category>> =  // DON'T USE UNLESS ABSOLUTELY NECESSARY. USE categories.
+        Transformations.map(_expensesCategories) {
+            it.toDomain()
+        }
 
-    private val _expensesCategories = database.userDatabaseDao.getAllExpensesCategories()
-    val expensesCategories: LiveData<List<Category>> =
-        Transformations.map(_expensesCategories) { it.toDomain() }
+    private fun updateCategories(): List<Category> {
+        val incomeHalf = _incomeCategories.value?.toDomain() ?: listOf()
+        val expensesHalf = _expensesCategories.value?.toDomain() ?: listOf()
+        return incomeHalf + expensesHalf
+    }
 
     private val liveDataActivator = Observer<Any> { }
-
     init {
         // These values are observed statically (not bound to views like transactions in
         // TransactionsFragment. We need to call these functions to make them alive.
         accounts.observeForever(liveDataActivator)
-        incomeCategories.observeForever(liveDataActivator)
-        expensesCategories.observeForever(liveDataActivator)
+        categories.observeForever(liveDataActivator)
     }
+
     private fun clearPermanentObservers() {
         accounts.removeObserver(liveDataActivator)
-        incomeCategories.removeObserver(liveDataActivator)
-        expensesCategories.removeObserver(liveDataActivator)
+        categories.removeObserver(liveDataActivator)
     }
 
-
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Transaction
+     */
+    ////////////////////////////////////////////////////////////////////////////////
     suspend fun addTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.insertTransaction(transaction.toDatabase())
@@ -74,6 +88,61 @@ class UserRepository private constructor() {
     suspend fun clearAllData() {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.clearAllData()
+        }
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Accounts
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+//    suspend fun addTransaction(transaction: Transaction) {
+//        withContext(Dispatchers.IO) {
+//            database.userDatabaseDao.insertTransaction(transaction.toDatabase())
+//        }
+//    }
+//
+//    suspend fun updateTransaction(transaction: Transaction) {
+//        withContext(Dispatchers.IO) {
+//            database.userDatabaseDao.updateTransaction(transaction.toDatabase())
+//        }
+//    }
+//
+//    suspend fun deleteTransaction(transaction: Transaction) {
+//        withContext(Dispatchers.IO) {
+//            database.userDatabaseDao.deleteTransaction(transaction.toDatabase())
+//        }
+//    }
+//
+//    suspend fun clearAllData() {
+//        withContext(Dispatchers.IO) {
+//            database.userDatabaseDao.clearAllData()
+//        }
+//    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Categories
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    suspend fun upsertCategory(category: Category) {
+        withContext(Dispatchers.IO) {
+            when (val type = category.type) {
+                "Income" -> database.userDatabaseDao.upsertIncomeCategory(category.toDatabaseIncome())
+                "Expenses" -> database.userDatabaseDao.upsertExpensesCategory(category.toDatabaseExpenses())
+                else -> throw IllegalArgumentException("Unknown type $type")
+            }
+        }
+    }
+
+    suspend fun deleteCategory(category: Category) {
+        withContext(Dispatchers.IO) {
+            when (val type = category.type) {
+                "Income" -> database.userDatabaseDao.deleteIncomeCategory(category.toDatabaseIncome())
+                "Expenses" -> database.userDatabaseDao.deleteExpensesCategory(category.toDatabaseExpenses())
+                else -> throw IllegalArgumentException("Unknown type $type")
+            }
         }
     }
 

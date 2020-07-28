@@ -9,11 +9,12 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
-import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.FragmentCategoryEditBinding
 
 // TODO: MUST HAVE AT LEAST 1 CATEGORY LEFT, FOR BOTH INCOME AND EXPENSES
@@ -70,35 +71,12 @@ class CategoryEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Set up ETs
-//        binding.categoryNameET.fixCursorFocusProblems()
-        binding.iconHexET.apply {
-//            if (mode == Mode.EDIT) setText(currentCategory.iconHex)
-//            doOnTextChanged { text, _, _, _ ->
-//                if (text!!.contains(Regex("^F[A-F0-9]{4}$")) && CategoryIconHandler.hexToInt(text.toString()) in 1..5348) {
-//                    iconTV.text = CategoryIconHandler.hexToIcon(text.toString())
-//                    currentCategory.iconHex = text.toString()
-//                } else {
-//                    iconTV.text = CategoryIconHandler.hexToIcon("F02D6")  // this will be treated as an error and hence disables saving of edits
-//                }
-//            }
-//            doAfterTextChanged {
-//                if (it.isNullOrBlank()) {
-//                    it?.append("F")
-//                }
-//            }
-            fixCursorFocusProblems()
+        viewModel.showSnackBarText.observe(viewLifecycleOwner) {
+            if (it != null) {
+                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+                viewModel.snackBarShown()
+            }
         }
-
-//        // Set up icon
-//        binding.categoryIconFLInclude.iconRing.visibility = View.INVISIBLE
-//        binding.categoryIconFLInclude.iconTV.text = when (mode) {
-//            Mode.NEW -> CategoryIconHandler.hexToIcon("F02D6")
-//            Mode.EDIT -> CategoryIconHandler.hexToIcon(currentCategory.iconHex)
-//        }
-//        binding.categoryIconFLInclude.iconBG.drawable.setTint(ColourHandler.getColourObject(resources, currentCategory.colourString))
 
 //        // Set up spinners (initialise)
 //        updateALs()
@@ -150,15 +128,6 @@ class CategoryEditFragment : Fragment() {
 //        }
     }
 
-//    private fun newNameIsDuplicate(): Boolean {
-//        return CategoryIconHandler.getCategoryNames(
-//            requireContext(),
-//            firebaseViewModel.currentUserLD.value!!.uid,
-//            oldAndCurrentType,
-//            oldCategory.name
-//        ).contains(currentCategory.name)
-//    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -177,7 +146,7 @@ class CategoryEditFragment : Fragment() {
                             .setTitle("Delete category \"${viewModel.currentCategory.value!!.name}\"?")
                             .setMessage("The transactions under \"${viewModel.currentCategory.value!!.name}\" will not be deleted.")
                             .setPositiveButton(R.string.ok) { _, _ ->
-                                // CONNECT TO REPO AND DELETE
+                                viewModel.deleteOldCategory()
                                 findNavController().navigateUp()
                             }
                             .setNegativeButton(R.string.cancel) { _, _ -> }

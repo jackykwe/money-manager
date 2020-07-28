@@ -5,6 +5,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.Category
+import kotlinx.coroutines.launch
 
 private const val TAG = "cevm"
 
@@ -20,11 +21,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     }
 
     private val userRepository = UserRepository.getInstance()
-    private val otherCategories = when (val type = oldCategory.type) { // TODO: ASYNC
-        "Income" -> ArrayList(userRepository.incomeCategories.value!!).map { it.name }. filter { it != oldCategory.name }  // TODO: DO DIRECT DB QUERY (NON LIVE DATA; ASYNC)
-        "Expenses" -> ArrayList(userRepository.expensesCategories.value!!).map { it.name }. filter { it != oldCategory.name }
-        else -> throw IllegalArgumentException("Unknown type $type")
-    }
+    private val otherCategoryNames = userRepository.categories.value!!.filter { it.type == oldCategory.type && it.name != oldCategory.name }.map { it.name } // TODO: ASYNC
 
     private var _currentCategory = MutableLiveData2(oldCategory.copy())
     val currentCategory: LiveData<Category>
@@ -39,69 +36,49 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private enum class SubmitReadyState {
-        NOT_READY_NAME_EMPTY,
-        NOT_READY_NAME_INVALID,
-        NOT_READY_NAME_DUPLICATE,
-        NOT_READY_ICON_HEX_INVALID,
-        READY
-    }
-
     val categoryNameETText = MutableLiveData<String>(_currentCategory.value.name)  // Two-way binding; cannot use MutableLiveData2
-    private val categoryNameIsNullOrBlank = Transformations.map(categoryNameETText) {
-        _currentCategory.value = _currentCategory.value.copy(name = it.trim())
-        it.isNullOrBlank()
-    }
-    private val categoryNameIsInvalid = Transformations.map(_currentCategory) {
-        it.name == "Add..."
-    }
-    private val categoryNameIsDuplicate = Transformations.map(_currentCategory) {
-        otherCategories.contains(it.name)
+    val categoryNameETError = Transformations.map(categoryNameETText) {
+        val trimmed = it.trim()
+        when {
+            trimmed.isBlank() -> "Category Name must not be empty"
+            trimmed == "Add..." -> "Category Name must not be \"Add...\""
+            otherCategoryNames.contains(trimmed) -> "This Category Name already exists"
+            else -> {
+                _currentCategory.value = _currentCategory.value.copy(name = trimmed)
+                null
+            }
+        }
     }
 
     val iconHexETText = MutableLiveData<String>(_currentCategory.value.iconHex)  // Two-way binding; cannot use MutableLiveData2
-    private val iconHexIsInvalid = Transformations.map(iconHexETText) {
-        return@map when {
-            it.isNullOrBlank() -> {
-                iconHexETText.value = "F"
-                _currentCategory.value = _currentCategory.value.copy(iconHex = "F0101")
-                true
-            }
-            IconHandler.iconHexIsValid(it) && it != "F02D6" -> {
-                _currentCategory.value = _currentCategory.value.copy(iconHex = it)
-                false
-            }
-            else -> {
-                _currentCategory.value = _currentCategory.value.copy(iconHex = "F0202")
-                true
-            }
+    val iconHexETError = Transformations.map(iconHexETText) {
+        val trimmed = it.trim()
+//        _currentCategory.value = _currentCategory.value.copy(iconHex = "F0101")
+//        _currentCategory.value = _currentCategory.value.copy(iconHex = it)
+//        _currentCategory.value = _currentCategory.value.copy(iconHex = "F0202")
+        val errorText = when {
+            trimmed.isBlank() || !trimmed.startsWith("F") -> { "Icon ID must start with \"F\"" }
+            trimmed == "F02D6" -> "This Icon ID is reserved."
+            !IconHandler.iconHexIsValid(it) && it != "F02D6" -> "This Icon ID is invalid."
+            else -> null
         }
-    }
-
-    private val _submitReady = MediatorLiveData<SubmitReadyState>().apply {
-        addSource(categoryNameIsNullOrBlank) { value = updateSubmitReady() }
-        addSource(categoryNameIsInvalid) { value = updateSubmitReady() }
-        addSource(categoryNameIsDuplicate) { value = updateSubmitReady() }
-        addSource(iconHexIsInvalid) { value = updateSubmitReady() }
-    }
-
-    private fun updateSubmitReady(): SubmitReadyState {
-        return when {
-            categoryNameIsNullOrBlank.value ?: true -> SubmitReadyState.NOT_READY_NAME_EMPTY
-            categoryNameIsInvalid.value ?: true -> SubmitReadyState.NOT_READY_NAME_INVALID
-            categoryNameIsDuplicate.value ?: true -> SubmitReadyState.NOT_READY_NAME_DUPLICATE
-            iconHexIsInvalid.value ?: true -> SubmitReadyState.NOT_READY_ICON_HEX_INVALID
-            else -> SubmitReadyState.READY
-        }
+        _currentCategory.value = _currentCategory.value.copy(
+            iconHex = if (errorText == null) it else "F02D6"
+        )
+        errorText
     }
 
     fun saveBTClicked() {
-        when (_submitReady.value) {
-            SubmitReadyState.NOT_READY_NAME_EMPTY -> _showSnackBarText.value = "Category Name must not be empty"
-            SubmitReadyState.NOT_READY_NAME_INVALID -> _showSnackBarText.value = "Category Name must not be \"Add...\""
-            SubmitReadyState.NOT_READY_NAME_DUPLICATE -> _showSnackBarText.value = "This Category Name already exists"
-            SubmitReadyState.NOT_READY_ICON_HEX_INVALID -> _showSnackBarText.value = "Icon ID is invalid"
-            SubmitReadyState.READY -> TODO("HANDLE SAVE")
+        when {
+            categoryNameETError.value != null -> _showSnackBarText.value = "Invalid Category Name"
+            iconHexETError.value != null -> _showSnackBarText.value = "Invalid Icon ID"
+            else -> _showSnackBarText.value = "OK U GOOD" // SAVE
+        }
+    }
+
+    fun deleteOldCategory() {
+        viewModelScope.launch {
+            userRepository.deleteCategory(oldCategory)
         }
     }
 

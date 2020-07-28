@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
+import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
@@ -119,4 +120,15 @@ fun TextView.setAccountNameTVText(name: String) {
 @BindingAdapter("categoryNameTV_text")
 fun TextView.setCategoryNameTVText(name: String) {
     text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Generic
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("error_text")
+fun TextInputLayout.setErrorText(errorString: String?) {
+    error = errorString
 }

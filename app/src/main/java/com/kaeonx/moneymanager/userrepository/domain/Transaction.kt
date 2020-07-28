@@ -35,11 +35,8 @@ data class Transaction(
 
     fun toIconDetail(): IconDetail {
         val repository = UserRepository.getInstance()
-        val categoryObj = when (type) {
-            "Income" -> repository.incomeCategories.value?.find { it.name == this.category }
-            "Expenses" -> repository.expensesCategories.value?.find { it.name == this.category }
-            else -> throw java.lang.IllegalArgumentException("Unknown type $type")
-        } ?: Category(type, category, "F02D6", "Black")
+        val categoryObj = repository.categories.value?.find { it.name == this.category && it.type == this.type }
+            ?: Category(type, category, "F02D6", "Black")
         val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account(account, "White")
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }

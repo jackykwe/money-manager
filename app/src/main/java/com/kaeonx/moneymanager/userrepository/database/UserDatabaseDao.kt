@@ -53,15 +53,10 @@ interface UserDatabaseDao {
      * Categories
      */
     ////////////////////////////////////////////////////////////////////////////////
-    @Insert
-    suspend fun insertIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
-    @Insert
-    suspend fun insertExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
-
-    @Update
-    suspend fun updateIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)  // Key must be the same
-    @Update
-    suspend fun updateExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)  // Key must be the same
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
 
     @Delete
     suspend fun deleteIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)

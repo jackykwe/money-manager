@@ -75,5 +75,14 @@
         <item name="android:paddingEnd">2dp</item>
     </style>
 
+    <!-- fragment_category_edit -->
+    <style name="FullWidthMaterialEditTextContainer" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="errorEnabled">true</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="FullWidthMaterialEditText">
+        <item name ="android:singleLine">true</item>
+    </style>
 
 </resources>
