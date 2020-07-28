@@ -3,6 +3,8 @@ package com.kaeonx.moneymanager.adapters
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -82,4 +84,27 @@ fun ImageView.setTbsdHorizontalBarIVTopTint(colourString: String) {
 @BindingAdapter("tbsdHorizontalBarIVBottom_tint")
 fun ImageView.setTbsdHorizontalBarIVBottomTint(colourString: String) {
     drawable.setTintList(ColourHandler.getColorStateList(colourString))
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * For rv_item_accounts_display.xml
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("horizontalBarIV_tint")
+fun ImageView.setHorizontalBarIVTint(colourString: String) {
+    drawable.setTintList(ColourHandler.getColorStateList(colourString))
+}
+
+@BindingAdapter("accountNameTV_textColor")
+fun TextView.setAccountNameTVTextColor(name: String) {
+    setTextColor(
+        if (name == "Add...") ColourHandler.getColorStateList("Black") else ColourHandler.getColorStateList("White")
+    )
+}
+
+@BindingAdapter("accountNameTV_text")
+fun TextView.setAccountNameTVText(name: String) {
+    text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
 }

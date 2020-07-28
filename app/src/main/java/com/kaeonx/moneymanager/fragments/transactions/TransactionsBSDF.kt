@@ -18,7 +18,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.fixCursorFocusProblems
 import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
+import com.kaeonx.moneymanager.fragments.accounts.ACCOUNTS_DF_RESULT
+import com.kaeonx.moneymanager.fragments.categories.CATEGORIES_DF_RESULT
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import java.util.*
 
@@ -110,10 +113,10 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
             )
         }
         binding.tbsdAccountTV.setOnClickListener {
-
+            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
         }
         binding.tbsdIconInclude.iconRing.setOnClickListener {
-
+            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
         }
         binding.tbsdCategoryTV.setOnClickListener {
             findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
@@ -137,10 +140,17 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
             }
         }
 
-        savedStateHandle.getLiveData<Category?>("categories_df_result").observe(viewLifecycleOwner) {
+        savedStateHandle.getLiveData<Account?>(ACCOUNTS_DF_RESULT).observe(viewLifecycleOwner) {
+            if (it != null) {
+                viewModel.updateAccount(it)
+                savedStateHandle.set(ACCOUNTS_DF_RESULT, null)
+            }
+        }
+
+        savedStateHandle.getLiveData<Category?>(CATEGORIES_DF_RESULT).observe(viewLifecycleOwner) {
             if (it != null) {
                 viewModel.updateCategory(it)
-                savedStateHandle.set("categories_df_result", null)
+                savedStateHandle.set(CATEGORIES_DF_RESULT, null)
             }
         }
     }

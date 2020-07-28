@@ -25,18 +25,17 @@ class TypeDisplayFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTypeDisplayBinding.inflate(inflater, container, false)
-//        val savedCategories =
-
         binding.root.adapter = TypeDisplayRVAdapter(
             type,
             requireArguments().getBoolean(CAT_PICKER_EDITABLE),
             requireArguments().getSerializable(CAT_PICKER_LISTENER) as CategoryOnClickListener
         )
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.categories.observe(viewLifecycleOwner) {
             (binding.root.adapter as TypeDisplayRVAdapter).submitListAndAddTailIfNecessary(it)
         }
-
-        return binding.root
     }
 }

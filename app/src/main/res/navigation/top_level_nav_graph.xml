@@ -56,22 +56,30 @@
         <action
             android:id="@+id/action_transactionsBSDF_to_categoriesDF"
             app:destination="@id/categoriesDF" />
+        <action
+            android:id="@+id/action_transactionsBSDF_to_accountsDF"
+            app:destination="@id/accountsDF" />
     </dialog>
+    <dialog
+        android:id="@+id/accountsDF"
+        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsDF"
+        tools:layout="@layout/fragment_accounts"
+        android:label="AccountsDF" />
     <dialog
         android:id="@+id/categoriesDF"
         android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesDF"
         android:label="CategoriesDF"
         tools:layout="@layout/dialog_fragment_category_picker"/>
 
-    <!--    <fragment-->
-    <!--        android:id="@+id/accountsFragment"-->
-    <!--        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsFragment"-->
-    <!--        android:label="Accounts"-->
-    <!--        tools:layout="@layout/fragment_accounts" >-->
-    <!--        <action-->
-    <!--            android:id="@+id/action_accountsFragment_to_accountEditFragment"-->
-    <!--            app:destination="@id/accountEditFragment" />-->
-    <!--    </fragment>-->
+    <fragment
+        android:id="@+id/accountsFragment"
+        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsFragment"
+        android:label="Accounts"
+        tools:layout="@layout/fragment_accounts" >
+<!--            <action-->
+<!--                android:id="@+id/action_accountsFragment_to_accountEditFragment"-->
+<!--                app:destination="@id/accountEditFragment" />-->
+    </fragment>
 
     <fragment
         android:id="@+id/categoriesFragment"
@@ -83,6 +91,7 @@
         <!--                app:destination="@id/categoryEditFragment" />-->
 
     </fragment>
+
 
     <!--    <fragment-->
     <!--        android:id="@+id/categoryEditFragment"-->

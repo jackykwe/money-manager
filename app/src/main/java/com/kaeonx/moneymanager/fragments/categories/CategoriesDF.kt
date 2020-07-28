@@ -10,6 +10,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.databinding.DialogFragmentCategoryPickerBinding
 
+internal const val CATEGORIES_DF_RESULT = "categories_df_result"
+
 // This DialogFragment is used exclusively with TransactionsBSDF.
 // The counterpart to this DialogFragment is CategoriesFragment
 // This is the fragment with the Tabs and ViewPager.
@@ -22,7 +24,7 @@ class CategoriesDF : DialogFragment() {
         binding = DialogFragmentCategoryPickerBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
         binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, false, CategoryOnClickListener { category ->
-            findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set("categories_df_result", category)
+            findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(CATEGORIES_DF_RESULT, category)
             findNavController().navigateUp()
         })
 //        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default

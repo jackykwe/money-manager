@@ -7,6 +7,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
+import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.math.BigDecimal
@@ -229,6 +230,12 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
      * Account and Category Manipulation
      */
     ////////////////////////////////////////////////////////////////////////////////
+
+    fun updateAccount(newAccount: Account) {
+        _currentTransaction.value = _currentTransaction.value.copy(
+            account = newAccount.name
+        )
+    }
 
     fun updateCategory(newCategory: Category) {
         _currentTransaction.value = _currentTransaction.value.copy(

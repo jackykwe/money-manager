@@ -383,7 +383,7 @@
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/fira_sans"
                 android:gravity="center_vertical"
-                android:text="Account"
+                android:text="@{viewModel.currentTransaction.account}"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
