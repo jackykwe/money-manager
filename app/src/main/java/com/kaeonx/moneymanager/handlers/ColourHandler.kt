@@ -283,6 +283,7 @@ class ColourHandler private constructor() {
 
             "Black" -> ColorStateList.valueOf(App.context.resources.getColor(R.color.black, null))
             "White" -> ColorStateList.valueOf(App.context.resources.getColor(R.color.white, null))
+
             else -> ColorStateList.valueOf(App.context.resources.getColor(R.color.black, null))
         }
 

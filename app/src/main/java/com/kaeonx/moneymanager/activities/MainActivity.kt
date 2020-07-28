@@ -25,7 +25,7 @@ import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 
 // TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
 // I'm dealing with all dialogs using the not so new method - supportFragmentManager / childFragmentManager
-// and not using Navigation UI for now. Navigation UI is only used for when the main screen changes.
+// and not using Navigation UI for now. Navigation UI is only used for when the fragment_transactions screen changes.
 private const val TAG = "matvt"
 
 class MainActivity : AppCompatActivity() {
@@ -59,11 +59,11 @@ class MainActivity : AppCompatActivity() {
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
                     R.id.menuExport -> {
-                        Snackbar.make(binding.rootDL, "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
                         false
                     }
                     R.id.menuSettings -> {
-                        Snackbar.make(binding.rootDL, "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
 //                    startActivity(Intent(this, SettingsActivity::class.java))
 //                    startActivityForResult(Intent(this, SettingsActivity::class.java), 0)
                         false
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 // (because the options need to be controlled from within the fragment)
                 menu.clear()
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
-                setupWithNavController(navController, appBarConfiguration)
+                setupWithNavController(navController, appBarConfiguration) // TODO : DO YOU NEED THIS?
                 // Visibility
                 visibility = when (destination.id) {
                     R.id.titleFragment ->  View.GONE

@@ -5,6 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Account(
-    var name: String = "",
-    var colourString: String = "White"  // Default is defined here
+    var name: String,
+    var colourString: String
 ) : Parcelable

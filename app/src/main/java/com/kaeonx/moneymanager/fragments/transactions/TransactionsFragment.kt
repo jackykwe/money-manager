@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
@@ -119,21 +120,37 @@ class TransactionsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        // Setup of Toolbar
-//        requireActivity().mainActivityToolbar.inflateMenu(R.menu.main)
-//        requireActivity().mainActivityToolbar.setOnMenuItemClickListener {
-//            when (it.itemId) {
-//                R.id.app_bar_sync -> {
-//                    Toast.makeText(requireContext(), "Fragment!", Toast.LENGTH_LONG).show()
-//                    true
-//                }
-//                else -> { false }
-//            }
-//        }
+        // Setup of Toolbar
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            inflateMenu(R.menu.fragment_transactions)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_sync -> {
+                        Snackbar.make(requireView(), "Fragment!", Snackbar.LENGTH_SHORT).show()
+//                        Toast.makeText(requireContext(), "Fragment!", Toast.LENGTH_LONG).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
 
         // Setup of FAB
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
-            findNavController().navigate(TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(Transaction()))
+            findNavController().navigate(
+                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(
+                    Transaction(
+                        transactionId = null,
+                        timestamp = 0L,
+                        type = "Expenses",
+                        category = "?",
+                        account = "Cash",
+                        memo = "",
+                        originalCurrency = "SGD",
+                        originalAmount = "0"
+                    )
+                )
+            )
         }
     }
 }

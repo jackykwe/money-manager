@@ -6,11 +6,11 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Category(
     val type: String,
-    var name: String = "?",
-    var iconHex: String = "F02D6",  // Default is defined here
-    var colourString: String = "Black"  // Default is defined here
+    var name: String,
+    var iconHex: String,
+    var colourString: String
 ) : Parcelable {
 
-    fun toIconDetail(): IconDetail = IconDetail(iconHex, colourString, "transparent")
+    fun toIconDetail(): IconDetail = IconDetail(iconHex, colourString, "TRANSPARENT")
 
 }

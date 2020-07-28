@@ -1,13 +1,12 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import java.util.*
-import kotlin.collections.ArrayList
 
 data class DayTransactions(
     val dayOfMonth: Long,  // serves as ID
     val ymdCalendar: Calendar,
-    var dayIncome: String? = null,  // This value is always in HomeCurrency
-    var dayExpenses: String? = null,  // This value is always in HomeCurrency
-    var incomeAllHome: Boolean = false,
-    var expensesAllHome: Boolean = false,
-    val transactions: ArrayList<Transaction> = ArrayList())
+    var dayIncome: String?,  // This value is always in HomeCurrency
+    var dayExpenses: String?,  // This value is always in HomeCurrency
+    var incomeAllHome: Boolean,
+    var expensesAllHome: Boolean,
+    val transactions: ArrayList<Transaction>)

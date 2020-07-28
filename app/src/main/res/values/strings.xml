@@ -48,4 +48,10 @@
     <string name="rv_item_transactions_day_header_income_hint">Income:</string>
     <string name="rv_item_transactions_day_header_expenses_hint">Expenses:</string>
 
+    <!-- Menu strings -->
+    <string name="menu_search">Search</string>
+    <string name="menu_sync">Sync</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+
 </resources>

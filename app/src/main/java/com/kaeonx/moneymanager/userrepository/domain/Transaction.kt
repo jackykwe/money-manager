@@ -12,14 +12,14 @@ import kotlin.collections.ArrayList
 
 @Parcelize
 data class Transaction(
-    val transactionId: Long? = null,
-    var timestamp: Long = 0L,
-    var type: String = "",
-    var category: String = "",
-    var account: String = "",
-    var memo: String = "",
-    var originalCurrency: String = "",
-    var originalAmount: String = "") : Parcelable {
+    val transactionId: Long?,
+    var timestamp: Long,
+    var type: String,
+    var category: String,
+    var account: String,
+    var memo: String,
+    var originalCurrency: String,
+    var originalAmount: String) : Parcelable {
 
     fun toDatabase(): DatabaseTransaction {
         return DatabaseTransaction(
@@ -39,8 +39,8 @@ data class Transaction(
             "Income" -> repository.incomeCategories.value?.find { it.name == this.category }
             "Expenses" -> repository.expensesCategories.value?.find { it.name == this.category }
             else -> throw java.lang.IllegalArgumentException("Unknown type $type")
-        } ?: Category(type)
-        val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account()
+        } ?: Category(type, category, "F02D6", "Black")
+        val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account(account, "White")
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }
 }
@@ -94,7 +94,12 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
         result.add(
             DayTransactions(
                 dayOfMonth = d.toLong(),
-                ymdCalendar = c
+                ymdCalendar = c,
+                dayIncome = null,
+                dayExpenses = null,
+                incomeAllHome = false,
+                expensesAllHome = false,
+                transactions = ArrayList()
             )
         )
     }

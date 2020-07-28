@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.databinding.RvItemTypeDisplayBinding
+import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,12 +45,14 @@ class TypeDisplayRVAdapter(
         fun rebind(category: Category, itemOnClickListener: CategoryOnClickListener) {
             binding.category = category
             binding.onClickListener = itemOnClickListener
-
-            binding.categoryIconInclude.iconBG.visibility = if (category.name == "Add...") View.INVISIBLE else View.VISIBLE
-
+            binding.categoryIconInclude.iconBG.visibility = if (category.name == "Add...") {
+                binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("Black"))
+                View.INVISIBLE
+            } else {
+                binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("White"))
+                View.VISIBLE
+            }
             binding.executePendingBindings()
-//            binding.categoryIconInclude.categoryIconBG.drawable.setTint(ColourHandler.getColourObject((tabLayoutControllerFragment as Fragment).resources, categoriesAL[position].colourString))
-//            binding.categoryIconInclude.categoryIconTV.text = hexToIcon(categoriesAL[position].iconHex)
         }
 
         companion object {
@@ -59,11 +62,12 @@ class TypeDisplayRVAdapter(
                 val binding = RvItemTypeDisplayBinding.inflate(layoutInflater, parent, false)
                 binding.categoryIconInclude.iconRing.visibility = View.GONE
                 return CategoryViewHolder(binding)
-
             }
         }
 
     }
+
+
 }
 
 class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {

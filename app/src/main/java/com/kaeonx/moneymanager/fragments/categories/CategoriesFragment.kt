@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
+import com.kaeonx.moneymanager.userrepository.UserRepository
 
 private const val TAG = "catFrag"
 
@@ -17,7 +18,7 @@ class CategoriesFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoriesBinding
 
-    private fun enableCatPickerVPAnimation() {
+    private fun enableCatPickerVPFadeAnimation() {
         // Courtesy of https://stackoverflow.com/a/56310461/7254995
         binding.catPickerVP.setPageTransformer { page, _ ->
             page.apply {
@@ -33,15 +34,15 @@ class CategoriesFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
-//        enableCatPickerVPAnimation()
+//        enableCatPickerVPFadeAnimation()
         binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, true, CategoryOnClickListener { category ->
-            Toast.makeText(requireContext(), "Oh? You want $category?", Toast.LENGTH_SHORT).show()
-//            findNavController().navigate(
-//                CategoriesFragmentDirections.actionRootCategoriesFragmentToRootCategoryEditFragment(
-//                    type,
-//                    category
-//                )
-//            )
+            val cond1 = when (val type = category.type) {
+                "Income" -> UserRepository.getInstance().incomeCategories.value!!.size > 1
+                "Expenses" -> UserRepository.getInstance().expensesCategories.value!!.size > 1
+                else -> throw IllegalArgumentException("Unknown type $type")
+            }
+            val cond2 = category.name != "Add..."
+            findNavController().navigate(CategoriesFragmentDirections.actionCategoriesFragmentToCategoryEditFragment(category, cond1 && cond2))
         })
 //        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default
         return binding.root

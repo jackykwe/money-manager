@@ -30,15 +30,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
     init {
         if (oldTransaction.transactionId == null) {
             // New transaction
-            oldTransaction.apply {
-                timestamp = initCalendar.timeInMillis  // OK UPDATABLE FROM DATETIMEPICKER
-                type = "Expenses" // TODO: Tie to default  //OK UPDATABLE FROM PICKER
-                category = "?"  // OK UPDATEABLE FROM PICKER
-                account = "Cash"  // TODO: Tie to default
-                memo = ""  // OK UPDATABLE FROM ET
-                originalCurrency = "SGD"  // TODO: Tie to home currency
-                originalAmount = "0"  // MAKE SURE THIS ISN'T AN EMPTY STRING. BigDecimal("") will give problems.  // OK UPDATABLE FROM CALC
-            }
+            oldTransaction.timestamp = initCalendar.timeInMillis
         }
     }
 
@@ -301,7 +293,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
     }
 
     fun submitBTOnClick() {
-        when (val state = _submitReady.value) {
+        when (_submitReady.value) {
             SubmitReadyState.NOT_READY_ERROR -> { }
             SubmitReadyState.NOT_READY_PENDING_OP -> operatorPressed("=")
             SubmitReadyState.NOT_READY_CATEGORY_EMPTY -> _showToastText.value = "Please select a category."
@@ -312,7 +304,6 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
                     originalAmount = CurrencyHandler.displayAmount(BigDecimal(_currentTransaction.value.originalAmount))
                 )
             }
-            else -> throw IllegalStateException("Unknown SubmitReadyState reached: $state")
         }
     }
     private val _showToastText = MutableLiveData2<String?>(null)

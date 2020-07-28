@@ -86,25 +86,22 @@
         android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesFragment"
         android:label="Categories"
         tools:layout="@layout/fragment_categories">
-        <!--            <action-->
-        <!--                android:id="@+id/action_categoriesFragment_to_categoryEditFragment"-->
-        <!--                app:destination="@id/categoryEditFragment" />-->
-
+        <action
+            android:id="@+id/action_categoriesFragment_to_categoryEditFragment"
+            app:destination="@id/categoryEditFragment" />
     </fragment>
-
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/categoryEditFragment"-->
-    <!--        android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"-->
-    <!--        android:label="Edit Category"-->
-    <!--        tools:layout="@layout/fragment_category_edit" >-->
-    <!--        <argument-->
-    <!--            android:name="type"-->
-    <!--            app:argType="string" />-->
-    <!--        <argument-->
-    <!--            android:name="category"-->
-    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Category" />-->
-    <!--    </fragment>-->
+    <fragment
+        android:id="@+id/categoryEditFragment"
+        android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"
+        android:label="Edit Category"
+        tools:layout="@layout/fragment_category_edit" >
+        <argument
+            android:name="oldCategory"
+            app:argType="com.kaeonx.moneymanager.userrepository.domain.Category" />
+        <argument
+            android:name="deleteable"
+            app:argType="boolean" />
+    </fragment>
     <!--    <fragment-->
     <!--        android:id="@+id/accountEditFragment"-->
     <!--        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountEditFragment"-->

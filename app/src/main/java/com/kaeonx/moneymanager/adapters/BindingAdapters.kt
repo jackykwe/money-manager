@@ -58,6 +58,7 @@ fun TextView.setCurrencyVisibility(transaction: Transaction) {
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("iconRing_tint")
 fun ImageView.setIconRingTint(colourString: String) {
+    visibility = if (colourString == "TRANSPARENT") View.INVISIBLE else View.VISIBLE
     imageTintList = ColourHandler.getColorStateList(colourString)
 }
 
@@ -106,5 +107,16 @@ fun TextView.setAccountNameTVTextColor(name: String) {
 
 @BindingAdapter("accountNameTV_text")
 fun TextView.setAccountNameTVText(name: String) {
+    text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * For rv_item_type_display.xml
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("categoryNameTV_text")
+fun TextView.setCategoryNameTVText(name: String) {
     text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
 }

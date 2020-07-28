@@ -42,7 +42,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:lines="1"
-            android:text="@{category.name}"
+            app:categoryNameTV_text="@{category.name}"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textSize="11sp"
             tools:text="Example Text" />

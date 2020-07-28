@@ -133,7 +133,7 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         }
 
         viewModel.submitTrigger.observe(viewLifecycleOwner) {
-            if (it != null) {
+            if (it != null) {  //TODO: EH FK YOU. DO THE HANDLING HERE.
                 findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle.set("tbsdf_result", it)
                 viewModel.submitHandled()
                 findNavController().navigateUp()
