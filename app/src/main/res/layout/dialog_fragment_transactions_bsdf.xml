@@ -339,6 +339,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+
             <ImageView
                 android:id="@+id/tbsdHorizontalBarIVTop"
                 android:layout_width="match_parent"
@@ -347,7 +348,8 @@
                 android:layout_marginTop="12dp"
                 android:scaleType="fitXY"
                 android:tint="@color/grey_500"
-                app:srcCompat="@drawable/basic_rectangle" />
+                app:srcCompat="@drawable/basic_rectangle"
+                app:tbsdHorizontalBarIVTop_tint="@{viewModel.currentTransaction.toIconDetail().iconRingColourString}" />
 
             <ImageView
                 android:id="@+id/tbsdHorizontalBarIVBottom"
@@ -364,7 +366,7 @@
                 android:id="@+id/tbsdIconFL"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="12dp">
+                android:layout_marginStart="8dp">
 
                 <include
                     android:id="@+id/tbsdIconInclude"
@@ -377,7 +379,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="top"
-                android:layout_marginStart="144dp"
+                android:layout_marginStart="136dp"
                 android:layout_marginTop="12dp"
                 android:fontFamily="@font/fira_sans"
                 android:gravity="center_vertical"
@@ -391,7 +393,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="144dp"
+                android:layout_marginStart="136dp"
                 android:layout_marginBottom="12dp"
                 android:fontFamily="@font/fira_sans"
                 android:gravity="center_vertical"

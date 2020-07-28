@@ -17,19 +17,18 @@ class CategoriesDF : DialogFragment() {
 
     private lateinit var binding: DialogFragmentCategoryPickerBinding
 
+    // TODO: Enable on touch outside dismiss
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogFragmentCategoryPickerBinding.inflate(inflater, container, false)
-
         binding.catPickerVP.offscreenPageLimit = 1
         binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, false, CategoryOnClickListener { category ->
             findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set("categories_df_result", category)
             findNavController().navigateUp()
         })
-
 //        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default
-
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
          TabLayoutMediator(binding.catPickerTL, binding.catPickerVP) { tab, position ->

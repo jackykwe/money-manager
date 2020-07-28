@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,7 +23,6 @@ class TransactionsRVAdapter(private val itemOnClickListener: TransactionOnClickL
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
     fun submitListAndAddHeader(list: List<DayTransactions>) {
-        Log.d(TAG, "subListAndAddHeader called")
         CoroutineScope(Dispatchers.Default).launch {
             val submittable = when {
                 list.isEmpty() -> listOf(RVItem.RVItemHeader)

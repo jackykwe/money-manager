@@ -74,6 +74,11 @@ fun TextView.setIconTVText(iconHex: String) {
  * For dialog_fragment_transactions_bsdf.xml
  */
 ////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("tbsdHorizontalBarIVTop_tint")
+fun ImageView.setTbsdHorizontalBarIVTopTint(colourString: String) {
+    drawable.setTintList(ColourHandler.getColorStateList(colourString))
+}
+
 @BindingAdapter("tbsdHorizontalBarIVBottom_tint")
 fun ImageView.setTbsdHorizontalBarIVBottomTint(colourString: String) {
     drawable.setTintList(ColourHandler.getColorStateList(colourString))
