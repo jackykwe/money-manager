@@ -77,12 +77,24 @@
 
     <!-- fragment_category_edit -->
     <style name="FullWidthMaterialEditTextContainer" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
         <item name="android:layout_margin">8dp</item>
     </style>
 
+    <style name="FullWidthMaterialEditTextContainer.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="hintAnimationEnabled">false</item>
+        <item name="errorEnabled">true</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
     <style name="FullWidthMaterialEditText">
-        <item name ="android:singleLine">true</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="FullWidthMaterialEditText.ExposedDropdownMenu">
+        <item name="android:dropDownWidth">match_parent</item>
     </style>
 
 </resources>

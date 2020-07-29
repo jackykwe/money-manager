@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.fragments.categories
 
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.adapters.ColourFamilyPickerArrayAdapter
+import com.kaeonx.moneymanager.adapters.ColourIntensityPickerArrayAdapter
 import com.kaeonx.moneymanager.databinding.FragmentCategoryEditBinding
 
 // TODO: MUST HAVE AT LEAST 1 CATEGORY LEFT, FOR BOTH INCOME AND EXPENSES
@@ -67,6 +70,27 @@ class CategoryEditFragment : Fragment() {
         binding = FragmentCategoryEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        // Courtesy of https://stackoverflow.com/a/48185496/7254995
+        // Disables typing
+        binding.colourFamilySpinner.apply {
+            inputType = InputType.TYPE_NULL
+            setAdapter(ColourFamilyPickerArrayAdapter(arrayListOf(), null))  // Actual updating of adapter is done via data binding
+        }
+
+        binding.colourIntensitySpinner.apply {
+            inputType = InputType.TYPE_NULL
+            setAdapter(ColourIntensityPickerArrayAdapter("Red", arrayListOf()))  // Actual updating of adapter is done via data binding
+        }
+
+        binding.focusClearer.setOnFocusChangeListener { _, focused ->
+            if (focused) {
+                // Close the keyboard, if it's open
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+            }
+        }
+
         return binding.root
     }
 
@@ -77,55 +101,12 @@ class CategoryEditFragment : Fragment() {
                 viewModel.snackBarShown()
             }
         }
-
-//        // Set up spinners (initialise)
-//        updateALs()
-//        val colourFamilyArrayAdapter = ColourFamilyPickerArrayAdapter(
-//            requireContext(),
-//            resources,
-//            currentColourFamiliesAL,
-//            currentColourIntensity()
-//        )
-//        val colourIntensityPickerArrayAdapter = ColourIntensityPickerArrayAdapter(
-//            requireContext(),
-//            resources,
-//            currentColourFamily(),
-//            currentColourIntensitiesAL
-//        )
-//        colourFamilySpinner.apply {
-//            adapter = colourFamilyArrayAdapter
-//            setSelection(currentColourFamiliesAL.indexOf(currentColourFamily()))
-//            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onNothingSelected(parent: AdapterView<*>?) { }
-//                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                    if (!familyFirstRun) {
-//                        currentCategory.colourString = ColourHandler.saveColourString(currentColourFamiliesAL[position], currentColourIntensity())
-//                        this@RootCategoryEditFragment.iconBG.drawable.setTint(ColourHandler.getColourObject(resources, currentCategory.colourString))
-//                        updateALs()
-//                        updateSpinners()
-//                    } else {
-//                        familyFirstRun = !familyFirstRun
-//                    }
-//                }
-//            }
-//        }
-//        colourIntensitySpinner.apply {
-//            adapter = colourIntensityPickerArrayAdapter
-//            setSelection(currentColourIntensitiesAL.indexOf(currentColourIntensity()))
-//            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onNothingSelected(parent: AdapterView<*>?) { }
-//                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                    if (!intensityFirstRun) {
-//                        currentCategory.colourString = ColourHandler.saveColourString(currentColourFamily(), currentColourIntensitiesAL[position])
-//                        this@RootCategoryEditFragment.iconBG.drawable.setTint(ColourHandler.getColourObject(resources, currentCategory.colourString))
-//                        updateALs()
-//                        updateSpinners()
-//                    } else {
-//                        intensityFirstRun = !intensityFirstRun
-//                    }
-//                }
-//            }
-//        }
+        viewModel.navigateUp.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.navigateUpHandled()
+                findNavController().navigateUp()
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -140,6 +121,7 @@ class CategoryEditFragment : Fragment() {
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
+
                 when (it.itemId) {
                     R.id.app_bar_delete -> {
                         AlertDialog.Builder(requireContext())
@@ -147,7 +129,6 @@ class CategoryEditFragment : Fragment() {
                             .setMessage("The transactions under \"${viewModel.currentCategory.value!!.name}\" will not be deleted.")
                             .setPositiveButton(R.string.ok) { _, _ ->
                                 viewModel.deleteOldCategory()
-                                findNavController().navigateUp()
                             }
                             .setNegativeButton(R.string.cancel) { _, _ -> }
                             .create()

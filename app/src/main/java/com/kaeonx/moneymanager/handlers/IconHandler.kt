@@ -5,7 +5,8 @@ import android.text.Html
 class IconHandler private constructor() {
     companion object {
 
-        const val MAX_SUPPORTED_HEX = 5348
+        // Number of reported icons on cheat-sheet minus one (5.4.55)
+        private const val MAX_SUPPORTED_HEX = 5455
 
         fun getDisplayHex(iconHex: String): String {
             // iconHex looks like Fxxxx

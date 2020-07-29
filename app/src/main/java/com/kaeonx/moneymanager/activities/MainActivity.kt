@@ -2,7 +2,6 @@ package com.kaeonx.moneymanager.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -87,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d(TAG, "MOVING TO: ${destination.displayName}")
+//            Log.d(TAG, "MOVING TO: ${destination.displayName}")
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
                 // Inflation of menu is done in each fragment

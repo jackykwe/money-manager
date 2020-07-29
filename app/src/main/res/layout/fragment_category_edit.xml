@@ -5,6 +5,10 @@
 
     <data>
 
+        <import
+            alias="LP"
+            type="android.view.ViewGroup.LayoutParams" />
+
         <variable
             name="viewModel"
             type="com.kaeonx.moneymanager.fragments.categories.CategoryEditViewModel" />
@@ -13,17 +17,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context=".fragments.budget.BudgetFragment">
-
-        <Spinner
-            android:id="@+id/colourIntensitySpinner"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
 
         <FrameLayout
             android:id="@+id/CategoryIconFL"
@@ -44,20 +40,6 @@
                 app:iconDetail="@{viewModel.currentCategory.toIconDetail()}" />
 
         </FrameLayout>
-
-
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:ellipsize="none"
-            android:singleLine="true"
-            android:text="Colour: "
-            app:layout_constraintEnd_toStartOf="@+id/colourFamilySpinner"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iconHexETContainer" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/categoryNameETContainer"
@@ -83,8 +65,9 @@
             style="@style/FullWidthMaterialEditTextContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:error_text="@{viewModel.iconHexETError}"
             android:hint="Icon ID"
+            app:error_text="@{viewModel.iconHexETError}"
+            app:helperText="Refer to Cheatsheet on materialdesignicons.com"
             app:layout_constraintTop_toBottomOf="@+id/categoryNameETContainer">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -95,29 +78,63 @@
                 android:inputType="textCapCharacters"
                 android:maxLength="5"
                 android:text="@={viewModel.iconHexETText}" />
+
+            <View
+                android:id="@+id/focusClearer"
+                android:layout_width="match_parent"
+                android:layout_height="0.01dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintTop_toBottomOf="@+id/iconHexET" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="120dp"
-            android:layout_height="48dp"
-            android:ellipsize="none"
-            android:singleLine="true"
-            android:text="Colour Intensity: "
-            app:layout_constraintEnd_toStartOf="@+id/colourIntensitySpinner"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/colourFamilyContainer"
+            style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Colour"
+            app:error_text="@{viewModel.colourFamilySpinnerError}"
+            app:layout_constraintTop_toBottomOf="@+id/iconHexETContainer">
 
-        <Spinner
-            android:id="@+id/colourFamilySpinner"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
-            app:layout_constraintTop_toTopOf="@+id/textView2" />
+            <AutoCompleteTextView
+                android:id="@+id/colourFamilySpinner"
+                style="@style/FullWidthMaterialEditText.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownAnchor="@id/CategoryIconFL"
+                android:tag="colour family spinner"
+                app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}"
+                app:colourFamilySpinner_colourFamiliesAL="@{viewModel.colourFamilies}"
+                app:colourFamilySpinner_colourIntensity="@{viewModel.colourIntensitySpinnerText}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/colourIntensityContainer"
+            style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@{viewModel.colourIntensitySpinnerText == null ? `Colour Intensity (NA)` : `Colour Intensity`}"
+            app:error_text="@{viewModel.colourIntensitySpinnerError}"
+            app:layout_constraintTop_toBottomOf="@+id/colourFamilyContainer">
+
+            <AutoCompleteTextView
+                android:id="@+id/colourIntensitySpinner"
+                style="@style/FullWidthMaterialEditText.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownAnchor="@id/CategoryIconFL"
+                android:dropDownHeight="@{viewModel.colourIntensitySpinnerText != null ? LP.WRAP_CONTENT : 0}"
+                android:enabled="@{viewModel.colourIntensitySpinnerText != null}"
+                android:tag="colour intensity spinner"
+                app:autoCompleteTextView_text="@={viewModel.colourIntensitySpinnerText}"
+                app:colourIntensitySpinner_colourFamily="@{viewModel.colourFamilySpinnerText}"
+                app:colourIntensitySpinner_colourIntensitiesAL="@{viewModel.colourIntensities}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
