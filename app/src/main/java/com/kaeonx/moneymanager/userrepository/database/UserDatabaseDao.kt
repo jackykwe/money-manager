@@ -11,6 +11,7 @@ interface UserDatabaseDao {
      * Transactions
      */
     ////////////////////////////////////////////////////////////////////////////////
+
     @Insert
     suspend fun insertTransaction(databaseTransaction: DatabaseTransaction)
 
@@ -32,11 +33,9 @@ interface UserDatabaseDao {
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
-    @Insert
-    suspend fun insertAccount(databaseAccount: DatabaseAccount)
 
-    @Update
-    suspend fun updateAccount(databaseAccount: DatabaseAccount)  // Key must be the same
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAccount(databaseAccount: DatabaseAccount)
 
     @Delete
     suspend fun deleteAccount(databaseAccount: DatabaseAccount)
@@ -45,7 +44,7 @@ interface UserDatabaseDao {
 //    @Query("DELETE FROM transactions_table")
 //    suspend fun clearAllData()
 
-    @Query("SELECT * FROM accounts_table")
+    @Query("SELECT * FROM accounts_table ORDER BY name COLLATE NOCASE")
     fun getAllAccounts(): LiveData<List<DatabaseAccount>>
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -53,8 +52,10 @@ interface UserDatabaseDao {
      * Categories
      */
     ////////////////////////////////////////////////////////////////////////////////
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCategory(databaseCategory: DatabaseCategory)
+
     @Delete
     suspend fun deleteCategory(databaseCategory: DatabaseCategory)
 
@@ -62,6 +63,6 @@ interface UserDatabaseDao {
 //    @Query("DELETE FROM transactions_table")
 //    suspend fun clearAllData()
 
-    @Query("SELECT * FROM categories_table")
+    @Query("SELECT * FROM categories_table ORDER BY name COLLATE NOCASE")
     fun getAllCategories(): LiveData<List<DatabaseCategory>>
 }

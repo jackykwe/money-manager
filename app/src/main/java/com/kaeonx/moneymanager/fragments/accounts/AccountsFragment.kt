@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.userrepository.UserRepository
 
 internal const val ACC_PICKER_EDITABLE = "editable"
 internal const val ACC_PICKER_LISTENER = "listener"
@@ -21,13 +22,9 @@ class AccountsFragment : Fragment() {
         childFragment.arguments = Bundle().apply {
             putBoolean(ACC_PICKER_EDITABLE, true)
             putSerializable(ACC_PICKER_LISTENER, AccountOnClickListener { account ->
-                Toast.makeText(requireContext(), "Oh? You want $account?", Toast.LENGTH_SHORT).show()
-//                findNavController().navigate(
-//                    CategoriesFragmentDirections.actionRootCategoriesFragmentToRootCategoryEditFragment(
-//                        type,
-//                        category
-//                    )
-//                )
+                val cond1 = UserRepository.getInstance().accounts.value!!.size > 1
+                val cond2 = account.name != "Add..."
+                findNavController().navigate(AccountsFragmentDirections.actionAccountsFragmentToAccountEditFragment(account, cond1 && cond2))
             })
         }
         childFragmentManager

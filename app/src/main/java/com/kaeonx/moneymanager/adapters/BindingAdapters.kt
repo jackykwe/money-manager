@@ -64,12 +64,13 @@ fun TextView.setCurrencyVisibility(transaction: Transaction) {
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("iconRing_tint")
 fun ImageView.setIconRingTint(colourString: String) {
-    visibility = if (colourString == "TRANSPARENT") View.INVISIBLE else View.VISIBLE
+//    visibility = if (colourString == "TRANSPARENT") View.INVISIBLE else View.VISIBLE
     imageTintList = ColourHandler.getColorStateList(colourString)
 }
 
 @BindingAdapter("iconBG_tint")
 fun ImageView.setIconBGTint(colourString: String) {
+//    visibility = if (colourString == "TRANSPARENT") View.INVISIBLE else View.VISIBLE
     imageTintList = ColourHandler.getColorStateList(colourString)
 }
 

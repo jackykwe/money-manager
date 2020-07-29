@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import android.os.Parcelable
+import com.kaeonx.moneymanager.userrepository.database.DatabaseAccount
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -12,8 +13,14 @@ data class Account(
 
     fun toIconDetail(): IconDetail = IconDetail(
         iconHex = "F02D6",
-        iconBGColourString = "TRANSPARENT",
+        iconBGColourString = "INVISIBLE",
         iconRingColourString = this.colourString
+    )
+
+    fun toDatabase(): DatabaseAccount = DatabaseAccount(
+        accountId = this.accountId ?: 0,
+        name = this.name,
+        colourString = this.colourString
     )
 
 }

@@ -79,7 +79,7 @@ class CategoryEditFragment : Fragment() {
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             inflateMenu(R.menu.fragment_accountcategory_edit_default)
-            if (args.deleteable) inflateMenu(R.menu.fragment_accountcategory_edit_deleteable)
+            if (args.deletable) inflateMenu(R.menu.fragment_accountcategory_edit_deleteable)
 
             setOnMenuItemClickListener {
                 // Close the keyboard, if it's open

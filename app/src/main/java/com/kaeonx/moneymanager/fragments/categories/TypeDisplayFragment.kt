@@ -35,7 +35,7 @@ class TypeDisplayFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.categories.observe(viewLifecycleOwner) { list ->
             (binding.root.adapter as TypeDisplayRVAdapter).submitListAndAddTailIfNecessary(
-                list.filter { it.type == type }.sortedBy { it.name }
+                list.filter { it.type == type }
             )
         }
     }

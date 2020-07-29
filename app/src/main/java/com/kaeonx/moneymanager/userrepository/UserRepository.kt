@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
+import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.Dispatchers
@@ -77,29 +78,17 @@ class UserRepository private constructor() {
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
-//    suspend fun addTransaction(transaction: Transaction) {
-//        withContext(Dispatchers.IO) {
-//            database.userDatabaseDao.insertTransaction(transaction.toDatabase())
-//        }
-//    }
-//
-//    suspend fun updateTransaction(transaction: Transaction) {
-//        withContext(Dispatchers.IO) {
-//            database.userDatabaseDao.updateTransaction(transaction.toDatabase())
-//        }
-//    }
-//
-//    suspend fun deleteTransaction(transaction: Transaction) {
-//        withContext(Dispatchers.IO) {
-//            database.userDatabaseDao.deleteTransaction(transaction.toDatabase())
-//        }
-//    }
-//
-//    suspend fun clearAllData() {
-//        withContext(Dispatchers.IO) {
-//            database.userDatabaseDao.clearAllData()
-//        }
-//    }
+    suspend fun upsertAccount(account: Account) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.upsertAccount(account.toDatabase())
+        }
+    }
+
+    suspend fun deleteAccount(account: Account) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteAccount(account.toDatabase())
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     /**

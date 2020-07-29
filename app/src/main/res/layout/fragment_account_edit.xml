@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -11,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="com.kaeonx.moneymanager.fragments.categories.CategoryEditViewModel" />
+            type="com.kaeonx.moneymanager.fragments.accounts.AccountEditViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +18,7 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/categoryIconFL"
+            android:id="@+id/accountIconFL"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:layout_marginTop="1dp"
@@ -32,49 +31,28 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <include
-                android:id="@+id/categoryIconFLInclude"
+                android:id="@+id/accountIconFLInclude"
                 layout="@layout/icon_transaction"
-                app:iconDetail="@{viewModel.currentCategory.toIconDetail()}" />
+                app:iconDetail="@{viewModel.currentAccount.toIconDetail()}" />
 
         </FrameLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/categoryNameETContainer"
+            android:id="@+id/accountNameETContainer"
             style="@style/FullWidthMaterialEditTextContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Category Name"
-            app:error_text="@{viewModel.categoryNameETError}"
-            app:layout_constraintTop_toBottomOf="@+id/categoryIconFL"
-            tools:layout_editor_absoluteX="8dp">
+            android:hint="Account Name"
+            app:error_text="@{viewModel.accountNameETError}"
+            app:layout_constraintTop_toBottomOf="@+id/accountIconFL">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/categoryNameET"
+                android:id="@+id/accountNameET"
                 style="@style/FullWidthMaterialEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords"
-                android:text="@={viewModel.categoryNameETText}" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/iconHexETContainer"
-            style="@style/FullWidthMaterialEditTextContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Icon ID"
-            app:error_text="@{viewModel.iconHexETError}"
-            app:helperText="Refer to Cheatsheet on materialdesignicons.com"
-            app:layout_constraintTop_toBottomOf="@+id/categoryNameETContainer">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/iconHexET"
-                style="@style/FullWidthMaterialEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapCharacters"
-                android:maxLength="5"
-                android:text="@={viewModel.iconHexETText}" />
+                android:text="@={viewModel.accountNameETText}" />
 
             <View
                 android:id="@+id/focusClearer"
@@ -82,8 +60,7 @@
                 android:layout_height="0.01dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                app:layout_constraintTop_toBottomOf="@+id/iconHexET" />
-
+                app:layout_constraintTop_toBottomOf="@+id/accountNameET" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -93,14 +70,14 @@
             android:layout_height="wrap_content"
             android:hint="Colour"
             app:error_text="@{viewModel.colourFamilySpinnerError}"
-            app:layout_constraintTop_toBottomOf="@+id/iconHexETContainer">
+            app:layout_constraintTop_toBottomOf="@+id/accountNameETContainer">
 
             <AutoCompleteTextView
                 android:id="@+id/colourFamilySpinner"
                 style="@style/FullWidthMaterialEditText.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownAnchor="@id/categoryIconFL"
+                android:dropDownAnchor="@id/accountIconFL"
                 android:tag="colour family spinner"
                 app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}"
                 app:colourFamilySpinner_colourFamiliesAL="@{viewModel.colourFamilies}"
@@ -122,7 +99,7 @@
                 style="@style/FullWidthMaterialEditText.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dropDownAnchor="@id/categoryIconFL"
+                android:dropDownAnchor="@id/accountIconFL"
                 android:dropDownHeight="@{viewModel.colourIntensitySpinnerText != null ? LP.WRAP_CONTENT : 0}"
                 android:enabled="@{viewModel.colourIntensitySpinnerText != null}"
                 android:tag="colour intensity spinner"

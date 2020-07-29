@@ -34,6 +34,8 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Spinners
+     * Note that if you edit any of the code inside here, please do the same
+     * for the AccountEditViewModel (maybe make this into a class?) //TODO
      */
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -188,4 +190,3 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         _navigateUp.value = false
     }
 }
-

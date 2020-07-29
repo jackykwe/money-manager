@@ -76,9 +76,21 @@
         android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsFragment"
         android:label="Accounts"
         tools:layout="@layout/fragment_accounts" >
-<!--            <action-->
-<!--                android:id="@+id/action_accountsFragment_to_accountEditFragment"-->
-<!--                app:destination="@id/accountEditFragment" />-->
+        <action
+            android:id="@+id/action_accountsFragment_to_accountEditFragment"
+            app:destination="@id/accountEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountEditFragment"
+        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountEditFragment"
+        android:label="Edit Account"
+        tools:layout="@layout/fragment_account_edit">
+        <argument
+            android:name="oldAccount"
+            app:argType="com.kaeonx.moneymanager.userrepository.domain.Account" />
+        <argument
+            android:name="deletable"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -99,18 +111,10 @@
             android:name="oldCategory"
             app:argType="com.kaeonx.moneymanager.userrepository.domain.Category" />
         <argument
-            android:name="deleteable"
+            android:name="deletable"
             app:argType="boolean" />
     </fragment>
-    <!--    <fragment-->
-    <!--        android:id="@+id/accountEditFragment"-->
-    <!--        android:name="com.kaeonx.moneymanager.fragments.accounts.AccountEditFragment"-->
-    <!--        android:label="Edit Account"-->
-    <!--        tools:layout="@layout/fragment_account_edit">-->
-    <!--        <argument-->
-    <!--            android:name="account"-->
-    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Account" />-->
-    <!--    </fragment>-->
+
     <!--    <fragment-->
     <!--        android:id="@+id/transactionEditFragment"-->
     <!--        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionEditFragment"-->
