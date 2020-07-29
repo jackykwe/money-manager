@@ -79,13 +79,19 @@
     <style name="FullWidthMaterialEditTextContainer" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 
     <style name="FullWidthMaterialEditTextContainer.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>
     </style>
