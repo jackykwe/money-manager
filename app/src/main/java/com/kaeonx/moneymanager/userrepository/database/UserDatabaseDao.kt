@@ -54,21 +54,14 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
-
+    suspend fun upsertCategory(databaseCategory: DatabaseCategory)
     @Delete
-    suspend fun deleteIncomeCategory(databaseIncomeCategory: DatabaseIncomeCategory)
-    @Delete
-    suspend fun deleteExpensesCategory(databaseExpensesCategory: DatabaseExpensesCategory)
+    suspend fun deleteCategory(databaseCategory: DatabaseCategory)
 
     // TODO: RESET ACCOUNTS TO PRESET: Delete and overwrite in a database Transaction
 //    @Query("DELETE FROM transactions_table")
 //    suspend fun clearAllData()
 
-    @Query("SELECT * FROM income_categories_table")
-    fun getAllIncomeCategories(): LiveData<List<DatabaseIncomeCategory>>
-    @Query("SELECT * FROM expenses_categories_table")
-    fun getAllExpensesCategories(): LiveData<List<DatabaseExpensesCategory>>
+    @Query("SELECT * FROM categories_table")
+    fun getAllCategories(): LiveData<List<DatabaseCategory>>
 }

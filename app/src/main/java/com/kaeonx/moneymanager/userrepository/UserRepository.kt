@@ -1,14 +1,11 @@
 package com.kaeonx.moneymanager.userrepository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
-import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.Dispatchers
@@ -22,37 +19,20 @@ class UserRepository private constructor() {
     private val database = UserDatabase.getInstance()
 
     private val _transactions = database.userDatabaseDao.getAllTransactions()
-    val transactions: LiveData<List<Transaction>> =
-        Transformations.map(_transactions) { it.toDomain() }
+    val transactions = Transformations.map(_transactions) { it.toDomain() }
 
     private val _accounts = database.userDatabaseDao.getAllAccounts()
-    val accounts: LiveData<List<Account>> = Transformations.map(_accounts) { it.toDomain() }
+    val accounts = Transformations.map(_accounts) { it.toDomain() }
 
-    private val _incomeCategories = database.userDatabaseDao.getAllIncomeCategories()
-    private val _expensesCategories = database.userDatabaseDao.getAllExpensesCategories()
-    val categories = MediatorLiveData<List<Category>>().apply {
-        addSource(_incomeCategories) { value = updateCategories() }
-        addSource(_expensesCategories) { value = updateCategories() }
-    }
-    val incomeCategories: LiveData<List<Category>> =  // DON'T USE UNLESS ABSOLUTELY NECESSARY. USE categories.
-        Transformations.map(_incomeCategories) {
-            it.toDomain()
-        }
-    val expensesCategories: LiveData<List<Category>> =  // DON'T USE UNLESS ABSOLUTELY NECESSARY. USE categories.
-        Transformations.map(_expensesCategories) {
-            it.toDomain()
-        }
-
-    private fun updateCategories(): List<Category> {
-        val incomeHalf = _incomeCategories.value?.toDomain() ?: listOf()
-        val expensesHalf = _expensesCategories.value?.toDomain() ?: listOf()
-        return incomeHalf + expensesHalf
-    }
+    private val _categories = database.userDatabaseDao.getAllCategories()
+    val categories = Transformations.map(_categories) { it.toDomain() }
 
     private val liveDataActivator = Observer<Any> { }
     init {
-        // These values are observed statically (not bound to views like transactions in
-        // TransactionsFragment. We need to call these functions to make them alive.
+        // These values are observed statically (they are accessed by items not bound to
+        // views like transactions in TransactionsFragment - e.g. Transaction.toDetail()).
+        // We need to call these functions to make them alive.
+        // (Try removing this and the icons won't load in Transactions Fragment at first load.
         accounts.observeForever(liveDataActivator)
         categories.observeForever(liveDataActivator)
     }
@@ -128,21 +108,13 @@ class UserRepository private constructor() {
     ////////////////////////////////////////////////////////////////////////////////
     suspend fun upsertCategory(category: Category) {
         withContext(Dispatchers.IO) {
-            when (val type = category.type) {
-                "Income" -> database.userDatabaseDao.upsertIncomeCategory(category.toDatabaseIncome())
-                "Expenses" -> database.userDatabaseDao.upsertExpensesCategory(category.toDatabaseExpenses())
-                else -> throw IllegalArgumentException("Unknown type $type")
-            }
+            database.userDatabaseDao.upsertCategory(category.toDatabase())
         }
     }
 
     suspend fun deleteCategory(category: Category) {
         withContext(Dispatchers.IO) {
-            when (val type = category.type) {
-                "Income" -> database.userDatabaseDao.deleteIncomeCategory(category.toDatabaseIncome())
-                "Expenses" -> database.userDatabaseDao.deleteExpensesCategory(category.toDatabaseExpenses())
-                else -> throw IllegalArgumentException("Unknown type $type")
-            }
+            database.userDatabaseDao.deleteCategory(category.toDatabase())
         }
     }
 

@@ -1,12 +1,12 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import android.os.Parcelable
-import com.kaeonx.moneymanager.userrepository.database.DatabaseExpensesCategory
-import com.kaeonx.moneymanager.userrepository.database.DatabaseIncomeCategory
+import com.kaeonx.moneymanager.userrepository.database.DatabaseCategory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Category(
+    val categoryId: Int?,
     val type: String,
     var name: String,
     var iconHex: String,
@@ -19,16 +19,9 @@ data class Category(
         iconRingColourString = "TRANSPARENT"
     )
 
-    fun toDatabaseIncome(): DatabaseIncomeCategory =
-        DatabaseIncomeCategory(
-            type = this.type,
-            name = this.name,
-            iconHex = this.iconHex,
-            colourString = this.colourString
-        )
-
-    fun toDatabaseExpenses(): DatabaseExpensesCategory =
-        DatabaseExpensesCategory(
+    fun toDatabase(): DatabaseCategory =
+        DatabaseCategory(
+            categoryId = this.categoryId ?: 0,
             type = this.type,
             name = this.name,
             iconHex = this.iconHex,

@@ -120,12 +120,12 @@ class TransactionOnClickListener(val clickListener: (transaction: Transaction) -
 
 sealed class RVItem {
     data class RVItemDayTransactions(val dayTransactions: DayTransactions) : RVItem() {
-        override val rvItemId: Long = dayTransactions.dayOfMonth
+        override val rvItemId: Int = dayTransactions.dayOfMonth
     }
 
     object RVItemHeader : RVItem() {
-        override val rvItemId: Long = Long.MIN_VALUE
+        override val rvItemId: Int = Int.MIN_VALUE
     }
 
-    abstract val rvItemId: Long
+    abstract val rvItemId: Int
 }

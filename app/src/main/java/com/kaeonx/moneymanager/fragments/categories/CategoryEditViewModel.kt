@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.categories
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -12,10 +11,6 @@ import kotlinx.coroutines.launch
 private const val TAG = "cevm"
 
 class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
-
-    private val liveDataActivator = Observer<Any> {
-        Log.d(TAG, "It got updated! $it")
-    }
 
     init {
         if (oldCategory.name == "Add...") {
@@ -30,9 +25,6 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     private val otherCategoryNames = userRepository.categories.value!!.filter { it.type == oldCategory.type && it.name != oldCategory.name }.map { it.name } // TODO: ASYNC
 
     private var _currentCategory = MutableLiveData2(oldCategory.copy())
-    init {
-        _currentCategory.observeForever(liveDataActivator)
-    }
     val currentCategory: LiveData<Category>
         get() = _currentCategory
     fun changesWereMade(): Boolean {
@@ -161,12 +153,16 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         when {
             categoryNameETError.value != null -> _showSnackBarText.value = "Invalid Category Name"
             iconHexETError.value != null -> _showSnackBarText.value = "Invalid Icon ID"
+            colourFamilySpinnerError.value != null -> _showSnackBarText.value = "Invalid Colour"
+            colourIntensitySpinnerError.value != null -> _showSnackBarText.value = "Invalid Colour Intensity"
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {
                         userRepository.upsertCategory(_currentCategory.value)
                         _navigateUp.value = true
                     }
+                } else {
+                    _navigateUp.value = true
                 }
             }
         }
@@ -191,25 +187,5 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     fun navigateUpHandled() {
         _navigateUp.value = false
     }
-
-//
-//    fun addCategory(transaction: Transaction) {
-//        Log.d(TAG, "addCategory: called")
-//        viewModelScope.launch {
-//            userRepository.addCategory(transaction)
-//        }
-//    }
-
-
-
-//    init {
-//        memoIsNullOrBlank.observeForever(liveDataActivator)
-//    }
-//
-    override fun onCleared() {
-        _currentCategory.removeObserver(liveDataActivator)
-        super.onCleared()
-    }
-
 }
 

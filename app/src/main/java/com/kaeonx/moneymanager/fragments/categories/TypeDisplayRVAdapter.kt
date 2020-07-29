@@ -24,7 +24,7 @@ class TypeDisplayRVAdapter(
     fun submitListAndAddTailIfNecessary(list: List<Category>) {
         if (!editable) submitList(list) else {
             CoroutineScope(Dispatchers.Default).launch {
-                val submittable = list + listOf(Category(type, "Add...", "F065D", "Red,500"))
+                val submittable = list + listOf(Category(null, type, "Add...", "F065D", "Red,500"))
                 withContext(Dispatchers.Main) {
                     submitList(submittable)
                 }
@@ -72,7 +72,7 @@ class TypeDisplayRVAdapter(
 
 class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.categoryId == newItem.categoryId
     }
 
     override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {

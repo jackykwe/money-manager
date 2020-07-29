@@ -37,8 +37,8 @@ class CategoriesFragment : Fragment() {
 //        enableCatPickerVPFadeAnimation()
         binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, true, CategoryOnClickListener { category ->
             val cond1 = when (val type = category.type) {
-                "Income" -> UserRepository.getInstance().incomeCategories.value!!.size > 1
-                "Expenses" -> UserRepository.getInstance().expensesCategories.value!!.size > 1
+                "Income" -> UserRepository.getInstance().categories.value!!.count { it.type == "Income" } > 1
+                "Expenses" -> UserRepository.getInstance().categories.value!!.count { it.type == "Expenses" } > 1
                 else -> throw IllegalArgumentException("Unknown type $type")
             }
             val cond2 = category.name != "Add..."

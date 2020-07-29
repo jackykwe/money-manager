@@ -2,8 +2,84 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b0dd1d804137cd455f057c827fed22f2",
+    "identityHash": "94e5fa94e25f7e7e54a2b54599804307",
     "entities": [
+      {
+        "tableName": "accounts_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`accountId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `colour_string` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colourString",
+            "columnName": "colour_string",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "accountId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "categories_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `name` TEXT NOT NULL, `icon_hex` TEXT NOT NULL, `colour_string` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "categoryId",
+            "columnName": "categoryId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconHex",
+            "columnName": "icon_hex",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "colourString",
+            "columnName": "colour_string",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "categoryId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
       {
         "tableName": "transactions_table",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`transactionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp` INTEGER NOT NULL, `type` TEXT NOT NULL, `category` TEXT NOT NULL, `account` TEXT NOT NULL, `memo` TEXT NOT NULL, `original_currency` TEXT NOT NULL, `original_amount` TEXT NOT NULL)",
@@ -65,114 +141,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "accounts_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `colour_string` TEXT NOT NULL, PRIMARY KEY(`name`))",
-        "fields": [
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "colourString",
-            "columnName": "colour_string",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "name"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "income_categories_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `name` TEXT NOT NULL, `icon_hex` TEXT NOT NULL, `colour_string` TEXT NOT NULL, PRIMARY KEY(`name`))",
-        "fields": [
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "iconHex",
-            "columnName": "icon_hex",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "colourString",
-            "columnName": "colour_string",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "name"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "expenses_categories_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `name` TEXT NOT NULL, `icon_hex` TEXT NOT NULL, `colour_string` TEXT NOT NULL, PRIMARY KEY(`name`))",
-        "fields": [
-          {
-            "fieldPath": "type",
-            "columnName": "type",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "iconHex",
-            "columnName": "icon_hex",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "colourString",
-            "columnName": "colour_string",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "name"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b0dd1d804137cd455f057c827fed22f2')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94e5fa94e25f7e7e54a2b54599804307')"
     ]
   }
 }

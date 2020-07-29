@@ -20,8 +20,7 @@ class TypeDisplayFragment : Fragment() {
         }
     }
     private lateinit var binding: FragmentTypeDisplayBinding
-    private val viewModelFactory by lazy { TypeDisplayViewModelFactory(type) }
-    private val viewModel: TypeDisplayViewModel by viewModels { viewModelFactory }
+    private val viewModel: TypeDisplayViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTypeDisplayBinding.inflate(inflater, container, false)
@@ -34,8 +33,10 @@ class TypeDisplayFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.categories.observe(viewLifecycleOwner) {
-            (binding.root.adapter as TypeDisplayRVAdapter).submitListAndAddTailIfNecessary(it)
+        viewModel.categories.observe(viewLifecycleOwner) { list ->
+            (binding.root.adapter as TypeDisplayRVAdapter).submitListAndAddTailIfNecessary(
+                list.filter { it.type == type }.sortedBy { it.name }
+            )
         }
     }
 }

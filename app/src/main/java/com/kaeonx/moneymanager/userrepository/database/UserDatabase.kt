@@ -11,10 +11,9 @@ private const val TAG = "dtb"
 
 @Database(
     entities = [
-        DatabaseTransaction::class,
         DatabaseAccount::class,
-        DatabaseIncomeCategory::class,
-        DatabaseExpensesCategory::class
+        DatabaseCategory::class,
+        DatabaseTransaction::class
     ],
     version = 1
 )

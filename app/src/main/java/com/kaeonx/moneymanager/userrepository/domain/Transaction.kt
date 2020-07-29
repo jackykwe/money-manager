@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
 
 @Parcelize
 data class Transaction(
-    val transactionId: Long?,
+    val transactionId: Int?,
     var timestamp: Long,
     var type: String,
     var category: String,
@@ -23,6 +23,7 @@ data class Transaction(
 
     fun toDatabase(): DatabaseTransaction {
         return DatabaseTransaction(
+            transactionId = this.transactionId ?: 0,
             timestamp = this.timestamp,
             type = this.type,
             category = this.category,
@@ -36,8 +37,8 @@ data class Transaction(
     fun toIconDetail(): IconDetail {
         val repository = UserRepository.getInstance()
         val categoryObj = repository.categories.value?.find { it.name == this.category && it.type == this.type }
-            ?: Category(type, category, "F02D6", "Black")
-        val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account(account, "White")
+            ?: Category(null, type, category, "F02D6", "Black")
+        val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account(null, account, "White")
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }
 }
@@ -90,7 +91,7 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
         c.set(Calendar.DAY_OF_MONTH, d)  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
         result.add(
             DayTransactions(
-                dayOfMonth = d.toLong(),
+                dayOfMonth = d,
                 ymdCalendar = c,
                 dayIncome = null,
                 dayExpenses = null,

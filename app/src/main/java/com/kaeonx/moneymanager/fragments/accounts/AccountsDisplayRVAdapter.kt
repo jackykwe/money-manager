@@ -21,7 +21,7 @@ class AccountsDisplayRVAdapter(
     fun submitListAndAddTailIfNecessary(list: List<Account>) {
         if (!editable) submitList(list) else {
             CoroutineScope(Dispatchers.Default).launch {
-                val submittable = list + listOf(Account("Add...", "Red,500"))
+                val submittable = list + listOf(Account(null, "Add...", "Red,500"))
                 withContext(Dispatchers.Main) {
                     submitList(submittable)
                 }
@@ -57,7 +57,7 @@ class AccountsDisplayRVAdapter(
 
 class AccountDiffCallback : DiffUtil.ItemCallback<Account>() {
     override fun areItemsTheSame(oldItem: Account, newItem: Account): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.accountId == newItem.accountId
     }
 
     override fun areContentsTheSame(oldItem: Account, newItem: Account): Boolean {

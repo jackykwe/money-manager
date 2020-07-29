@@ -7,7 +7,7 @@ import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
 @Entity(tableName = "transactions_table")
 data class DatabaseTransaction(
-    @PrimaryKey(autoGenerate = true) val transactionId: Long = 0L,
+    @PrimaryKey(autoGenerate = true) val transactionId: Int,
     val timestamp: Long,
     val type: String,
     val category: String,

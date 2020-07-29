@@ -16,10 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        tools:context=".fragments.budget.BudgetFragment">
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/CategoryIconFL"
