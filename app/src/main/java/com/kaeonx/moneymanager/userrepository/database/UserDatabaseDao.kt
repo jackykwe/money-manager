@@ -65,4 +65,17 @@ interface UserDatabaseDao {
 
     @Query("SELECT * FROM categories_table ORDER BY name COLLATE NOCASE")
     fun getAllCategories(): LiveData<List<DatabaseCategory>>
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Preferences
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertPreference(databasePreference: DatabasePreference)
+
+    @Query("SELECT * FROM preferences_table")
+    fun getAllPreferences(): LiveData<List<DatabasePreference>>
 }

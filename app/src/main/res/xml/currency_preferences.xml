@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:persistent="false"
+        android:selectable="false"
+        android:summary="The home currency is used only for tabulating totals. Individual transaction records always display the original currency used." />
+
+    <ListPreference
+        android:entries="@array/ccc_currencies_entries"
+        android:entryValues="@array/ccc_currencies_values"
+        android:key="ccc_home_currency"
+        android:title="Home currency"
+        app:useSimpleSummaryProvider="true" />
+
+    <SwitchPreference
+        android:key="ccc_hide_matching_currency"
+        android:summaryOff="Always showing currencies next to transaction values"
+        android:summaryOn="Hiding currencies wherever their absence causes no ambiguity"
+        android:title="Hide currency if equal to home currency" />
+
+</PreferenceScreen>

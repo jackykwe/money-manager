@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Money Manager</string>
+    <string name="settings_activity_title">Settings</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -40,7 +41,7 @@
 
     <!-- Confirm exit dialogs -->
     <string name="ok">OK</string>
-    <string name="cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
 
     <!-- TransactionsFragment RV -->
     <string name="placeholder_amount">13.16</string>
@@ -48,10 +49,10 @@
     <string name="rv_item_transactions_day_header_income_hint">Income:</string>
     <string name="rv_item_transactions_day_header_expenses_hint">Expenses:</string>
 
-    <!-- Menu strings -->
-    <string name="menu_search">Search</string>
+    <!-- Menu items -->
+    <string name="menu_save">Save</string>
+    <string name="menu_delete">Delete</string>
     <string name="menu_sync">Sync</string>
-    <string name="save">Save</string>
-    <string name="delete">Delete</string>
+    <string name="menu_search">Search</string>
 
 </resources>

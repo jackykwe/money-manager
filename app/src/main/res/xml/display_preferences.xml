@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="Theme">
+
+        <ListPreference
+            android:entries="@array/dsp_theme_entries"
+            android:entryValues="@array/dsp_theme_values"
+            android:key="dsp_theme"
+            android:title="App theme"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Display">
+
+        <ListPreference
+            android:dialogTitle="Display 11 January 1970 as"
+            android:entries="@array/dsp_date_format_entries"
+            android:entryValues="@array/dsp_date_format_values"
+            android:key="dsp_date_format"
+            android:title="Date format"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:dialogTitle="Display 8:05 AM / 11:45 PM as"
+            android:entries="@array/dsp_time_format_entries"
+            android:entryValues="@array/dsp_time_format_values"
+            android:key="dsp_time_format"
+            android:title="Time format"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

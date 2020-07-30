@@ -19,12 +19,11 @@ data class Category(
         iconRingColourString = "TRANSPARENT"
     )
 
-    fun toDatabase(): DatabaseCategory =
-        DatabaseCategory(
-            categoryId = this.categoryId ?: 0,
-            type = this.type,
-            name = this.name,
-            iconHex = this.iconHex,
-            colourString = this.colourString
-        )
+    fun toDatabase(): DatabaseCategory = DatabaseCategory(
+        categoryId = this.categoryId ?: 0,
+        type = this.type,
+        name = this.name,
+        iconHex = this.iconHex,
+        colourString = this.colourString
+    )
 }

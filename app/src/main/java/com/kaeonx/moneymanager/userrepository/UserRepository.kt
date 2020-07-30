@@ -6,8 +6,10 @@ import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
+import com.kaeonx.moneymanager.userrepository.database.toMap
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
+import com.kaeonx.moneymanager.userrepository.domain.Preference
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,6 +30,9 @@ class UserRepository private constructor() {
     private val _categories = database.userDatabaseDao.getAllCategories()
     val categories = Transformations.map(_categories) { it.toDomain() }
 
+    private val _preferences = database.userDatabaseDao.getAllPreferences()
+    val preferences = Transformations.map(_preferences) { it.toMap() }
+
     private val liveDataActivator = Observer<Any> { }
     init {
         // These values are observed statically (they are accessed by items not bound to
@@ -36,11 +41,13 @@ class UserRepository private constructor() {
         // (Try removing this and the icons won't load in Transactions Fragment at first load.
         accounts.observeForever(liveDataActivator)
         categories.observeForever(liveDataActivator)
+        preferences.observeForever(liveDataActivator)
     }
 
     private fun clearPermanentObservers() {
         accounts.removeObserver(liveDataActivator)
         categories.removeObserver(liveDataActivator)
+        preferences.removeObserver(liveDataActivator)
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +111,17 @@ class UserRepository private constructor() {
     suspend fun deleteCategory(category: Category) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.deleteCategory(category.toDatabase())
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Preferences
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    suspend fun upsertPreference(preference: Preference) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.upsertPreference(preference.toDatabase())
         }
     }
 

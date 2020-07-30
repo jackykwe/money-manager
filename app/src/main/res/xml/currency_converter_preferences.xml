@@ -1,0 +1,40 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:title="Currency Table">
+
+        <Preference
+            app:key="activity"
+            app:title="Edit active table">
+            <intent
+                android:targetClass="com.kaeonx.moneymanager.activities.SettingsActivity"
+                android:targetPackage="com.kaeonx.moneymanager" />
+        </Preference>
+
+        <Preference
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="Online updates will override any user edits to the active table." />
+
+        <Preference
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="If &quot;Fetch updates from online&quot; is enabled, an update will be fetched from online when the validity of the previously fetched table has expired. User edits to the active table do not affect the validity of the table." />
+
+        <SwitchPreference
+            android:key="ccv_enable_online"
+            android:title="Fetch updates from online" />
+
+        <ListPreference
+            android:dependency="ccv_enable_online"
+            android:entries="@array/ccv_online_update_ttl_entries"
+            android:entryValues="@array/ccv_online_update_ttl_values"
+            android:key="ccv_online_update_ttl"
+            android:title="Validity of online tables"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

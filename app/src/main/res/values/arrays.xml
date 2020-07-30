@@ -1,0 +1,155 @@
+<resources>
+        <string-array name="dap_backup_freq_entries">
+        <item>On every change</item>
+        <item>Once a day</item>
+    </string-array>
+
+    <string-array name="dap_backup_freq_values">
+        <item>0</item>
+        <item>24</item>
+    </string-array>
+
+    <string-array name="ccv_online_update_ttl_entries">
+        <item>12h</item>
+        <item>24h</item>
+    </string-array>
+
+    <string-array name="ccv_online_update_ttl_values">
+        <item>12</item>
+        <item>24</item>
+    </string-array>
+
+    <string-array name="dsp_theme_entries">
+        <item>Light</item>
+        <item>Coloured</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string-array name="dsp_theme_values">
+        <item>light</item>
+        <item>coloured</item>
+        <item>dark</item>
+    </string-array>
+
+    <string-array name="dsp_date_format_entries">
+        <item>110170</item>
+        <item>11011970</item>
+        <item>11 Jan 70</item>
+        <item>11 Jan 1970</item>
+        <item>11/01/70</item>
+        <item>11/01/1970</item>
+        <item>11.01.70</item>
+        <item>11.01.1970</item>
+    </string-array>
+
+    <string-array name="dsp_date_format_values">
+        <item>ddMMyy</item>
+        <item>ddMMyyyy</item>
+        <item>dd MMM yy</item>
+        <item>dd MMM yyyy</item>
+        <item>dd/MM/yy</item>
+        <item>dd/MM/yyyy</item>
+        <item>dd.MM.yy</item>
+        <item>dd.MM.yyyy</item>
+    </string-array>
+
+    <string-array name="dsp_time_format_entries">
+        <item>0805 / 2345</item>
+        <item>0805h / 2345h</item>
+        <item>8:05 / 23:45</item>
+        <item>08:05 / 23:45</item>
+        <item>8:05 AM / 11:45 PM</item>
+        <item>08:05 AM / 11:45 PM</item>
+    </string-array>
+
+    <string-array name="dsp_time_format_values">
+        <item>HHmm</item>
+        <item>HHmm\'h\'</item>
+        <item>H:mm</item>
+        <item>HH:mm</item>
+        <item>h:mm a</item>
+        <item>hh:mm a</item>
+    </string-array>
+
+    <string-array name="tst_default_type_entries">
+        <item>Income</item>
+        <item>Expenses</item>
+    </string-array>
+
+    <string-array name="tst_default_type_values">
+        <item>Income</item>
+        <item>Expenses</item>
+    </string-array>
+
+    <string-array name="ccc_currencies_entries">
+        <item>AUD - Australian Dollar</item>
+        <item>BGN - Bulgarian Lev</item>
+        <item>BRL - Brazilian Real</item>
+        <item>CAD - Canadian Dollar</item>
+        <item>CHF - Swiss Franc</item>
+        <item>CNY - Yuan Renminbi</item>
+        <item>CZK - Czech Koruna</item>
+        <item>DKK - Danish Krone</item>
+        <item>EUR - Euro</item>
+        <item>GBP - Pound Sterling</item>
+        <item>HKD - Hong Kong Dollar</item>
+        <item>HRK - Kuna</item>
+        <item>HUF - Forint</item>
+        <item>IDR - Rupiah</item>
+        <item>ILS - New Israeli Sheqel</item>
+        <item>INR - Indian Rupee</item>
+        <item>ISK - Iceland Krona</item>
+        <item>JPY - Yen</item>
+        <item>KRW - Won</item>
+        <item>MXN - Mexican Peso</item>
+        <item>MYR - Malaysian Ringgit</item>
+        <item>NOK - Norwegian Krone</item>
+        <item>NZD - New Zealand Dollar</item>
+        <item>PHP - Philippine Peso</item>
+        <item>PLN - Zloty</item>
+        <item>RON - Romanian Leu</item>
+        <item>RUB - Russian Ruble</item>
+        <item>SEK - Swedish Krona</item>
+        <item>SGD - Singapore Dollar</item>
+        <item>THB - Baht</item>
+        <item>TRY - Turkish Lira</item>
+        <item>USD - US Dollar</item>
+        <item>ZAR - Rand</item>
+    </string-array>
+
+    <string-array name="ccc_currencies_values">
+        <item>AUD</item>
+        <item>BGN</item>
+        <item>BRL</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>CNY</item>
+        <item>CZK</item>
+        <item>DKK</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>HKD</item>
+        <item>HRK</item>
+        <item>HUF</item>
+        <item>IDR</item>
+        <item>ILS</item>
+        <item>INR</item>
+        <item>ISK</item>
+        <item>JPY</item>
+        <item>KRW</item>
+        <item>MXN</item>
+        <item>MYR</item>
+        <item>NOK</item>
+        <item>NZD</item>
+        <item>PHP</item>
+        <item>PLN</item>
+        <item>RON</item>
+        <item>RUB</item>
+        <item>SEK</item>
+        <item>SGD</item>
+        <item>THB</item>
+        <item>TRY</item>
+        <item>USD</item>
+        <item>ZAR</item>
+    </string-array>
+</resources>

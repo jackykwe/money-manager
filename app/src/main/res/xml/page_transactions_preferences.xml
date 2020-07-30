@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="New transactions">
+
+        <ListPreference
+            android:key="tst_default_account"
+            android:title="Default Account"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:entries="@array/tst_default_type_entries"
+            android:entryValues="@array/tst_default_type_values"
+            android:key="tst_default_type"
+            android:title="Default Type"
+            app:useSimpleSummaryProvider="true" />
+
+        <Preference
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="The default currency is the home currency." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Transactions summary">
+
+    </PreferenceCategory>
+</PreferenceScreen>

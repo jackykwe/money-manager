@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "94e5fa94e25f7e7e54a2b54599804307",
+    "identityHash": "c561267dec7e5a19aec4a8a5880c3f89",
     "entities": [
       {
         "tableName": "accounts_table",
@@ -141,12 +141,44 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "preferences_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`key` TEXT NOT NULL, `valueInteger` INTEGER, `valueText` TEXT, PRIMARY KEY(`key`))",
+        "fields": [
+          {
+            "fieldPath": "key",
+            "columnName": "key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valueInteger",
+            "columnName": "valueInteger",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "valueText",
+            "columnName": "valueText",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "key"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94e5fa94e25f7e7e54a2b54599804307')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c561267dec7e5a19aec4a8a5880c3f89')"
     ]
   }
 }

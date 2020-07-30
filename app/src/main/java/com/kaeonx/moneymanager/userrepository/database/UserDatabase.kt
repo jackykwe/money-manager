@@ -13,7 +13,8 @@ private const val TAG = "dtb"
     entities = [
         DatabaseAccount::class,
         DatabaseCategory::class,
-        DatabaseTransaction::class
+        DatabaseTransaction::class,
+        DatabasePreference::class
     ],
     version = 1
 )

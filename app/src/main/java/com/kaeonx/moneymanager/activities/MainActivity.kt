@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -62,8 +63,8 @@ class MainActivity : AppCompatActivity() {
                         false
                     }
                     R.id.menuSettings -> {
-                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
-//                    startActivity(Intent(this, SettingsActivity::class.java))
+//                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
 //                    startActivityForResult(Intent(this, SettingsActivity::class.java), 0)
                         false
                     }

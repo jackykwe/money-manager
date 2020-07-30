@@ -1,0 +1,56 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="General">
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesAccountFragment"
+            app:icon="@drawable/mdi_credit_card"
+            app:key="prefhome_acc"
+            app:title="Account" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesCurrencyFragment"
+            app:icon="@drawable/mdi_currency_sign"
+            app:key="prefhome_ccc"
+            app:title="Currency" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesCurrencyConverterFragment"
+            app:icon="@drawable/mdi_arrow_decision"
+            app:key="prefhome_ccv"
+            app:title="Currency Converter" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesDataAndPrivacyFragment"
+            app:icon="@drawable/mdi_shield_account"
+            app:key="prefhome_dap"
+            app:title="Data &amp; Privacy" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesDisplayFragment"
+            app:icon="@drawable/mdi_compare"
+            app:key="prefhome_dsp"
+            app:title="Display" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Pages">
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesPageTransactionsFragment"
+            app:icon="@drawable/mdi_file_excel"
+            app:key="prefhome_tst"
+            app:title="Transactions" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesPageBudgetFragment"
+            app:icon="@drawable/mdi_file_excel"
+            app:key="prefhome_bdg"
+            app:title="Budget" />
+
+        <Preference
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesPageDebtsFragment"
+            app:icon="@drawable/mdi_file_excel"
+            app:key="prefhome_dbt"
+            app:title="Debts" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

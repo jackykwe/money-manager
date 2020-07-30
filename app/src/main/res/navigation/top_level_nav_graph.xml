@@ -114,6 +114,10 @@
             android:name="deletable"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/preferencesHomeFragment"
+        android:name="com.kaeonx.moneymanager.fragments.preferences.PreferencesHomeFragment"
+        android:label="Settings" />
 
     <!--    <fragment-->
     <!--        android:id="@+id/transactionEditFragment"-->
