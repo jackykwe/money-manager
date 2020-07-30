@@ -17,6 +17,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
             oldCategory.apply {
                 name = ""
                 iconHex = "F02D6"
+                colourString = "Red,500"
             }
         }
     }

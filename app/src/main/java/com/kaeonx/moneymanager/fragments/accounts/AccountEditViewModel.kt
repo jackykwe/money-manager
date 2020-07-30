@@ -13,6 +13,7 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         if (oldAccount.name == "Add...") {
             oldAccount.apply {
                 name = ""
+                colourString = "Red,500"
             }
         }
     }

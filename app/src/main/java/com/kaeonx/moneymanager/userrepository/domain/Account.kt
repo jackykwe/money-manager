@@ -13,7 +13,7 @@ data class Account(
 
     fun toIconDetail(): IconDetail = IconDetail(
         iconHex = "F02D6",
-        iconBGColourString = "INVISIBLE",
+        iconBGColourString = "TRANSPARENT",
         iconRingColourString = this.colourString
     )
 

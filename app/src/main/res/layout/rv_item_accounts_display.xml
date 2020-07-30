@@ -31,7 +31,7 @@
             android:layout_height="48dp"
             android:scaleType="fitXY"
             android:tint="@color/grey_500"
-            android:visibility="@{account.name == `Add...` ? View.INVISIBLE : View.VISIBLE}"
+            android:visibility="@{account.colourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
             app:horizontalBarIV_tint="@{account.colourString}"
             app:srcCompat="@drawable/basic_rectangle" />
 

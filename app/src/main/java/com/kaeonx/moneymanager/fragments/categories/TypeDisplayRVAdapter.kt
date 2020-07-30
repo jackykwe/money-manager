@@ -24,7 +24,7 @@ class TypeDisplayRVAdapter(
     fun submitListAndAddTailIfNecessary(list: List<Category>) {
         if (!editable) submitList(list) else {
             CoroutineScope(Dispatchers.Default).launch {
-                val submittable = list + listOf(Category(null, type, "Add...", "F065D", "Red,500"))
+                val submittable = list + listOf(Category(null, type, "Add...", "F065D", "TRANSPARENT"))
                 withContext(Dispatchers.Main) {
                     submitList(submittable)
                 }
@@ -45,12 +45,11 @@ class TypeDisplayRVAdapter(
         fun rebind(category: Category, itemOnClickListener: CategoryOnClickListener) {
             binding.category = category
             binding.onClickListener = itemOnClickListener
-            binding.categoryIconInclude.iconBG.visibility = if (category.name == "Add...") {
-                binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("Black"))
-                View.INVISIBLE
-            } else {
-                binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("White"))
-                View.VISIBLE
+            binding.categoryIconInclude.iconTV.apply {
+                when (category.name) {
+                    "Add..." -> binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("Black"))
+                    else -> binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("White"))
+                }
             }
             binding.executePendingBindings()
         }

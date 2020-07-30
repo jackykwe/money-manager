@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
         <variable
             name="iconDetail"
             type="com.kaeonx.moneymanager.userrepository.domain.IconDetail" />
@@ -18,7 +19,8 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             app:iconRing_tint="@{iconDetail.iconRingColourString}"
-            android:src="@drawable/basic_circle"
+            android:src="@drawable/basic_ring"
+            android:visibility="@{iconDetail.iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
             android:tint="@color/black" />
 
         <ImageView
@@ -28,6 +30,7 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             app:iconBG_tint="@{iconDetail.iconBGColourString}"
+            android:visibility="@{iconDetail.iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/basic_circle"

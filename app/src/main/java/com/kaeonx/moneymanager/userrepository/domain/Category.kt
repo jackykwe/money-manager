@@ -16,7 +16,7 @@ data class Category(
     fun toIconDetail(): IconDetail = IconDetail(
         iconHex = this.iconHex,
         iconBGColourString = this.colourString,
-        iconRingColourString = "INVISIBLE"
+        iconRingColourString = "TRANSPARENT"
     )
 
     fun toDatabase(): DatabaseCategory =
