@@ -49,11 +49,38 @@ object UserPDS : PreferenceDataStore() {
         // NONE
     )
 
-    override fun getBoolean(key: String, defValue: Boolean): Boolean =
-        (preferences.value!![key] as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+    override fun getBoolean(key: String, defValue: Boolean): Boolean {
+        return if (preferences.value == null) {
+            Log.d(
+                TAG,
+                "getBoolean: preferences.value is null - UserRepository.preferences not yet ready"
+            )
+            defaultPreferences[key] as Boolean
+        } else if (preferences.value!![key] == null) {
+            Log.d(TAG, "getBoolean: preferences.value!![key] is null - key not found?? Nani")
+            defaultPreferences[key] as Boolean
+        } else {
+            (preferences.value!![key] as Int).toBooleanNullable()!!
+        }
+//        return (preferences.value?.get(key) as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+    }
 
-    fun getBoolean(key: String): Boolean =
-        (preferences.value!![key] as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+    fun getBoolean(key: String): Boolean {
+        return if (preferences.value == null) {
+            Log.d(
+                TAG,
+                "getBoolean: preferences.value is null - UserRepository.preferences not yet ready"
+            )
+            defaultPreferences[key] as Boolean
+        } else if (preferences.value!![key] == null) {
+            Log.d(TAG, "getBoolean: preferences.value!![key] is null - key not found?? Nani")
+            defaultPreferences[key] as Boolean
+        } else {
+            (preferences.value!![key] as Int).toBooleanNullable()!!
+        }
+//        return (preferences.value?.get(key) as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+    }
+
     private fun Int?.toBooleanNullable(): Boolean? = when (this) {
         null -> this
         1 -> true
@@ -73,11 +100,39 @@ object UserPDS : PreferenceDataStore() {
         }
     }
 
-    override fun getString(key: String, defValue: String?): String =
-        preferences.value!![key] as String? ?: defaultPreferences[key] as String
+    override fun getString(key: String, defValue: String?): String {
+        Log.d(TAG, "getString: called")
+        return if (preferences.value == null) {
+            Log.d(
+                TAG,
+                "getString: preferences.value is null - UserRepository.preferences not yet ready"
+            )
+            defaultPreferences[key] as String
+        } else if (preferences.value!![key] == null) {
+            Log.d(TAG, "getString: preferences.value!![key] is null - key not found?? Nani")
+            defaultPreferences[key] as String
+        } else {
+            preferences.value!![key] as String
+        }
+//        return preferences.value?.get(key) as String? ?: defaultPreferences[key] as String
+    }
 
-    fun getString(key: String): String =
-        preferences.value!![key] as String? ?: defaultPreferences[key] as String
+    fun getString(key: String): String {
+        Log.d(TAG, "getString: called")
+        return if (preferences.value == null) {
+            Log.d(
+                TAG,
+                "getString: preferences.value is null - UserRepository.preferences not yet ready"
+            )
+            defaultPreferences[key] as String
+        } else if (preferences.value!![key] == null) {
+            Log.d(TAG, "getString: preferences.value!![key] is null - key not found?? Nani")
+            defaultPreferences[key] as String
+        } else {
+            preferences.value!![key] as String
+        }
+//        return preferences.value?.get(key) as String? ?: defaultPreferences[key] as String
+    }
 
     override fun putString(key: String, value: String?) {
         if (value == null) throw IllegalArgumentException("putString: value cannot be null")

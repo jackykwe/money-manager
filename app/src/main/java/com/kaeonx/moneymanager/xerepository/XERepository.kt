@@ -42,13 +42,12 @@ class XERepository private constructor() {
     // 2. On Preferences Change
     fun checkAndUpdateIfNecessary() {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
-        val cond1 =
-            xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0  // No records exist for home currency
-        val cond2a = UserPDS.getBoolean("ccv_enable_online")
-        val cond2b = System.currentTimeMillis() -
-                xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
-                UserPDS.getString("ccv_online_update_ttl").toLong() // TIME TO LIVE
-        if (cond1 || (cond2a && cond2b)) {
+        if (xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0 ||
+            (UserPDS.getBoolean("ccv_enable_online") && System.currentTimeMillis() -
+                    xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
+                    UserPDS.getString("ccv_online_update_ttl").toLong()
+                    )
+        ) {
             CoroutineScope(Dispatchers.IO).launch {
                 Log.d(TAG, "SIMULATED NETWORK CALL START")
                 delay(5000L)
@@ -57,14 +56,13 @@ class XERepository private constructor() {
         }
     }
 
-    private val xeRowsActivator = Observer<List<XERow>> { checkAndUpdateIfNecessary() }
-
+    private val liveDataActivator = Observer<Any> { }
     init {
-        xeRows.observeForever(xeRowsActivator)
+        xeRows.observeForever(liveDataActivator)
     }
 
     private fun clearPermanentObservers() {
-        xeRows.removeObserver(xeRowsActivator)
+        xeRows.removeObserver(liveDataActivator)
     }
 
     // Refresh cache
@@ -102,6 +100,13 @@ class XERepository private constructor() {
                 }
                 return instance
             }
+        }
+
+        // Used when logging out
+        fun dropInstance() {
+            Log.d(TAG, "WARN: XE REPOSITORY INSTANCE DROPPED")
+            INSTANCE?.clearPermanentObservers()
+            INSTANCE = null
         }
     }
 }

@@ -22,6 +22,7 @@ import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
+import com.kaeonx.moneymanager.xerepository.XERepository
 
 // TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
 // I'm dealing with all dialogs using the not so new method - supportFragmentManager / childFragmentManager
@@ -100,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 setupWithNavController(navController, appBarConfiguration)
                 // Visibility
                 visibility = when (destination.id) {
-                    R.id.titleFragment -> View.GONE
+                    R.id.titleFragment, R.id.lobbyFragment -> View.GONE
                     else -> View.VISIBLE
                 }
             }
@@ -143,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(TopLevelNavGraphDirections.actionGlobalTitleFragment())
                 UserRepository.dropInstance()
                 UserDatabase.dropInstance()
+                XERepository.dropInstance()
             }
         }
     }

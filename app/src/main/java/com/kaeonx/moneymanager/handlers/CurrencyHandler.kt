@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.handlers
 
 import com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel
+import com.kaeonx.moneymanager.xerepository.XERepository
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -53,14 +54,18 @@ class CurrencyHandler private constructor() {
         ): BigDecimal {
             // value(home) x rate = value(foreign)
             // value(foreign) / rate = value(home)
-            val rate =
-                BigDecimal("2")  // TODO: get rate. If fail, download, return placeholder (times 0) first
-            return displayAmountAsBigDecimal(
-                bigDecimal.divide(
-                    rate,
-                    MathContext(9, RoundingMode.HALF_UP)
+            val rateString = XERepository.getInstance().xeRows.value
+                ?.find { it.baseCurrency == homeCurrencyDst && it.foreignCurrency == foreignCurrencySrc }
+                ?.rate
+            return when (rateString) {
+                null -> BigDecimal.ZERO
+                else -> displayAmountAsBigDecimal(
+                    bigDecimal.divide(
+                        BigDecimal(rateString),
+                        MathContext(9, RoundingMode.HALF_UP)
+                    )
                 )
-            )
+            }
         }
     }
 }

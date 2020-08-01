@@ -44,7 +44,6 @@ class UserRepository private constructor() {
         categories.observeForever(liveDataActivator)
         preferences.observeForever(liveDataActivator)
     }
-
     private fun clearPermanentObservers() {
         accounts.removeObserver(liveDataActivator)
         categories.removeObserver(liveDataActivator)

@@ -46,17 +46,14 @@ class TitleFragment : Fragment() {
             if (it == null) {
                 displayLogInSnackbar()
             } else {
-//                UserRepository.getInstance().incomeCategories.observe(requireActivity()) {
-//                    Log.d(TAG, "listen successful!")
-//                }
                 if (newLogin) {
                     binding.titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
                     Snackbar.make(requireView(), "Hello, ${it.displayName}!", Snackbar.LENGTH_SHORT).show()
                     Handler(Looper.getMainLooper()).postDelayed({
-                        findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToTransactionsFragment())
+                        findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
                     }, 1200)
                 } else {
-                    findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToTransactionsFragment())
+                    findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
 //                    titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
 //                    Snackbar.make(requireView(), "Hello, ${firebaseViewModel.currentUserLD.value!!.displayName}!", Snackbar.LENGTH_SHORT).show()
 

@@ -11,8 +11,8 @@
         android:label="Title Screen"
         tools:layout="@layout/fragment_title">
         <action
-            android:id="@+id/action_titleFragment_to_transactionsFragment"
-            app:destination="@id/transactionsFragment"
+            android:id="@+id/action_titleFragment_to_lobbyFragment"
+            app:destination="@id/lobbyFragment"
             app:popUpTo="@id/titleFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -38,8 +38,8 @@
     <fragment
         android:id="@+id/transactionEditFragment"
         android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionEditFragment"
-        tools:layout="@layout/fragment_transaction_edit"
-        android:label="View Transaction" >
+        android:label="View Transaction"
+        tools:layout="@layout/fragment_transaction_edit">
         <argument
             android:name="transactionId"
             app:argType="integer" />
@@ -78,19 +78,19 @@
     <dialog
         android:id="@+id/accountsDF"
         android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsDF"
-        tools:layout="@layout/fragment_accounts"
-        android:label="AccountsDF" />
+        android:label="AccountsDF"
+        tools:layout="@layout/fragment_accounts" />
     <dialog
         android:id="@+id/categoriesDF"
         android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesDF"
         android:label="CategoriesDF"
-        tools:layout="@layout/dialog_fragment_category_picker"/>
+        tools:layout="@layout/dialog_fragment_category_picker" />
 
     <fragment
         android:id="@+id/accountsFragment"
         android:name="com.kaeonx.moneymanager.fragments.accounts.AccountsFragment"
         android:label="Accounts"
-        tools:layout="@layout/fragment_accounts" >
+        tools:layout="@layout/fragment_accounts">
         <action
             android:id="@+id/action_accountsFragment_to_accountEditFragment"
             app:destination="@id/accountEditFragment" />
@@ -121,12 +121,24 @@
         android:id="@+id/categoryEditFragment"
         android:name="com.kaeonx.moneymanager.fragments.categories.CategoryEditFragment"
         android:label="Edit Category"
-        tools:layout="@layout/fragment_category_edit" >
+        tools:layout="@layout/fragment_category_edit">
         <argument
             android:name="oldCategory"
             app:argType="com.kaeonx.moneymanager.userrepository.domain.Category" />
         <argument
             android:name="deletable"
             app:argType="boolean" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lobbyFragment"
+        android:name="com.kaeonx.moneymanager.fragments.title.LobbyFragment"
+        android:label="LobbyFragment"
+        tools:layout="@layout/fragment_lobby">
+        <action
+            android:id="@+id/action_lobbyFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:popUpTo="@id/lobbyFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
