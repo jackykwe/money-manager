@@ -30,5 +30,6 @@ interface XENetworkService {
     @GET("latest")
 //    fun getBuildings(): Call<String>
     // Moshi will do the necessary conversion for us
+    // Using suspend means no need to use Call already
     suspend fun fetchNetworkXEContainer(@Query("base") baseCurrency: String): NetworkXEContainer
 }

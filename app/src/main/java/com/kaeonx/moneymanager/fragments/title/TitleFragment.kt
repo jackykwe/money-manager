@@ -54,18 +54,6 @@ class TitleFragment : Fragment() {
                     }, 1200)
                 } else {
                     findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
-//                    titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
-//                    Snackbar.make(requireView(), "Hello, ${firebaseViewModel.currentUserLD.value!!.displayName}!", Snackbar.LENGTH_SHORT).show()
-
-//                    Handler(Looper.getMainLooper()).post { // Allows everything else to load first??? // TODO: Hmm best you research this up. This seems to work for now.
-//                        findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToTransactionsFragment())
-//                    }
-
-//                    titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
-//                    Snackbar.make(requireView(), "Hello, ${firebaseViewModel.currentUserLD.value!!.displayName}!", Snackbar.LENGTH_SHORT).show()
-//                    Handler(Looper.getMainLooper()).postDelayed({
-//                        findNavController().navigate(RootTitleFragmentDirections.actionRootTitleFragmentToRootTransactionsFragment())
-//                    }, 1000)
                 }
             }
         }

@@ -25,23 +25,13 @@ class CurrencyHandler private constructor() {
 
         fun displayAmount(bigDecimal: BigDecimal): String {
             if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return "0"
-
             val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
-//            if (twoDP.compareTo(BigDecimal.ZERO) == 0) return "0"  // fixes weird 0.00 being returned as 0.00 instead of 0
-
             val twoDPSTZ = twoDP.stripTrailingZeros()
-            return if (twoDPSTZ.scale() <= 0) {
-                // twoDPSTZ is a whole number, return integer representation (twoDPSTZ)
-                twoDPSTZ.toPlainString()
-            } else {
-                // twoDPSTZ is not a whole number, return 2 DP representation (twoDP)
-                twoDP.toPlainString()
-            }
+            return if (twoDPSTZ.scale() <= 0) twoDPSTZ.toPlainString() else twoDP.toPlainString()
         }
 
         private fun displayAmountAsBigDecimal(bigDecimal: BigDecimal): BigDecimal {
             if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO
-
             val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
             val twoDPSTZ = twoDP.stripTrailingZeros()
             return if (twoDPSTZ.scale() <= 0) twoDPSTZ else twoDP
@@ -54,11 +44,11 @@ class CurrencyHandler private constructor() {
         ): BigDecimal {
             // value(home) x rate = value(foreign)
             // value(foreign) / rate = value(home)
-            val rateString = XERepository.getInstance().xeRows.value
-                ?.find { it.baseCurrency == homeCurrencyDst && it.foreignCurrency == foreignCurrencySrc }
+            val rateString = XERepository.getInstance().xeRows.value!!
+                .find { it.baseCurrency == homeCurrencyDst && it.foreignCurrency == foreignCurrencySrc }
                 ?.rate
             return when (rateString) {
-                null -> BigDecimal.ZERO
+                null -> BigDecimal("0.01")
                 else -> displayAmountAsBigDecimal(
                     bigDecimal.divide(
                         BigDecimal(rateString),
@@ -69,21 +59,3 @@ class CurrencyHandler private constructor() {
         }
     }
 }
-
-//// Entrance to currency conversion
-//internal fun getConversionRateFromCurrentHomeCurrencyOf(foreignCurrency: String): String {
-//    val currentSetHomeCurrency = PreferenceDS.getString2("ccc_home_currency")
-//    return if (loadedCurrencyTable.isEmpty() || loadedBaseCurrency != currentSetHomeCurrency) {
-//        if (JSONHandler.readCurrencyTable(currentSetHomeCurrency)) {  // managed to fetch from .json file. Read from it.
-//            loadedCurrencyTable[foreignCurrency] ?: throw IllegalStateException("Unable to find foreignCurrency $foreignCurrency in loadedCurrencyTable")
-//        } else {  // unable to fetch from .json file. Download.
-//            if (fetchAndSaveLatestConversionTable(currentSetHomeCurrency)) {  // successfully downloaded, saved and loaded
-//                loadedCurrencyTable[foreignCurrency] ?: throw IllegalStateException("Unable to find foreignCurrency $foreignCurrency in loadedCurrencyTable")
-//            } else {
-//                throw Exception("Something went really wrong. Unable to download, or unable to save, or unable to load.")
-//            }
-//        }
-//    } else {
-//        loadedCurrencyTable[foreignCurrency] ?: throw IllegalStateException("Unable to find foreignCurrency $foreignCurrency in loadedCurrencyTable")
-//    }
-//}

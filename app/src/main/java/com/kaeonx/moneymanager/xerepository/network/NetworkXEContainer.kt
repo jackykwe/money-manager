@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.xerepository.network
 
 import com.kaeonx.moneymanager.xerepository.database.DatabaseXERow
-import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.squareup.moshi.JsonClass
 
 /**
@@ -24,25 +23,14 @@ data class NetworkXEContainer(
 //)
 
 // Require Array instead of list for spread operator (*) to work (see XERepository)
-fun NetworkXEContainer.toDatabase(): Array<DatabaseXERow> {
+fun NetworkXEContainer.toDatabase(updateMillis: Long): Array<DatabaseXERow> {
     return this.rates.map {
         DatabaseXERow(
             baseCurrency = this.base,
             foreignCurrency = it.key,
             date = this.date,
             rate = it.value,
-            updateMillis = System.currentTimeMillis() // TODO: TIEM OF NETWORK CALL
+            updateMillis = updateMillis  // Time of save
         )
     }.toTypedArray()
-}
-
-fun NetworkXEContainer.toDomain(): List<XERow> {
-    return this.rates.map {
-        XERow(
-            baseCurrency = this.base,
-            foreignCurrency = it.key,
-            rate = it.value,
-            updateMillis = System.currentTimeMillis()  // TODO: TIME OF NETWORK CALL
-        )
-    }
 }

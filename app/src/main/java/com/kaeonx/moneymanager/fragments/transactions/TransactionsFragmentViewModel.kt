@@ -28,12 +28,11 @@ class TransactionsFragmentViewModel : ViewModel() {
             xeRepository.checkAndUpdateIfNecessary()
             value = recalculateDayTransactions()
         }
-        // TODO: Add XE table to the source too. If change, update.
+        addSource(xeRepository.xeRows) { value = recalculateDayTransactions() }
     }
 
     private fun recalculateDayTransactions(): List<DayTransactions> =
         _transactions.value?.toDayTransactions() ?: listOf()
-
 
     fun clearAllData() {
         viewModelScope.launch {

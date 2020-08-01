@@ -10,7 +10,10 @@ import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "xeRepository"
 
@@ -40,23 +43,24 @@ class XERepository private constructor() {
 
     // 1. On App Start
     // 2. On Preferences Change
+    // Both of the above is factored in in the launch of TransactionsFragmentViewModel
     fun checkAndUpdateIfNecessary() {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
         if (xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0 ||
-            (UserPDS.getBoolean("ccv_enable_online") && System.currentTimeMillis() -
+            (UserPDS.getBoolean("ccv_enable_online") &&
+                    System.currentTimeMillis() -
                     xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
                     UserPDS.getString("ccv_online_update_ttl").toLong()
                     )
         ) {
             CoroutineScope(Dispatchers.IO).launch {
-                Log.d(TAG, "SIMULATED NETWORK CALL START")
-                delay(5000L)
-                Log.d(TAG, "SIMULATED NETWORK CALL: DONE")
+                refreshRatesTable(homeCurrency)
             }
         }
     }
 
     private val liveDataActivator = Observer<Any> { }
+
     init {
         xeRows.observeForever(liveDataActivator)
     }
@@ -65,22 +69,35 @@ class XERepository private constructor() {
         xeRows.removeObserver(liveDataActivator)
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Network
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+
     // Refresh cache
     // Won't return anything, so it won't be accidentally used to fetch data
-    private suspend fun refreshRatesTable(baseCurrency: String = "SGD") {
+    private suspend fun refreshRatesTable(baseCurrency: String) {
         // Disc IO is much slower than RAM IO
         // Low level APIs (for read, write, etc.) that the Database uses are blocking,
         // so we have to treat Disc IO separately when using Coroutines.
         // Hence withContext(Dispatchers.IO) to force Kotlin to switch to a IO thread
         // from the relevant thread pool optimised for IO operations.
         withContext(Dispatchers.IO) {
-            // TODO: Error Handling
             Log.d("ntwksvc", "WARNING: NETWORK CALL HAPPENING RIGHT NOW")
-            val networkXEContainer = XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
-            Log.d("ntwksvc", "WARNING: NETWORK CALL DONE")
-            Log.d("ntwksvc", "WARNING: UPSERT CALL HAPPENING RIGHT NOW")
-            database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase())
-            Log.d("ntwksvc", "WARNING: UPSERT DONE")
+            try {
+                val networkXEContainer =
+                    XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
+                Log.d("ntwksvc", "WARNING: NETWORK CALL DONE")
+                Log.d("ntwksvc", "WARNING: UPSERT CALL HAPPENING RIGHT NOW")
+                database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase(System.currentTimeMillis()))
+                Log.d("ntwksvc", "WARNING: UPSERT DONE")
+            } catch (e: Exception) {
+                Log.d(
+                    "ntwksvc",
+                    "WARNING: NETWORK CALL FAILED due to CAUSE ${e.cause}, CLASS ${e.javaClass}, MESSAGE ${e.message}"
+                )
+            }
         }
     }
 

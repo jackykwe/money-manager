@@ -37,9 +37,11 @@ data class Transaction(
 
     fun toIconDetail(): IconDetail {
         val repository = UserRepository.getInstance()
-        val categoryObj = repository.categories.value?.find { it.name == this.category && it.type == this.type }
-            ?: Category(null, type, category, "F02D6", "Black")
-        val accountObj = repository.accounts.value?.find { it.name == this.account } ?: Account(null, account, "White")
+        val categoryObj =
+            repository.categories.value!!.find { it.name == this.category && it.type == this.type }
+                ?: Category(null, type, category, "F02D6", "Black")
+        val accountObj = repository.accounts.value!!.find { it.name == this.account }
+            ?: Account(null, account, "White")
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }
 }
