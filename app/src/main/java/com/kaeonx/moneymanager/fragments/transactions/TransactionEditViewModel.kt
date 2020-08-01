@@ -13,7 +13,6 @@ private const val TAG = "tevm"
 class TransactionEditViewModel(private val transactionId: Int): ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-//    val transaction = userRepository.getTransaction(initTransaction.transactionId!!)
     val transaction = Transformations.map(userRepository.transactions) { list ->
         list.find { it.transactionId == transactionId }!!
     }

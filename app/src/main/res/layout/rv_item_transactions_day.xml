@@ -63,8 +63,7 @@
                         style="@style/RvItemTransactionsDayHeader.Currency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{`SGD`}"
-                        app:incomeCurrencyTV_visibility="@{dayTransactions}"
+                        app:incomeCurrencyTV_textVisibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
 
@@ -92,8 +91,7 @@
                         style="@style/RvItemTransactionsDayHeader.Currency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{`SGD`}"
-                        app:dayExpensesCurrencyTV_visibility="@{dayTransactions}"
+                        app:dayExpensesCurrencyTV_textVisibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
 

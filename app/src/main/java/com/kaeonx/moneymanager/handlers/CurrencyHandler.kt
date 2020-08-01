@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.handlers
 
 import com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel
 import java.math.BigDecimal
+import java.math.MathContext
 import java.math.RoundingMode
 
 class CurrencyHandler private constructor() {
@@ -37,15 +38,29 @@ class CurrencyHandler private constructor() {
             }
         }
 
-        fun convertAmount(bigDecimal: BigDecimal, foreignCurrencySrc: String, homeCurrencyDst: String): BigDecimal {
-            // value(home) x rate = value(foreign)
-            // value(foreign) / rate = value(home)
+        private fun displayAmountAsBigDecimal(bigDecimal: BigDecimal): BigDecimal {
+            if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO
 
-            val rate = TODO()
-//            val rate = CurrencyHandler.getConversionRateFromCurrentHomeCurrencyOf(foreignCurrency).toBigDecimal()
-//            return this.divide(rate, MathContext(9, RoundingMode.HALF_UP))
+            val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
+            val twoDPSTZ = twoDP.stripTrailingZeros()
+            return if (twoDPSTZ.scale() <= 0) twoDPSTZ else twoDP
         }
 
+        fun convertAmount(
+            bigDecimal: BigDecimal,
+            foreignCurrencySrc: String,
+            homeCurrencyDst: String
+        ): BigDecimal {
+            // value(home) x rate = value(foreign)
+            // value(foreign) / rate = value(home)
+            val rate = BigDecimal("2")
+            return displayAmountAsBigDecimal(
+                bigDecimal.divide(
+                    rate,
+                    MathContext(9, RoundingMode.HALF_UP)
+                )
+            )
+        }
     }
 }
 

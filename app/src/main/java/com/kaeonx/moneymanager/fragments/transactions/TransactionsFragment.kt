@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,16 +32,28 @@ class TransactionsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
 
-        binding.transactionsRV.adapter = TransactionsRVAdapter(TransactionOnClickListener { transaction ->
-            findNavController().navigate(TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(transaction.transactionId!!))
-        })
+        binding.transactionsRV.adapter =
+            TransactionsRVAdapter(TransactionOnClickListener { transaction ->
+                findNavController().navigate(
+                    TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
+                        transaction.transactionId!!
+                    )
+                )
+            })
 
+        viewModel.preferences.observe(viewLifecycleOwner) {
+            Log.d(TAG, "Preference change detected, calling notifyDataSetChanged()")
+            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(
+                viewModel.calculateDayTransactions()
+            )
+//            (binding.transactionsRV.adapter as TransactionsRVAdapter).notifyDataSetChanged()
+        }
         viewModel.dayTransactions.observe(viewLifecycleOwner) {
+            Log.d(TAG, "DayTransactions change detected, calling notifyDataSetChanged()")
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(it)
         }
 
-//        binding.lifecycleOwner = viewLifeCycleOwner
-//        binding.viewModel = viewModel
+
         return binding.root
     }
 

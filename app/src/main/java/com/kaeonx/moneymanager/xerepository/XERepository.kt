@@ -49,7 +49,7 @@ class XERepository private constructor() {
                 UserPDS.getString("ccv_online_update_ttl").toLong() // TIME TO LIVE
         if (cond1 || (cond2a && cond2b)) {
             // GET NETWORK
-            Log.d(TAG, "SIMULATED NETWORK CALL ")
+            Log.d(TAG, "SIMULATED NETWORK CALL")
         }
     }
 

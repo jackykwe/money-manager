@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.userrepository.domain
 import android.os.Parcelable
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
 import kotlinx.android.parcel.Parcelize
@@ -43,52 +44,23 @@ data class Transaction(
     }
 }
 
-fun List<Transaction>.typeAllHomeCurrency(type: String, homeCurrency: String): Boolean {
-    return filter { it.type == type }
-        .all { it.originalCurrency == homeCurrency }
-}
-
-fun List<Transaction>.calculateIncomeExpenses(homeCurrency: String): IncomeExpenses {
-    var income = BigDecimal.ZERO
-    var expenses = BigDecimal.ZERO
-    forEach {
-        when (it.type) {
-            "Income" -> {
-                income = if (it.originalCurrency == homeCurrency) {
-                    income.plus(BigDecimal(it.originalAmount))
-                } else {
-                    val value = CurrencyHandler.convertAmount(BigDecimal(it.originalAmount), it.originalCurrency, homeCurrency)
-                    income.plus(value)
-                }
-            }
-            "Expenses" -> {
-                expenses = if (it.originalCurrency == homeCurrency) {
-                    expenses.plus(BigDecimal(it.originalAmount))
-                } else {
-                    val value = CurrencyHandler.convertAmount(BigDecimal(it.originalAmount), it.originalCurrency, homeCurrency)
-                    expenses.plus(value)
-                }
-            }
-            else -> throw IllegalArgumentException("Unknown type given: ${it.type}")
-        }
-    }
-    return IncomeExpenses(
-        CurrencyHandler.displayAmountNullable(income),
-        CurrencyHandler.displayAmountNullable(expenses)
-    )
-}
 
 // This function assumes that all Transactions in the List are in the same month.
-fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransactions> {
-    val initCalendar = Calendar.getInstance()  // so that calculations below won't shift when done at 23:59:59
+fun List<Transaction>.toDayTransactions(): List<DayTransactions> {
+    val initCalendar =
+        Calendar.getInstance()  // so that calculations below won't shift when done at 23:59:59
     if (this.isEmpty()) return listOf()
-    val daysInMonth = CalendarHandler.getCalendar(this[0].timestamp).getActualMaximum(Calendar.DAY_OF_MONTH)
+    val daysInMonth =
+        CalendarHandler.getCalendar(this[0].timestamp).getActualMaximum(Calendar.DAY_OF_MONTH)
 
     // Generates 1 DayTransaction per day
     var result = ArrayList<DayTransactions>()
     for (d in 1..daysInMonth) {
         val c = initCalendar.clone() as Calendar
-        c.set(Calendar.DAY_OF_MONTH, d)  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
+        c.set(
+            Calendar.DAY_OF_MONTH,
+            d
+        )  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
         result.add(
             DayTransactions(
                 dayOfMonth = d,
@@ -114,11 +86,11 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
     // Calculates currency, dayIncome and dayExpenses.
     result = result.map {
         // Check if all transactions within each day have the same currency, then calculate new income & expense
-        it.incomeAllHome = this.typeAllHomeCurrency("Income", homeCurrency)
-        it.expensesAllHome =  this.typeAllHomeCurrency("Expenses", homeCurrency)
+        it.incomeAllHome = this.typeAllHomeCurrency("Income")
+        it.expensesAllHome = this.typeAllHomeCurrency("Expenses")
 
         // Note: In all calculations, each individual transaction is converted to Home Currency first (if needed)
-        val (income, expenses) = it.transactions.calculateIncomeExpenses(homeCurrency)
+        val (income, expenses) = it.transactions.calculateIncomeExpenses()
         it.dayIncome = income
         it.dayExpenses = expenses
 
@@ -128,4 +100,49 @@ fun List<Transaction>.toDayTransactions(homeCurrency: String): List<DayTransacti
     } as ArrayList<DayTransactions>
     result.reverse()
     return result
+}
+
+// Helper function for List<Transaction>.toDayTransactions()
+private fun List<Transaction>.typeAllHomeCurrency(type: String): Boolean {
+    return filter { it.type == type }
+        .all { it.originalCurrency == UserPDS.getString("ccc_home_currency") }
+}
+
+// Helper function for List<Transaction>.toDayTransactions()
+private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
+    var income = BigDecimal.ZERO
+    var expenses = BigDecimal.ZERO
+    forEach {
+        when (it.type) {
+            "Income" -> {
+                income = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
+                    income.plus(BigDecimal(it.originalAmount))
+                } else {
+                    val value = CurrencyHandler.convertAmount(
+                        BigDecimal(it.originalAmount),
+                        it.originalCurrency,
+                        UserPDS.getString("ccc_home_currency")
+                    )
+                    income.plus(value)
+                }
+            }
+            "Expenses" -> {
+                expenses = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
+                    expenses.plus(BigDecimal(it.originalAmount))
+                } else {
+                    val value = CurrencyHandler.convertAmount(
+                        BigDecimal(it.originalAmount),
+                        it.originalCurrency,
+                        UserPDS.getString("ccc_home_currency")
+                    )
+                    expenses.plus(value)
+                }
+            }
+            else -> throw IllegalArgumentException("Unknown type given: ${it.type}")
+        }
+    }
+    return IncomeExpenses(
+        CurrencyHandler.displayAmountNullable(income),
+        CurrencyHandler.displayAmountNullable(expenses)
+    )
 }

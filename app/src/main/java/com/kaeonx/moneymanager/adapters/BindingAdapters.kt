@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 
@@ -25,24 +26,26 @@ private const val TAG = "biad"
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("dayDateTV_text")
 fun TextView.setDayDateTVText(dayTransactions: DayTransactions) {
-    // TODO: tie to default date format (EEE <default date format>)
-    text = CalendarHandler.getFormattedString(dayTransactions.ymdCalendar, "EEE ddMMyy")
+    text = CalendarHandler.getFormattedString(
+        dayTransactions.ymdCalendar,
+        "EEE " + UserPDS.getString("dsp_date_format")
+    )
 }
 
-@BindingAdapter("incomeCurrencyTV_visibility")
+@BindingAdapter("incomeCurrencyTV_textVisibility")
 fun TextView.setIncomeCurrencyTVVisibility(dayTransactions: DayTransactions) {
-    // TODO: SEE XML. hideCurrencyIfHome is always false & home currency is always SGD. Tie it to the setting! (open connection to repo in adapter)?
-//    visibility = if (dayTransactions.dayIncome == null || (dayTransactions.incomeAllHome && hideCurrencyIfHome)) View.GONE else View.VISIBLE
-    visibility =
-        if (dayTransactions.dayIncome == null || (dayTransactions.incomeAllHome && false)) View.GONE else View.VISIBLE
+    text = UserPDS.getString("ccc_home_currency")
+    val cond1 = dayTransactions.dayIncome == null
+    val cond2 = dayTransactions.incomeAllHome && UserPDS.getBoolean("ccc_hide_matching_currency")
+    visibility = if (cond1 || cond2) View.GONE else View.VISIBLE
 }
 
-@BindingAdapter("dayExpensesCurrencyTV_visibility")
+@BindingAdapter("dayExpensesCurrencyTV_textVisibility")
 fun TextView.setDayExpensesCurrencyTVVisibility(dayTransactions: DayTransactions) {
-    // TODO: SEE XML. hideCurrencyIfHome is always false & home currency is always SGD. Tie it to the setting! (open connection to repo in adapter)?
-//    visibility = if (dayTransactions.dayExpenses == null || (dayTransactions.expensesAllHome && hideCurrencyIfHome)) View.GONE else View.VISIBLE
-    visibility =
-        if (dayTransactions.dayExpenses == null || (dayTransactions.expensesAllHome && false)) View.GONE else View.VISIBLE
+    text = UserPDS.getString("ccc_home_currency")
+    val cond1 = dayTransactions.dayExpenses == null
+    val cond2 = dayTransactions.expensesAllHome && UserPDS.getBoolean("ccc_hide_matching_currency")
+    visibility = if (cond1 || cond2) View.GONE else View.VISIBLE
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +55,9 @@ fun TextView.setDayExpensesCurrencyTVVisibility(dayTransactions: DayTransactions
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("transactionCurrencyTV_visibility")
 fun TextView.setCurrencyVisibility(transaction: Transaction) {
-    // TODO: SEE XML. hideCurrencyIfHome is always false. Tie it to the setting! (open connection to repo in adapter)?
-//    visibility = if (transaction.originalCurrency == "SGD" && hideCurrencyIfHome) View.GONE else View.VISIBLE
-    visibility = if (transaction.originalCurrency == "SGD" && false) View.GONE else View.VISIBLE
+    val cond1 = transaction.originalCurrency == UserPDS.getString("ccc_home_currency")
+    val cond2 = UserPDS.getBoolean("ccc_hide_matching_currency")
+    visibility = if (cond1 && cond2) View.GONE else View.VISIBLE
 }
 
 ////////////////////////////////////////////////////////////////////////////////
