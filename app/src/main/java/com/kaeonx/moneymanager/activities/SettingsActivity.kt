@@ -108,10 +108,10 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         }
     }
 
-    class PreferencesAccountFragment : PreferenceFragmentCompat() {
+    class PreferencesUserProfileFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
-            setPreferencesFromResource(R.xml.account_preferences, rootKey)
+            setPreferencesFromResource(R.xml.user_profile_preferences, rootKey)
         }
     }
 

@@ -3,10 +3,10 @@
 
     <PreferenceCategory android:title="General">
         <Preference
-            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesAccountFragment"
-            app:icon="@drawable/mdi_credit_card"
-            app:key="prefhome_acc"
-            app:title="Account" />
+            app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesUserProfileFragment"
+            app:icon="@drawable/mdi_account_circle"
+            app:key="prefhome_upf"
+            app:title="User Profile" />
 
         <Preference
             app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesCurrencyFragment"
