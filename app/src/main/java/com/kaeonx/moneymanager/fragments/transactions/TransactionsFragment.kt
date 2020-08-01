@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,18 +40,9 @@ class TransactionsFragment : Fragment() {
                 )
             })
 
-        viewModel.preferences.observe(viewLifecycleOwner) {
-            Log.d(TAG, "Preference change detected, calling notifyDataSetChanged()")
-            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(
-                viewModel.calculateDayTransactions()
-            )
-//            (binding.transactionsRV.adapter as TransactionsRVAdapter).notifyDataSetChanged()
-        }
-        viewModel.dayTransactions.observe(viewLifecycleOwner) {
-            Log.d(TAG, "DayTransactions change detected, calling notifyDataSetChanged()")
+        viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(it)
         }
-
 
         return binding.root
     }

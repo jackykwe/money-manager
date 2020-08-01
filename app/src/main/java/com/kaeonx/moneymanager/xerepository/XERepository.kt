@@ -10,8 +10,7 @@ import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 private const val TAG = "xeRepository"
 
@@ -39,6 +38,8 @@ class XERepository private constructor() {
     private val _xeRows = database.xeDatabaseDao.getAllXERows()
     val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) { it.toDomain() }
 
+    // 1. On App Start
+    // 2. On Preferences Change
     fun checkAndUpdateIfNecessary() {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
         val cond1 =
@@ -48,8 +49,11 @@ class XERepository private constructor() {
                 xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
                 UserPDS.getString("ccv_online_update_ttl").toLong() // TIME TO LIVE
         if (cond1 || (cond2a && cond2b)) {
-            // GET NETWORK
-            Log.d(TAG, "SIMULATED NETWORK CALL")
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.d(TAG, "SIMULATED NETWORK CALL START")
+                delay(5000L)
+                Log.d(TAG, "SIMULATED NETWORK CALL: DONE")
+            }
         }
     }
 

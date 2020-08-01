@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private const val TAG = "prefDS"
+private const val TAG = "pds"
 
 object UserPDS : PreferenceDataStore() {
 

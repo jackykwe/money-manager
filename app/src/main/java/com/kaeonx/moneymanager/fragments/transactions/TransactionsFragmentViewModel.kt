@@ -1,7 +1,7 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.util.Log
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
@@ -18,16 +18,15 @@ class TransactionsFragmentViewModel : ViewModel() {
     }
 
     private val userRepository = UserRepository.getInstance()
-
-    //    val dayTransactions: LiveData<List<DayTransactions>> = Transformations.map(userRepository.transactions) {
-//        it.toDayTransactions()
-//    }
     private val _transactions = userRepository.transactions
-    val dayTransactions = Transformations.map(_transactions) { it.toDayTransactions() }
-    fun calculateDayTransactions(): List<DayTransactions> =
-        _transactions.value?.toDayTransactions() ?: listOf()
+    val sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>>().apply {
+        addSource(_transactions) { value = updateDayTransactions() }
+        addSource(userRepository.preferences) { value = updateDayTransactions() }
+        // TODO: Add XE table to the source too. If change, update.
+    }
 
-    val preferences = userRepository.preferences
+    private fun updateDayTransactions(): List<DayTransactions> =
+        _transactions.value?.toDayTransactions() ?: listOf()
 
 
     fun clearAllData() {

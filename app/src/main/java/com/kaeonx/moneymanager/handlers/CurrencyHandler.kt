@@ -53,7 +53,8 @@ class CurrencyHandler private constructor() {
         ): BigDecimal {
             // value(home) x rate = value(foreign)
             // value(foreign) / rate = value(home)
-            val rate = BigDecimal("2")
+            val rate =
+                BigDecimal("2")  // TODO: get rate. If fail, download, return placeholder (times 0) first
             return displayAmountAsBigDecimal(
                 bigDecimal.divide(
                     rate,
