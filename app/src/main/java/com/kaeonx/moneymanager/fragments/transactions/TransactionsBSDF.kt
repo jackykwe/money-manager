@@ -37,16 +37,6 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle }
 
-    private fun setAccountColor(color: Int) {
-        binding.tbsdHorizontalBarIVTop.drawable.setTint(color)
-        binding.tbsdIconInclude.iconRing.drawable.setTint(color)
-    }
-
-    private fun setCategoryColor(color: Int) {
-        binding.tbsdHorizontalBarIVBottom.drawable.setTint(color)
-        binding.tbsdIconInclude.iconBG.drawable.setTint(color)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DialogFragmentTransactionsBsdfBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner

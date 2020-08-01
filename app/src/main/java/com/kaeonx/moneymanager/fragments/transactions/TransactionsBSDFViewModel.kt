@@ -254,7 +254,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         READY
     }
 
-    val memoText = MutableLiveData<String>("")  // Exception where MutableLiveData2 fails - two-way data binding
+    val memoText = MutableLiveData<String>(oldTransaction.memo)  // Exception where MutableLiveData2 fails - two-way data binding
     private val memoIsNullOrBlank = Transformations.map(memoText) {
         _currentTransaction.value = _currentTransaction.value.copy(
             memo = it

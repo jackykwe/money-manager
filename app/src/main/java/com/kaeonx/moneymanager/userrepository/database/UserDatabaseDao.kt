@@ -28,6 +28,9 @@ interface UserDatabaseDao {
     @Query("SELECT * FROM transactions_table")
     fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
 
+    @Query("SELECT * FROM transactions_table WHERE transactionId = :transactionId")
+    fun getTransaction(transactionId: Int): LiveData<DatabaseTransaction>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts

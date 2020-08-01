@@ -31,6 +31,21 @@
         <action
             android:id="@+id/action_transactionsFragment_to_transactionsBSDF"
             app:destination="@id/transactionsBSDF" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_transactionEditFragment"
+            app:destination="@id/transactionEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionEditFragment"
+        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionEditFragment"
+        tools:layout="@layout/fragment_transaction_edit"
+        android:label="View Transaction" >
+        <argument
+            android:name="transactionId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_transactionEditFragment_to_transactionsBSDF"
+            app:destination="@id/transactionsBSDF" />
     </fragment>
 
     <fragment
@@ -114,17 +129,4 @@
             android:name="deletable"
             app:argType="boolean" />
     </fragment>
-    <fragment
-        android:id="@+id/preferencesHomeFragment"
-        android:name="com.kaeonx.moneymanager.fragments.preferences.PreferencesHomeFragment"
-        android:label="Settings" />
-
-    <!--    <fragment-->
-    <!--        android:id="@+id/transactionEditFragment"-->
-    <!--        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionEditFragment"-->
-    <!--        android:label="View Transaction" >-->
-    <!--        <argument-->
-    <!--            android:name="transaction"-->
-    <!--            app:argType="com.kaeonx.moneymanager.dataclasses.Transaction" />-->
-    <!--    </fragment>-->
 </navigation>

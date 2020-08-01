@@ -15,20 +15,21 @@ data class DatabaseTransaction(
     val memo: String,
     @ColumnInfo(name = "original_currency") val originalCurrency: String,
     @ColumnInfo(name = "original_amount") val originalAmount: String
-)
+) {
 
-fun List<DatabaseTransaction>.toDomain(): List<Transaction> = map {
-    Transaction(
-        transactionId = it.transactionId,
-        timestamp = it.timestamp,
-        type = it.type,
-        category = it.category,
-        account = it.account,
-        memo = it.memo,
-        originalCurrency = it.originalCurrency,
-        originalAmount = it.originalAmount
+    fun toDomain(): Transaction = Transaction(
+        transactionId = this.transactionId,
+        timestamp = this.timestamp,
+        type = this.type,
+        category = this.category,
+        account = this.account,
+        memo = this.memo,
+        originalCurrency = this.originalCurrency,
+        originalAmount = this.originalAmount
     )
+
 }
 
+fun List<DatabaseTransaction>.toDomain(): List<Transaction> = map { it.toDomain() }
 
 // TODO: Returning subsets of columns https://developer.android.com/training/data-storage/room/accessing-data#query-subset-cols

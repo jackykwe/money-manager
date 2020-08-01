@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.userrepository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
@@ -55,6 +56,11 @@ class UserRepository private constructor() {
      * Transaction
      */
     ////////////////////////////////////////////////////////////////////////////////
+    fun getTransaction(transactionId: Int): LiveData<Transaction> =
+        Transformations.map(database.userDatabaseDao.getTransaction(transactionId)) {
+            it.toDomain()
+        }
+
     suspend fun addTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.insertTransaction(transaction.toDatabase())

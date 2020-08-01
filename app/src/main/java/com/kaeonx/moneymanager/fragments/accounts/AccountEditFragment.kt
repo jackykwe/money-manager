@@ -76,14 +76,13 @@ class AccountEditFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_accountcategory_edit_default)
-            if (args.deletable) inflateMenu(R.menu.fragment_accountcategory_edit_deleteable)
+            inflateMenu(R.menu.fragment_general_edit_default)
+            if (args.deletable) inflateMenu(R.menu.fragment_general_edit_deleteable)
 
             setOnMenuItemClickListener {
                 // Close the keyboard, if it's open
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-
 
                 when (it.itemId) {
                     R.id.app_bar_delete -> {
