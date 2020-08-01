@@ -306,14 +306,15 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:paddingHorizontal="8dp"
-            android:text="@string/placeholder_currency"
+            android:text="@{viewModel.currentTransaction.originalCurrency}"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp"
             android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@+id/tbsdAmountTV"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tbsdMemoET"
-            app:layout_constraintTop_toTopOf="@+id/tbsdMemoET" />
+            app:layout_constraintTop_toTopOf="@+id/tbsdMemoET"
+            tools:text="@string/placeholder_currency" />
 
         <TextView
             android:id="@+id/tbsdAmountTV"

@@ -9,5 +9,5 @@ data class XERow(
     val baseCurrency: String,
     val foreignCurrency: String,
     val rate: String,
-    val updateTime: Long
+    val updateMillis: Long
 )

@@ -294,12 +294,21 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
         }
     }
 
+    fun updateCurrency(currencyCode: String) {
+        _currentTransaction.value = _currentTransaction.value.copy(
+            originalCurrency = currencyCode
+        )
+    }
+
     fun submitBTOnClick() {
         when (_submitReady.value) {
-            SubmitReadyState.NOT_READY_ERROR -> { }
+            SubmitReadyState.NOT_READY_ERROR -> {
+            }
             SubmitReadyState.NOT_READY_PENDING_OP -> operatorPressed("=")
-            SubmitReadyState.NOT_READY_CATEGORY_EMPTY -> _showToastText.value = "Please select a category."
-            SubmitReadyState.NOT_READY_OPERAND1_ZERO -> _showToastText.value = "Please enter an amount."
+            SubmitReadyState.NOT_READY_CATEGORY_EMPTY -> _showToastText.value =
+                "Please select a category."
+            SubmitReadyState.NOT_READY_OPERAND1_ZERO -> _showToastText.value =
+                "Please enter an amount."
             SubmitReadyState.NOT_READY_MEMO_EMPTY -> _showToastText.value = "Please enter a memo."
             SubmitReadyState.READY -> {
                 viewModelScope.launch {

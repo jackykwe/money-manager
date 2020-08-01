@@ -55,7 +55,6 @@ class TransactionEditFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_general_edit_deleteable)
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.app_bar_delete -> {

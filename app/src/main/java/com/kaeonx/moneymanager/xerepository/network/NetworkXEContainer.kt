@@ -31,7 +31,7 @@ fun NetworkXEContainer.toDatabase(): Array<DatabaseXERow> {
             foreignCurrency = it.key,
             date = this.date,
             rate = it.value,
-            updateTime = System.currentTimeMillis() // TODO: TIEM OF NETWORK CALL
+            updateMillis = System.currentTimeMillis() // TODO: TIEM OF NETWORK CALL
         )
     }.toTypedArray()
 }
@@ -42,7 +42,7 @@ fun NetworkXEContainer.toDomain(): List<XERow> {
             baseCurrency = this.base,
             foreignCurrency = it.key,
             rate = it.value,
-            updateTime = System.currentTimeMillis()  // TODO: TIME OF NETWORK CALL
+            updateMillis = System.currentTimeMillis()  // TODO: TIME OF NETWORK CALL
         )
     }
 }

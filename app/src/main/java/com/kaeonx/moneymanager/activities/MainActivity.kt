@@ -90,14 +90,17 @@ class MainActivity : AppCompatActivity() {
 //            Log.d(TAG, "MOVING TO: ${destination.displayName}")
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
-                // Inflation of menu is done in each fragment
+                // Inflation of menu is done here for this special case.
+                // Otherwise, inflation of menu is done set in each fragment
                 // (because the options need to be controlled from within the fragment)
-                menu.clear()
+                if (destination.id != R.id.transactionsBSDF) menu.clear()
+                if (destination.id == R.id.transactionEditFragment) inflateMenu(R.menu.fragment_general_edit_deleteable)
+
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
-                setupWithNavController(navController, appBarConfiguration) // TODO : DO YOU NEED THIS?
+                setupWithNavController(navController, appBarConfiguration)
                 // Visibility
                 visibility = when (destination.id) {
-                    R.id.titleFragment ->  View.GONE
+                    R.id.titleFragment -> View.GONE
                     else -> View.VISIBLE
                 }
             }

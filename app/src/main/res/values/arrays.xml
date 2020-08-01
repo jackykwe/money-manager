@@ -10,13 +10,15 @@
     </string-array>
 
     <string-array name="ccv_online_update_ttl_entries">
-        <item>12h</item>
-        <item>24h</item>
+        <item>1 day</item>
+        <item>3 days</item>
+        <item>7 days</item>
     </string-array>
 
     <string-array name="ccv_online_update_ttl_values">
-        <item>12</item>
-        <item>24</item>
+        <item>86400000</item>
+        <item>259200000</item>
+        <item>604800000</item>
     </string-array>
 
     <string-array name="dsp_theme_entries">

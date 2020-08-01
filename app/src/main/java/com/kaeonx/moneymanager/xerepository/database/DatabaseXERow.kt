@@ -10,7 +10,7 @@ data class DatabaseXERow(
     @ColumnInfo(name = "foreign_currency") val foreignCurrency: String,
     @ColumnInfo(name = "date") val date: String,
     @ColumnInfo(name = "rate") val rate: String,
-    @ColumnInfo(name = "update_time") val updateTime: Long = System.currentTimeMillis() // todo: change to network call time
+    @ColumnInfo(name = "update_time") val updateMillis: Long = System.currentTimeMillis() // todo: change to network call time
 ) {
     // base_currency * rate = foreign_currency
 }
@@ -21,7 +21,7 @@ fun List<DatabaseXERow>.toDomain(): List<XERow> {
             baseCurrency = it.baseCurrency,
             foreignCurrency = it.foreignCurrency,
             rate = it.rate,
-            updateTime = it.updateTime
+            updateMillis = it.updateMillis
         )
     }
 }

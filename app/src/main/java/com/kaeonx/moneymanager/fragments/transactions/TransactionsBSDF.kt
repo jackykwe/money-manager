@@ -37,7 +37,11 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DialogFragmentTransactionsBsdfBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -97,6 +101,21 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.tbsdMemoET.fixCursorFocusProblems()
 
+        val currencyArray = resources.getStringArray(R.array.ccc_currencies_values)
+        binding.tbsdCurrencyTV.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Select Currency")
+                .setSingleChoiceItems(
+                    R.array.ccc_currencies_entries,
+                    currencyArray.indexOf(viewModel.currentTransaction.value!!.originalCurrency)
+                ) { pickerDialog, which ->
+                    viewModel.updateCurrency(currencyArray[which])
+                    pickerDialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+
         binding.tbsdBTDateTime.setOnClickListener {
             pickDateTime(
                 CalendarHandler.getCalendar(viewModel.currentTransaction.value!!.timestamp)
@@ -143,24 +162,5 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
             }
         }
     }
-
-    //    override fun onCategoryPickerResult(type: String, category: Category) {
-//        chosenType = type
-//        tbsdTypeTV.text = when (type) {
-//            "Income" -> hexToIcon("F0048")
-//            "Expenses" -> hexToIcon("F0060")
-//            else -> throw java.lang.IllegalStateException("Unknown category $type")
-//        }
-//        tbsdCategoryTV.text = category.name
-//        iconTV.text = hexToIcon(category.iconHex)
-//        setCategoryColor(ColourHandler.getColourObject(resources, category.colourString))
-//
-//        viewModel.updateCategoriesAreNullMLD()
-//    }
-//
-//    override fun onAccountSelected(account: Account) {
-//        tbsdAccountTV.text = account.name
-//        setAccountColor(ColourHandler.getColourObject(resources, account.colourString))
-//    }
 }
 

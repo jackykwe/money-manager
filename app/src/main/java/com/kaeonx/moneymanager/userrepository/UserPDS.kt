@@ -28,7 +28,7 @@ object UserPDS : PreferenceDataStore() {
 
         // Currency Converter
         "ccv_enable_online" to true,
-        "ccv_online_update_ttl" to "24",
+        "ccv_online_update_ttl" to "86400000",
 
         // Data and Privacy
         "dap_backup_freq" to "24",

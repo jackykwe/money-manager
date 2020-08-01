@@ -2,7 +2,9 @@ package com.kaeonx.moneymanager.xerepository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.xerepository.database.XEDatabase
 import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
@@ -10,6 +12,8 @@ import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+private const val TAG = "xeRepository"
 
 /**
  * The repository will provide a unified view of our data from several sources.
@@ -25,7 +29,7 @@ import kotlinx.coroutines.withContext
 // Actually I feel like passing in the application here would be better:
 // then the view model won't need to know about the database in the first place.
 //class XERepository(private val database: XEDatabase) {
-class XERepository() {
+class XERepository private constructor() {
 
     private val database = XEDatabase.getInstance()
 
@@ -35,9 +39,33 @@ class XERepository() {
     private val _xeRows = database.xeDatabaseDao.getAllXERows()
     val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) { it.toDomain() }
 
+    fun checkAndUpdateIfNecessary() {
+        val homeCurrency = UserPDS.getString("ccc_home_currency")
+        val cond1 =
+            xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0  // No records exist for home currency
+        val cond2a = UserPDS.getBoolean("ccv_enable_online")
+        val cond2b = System.currentTimeMillis() -
+                xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
+                UserPDS.getString("ccv_online_update_ttl").toLong() // TIME TO LIVE
+        if (cond1 || (cond2a && cond2b)) {
+            // GET NETWORK
+            Log.d(TAG, "SIMULATED NETWORK CALL ")
+        }
+    }
+
+    private val xeRowsActivator = Observer<List<XERow>> { checkAndUpdateIfNecessary() }
+
+    init {
+        xeRows.observeForever(xeRowsActivator)
+    }
+
+    private fun clearPermanentObservers() {
+        xeRows.removeObserver(xeRowsActivator)
+    }
+
     // Refresh cache
     // Won't return anything, so it won't be accidentally used to fetch data
-    suspend fun refreshRatesTable(baseCurrency: String = "SGD") {
+    private suspend fun refreshRatesTable(baseCurrency: String = "SGD") {
         // Disc IO is much slower than RAM IO
         // Low level APIs (for read, write, etc.) that the Database uses are blocking,
         // so we have to treat Disc IO separately when using Coroutines.
@@ -54,4 +82,22 @@ class XERepository() {
         }
     }
 
+    companion object {
+
+        @Volatile
+        private var INSTANCE: XERepository? = null
+
+        fun getInstance(): XERepository {
+            synchronized(this) {
+                var instance = INSTANCE
+                if (instance == null) {
+                    Log.d(TAG, "WARN: OPENING INSTANCE TO XE REPOSITORY")
+                    // Opening a connection to a database is expensive!
+                    instance = XERepository()
+                    INSTANCE = instance
+                }
+                return instance
+            }
+        }
+    }
 }
