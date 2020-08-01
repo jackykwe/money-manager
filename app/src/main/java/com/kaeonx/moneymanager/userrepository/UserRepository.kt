@@ -61,15 +61,9 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
-    suspend fun addTransaction(transaction: Transaction) {
+    suspend fun upsertTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.insertTransaction(transaction.toDatabase())
-        }
-    }
-
-    suspend fun updateTransaction(transaction: Transaction) {
-        withContext(Dispatchers.IO) {
-            database.userDatabaseDao.updateTransaction(transaction.toDatabase())
+            database.userDatabaseDao.upsertTransaction(transaction.toDatabase())
         }
     }
 

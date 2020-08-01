@@ -9,7 +9,6 @@ import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
-import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import com.kaeonx.moneymanager.userrepository.domain.toDayTransactions
 import kotlinx.coroutines.launch
 
@@ -25,13 +24,6 @@ class TransactionsFragmentViewModel : ViewModel() {
         it.toDayTransactions("SGD")
     }
     val homeCurrency = MutableLiveData2("SGD")
-
-    fun addTransaction(transaction: Transaction) {
-        Log.d(TAG, "addTransaction: called")
-        viewModelScope.launch {
-            userRepository.addTransaction(transaction)
-        }
-    }
 
     fun clearAllData() {
         viewModelScope.launch {

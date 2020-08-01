@@ -12,11 +12,8 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    @Insert
-    suspend fun insertTransaction(databaseTransaction: DatabaseTransaction)
-
-    @Update
-    suspend fun updateTransaction(databaseTransaction: DatabaseTransaction)  // Key must be the same
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertTransaction(databaseTransaction: DatabaseTransaction)
 
     @Delete
     suspend fun deleteTransaction(databaseTransaction: DatabaseTransaction)

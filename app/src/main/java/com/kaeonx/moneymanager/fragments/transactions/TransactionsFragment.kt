@@ -44,20 +44,6 @@ class TransactionsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // After a configuration change or process death, the currentBackStackEntry
-        // points to the dialog destination, so you must use getBackStackEntry()
-        // with the specific ID of your destination to ensure we always
-        // get the right NavBackStackEntry
-        savedStateHandle.getLiveData<Transaction?>("tbsdf_result").observe(viewLifecycleOwner) {
-            if (it != null) {
-                viewModel.addTransaction(it)
-                // To prevent re-adding of transaction when navigating to another fragment and back
-                savedStateHandle.set("tbsdf_result", null)
-            }
-        }
-    }
-
     /*
     private fun setMonthYearPickerListeners() {
         tcttlJanBT.setOnClickListener {

@@ -7,9 +7,11 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
+import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -300,22 +302,35 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             SubmitReadyState.NOT_READY_OPERAND1_ZERO -> _showToastText.value = "Please enter an amount."
             SubmitReadyState.NOT_READY_MEMO_EMPTY -> _showToastText.value = "Please enter a memo."
             SubmitReadyState.READY -> {
-                _submitTrigger.value = _currentTransaction.value.copy(
-                    originalAmount = CurrencyHandler.displayAmount(BigDecimal(_currentTransaction.value.originalAmount))
-                )
+                viewModelScope.launch {
+                    UserRepository.getInstance().upsertTransaction(
+                        _currentTransaction.value.copy(
+                            originalAmount = CurrencyHandler.displayAmount(
+                                BigDecimal(
+                                    _currentTransaction.value.originalAmount
+                                )
+                            )
+                        )
+                    )
+                    _navigateUp.value = true
+                }
             }
         }
     }
+
     private val _showToastText = MutableLiveData2<String?>(null)
     val showToastText: LiveData<String?>
         get() = _showToastText
+
     fun toastShown() {
         _showToastText.value = null
     }
-    private val _submitTrigger = MutableLiveData2<Transaction?>(null)
-    val submitTrigger: LiveData<Transaction?>
-        get() = _submitTrigger
-    fun submitHandled() {
-        _submitTrigger.value = null
+
+    private val _navigateUp = MutableLiveData2(false)
+    val navigateUp: LiveData<Boolean>
+        get() = _navigateUp
+
+    fun navigateUpHandled() {
+        _navigateUp.value = false
     }
 }
