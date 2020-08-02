@@ -31,6 +31,7 @@ class LobbyFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         CoroutineScope(Dispatchers.Main).launch {
             val userRepository = UserRepository.getInstance()
+            delay(200L)
             val xeRepository = XERepository.getInstance()
             while (userRepository.accounts.value == null ||
                 userRepository.categories.value == null ||
@@ -38,7 +39,7 @@ class LobbyFragment : Fragment() {
                 xeRepository.xeRows.value == null
             ) {
                 Log.d("Lobby", "still waiting sir")
-                delay(1000L)
+                delay(200L)
             }
             findNavController().navigate(LobbyFragmentDirections.actionLobbyFragmentToTransactionsFragment())
         }

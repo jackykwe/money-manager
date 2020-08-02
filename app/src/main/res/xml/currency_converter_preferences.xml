@@ -7,7 +7,7 @@
             android:key="ccv_active_table_stats"
             android:persistent="false"
             android:selectable="false"
-            android:summary="PLACEHOLDER" />
+            android:summary="" />
 
         <Preference
             app:key="activity"

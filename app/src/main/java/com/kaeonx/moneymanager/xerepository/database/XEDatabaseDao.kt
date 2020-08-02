@@ -19,6 +19,12 @@ interface XEDatabaseDao {
     @Query("SELECT * FROM currency_conversion_table")
     fun getAllXERows(): LiveData<List<DatabaseXERow>>
 
+    @Query("SELECT * FROM currency_conversion_table WHERE base_currency = :baseCurrency")
+    fun getXERows(baseCurrency: String): LiveData<List<DatabaseXERow>>
+
+    @Query("SELECT * FROM currency_conversion_table WHERE base_currency = :baseCurrency")
+    suspend fun getXERowsSuspend(baseCurrency: String): List<DatabaseXERow>
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(vararg databaseXERows: DatabaseXERow)

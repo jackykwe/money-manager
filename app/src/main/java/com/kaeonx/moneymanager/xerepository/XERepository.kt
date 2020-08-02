@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.userrepository.UserPDS
+import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.database.XEDatabase
 import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
@@ -34,34 +35,57 @@ private const val TAG = "xeRepository"
 class XERepository private constructor() {
 
     private val database = XEDatabase.getInstance()
+    private val userRepository = UserRepository.getInstance()
+
+    // To know which currency to load from the XEDatabase, we must access ccc_home_currency.
+    // This value will not be stale, because userRepository.preferences is always fresh
+    // (due to observe forever).
+//    private val _homeCurrency = MutableLiveData2(UserPDS.getString("ccc_home_currency"))
+    private val _homeCurrency = Transformations.map(userRepository.preferences) {
+        val returnable =
+            it["ccc_home_currency"] as String? ?: UserPDS.getDefaultString("ccc_home_currency")
+        checkAndUpdateIfNecessary(returnable)
+        returnable
+    }
 
     // Load from cache
     // A LiveData anyone can use to observe XERows from the repository
-    // LiveData is smart and only runs queries when someone is observing it
-    private val _xeRows = database.xeDatabaseDao.getAllXERows()
-    val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) { it.toDomain() }
+    // LiveData is smart and only runs queries when someone is observing it (in the active state)
+    // I.E. _xeRows is non-stale (because _homeCurrency is non-stale).
+//    private val _xeRows = database.xeDatabaseDao.getAllXERows()
+    private val _xeRows = Transformations.switchMap(_homeCurrency) { homeCurrency ->
+        database.xeDatabaseDao.getXERows(homeCurrency)
+    }
+    val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) {
+        Log.d(TAG, "xeRows has size ${_xeRows.value!!.size}")
+        it.toDomain()
+    }
 
     // 1. On App Start
     // 2. On Preferences Change
-    // Both of the above is factored in in the launch of TransactionsFragmentViewModel
-    fun checkAndUpdateIfNecessary() {
-        Log.d(TAG, " checkAndUpdateIfNecessary(): called")
-        val homeCurrency = UserPDS.getString("ccc_home_currency")
-        if (xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0 ||
-            (UserPDS.getBoolean("ccv_enable_online") &&
-                    System.currentTimeMillis() -
-                    xeRows.value!!.first { it.baseCurrency == homeCurrency }.updateMillis >
-                    UserPDS.getString("ccv_online_update_ttl").toLong()
-                    )
-        ) {
-            Log.d(TAG, " checkAndUpdateIfNecessary(): updating...")
-            CoroutineScope(Dispatchers.IO).launch {
-                refreshRatesTable(homeCurrency)
+    // Both of the above is factored in in the transformation for _homeCurrency above
+    // This is called every time a preference is changed. (Hm. TODO Future problem to worry about)
+    private fun checkAndUpdateIfNecessary(baseCurrency: String) {
+        CoroutineScope(Dispatchers.Default).launch {
+            Log.d(TAG, "checkAndUpdateIfNecessary(): called")
+            val xeRowsResult = withContext(Dispatchers.IO) {
+                database.xeDatabaseDao.getXERowsSuspend(baseCurrency)
             }
-        } else {
-            Log.d(TAG, " checkAndUpdateIfNecessary(): no need to update")
+            if (xeRowsResult.isEmpty() ||
+                (UserPDS.getBoolean("ccv_enable_online") &&
+                        System.currentTimeMillis() -
+                        xeRowsResult[0].updateMillis >
+                        UserPDS.getString("ccv_online_update_ttl").toLong()
+                        )
+            ) {
+                Log.d(TAG, " checkAndUpdateIfNecessary(): updating...")
+                withContext(Dispatchers.IO) {
+                    refreshRatesTable(baseCurrency)
+                }
+            } else {
+                Log.d(TAG, " checkAndUpdateIfNecessary(): no need to update")
+            }
         }
-
     }
 
     private val liveDataActivator = Observer<Any> { }

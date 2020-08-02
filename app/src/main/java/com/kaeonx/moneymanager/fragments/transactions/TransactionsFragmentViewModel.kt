@@ -51,10 +51,7 @@ class TransactionsFragmentViewModel : ViewModel() {
 
     val sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>>().apply {
         addSource(_displayCalendar) { updatePreviousLiveData() }
-        addSource(userRepository.preferences) {
-            xeRepository.checkAndUpdateIfNecessary()
-            value = recalculateDayTransactions()
-        }
+        addSource(userRepository.preferences) { value = recalculateDayTransactions() }
         addSource(xeRepository.xeRows) { value = recalculateDayTransactions() }
     }
 

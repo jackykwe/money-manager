@@ -56,6 +56,8 @@ object UserPDS : PreferenceDataStore() {
     fun getBoolean(key: String): Boolean =
         (preferences.value!![key] as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
 
+    fun getDefaultBoolean(key: String): Boolean = defaultPreferences[key] as Boolean
+
     private fun Int?.toBooleanNullable(): Boolean? = when (this) {
         null -> this
         1 -> true
@@ -80,6 +82,8 @@ object UserPDS : PreferenceDataStore() {
 
     fun getString(key: String): String =
         preferences.value!![key] as String? ?: defaultPreferences[key] as String
+
+    fun getDefaultString(key: String): String = defaultPreferences[key] as String
 
     override fun putString(key: String, value: String?) {
         if (value == null) throw IllegalArgumentException("putString: value cannot be null")

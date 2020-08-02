@@ -45,7 +45,7 @@ class CurrencyHandler private constructor() {
             // value(home) x rate = value(foreign)
             // value(foreign) / rate = value(home)
             val rateString = XERepository.getInstance().xeRows.value!!
-                .find { it.baseCurrency == homeCurrencyDst && it.foreignCurrency == foreignCurrencySrc }
+                .find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == homeCurrencyDst }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
                 ?.rate
             return when (rateString) {
                 null -> BigDecimal.ZERO
