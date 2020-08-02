@@ -9,25 +9,18 @@ import java.math.RoundingMode
 class CurrencyHandler private constructor() {
     companion object {
 
-        fun displayAmountNullable(bigDecimal: BigDecimal): String? {
-            if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return null
-
-            val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
-//            if (twoDP.compareTo(BigDecimal.ZERO) == 0) return null  // fixes weird 0.00 being returned as 0.00 instead of 0
-
-            val twoDPSTZ = twoDP.stripTrailingZeros()
-            return if (twoDPSTZ.scale() <= 0) {  // twoDPSTZ is a whole number, return integer representation (twoDPSTZ)
-                twoDPSTZ.toPlainString()
-            } else {  // twoDPSTZ is not a whole number, return 2 DP representation (twoDP)
-                twoDP.toPlainString()
-            }
-        }
-
         fun displayAmount(bigDecimal: BigDecimal): String {
             if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return "0"
+
             val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
+            // if (twoDP.compareTo(BigDecimal.ZERO) == 0) return null  // fixes weird 0.00 being returned as 0.00 instead of 0
+
             val twoDPSTZ = twoDP.stripTrailingZeros()
-            return if (twoDPSTZ.scale() <= 0) twoDPSTZ.toPlainString() else twoDP.toPlainString()
+            return if (twoDPSTZ.scale() <= 0) {
+                twoDPSTZ.toPlainString()  // twoDPSTZ is a whole number, return integer representation (twoDPSTZ)
+            } else {
+                twoDP.toPlainString()  // twoDPSTZ is not a whole number, return 2 DP representation (twoDP)
+            }
         }
 
         private fun displayAmountAsBigDecimal(bigDecimal: BigDecimal): BigDecimal {

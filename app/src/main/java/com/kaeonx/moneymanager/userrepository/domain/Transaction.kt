@@ -112,11 +112,14 @@ private fun List<Transaction>.typeAllHomeCurrency(type: String): Boolean {
 
 // Helper function for List<Transaction>.toDayTransactions()
 private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
+    var gotIncome = false
+    var gotExpenses = false
     var income = BigDecimal.ZERO
     var expenses = BigDecimal.ZERO
     forEach {
         when (it.type) {
             "Income" -> {
+                gotIncome = true
                 income = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
                     income.plus(BigDecimal(it.originalAmount))
                 } else {
@@ -129,6 +132,7 @@ private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
                 }
             }
             "Expenses" -> {
+                gotExpenses = true
                 expenses = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
                     expenses.plus(BigDecimal(it.originalAmount))
                 } else {
@@ -143,8 +147,7 @@ private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
             else -> throw IllegalArgumentException("Unknown type given: ${it.type}")
         }
     }
-    return IncomeExpenses(
-        CurrencyHandler.displayAmountNullable(income),
-        CurrencyHandler.displayAmountNullable(expenses)
-    )
+    val finalIncome = if (gotIncome) CurrencyHandler.displayAmount(income) else null
+    val finalExpenses = if (gotExpenses) CurrencyHandler.displayAmount(expenses) else null
+    return IncomeExpenses(finalIncome, finalExpenses)
 }
