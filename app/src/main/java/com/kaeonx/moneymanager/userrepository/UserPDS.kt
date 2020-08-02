@@ -20,7 +20,7 @@ object UserPDS : PreferenceDataStore() {
 
     private val defaultPreferences = mapOf(
         // Account
-        "acc_account_name" to "Cash",  // TODO handle when this account is deleted.
+        "acc_account_name" to "NAMEHM",
 
         // Currency
         "ccc_home_currency" to "SGD",
@@ -37,9 +37,10 @@ object UserPDS : PreferenceDataStore() {
         "dsp_theme" to "coloured",
         "dsp_date_format" to "ddMMyy",
         "dsp_time_format" to "HHmm",
+        "dsp_sign_position" to "after_currency",
 
         // Page Transactions
-        "tst_default_account" to "Cash",
+        "tst_default_account" to "Cash",  // TODO handle when this account is deleted.
         "tst_default_type" to "Expenses"
 
         // Page Budget

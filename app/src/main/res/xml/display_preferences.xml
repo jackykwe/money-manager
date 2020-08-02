@@ -29,5 +29,12 @@
             android:title="Time format"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            android:entries="@array/dsp_amount_sign_position_entries"
+            android:entryValues="@array/dsp_amount_sign_position_values"
+            android:key="dsp_sign_position"
+            android:title="Amount sign position"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 </PreferenceScreen>

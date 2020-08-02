@@ -60,6 +60,21 @@ fun TextView.setCurrencyVisibility(transaction: Transaction) {
     visibility = if (cond1 && cond2) View.GONE else View.VISIBLE
 }
 
+@BindingAdapter("transactionSignTV1_textVisibility")
+fun TextView.setTransactionSignTV1TextVisibility(type: String) {
+    text = if (type == "Income") "+" else "-"
+    visibility =
+        if (UserPDS.getString("dsp_sign_position") == "before_currency") View.VISIBLE else View.GONE
+}
+
+@BindingAdapter("transactionSignTV2_textVisibility")
+fun TextView.setTransactionSignTV2TextVisibility(type: String) {
+    text = if (type == "Income") "+" else "-"
+    visibility =
+        if (UserPDS.getString("dsp_sign_position") == "after_currency") View.VISIBLE else View.GONE
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * For icon_transaction.xml

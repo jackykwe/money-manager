@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="transaction"
             type="com.kaeonx.moneymanager.userrepository.domain.Transaction" />
+
         <variable
             name="onClickListener"
             type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
@@ -19,8 +21,8 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:orientation="horizontal"
         android:onClick="@{() -> onClickListener.onClick(transaction)}"
+        android:orientation="horizontal"
         android:padding="8dp">
 
         <FrameLayout
@@ -31,8 +33,8 @@
 
             <include
                 android:id="@+id/categoryIconInclude"
-                app:iconDetail="@{transaction.toIconDetail()}"
-                layout="@layout/icon_transaction" />
+                layout="@layout/icon_transaction"
+                app:iconDetail="@{transaction.toIconDetail()}" />
         </FrameLayout>
 
         <TextView
@@ -47,6 +49,16 @@
             tools:text="@string/placeholder_memo" />
 
         <TextView
+            android:id="@+id/transactionSignTV1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:textSize="14sp"
+            app:transactionSignTV1_textVisibility="@{transaction.type}"
+            tools:ignore="RtlSymmetry"
+            tools:text="+" />
+
+        <TextView
             android:id="@+id/transactionCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,6 +68,16 @@
             app:transactionCurrencyTV_visibility="@{transaction}"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
+
+        <TextView
+            android:id="@+id/transactionSignTV2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:textSize="14sp"
+            app:transactionSignTV2_textVisibility="@{transaction.type}"
+            tools:ignore="RtlSymmetry"
+            tools:text="+" />
 
         <TextView
             android:id="@+id/transactionValueTV"

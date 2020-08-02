@@ -48,7 +48,7 @@ class CurrencyHandler private constructor() {
                 .find { it.baseCurrency == homeCurrencyDst && it.foreignCurrency == foreignCurrencySrc }
                 ?.rate
             return when (rateString) {
-                null -> BigDecimal("0.01")
+                null -> BigDecimal.ZERO
                 else -> displayAmountAsBigDecimal(
                     bigDecimal.divide(
                         BigDecimal(rateString),

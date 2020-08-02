@@ -154,4 +154,14 @@
         <item>USD</item>
         <item>ZAR</item>
     </string-array>
+
+    <string-array name="dsp_amount_sign_position_entries">
+        <item>+ SGD 10</item>
+        <item>SGD + 10</item>
+    </string-array>
+
+    <string-array name="dsp_amount_sign_position_values">
+        <item>before_currency</item>
+        <item>after_currency</item>
+    </string-array>
 </resources>
