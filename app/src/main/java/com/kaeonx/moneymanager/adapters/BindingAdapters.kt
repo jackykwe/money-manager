@@ -11,10 +11,12 @@ import androidx.databinding.InverseBindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
+import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import java.math.BigDecimal
 
 
 private const val TAG = "biad"
@@ -171,6 +173,7 @@ fun AutoCompleteTextView.setText2(newText: String?) {
         if (newText == null) clearListSelection() else setText(newText, false)
     }
 }
+
 @InverseBindingAdapter(attribute = "autoCompleteTextView_text", event = "android:textAttrChanged")
 fun AutoCompleteTextView.getText2(): String {
 //    Log.d(TAG, "GETTING $tag")
@@ -178,7 +181,10 @@ fun AutoCompleteTextView.getText2(): String {
 }
 
 @BindingAdapter("colourFamilySpinner_colourFamiliesAL", "colourFamilySpinner_colourIntensity")
-fun AutoCompleteTextView.updateColourFamilySpinnerAdapter(newColourFamilies: List<String>, newColourIntensity: String?) {
+fun AutoCompleteTextView.updateColourFamilySpinnerAdapter(
+    newColourFamilies: List<String>,
+    newColourIntensity: String?
+) {
 //    For debugging
 //    (adapter as ColourFamilyPickerArrayAdapter).apply {
 //        if (newColourFamilies != colourFamilies && newColourIntensity != colourIntensity) {
@@ -196,7 +202,10 @@ fun AutoCompleteTextView.updateColourFamilySpinnerAdapter(newColourFamilies: Lis
 }
 
 @BindingAdapter("colourIntensitySpinner_colourFamily", "colourIntensitySpinner_colourIntensitiesAL")
-fun AutoCompleteTextView.updateColourIntensitySpinnerAdapter(newColourFamily: String, newColourIntensities: List<String>) {
+fun AutoCompleteTextView.updateColourIntensitySpinnerAdapter(
+    newColourFamily: String,
+    newColourIntensities: List<String>
+) {
 //    For debugging
 //    (adapter as ColourIntensityPickerArrayAdapter).apply {
 //        if (newColourFamily != colourFamily && newColourIntensities != colourIntensities) {
@@ -211,6 +220,45 @@ fun AutoCompleteTextView.updateColourIntensitySpinnerAdapter(newColourFamily: St
 //        }
 //    }
     (adapter as ColourIntensityPickerArrayAdapter).updateData(newColourFamily, newColourIntensities)
+}
+
+
+@BindingAdapter("timeTV_text")
+fun TextView.setTimeTVText(timestamp: Long) {
+    val dateFormat = UserPDS.getString("dsp_date_format")
+    val timeFormat = UserPDS.getString("dsp_time_format")
+    text = CalendarHandler.getFormattedString(timestamp, "$timeFormat 'on' $dateFormat")
+}
+
+@BindingAdapter("convertedAmountHintTV_visibility")
+fun TextView.setConvertedAmountHintTV_visibility(transaction: Transaction) {
+    visibility = if (transaction.originalCurrency != UserPDS.getString("ccc_home_currency"))
+        View.VISIBLE else View.GONE
+}
+
+@BindingAdapter("convertedCurrencyTV_textVisiibility")
+fun TextView.setConvertedCurrencyTV_textVisibility(transaction: Transaction) {
+    val homeCurrency = UserPDS.getString("ccc_home_currency")
+    visibility = if (transaction.originalCurrency != homeCurrency) {
+        text = homeCurrency
+        View.VISIBLE
+    } else View.GONE
+}
+
+@BindingAdapter("convertedAmountTV_textVisiibility")
+fun TextView.setConvertedAmountTV_textVisibility(transaction: Transaction) {
+    val transactionCurrency = transaction.originalCurrency
+    val homeCurrency = UserPDS.getString("ccc_home_currency")
+    visibility = if (transactionCurrency != homeCurrency) {
+        text = CurrencyHandler.displayAmount(
+            CurrencyHandler.convertAmount(
+                BigDecimal(transaction.originalAmount),
+                transactionCurrency,
+                homeCurrency
+            )
+        )
+        View.VISIBLE
+    } else View.GONE
 }
 
 ////////////////////////////////////////////////////////////////////////////////

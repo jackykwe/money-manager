@@ -15,13 +15,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         tools:context=".fragments.transactions.TransactionEditFragment">
 
         <ScrollView
             android:id="@+id/mainSV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -121,6 +124,13 @@
                             tools:ignore="RtlSymmetry"
                             tools:text="Expenses" />
 
+                        <androidx.constraintlayout.widget.Barrier
+                            android:id="@+id/barrier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:barrierDirection="bottom"
+                            app:constraint_referenced_ids="originalAmountHintTV,convertedCurrencyTV,originalAmountTV,convertedAmountTV,convertedAmountHintTV,originalCurrencyTV" />
+
                         <TextView
                             android:id="@+id/originalAmountHintTV"
                             android:layout_width="0dp"
@@ -141,7 +151,7 @@
                             android:layout_width="0dp"
                             android:layout_height="36dp"
                             android:gravity="center_vertical"
-                            android:paddingStart="8dp"
+                            android:paddingStart="4dp"
                             android:text="@{viewModel.transaction.originalAmount}"
                             android:textSize="16sp"
                             app:layout_constraintEnd_toEndOf="@+id/accountTV"
@@ -191,9 +201,10 @@
                             android:paddingStart="8dp"
                             android:textSize="16sp"
                             app:layout_constraintBottom_toTopOf="@+id/memoTV"
-                            app:layout_constraintEnd_toEndOf="@+id/convertedAmountTV"
-                            app:layout_constraintStart_toStartOf="@+id/convertedCurrencyTV"
-                            app:layout_constraintTop_toBottomOf="@+id/convertedCurrencyTV"
+                            app:layout_constraintEnd_toEndOf="@+id/originalAmountTV"
+                            app:layout_constraintStart_toStartOf="@+id/originalCurrencyTV"
+                            app:layout_constraintTop_toBottomOf="@id/barrier"
+                            app:timeTV_text="@{viewModel.transaction.timestamp}"
                             tools:ignore="RtlSymmetry"
                             tools:text="HHmm on ddMMyy" />
 
@@ -201,11 +212,12 @@
                             android:id="@+id/memoTV"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
                             android:minHeight="36dp"
                             android:paddingStart="8dp"
                             android:text="@{viewModel.transaction.memo}"
                             android:textSize="16sp"
-                            app:layout_constraintEnd_toEndOf="@+id/convertedAmountTV"
+                            app:layout_constraintEnd_toEndOf="@+id/timeTV"
                             app:layout_constraintStart_toStartOf="@+id/timeTV"
                             app:layout_constraintTop_toBottomOf="@+id/timeTV"
                             tools:ignore="RtlSymmetry"
@@ -216,14 +228,17 @@
                             android:layout_width="0dp"
                             android:layout_height="36dp"
                             android:gravity="center_vertical"
-                            android:paddingStart="8dp"
+                            android:paddingStart="4dp"
                             android:text="@string/placeholder_amount"
                             android:textSize="16sp"
+                            android:visibility="gone"
+                            app:convertedAmountTV_textVisiibility="@{viewModel.transaction}"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountTV"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/convertedCurrencyTV"
                             app:layout_constraintTop_toTopOf="@+id/convertedCurrencyTV"
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
 
                         <TextView
                             android:id="@+id/convertedCurrencyTV"
@@ -233,13 +248,16 @@
                             android:paddingStart="8dp"
                             android:text="@string/placeholder_currency"
                             android:textSize="14sp"
+                            android:visibility="gone"
+                            app:convertedCurrencyTV_textVisiibility="@{viewModel.transaction}"
                             app:layout_constraintBottom_toTopOf="@+id/timeTV"
                             app:layout_constraintEnd_toStartOf="@+id/convertedAmountTV"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/convertedAmountHintTV"
                             app:layout_constraintStart_toStartOf="@+id/originalCurrencyTV"
                             app:layout_constraintTop_toBottomOf="@+id/originalCurrencyTV"
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
 
                         <TextView
                             android:id="@+id/convertedAmountHintTV"
@@ -248,12 +266,15 @@
                             android:ems="4"
                             android:gravity="center_vertical"
                             android:paddingEnd="8dp"
-                            android:text="Amount (Converted):"
+                            android:text="Amount\n(Home):"
+                            android:visibility="gone"
+                            app:convertedAmountHintTV_visibility="@{viewModel.transaction}"
                             app:layout_constraintBottom_toTopOf="@+id/timeHintTV"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountHintTV"
                             app:layout_constraintStart_toStartOf="@+id/originalAmountHintTV"
                             app:layout_constraintTop_toBottomOf="@+id/originalAmountHintTV"
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry"
+                            tools:visibility="visible" />
 
 
                         <TextView
@@ -265,9 +286,9 @@
                             android:paddingEnd="8dp"
                             android:text="Time:"
                             app:layout_constraintBottom_toTopOf="@+id/memoHintTV"
-                            app:layout_constraintEnd_toEndOf="@+id/convertedAmountHintTV"
-                            app:layout_constraintStart_toStartOf="@+id/convertedAmountHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/convertedAmountHintTV"
+                            app:layout_constraintEnd_toEndOf="@+id/originalAmountHintTV"
+                            app:layout_constraintStart_toStartOf="@+id/originalAmountHintTV"
+                            app:layout_constraintTop_toBottomOf="@+id/barrier"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
@@ -275,6 +296,7 @@
                             android:layout_width="0dp"
                             android:layout_height="36dp"
                             android:ems="4"
+                            android:gravity="center_vertical"
                             android:paddingEnd="8dp"
                             android:text="Memo:"
                             app:layout_constraintEnd_toEndOf="@+id/timeHintTV"

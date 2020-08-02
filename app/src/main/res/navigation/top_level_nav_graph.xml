@@ -33,7 +33,11 @@
             app:destination="@id/transactionsBSDF" />
         <action
             android:id="@+id/action_transactionsFragment_to_transactionEditFragment"
-            app:destination="@id/transactionEditFragment" />
+            app:destination="@id/transactionEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"

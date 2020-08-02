@@ -43,6 +43,13 @@ class TransactionEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.initShowContent.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.initShowContentHandled()
+                binding.mainSV.visibility = View.VISIBLE
+            }
+        }
+
         viewModel.navigateUp.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.navigateUpHandled()

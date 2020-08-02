@@ -149,12 +149,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        // todo: This solution is very hacky.. Don't really get how it actually works, but it fits my demands perfectly. research?
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-//            recreate()  // some settings were set that needs refreshing of this activity.
-//        }
-//    }
 }
