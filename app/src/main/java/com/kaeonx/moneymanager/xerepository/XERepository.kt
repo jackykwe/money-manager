@@ -45,6 +45,7 @@ class XERepository private constructor() {
     // 2. On Preferences Change
     // Both of the above is factored in in the launch of TransactionsFragmentViewModel
     fun checkAndUpdateIfNecessary() {
+        Log.d(TAG, " checkAndUpdateIfNecessary(): called")
         val homeCurrency = UserPDS.getString("ccc_home_currency")
         if (xeRows.value!!.count { it.baseCurrency == homeCurrency } == 0 ||
             (UserPDS.getBoolean("ccv_enable_online") &&
@@ -53,10 +54,14 @@ class XERepository private constructor() {
                     UserPDS.getString("ccv_online_update_ttl").toLong()
                     )
         ) {
+            Log.d(TAG, " checkAndUpdateIfNecessary(): updating...")
             CoroutineScope(Dispatchers.IO).launch {
                 refreshRatesTable(homeCurrency)
             }
+        } else {
+            Log.d(TAG, " checkAndUpdateIfNecessary(): no need to update")
         }
+
     }
 
     private val liveDataActivator = Observer<Any> { }

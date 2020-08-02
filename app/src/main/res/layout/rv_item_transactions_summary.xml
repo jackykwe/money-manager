@@ -5,26 +5,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:id="@+id/summaryCV"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="8dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:layout_marginEnd="8dp"-->
-    <!--        app:cardCornerRadius="4dp"-->
-    <!--        app:cardPreventCornerOverlap="false"-->
-    <!--        app:cardUseCompatPadding="true"-->
-    <!--        app:contentPadding="8dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/summaryCV"
+        style="@style/RvItemTransactionsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/RvItemTransactionsCard"
+        android:layout_marginTop="8dp"
         app:contentPadding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,46 +25,6 @@
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textStyle="bold" />
-        <!--        -->
-        <!--        <FrameLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent">-->
 
-        <!--            <TextView-->
-        <!--                android:id="@+id/summaryMonthTV"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_gravity="center"-->
-        <!--                android:text="MAY 2019"-->
-        <!--                android:textAlignment="center"-->
-        <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
-        <!--                android:textStyle="bold" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/summaryLeftArrowTV"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_gravity="start|center_vertical"-->
-        <!--                android:fontFamily="@font/material_design_icons"-->
-        <!--                android:paddingEnd="16dp"-->
-        <!--                android:text="&#xF0141;"-->
-        <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
-        <!--                android:textStyle="bold"-->
-        <!--                tools:ignore="RtlSymmetry" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/summaryRightArrowTV"-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:layout_gravity="end|center_vertical"-->
-        <!--                android:fontFamily="@font/material_design_icons"-->
-        <!--                android:paddingStart="16dp"-->
-        <!--                android:text="&#xF0142;"-->
-        <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
-        <!--                android:textStyle="bold"-->
-        <!--                tools:ignore="RtlSymmetry" />-->
-        <!--        </FrameLayout>-->
-
-        <!--    </androidx.cardview.widget.CardView>-->
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

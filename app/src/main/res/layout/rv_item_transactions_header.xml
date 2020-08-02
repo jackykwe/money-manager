@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="monthText"
+            type="String" />
+
+        <variable
+            name="leftArrowClickListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+
+        <variable
+            name="monthClickListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+
+        <variable
+            name="rightArrowClickListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/transactionsHeaderCL"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/headerLeftArrowTV"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/material_design_icons"
+            android:gravity="center"
+            android:onClick="@{() -> leftArrowClickListener.onClick()}"
+            android:text="&#xF0141;"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_constraintEnd_toStartOf="@+id/headerMonthTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/headerMonthTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:onClick="@{() -> monthClickListener.onClick()}"
+            android:text="@{monthText}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/headerRightArrowTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/headerLeftArrowTV"
+            tools:text="MAY 2019" />
+
+
+        <TextView
+            android:id="@+id/headerRightArrowTV"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/material_design_icons"
+            android:gravity="center"
+            android:onClick="@{() -> rightArrowClickListener.onClick()}"
+            android:text="&#xF0142;"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/headerMonthTV" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

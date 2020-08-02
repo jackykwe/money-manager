@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -12,7 +13,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import java.util.*
 
 private const val TAG = "transactionFrag"
 
@@ -28,75 +31,42 @@ class TransactionsFragment : Fragment() {
     private var isExpanded = false
     private var firstLoad = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
 
         binding.transactionsRV.adapter =
-            TransactionsRVAdapter(TransactionOnClickListener { transaction ->
-                findNavController().navigate(
-                    TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
-                        transaction.transactionId!!
+            TransactionsRVAdapter(
+                TransactionOnClickListener { transaction ->
+                    findNavController().navigate(
+                        TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
+                            transaction.transactionId!!
+                        )
                     )
-                )
-            })
+                },
+                GenericOnClickListener { viewModel.monthMinusOne() },
+                GenericOnClickListener {
+                    Toast.makeText(requireContext(), "Wow you want me? 2", Toast.LENGTH_SHORT)
+                        .show()
+                },
+                GenericOnClickListener { viewModel.monthPlusOne() }
+            )
 
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
-            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeader(it)
+            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
+                CalendarHandler.getFormattedString(viewModel.displayCalendar.value!!, "MMM yyyy")
+                    .toUpperCase(Locale.ROOT),
+                it
+            )
         }
 
         return binding.root
     }
 
     /*
-    private fun setMonthYearPickerListeners() {
-        tcttlJanBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlJanBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlFebBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlFebBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlMarBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlMarBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlAprBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlAprBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlMayBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlMayBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlJunBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlJunBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlJulBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlJulBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlAugBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlAugBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlSepBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlSepBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlOctBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlOctBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlNovBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlNovBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
-        tcttlDecBT.setOnClickListener {
-            firebaseViewModel.setMonth(Integer.parseInt(tcttlDecBT.tag.toString()))
-            transactionsABL.setExpanded(false, true)
-        }
         tcttlLeftArrowBT.setOnClickListener { firebaseViewModel.yearMinusOne() }
         tcttlRightArrowBT.setOnClickListener { firebaseViewModel.yearPlusOne() }
         tcttlYearBT.setOnClickListener {

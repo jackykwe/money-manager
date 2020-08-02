@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
@@ -13,11 +12,7 @@ private const val TAG = "tevm"
 class TransactionEditViewModel(private val transactionId: Int): ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
-    val transaction = Transformations.map(userRepository.transactions) { list ->
-        list.find { it.transactionId == transactionId }!!
-    }
-
-//    val transaction = userRepository.getTransaction(initTransaction.transactionId!!)
+    val transaction = userRepository.getTransaction(transactionId)
 
     fun deleteTransaction() {
         viewModelScope.launch {

@@ -28,6 +28,12 @@ interface UserDatabaseDao {
     @Query("SELECT * FROM transactions_table WHERE transactionId = :transactionId")
     fun getTransaction(transactionId: Int): LiveData<DatabaseTransaction>
 
+    @Query("SELECT * FROM transactions_table WHERE timestamp BETWEEN :startMillis AND :endMillis")
+    fun getTransactionsBetween(
+        startMillis: Long,
+        endMillis: Long
+    ): LiveData<List<DatabaseTransaction>>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts

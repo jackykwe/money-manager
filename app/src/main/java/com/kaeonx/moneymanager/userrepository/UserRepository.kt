@@ -35,6 +35,7 @@ class UserRepository private constructor() {
     val preferences = Transformations.map(_preferences) { it.toMap() }
 
     private val liveDataActivator = Observer<Any> { }
+
     init {
         // These values are observed statically (they are accessed by items not bound to
         // views like transactions in TransactionsFragment - e.g. Transaction.toDetail()).
@@ -44,6 +45,7 @@ class UserRepository private constructor() {
         categories.observeForever(liveDataActivator)
         preferences.observeForever(liveDataActivator)
     }
+
     private fun clearPermanentObservers() {
         accounts.removeObserver(liveDataActivator)
         categories.removeObserver(liveDataActivator)
@@ -57,6 +59,16 @@ class UserRepository private constructor() {
     ////////////////////////////////////////////////////////////////////////////////
     fun getTransaction(transactionId: Int): LiveData<Transaction> =
         Transformations.map(database.userDatabaseDao.getTransaction(transactionId)) {
+            it.toDomain()
+        }
+
+    fun getTransactionsBetween(startMillis: Long, endMillis: Long): LiveData<List<Transaction>> =
+        Transformations.map(
+            database.userDatabaseDao.getTransactionsBetween(
+                startMillis,
+                endMillis
+            )
+        ) {
             it.toDomain()
         }
 
