@@ -48,12 +48,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         navController = findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.transactionsFragment//,
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.transactionsFragment//,
 //            R.id.budgetFragment,
 //            R.id.debtFragment,
 //            R.id.titleFragment
-        ), binding.rootDL)
+            ), binding.rootDL
+        )
 
         binding.mainActivityNV.apply {
             setupWithNavController(navController) // Connects navigation drawer to navController
@@ -61,7 +63,11 @@ class MainActivity : AppCompatActivity() {
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
                     R.id.menuExport -> {
-                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(
+                            binding.appBarMainInclude.mainActivityFAB,
+                            "Function not available yet",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                         false
                     }
                     R.id.menuSettings -> {
@@ -82,8 +88,12 @@ class MainActivity : AppCompatActivity() {
                             .show()
                         false
                     }
-                    navController.currentDestination!!.id -> { true }  // Prevents reloading of the current destination
-                    else -> it.onNavDestinationSelected(navController) || super.onOptionsItemSelected(it)
+                    navController.currentDestination!!.id -> {
+                        true
+                    }  // Prevents reloading of the current destination
+                    else -> it.onNavDestinationSelected(navController) || super.onOptionsItemSelected(
+                        it
+                    )
                 }
             }
         }
@@ -92,11 +102,19 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "MOVING TO: ${destination.displayName}")
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
-                // Inflation of menu is done here for this special case.
+                // Inflation of menu is done here for these special pairs (interacting with DFs via NavUI).
                 // Otherwise, inflation of menu is done set in each fragment
                 // (because the options need to be controlled from within the fragment)
-                if (destination.id != R.id.transactionsBSDF) menu.clear()
-                if (destination.id == R.id.transactionEditFragment) inflateMenu(R.menu.fragment_general_edit_deleteable)
+                when (destination.id) {
+                    R.id.transactionsBSDF -> Unit  // Pair 1
+                    R.id.monthYearPickerDialogFragment -> Unit  // Pair 2
+                    else -> menu.clear()
+                }
+                when (destination.id) {
+                    R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 1
+                    R.id.transactionsFragment -> inflateMenu(R.menu.fragment_transactions)  // Pair 2
+                    else -> Unit
+                }
 
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
                 setupWithNavController(navController, appBarConfiguration)

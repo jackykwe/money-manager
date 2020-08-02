@@ -1,8 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory
-        app:title="Currency Table">
+    <PreferenceCategory app:title="Currency Converter Table">
+
+        <Preference
+            android:key="ccv_active_table_stats"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="PLACEHOLDER" />
 
         <Preference
             app:key="activity"
@@ -11,6 +16,10 @@
                 android:targetClass="com.kaeonx.moneymanager.activities.SettingsActivity"
                 android:targetPackage="com.kaeonx.moneymanager" />
         </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Online Updates">
 
         <Preference
             android:icon="@android:drawable/ic_menu_info_details"

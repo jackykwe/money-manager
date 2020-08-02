@@ -11,13 +11,16 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.xerepository.XERepository
 
 private const val TAG = "statvt"
 private const val TITLE_TAG = "settingsActivityTitle"
 
-class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : AppCompatActivity(),
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -66,13 +69,17 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         return super.onSupportNavigateUp()
     }
 
-    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat, pref: Preference): Boolean {
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
         // Instantiate the new Fragment
         val args = pref.extras
-        val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment).apply {
-            arguments = args
-            setTargetFragment(caller, 0)
-        }
+        val fragment =
+            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment).apply {
+                arguments = args
+                setTargetFragment(caller, 0)
+            }
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
             .replace(R.id.settings, fragment)
@@ -144,6 +151,20 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.currency_converter_preferences, rootKey)
+            val homeCurrency = UserPDS.getString("ccc_home_currency")
+            val dateFormat = UserPDS.getString("dsp_date_format")
+            val timeFormat = UserPDS.getString("dsp_time_format")
+            val timestamp =
+                XERepository.getInstance().xeRows.value!!.find { it.baseCurrency == homeCurrency }?.updateMillis
+            if (timestamp == null) {
+                findPreference<Preference>("ccv_active_table_stats")!!.summary =
+                    "No active table. Please enable internet connection for the app to retrieve one from the internet."
+            } else {
+                val lastUpdated =
+                    CalendarHandler.getFormattedString(timestamp, "$timeFormat 'on' $dateFormat")
+                findPreference<Preference>("ccv_active_table_stats")!!.summary =
+                    "Base currency: $homeCurrency\nLast updated: $lastUpdated"
+            }
         }
     }
 
@@ -166,7 +187,8 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.page_transactions_preferences, rootKey)
 
-            val savedAccounts = UserRepository.getInstance().accounts.value!!.map { it.name }.toTypedArray()
+            val savedAccounts =
+                UserRepository.getInstance().accounts.value!!.map { it.name }.toTypedArray()
             findPreference<ListPreference>("tst_default_account")!!.apply {
                 entries = savedAccounts
                 entryValues = savedAccounts

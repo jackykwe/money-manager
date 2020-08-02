@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
@@ -49,8 +48,11 @@ class TransactionsFragment : Fragment() {
                 },
                 GenericOnClickListener { viewModel.monthMinusOne() },
                 GenericOnClickListener {
-                    Toast.makeText(requireContext(), "Wow you want me? 2", Toast.LENGTH_SHORT)
-                        .show()
+                    findNavController().navigate(
+                        TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
+                            viewModel.displayCalendar.value!!
+                        )
+                    )
                 },
                 GenericOnClickListener { viewModel.monthPlusOne() }
             )
@@ -66,21 +68,20 @@ class TransactionsFragment : Fragment() {
         return binding.root
     }
 
-    /*
-        tcttlLeftArrowBT.setOnClickListener { firebaseViewModel.yearMinusOne() }
-        tcttlRightArrowBT.setOnClickListener { firebaseViewModel.yearPlusOne() }
-        tcttlYearBT.setOnClickListener {
-            YearPickerDialogFragment().show(childFragmentManager, "yearPicker")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                viewModel.updateCalendar(it[0], it[1])
+                savedStateHandle.set(MY_PICKER_RESULT, null)
+            }
         }
     }
-     */
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         // Setup of Toolbar
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_transactions)
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_sync -> {

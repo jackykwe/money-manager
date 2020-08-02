@@ -38,6 +38,9 @@
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_monthYearPickerDialogFragment"
+            app:destination="@id/monthYearPickerDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"
@@ -51,6 +54,14 @@
             android:id="@+id/action_transactionEditFragment_to_transactionsBSDF"
             app:destination="@id/transactionsBSDF" />
     </fragment>
+    <dialog
+        android:id="@+id/monthYearPickerDialogFragment"
+        android:name="com.kaeonx.moneymanager.fragments.transactions.MonthYearPickerDialogFragment"
+        android:label="MonthYearPickerDialogFragment">
+        <argument
+            android:name="currentCalendar"
+            app:argType="java.util.Calendar" />
+    </dialog>
 
     <fragment
         android:id="@+id/BudgetFragment"
@@ -145,4 +156,5 @@
             app:popUpTo="@id/lobbyFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
 </navigation>

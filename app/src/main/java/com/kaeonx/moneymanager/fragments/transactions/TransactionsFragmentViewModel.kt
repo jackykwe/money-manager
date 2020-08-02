@@ -37,6 +37,13 @@ class TransactionsFragmentViewModel : ViewModel() {
         }
     }
 
+    fun updateCalendar(newMonth: Int, newYear: Int) {
+        _displayCalendar.value = _displayCalendar.value.apply {
+            this.set(Calendar.MONTH, newMonth)
+            this.set(Calendar.YEAR, newYear)
+        }
+    }
+
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()
 
