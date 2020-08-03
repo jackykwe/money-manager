@@ -86,27 +86,17 @@ fun TextView.setTransactionSignTV2TextVisibility(type: String) {
 @BindingAdapter("iconRing_tint")
 fun ImageView.setIconRingTint(colourString: String) {
     imageTintList = ColourHandler.getColorStateList(colourString)
-//    if (colourString == null) {
-//        visibility = View.INVISIBLE
-//    } else {
-//        visibility = View.VISIBLE
-//        imageTintList = ColourHandler.getColorStateList(colourString)
-//    }
 }
 
 @BindingAdapter("iconBG_tint")
-fun ImageView.setIconBGTint(colourString: String?) {
-    if (colourString == null) {
-        visibility = View.INVISIBLE
-    } else {
-        visibility = View.VISIBLE
-        imageTintList = ColourHandler.getColorStateList(colourString)
-    }
+fun ImageView.setIconBGTint(colourString: String) {
+    imageTintList = ColourHandler.getColorStateList(colourString)
 }
 
 @BindingAdapter("iconTV_text")
-fun TextView.setIconTVText(iconHex: String?) {
-    text = IconHandler.getDisplayHex(iconHex ?: "F02D6")
+fun TextView.setIconTVText(iconHex: String) {
+    text = IconHandler.getDisplayHex(iconHex)
+//    text = IconHandler.getDisplayHex(iconHex ?: "F02D6")
 }
 
 ////////////////////////////////////////////////////////////////////////////////

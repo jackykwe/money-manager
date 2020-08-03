@@ -65,7 +65,9 @@
 
     <style name="TextAppearance.MyApp.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2"></style>
 
-    <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1"></style>
+    <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:letterSpacing">0</item>
+    </style>
 
     <style name="TextAppearance.MyApp.Body2" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:letterSpacing">0</item>
