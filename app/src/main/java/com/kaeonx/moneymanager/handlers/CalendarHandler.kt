@@ -21,6 +21,16 @@ class CalendarHandler private constructor() {
         }
 
 
+        fun getStartOfMonthCalendar(calendar: Calendar): Calendar {
+            return calendar.apply {
+                set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
+                set(Calendar.HOUR_OF_DAY, getActualMinimum(Calendar.HOUR_OF_DAY))
+                set(Calendar.MINUTE, getActualMinimum(Calendar.MINUTE))
+                set(Calendar.SECOND, getActualMinimum(Calendar.SECOND))
+                set(Calendar.MILLISECOND, getActualMinimum(Calendar.MILLISECOND))
+            }
+        }
+
         fun getStartOfMonthMillis(calendar: Calendar): Long {
             return calendar.apply {
                 set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))

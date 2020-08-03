@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsHeaderBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
@@ -29,9 +30,9 @@ class TransactionsRVAdapter(
 ) :
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
-    fun submitListAndAddHeaders(monthText: String, list: List<DayTransactions>) {
+    fun submitListAndAddHeaders(monthText: String, pieData: PieData, list: List<DayTransactions>) {
         CoroutineScope(Dispatchers.Default).launch {
-            val addable = listOf(RVItem.RVItemHeader(monthText), RVItem.RVItemSummary)
+            val addable = listOf(RVItem.RVItemHeader(monthText), RVItem.RVItemSummary(pieData))
             val submittable = when {
                 list.isEmpty() -> addable
                 else -> addable + list.map { RVItem.RVItemDayTransactions(it) }
@@ -65,7 +66,10 @@ class TransactionsRVAdapter(
                 val item = (getItem(position) as RVItem.RVItemDayTransactions).dayTransactions
                 holder.rebind(item, itemOnClickListener)
             }
-            is TransactionsSummaryViewHolder -> Unit
+            is TransactionsSummaryViewHolder -> {
+                val pieData = (getItem(position) as RVItem.RVItemSummary).pieData
+                holder.rebind(pieData)
+            }
             is TransactionsHeaderViewHolder -> {
                 val monthText = (getItem(position) as RVItem.RVItemHeader).monthText
                 holder.rebind(
@@ -109,8 +113,40 @@ class TransactionsRVAdapter(
         }
     }
 
-    class TransactionsSummaryViewHolder private constructor(binding: RvItemTransactionsSummaryBinding) :
+    class TransactionsSummaryViewHolder private constructor(private val binding: RvItemTransactionsSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        fun rebind(pieData: PieData) {
+            binding.testPC.apply {
+                setTouchEnabled(false)
+                setNoDataText("Hello, you wanna provide some data?")
+                description.isEnabled = false
+                legend.isEnabled = false
+
+                setDrawEntryLabels(false)
+//                centerText = ""
+//                setUsePercentValues(true)
+                holeRadius = 75f
+                transparentCircleRadius = 80f
+
+//                legend.apply {
+//                    setDrawInside(false)
+//                    isWordWrapEnabled = true
+//                    maxSizePercent = 0.75f
+//                    horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+//                    verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+//                    orientation = Legend.LegendOrientation.VERTICAL
+//                    form = Legend.LegendForm.CIRCLE
+//                    direction = Legend.LegendDirection.LEFT_TO_RIGHT
+//
+//                }
+            }
+
+            binding.testPC.data = pieData
+            binding.testPC.notifyDataSetChanged()
+            binding.testPC.invalidate()
+
+        }
 
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsSummaryViewHolder {
@@ -177,7 +213,7 @@ sealed class RVItem {
         override val rvItemId: Int = Int.MIN_VALUE
     }
 
-    object RVItemSummary : RVItem() {
+    data class RVItemSummary(val pieData: PieData) : RVItem() {
         override val rvItemId: Int = Int.MIN_VALUE + 1
     }
 

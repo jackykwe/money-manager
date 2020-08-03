@@ -50,7 +50,7 @@ class TransactionsFragment : Fragment() {
                 GenericOnClickListener {
                     findNavController().navigate(
                         TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
-                            viewModel.displayCalendar.value!!
+                            viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
                         )
                     )
                 },
@@ -59,8 +59,12 @@ class TransactionsFragment : Fragment() {
 
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
             (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
-                CalendarHandler.getFormattedString(viewModel.displayCalendar.value!!, "MMM yyyy")
+                CalendarHandler.getFormattedString(
+                    viewModel.displayCalendar.value!!.clone() as Calendar,
+                    "MMM yyyy"
+                )
                     .toUpperCase(Locale.ROOT),
+                viewModel.getPieData(it),
                 it
             )
         }
@@ -71,7 +75,7 @@ class TransactionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
             if (it != null && it.isNotEmpty()) {
-                viewModel.updateCalendar(it[0], it[1])
+                viewModel.updateMonthYear(it[0], it[1])
                 savedStateHandle.set(MY_PICKER_RESULT, null)
             }
         }

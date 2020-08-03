@@ -93,8 +93,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
+    // MPANDROIDCHART
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     // SHIMMER
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+//    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 //    // VIEWMODEL
 //    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
