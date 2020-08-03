@@ -9,6 +9,8 @@ import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
 import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -272,6 +274,41 @@ fun TextView.setConvertedAmountTV_textVisibility(transaction: Transaction) {
         )
         View.VISIBLE
     } else View.GONE
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * rv_item_transactions_summary
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("budgetPC_adapter")
+fun PieChart.setBudgetPCAdapter(pieData: PieData) {
+    if (legend.isEnabled) {
+        setTouchEnabled(false)
+        setNoDataText("Hello, you wanna provide some data?")
+        description.isEnabled = false
+
+        setDrawEntryLabels(false)
+        //    centerText = ""
+        //    setUsePercentValues(true)
+        holeRadius = 75f
+        transparentCircleRadius = 80f
+
+        //    legend.apply {
+        //        setDrawInside(false)
+        //        isWordWrapEnabled = true
+        //        maxSizePercent = 0.75f
+        //        horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        //        verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+        //        orientation = Legend.LegendOrientation.VERTICAL
+        //        form = Legend.LegendForm.CIRCLE
+        //        direction = Legend.LegendDirection.LEFT_TO_RIGHT
+        //    }
+        legend.isEnabled = false
+    }
+    data = pieData
+    notifyDataSetChanged()
+    invalidate()
 }
 
 ////////////////////////////////////////////////////////////////////////////////

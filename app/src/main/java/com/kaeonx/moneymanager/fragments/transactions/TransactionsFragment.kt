@@ -1,11 +1,13 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +16,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import kotlinx.coroutines.launch
 import java.util.*
 
 private const val TAG = "transactionFrag"
@@ -58,15 +61,20 @@ class TransactionsFragment : Fragment() {
             )
 
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
-            (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
-                CalendarHandler.getFormattedString(
-                    viewModel.displayCalendar.value!!.clone() as Calendar,
-                    "MMM yyyy"
+            lifecycleScope.launch {
+                if (it.isEmpty()) return@launch
+                Log.d(TAG, "lifecycleScope.launched with $it")
+                (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
+                    it,
+                    CalendarHandler.getFormattedString(
+                        viewModel.displayCalendar.value!!.clone() as Calendar,
+                        "MMM yyyy"
+                    )
+                        .toUpperCase(Locale.ROOT),
+                    viewModel.getSummaryData(it)
                 )
-                    .toUpperCase(Locale.ROOT),
-                viewModel.getPieData(it),
-                it
-            )
+                Log.d(TAG, "lifecycleScope.launch end")
+            }
         }
 
         return binding.root

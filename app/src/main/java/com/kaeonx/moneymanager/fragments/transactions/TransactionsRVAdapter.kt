@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.fragments.transactions
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -30,9 +31,13 @@ class TransactionsRVAdapter(
 ) :
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
-    fun submitListAndAddHeaders(monthText: String, pieData: PieData, list: List<DayTransactions>) {
+    fun submitListAndAddHeaders(
+        list: List<DayTransactions>,
+        headerData: String,
+        summaryData: SummaryData
+    ) {
         CoroutineScope(Dispatchers.Default).launch {
-            val addable = listOf(RVItem.RVItemHeader(monthText), RVItem.RVItemSummary(pieData))
+            val addable = listOf(RVItem.RVItemHeader(headerData), RVItem.RVItemSummary(summaryData))
             val submittable = when {
                 list.isEmpty() -> addable
                 else -> addable + list.map { RVItem.RVItemDayTransactions(it) }
@@ -67,8 +72,8 @@ class TransactionsRVAdapter(
                 holder.rebind(item, itemOnClickListener)
             }
             is TransactionsSummaryViewHolder -> {
-                val pieData = (getItem(position) as RVItem.RVItemSummary).pieData
-                holder.rebind(pieData)
+                val summaryData = (getItem(position) as RVItem.RVItemSummary).summaryData
+                holder.rebind(summaryData)
             }
             is TransactionsHeaderViewHolder -> {
                 val monthText = (getItem(position) as RVItem.RVItemHeader).monthText
@@ -113,39 +118,14 @@ class TransactionsRVAdapter(
         }
     }
 
-    class TransactionsSummaryViewHolder private constructor(private val binding: RvItemTransactionsSummaryBinding) :
+    class TransactionsSummaryViewHolder private constructor(private val binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(pieData: PieData) {
-            binding.testPC.apply {
-                setTouchEnabled(false)
-                setNoDataText("Hello, you wanna provide some data?")
-                description.isEnabled = false
-                legend.isEnabled = false
-
-                setDrawEntryLabels(false)
-//                centerText = ""
-//                setUsePercentValues(true)
-                holeRadius = 75f
-                transparentCircleRadius = 80f
-
-//                legend.apply {
-//                    setDrawInside(false)
-//                    isWordWrapEnabled = true
-//                    maxSizePercent = 0.75f
-//                    horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-//                    verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-//                    orientation = Legend.LegendOrientation.VERTICAL
-//                    form = Legend.LegendForm.CIRCLE
-//                    direction = Legend.LegendDirection.LEFT_TO_RIGHT
-//
-//                }
+        fun rebind(summaryData: SummaryData) {
+            when (binding) {
+                is RvItemTransactionsSummaryBinding -> binding.summaryData = summaryData
+                else -> throw TODO("Not supported yet")
             }
-
-            binding.testPC.data = pieData
-            binding.testPC.notifyDataSetChanged()
-            binding.testPC.invalidate()
-
         }
 
         companion object {
@@ -213,9 +193,20 @@ sealed class RVItem {
         override val rvItemId: Int = Int.MIN_VALUE
     }
 
-    data class RVItemSummary(val pieData: PieData) : RVItem() {
+    data class RVItemSummary(val summaryData: SummaryData) : RVItem() {
         override val rvItemId: Int = Int.MIN_VALUE + 1
     }
 
     abstract val rvItemId: Int
 }
+
+data class SummaryData(
+    val homeCurrency: String,
+    val showCurrencyMode1: Boolean,  // affects budget, expenses
+    val showCurrencyMode2: Boolean,  // affects income, expenses, balance
+    val budget: String,
+    val monthIncome: String,
+    val monthExpenses: String,
+    val monthBalance: String,
+    val pieData: PieData
+)
