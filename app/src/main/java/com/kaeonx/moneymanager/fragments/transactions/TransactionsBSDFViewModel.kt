@@ -1,10 +1,7 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import androidx.core.text.bold
-import androidx.core.text.buildSpannedString
 import androidx.lifecycle.*
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
-import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -201,17 +198,6 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
      * Date & Time Manipulation
      */
     ////////////////////////////////////////////////////////////////////////////////
-
-    val dateTimeBTText = Transformations.map(_currentTransaction) {
-        val time = CalendarHandler.getFormattedString(it.timestamp, "HHmm")
-        val date = CalendarHandler.getFormattedString(it.timestamp, "ddMMyy")
-        buildSpannedString {
-            bold {
-                append(time)
-            }
-            append("\n$date")
-        }
-    }
 
     fun updateCalendar(calendar: Calendar) {
         _currentTransaction.value = _currentTransaction.value.copy(

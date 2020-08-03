@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="iconDetail"
             type="com.kaeonx.moneymanager.userrepository.domain.IconDetail" />
@@ -18,10 +20,9 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            app:iconRing_tint="@{iconDetail.iconRingColourString}"
             android:src="@drawable/basic_ring"
             android:visibility="@{iconDetail.iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            android:tint="@color/black" />
+            app:iconRing_tint="@{iconDetail.iconRingColourString}" />
 
         <ImageView
             android:id="@+id/iconBG"
@@ -29,12 +30,12 @@
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            app:iconBG_tint="@{iconDetail.iconBGColourString}"
-            android:visibility="@{iconDetail.iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/basic_circle"
-            android:tint="@color/colorPrimary" />
+            android:visibility="@{iconDetail.iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+            app:iconBG_tint="@{iconDetail.iconBGColourString}"
+            tools:tint="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/iconTV"
@@ -45,20 +46,11 @@
             android:gravity="center"
             android:scaleX="0.6"
             android:scaleY="0.6"
+            android:textColor="@color/white"
             app:iconTV_text="@{iconDetail.iconHex}"
-            tools:text="@string/html_legacy_mdi_help"
-            android:textColor="@color/white" />
-
-        <!--    <net.steamcrafted.materialiconlib.MaterialIconView-->
-        <!--        android:id="@+id/tbsdIconIcon"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="match_parent"-->
-        <!--        android:adjustViewBounds="true"-->
-        <!--        android:scaleX="0.6"-->
-        <!--        android:scaleY="0.6"-->
-        <!--        android:scaleType="fitCenter"-->
-        <!--        app:materialIcon="arrow_down_bold_circle"-->
-        <!--        app:materialIconColor="#ffffff" />-->
+            tools:text="@string/html_legacy_mdi_help" />
+        <!-- TODO: Text color to change depending ...? -->
 
     </merge>
+
 </layout>

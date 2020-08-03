@@ -35,17 +35,13 @@
             app:horizontalBarIV_tint="@{account.colourString}"
             app:srcCompat="@drawable/basic_rectangle" />
 
+        <!-- TODO SET TEXT COLOUR BASED ON BG COLOUR-->
         <TextView
             android:id="@+id/accountNameTV"
+            style="@style/AccountDisplayStrip"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="top"
-            android:fontFamily="@font/fira_sans"
-            android:gravity="center_vertical"
             android:paddingHorizontal="12dp"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:textStyle="bold"
             app:accountNameTV_text="@{account.name}"
             app:accountNameTV_textColor="@{account.name}"
             tools:text="Cash" />

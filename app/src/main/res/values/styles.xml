@@ -5,6 +5,20 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MyApp.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MyApp.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MyApp.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MyApp.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MyApp.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MyApp.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MyApp.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MyApp.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MyApp.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MyApp.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MyApp.Caption3</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MyApp.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MyApp.Overline</item>
+
         <!--        <item name="colorPrimary">@color/white</item>-->
         <!--        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>-->
         <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
@@ -28,17 +42,75 @@
 
     <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
 
+    <!-- Override Material Defaults -->
+    <style name="TextAppearance.MyApp.Headline1" parent="TextAppearance.MaterialComponents.Headline1"></style>
+
+    <style name="TextAppearance.MyApp.Headline2" parent="TextAppearance.MaterialComponents.Headline2"></style>
+
+    <style name="TextAppearance.MyApp.Headline3" parent="TextAppearance.MaterialComponents.Headline3"></style>
+
+    <style name="TextAppearance.MyApp.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Headline5" parent="TextAppearance.MaterialComponents.Headline5"></style>
+
+    <style name="TextAppearance.MyApp.Headline5.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Headline6" parent="TextAppearance.MaterialComponents.Headline6"></style>
+
+    <style name="TextAppearance.MyApp.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1"></style>
+
+    <style name="TextAppearance.MyApp.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2"></style>
+
+    <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1"></style>
+
+    <style name="TextAppearance.MyApp.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Body2.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Body3" parent="TextAppearance.MyApp.Body2">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Body4" parent="TextAppearance.MyApp.Body2">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Caption1" parent="TextAppearance.MyApp.Caption3">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Caption2" parent="TextAppearance.MyApp.Caption3">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Caption3" parent="TextAppearance.MaterialComponents.Caption"></style>
+
+    <style name="TextAppearance.MyApp.Caption4" parent="TextAppearance.MyApp.Caption3">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Button" parent="TextAppearance.MaterialComponents.Button"></style>
+
+    <style name="TextAppearance.MyApp.Overline" parent="TextAppearance.MaterialComponents.Overline"></style>
+
     <!-- tbsdf -->
     <style name="TBSDFButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_height">52dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Headline5</item>
         <item name="android:layout_width">0dp</item>
-        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:typeface">normal</item>
         <item name="cornerRadius">0dp</item>
         <item name="strokeWidth">0.5dp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
     <style name="TBSDFButton.Icon" parent="TBSDFButton">
@@ -46,11 +118,15 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <!-- rv_item_transactions_day/summary -->
-    <style name="SmallText">
-        <item name="android:textSize">12sp</item>
+    <style name="AccountDisplayStrip">
+        <!-- TODO: Text colour dependent on colour of background -->
+        <!-- TODO: onColour system in color.xml & ColourHandler -->
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Headline5.Bold</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
+    <!-- rv_item_transactions_day/summary -->
     <style name="RvItemTransactionsCard">
         <item name="cardCornerRadius">4dp</item>
         <item name="cardElevation">0dp</item>
@@ -64,7 +140,11 @@
         <item name="android:layout_marginEnd">8dp</item>
     </style>
 
-    <style name="RvItemTransactionsDayHeader" parent="SmallText" />
+    <style name="RvItemTransactionsDayHeader">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Body3</item>
+    </style>
 
     <style name="RvItemTransactionsDayHeader.Hint">
         <item name="android:paddingStart">8dp</item>
@@ -72,10 +152,11 @@
     </style>
 
     <style name="RvItemTransactionsDayHeader.Currency">
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Caption4</item>
         <item name="android:paddingEnd">2dp</item>
     </style>
 
-    <!-- fragment_category_edit -->
+    <!-- fragment_account_category_edit -->
     <style name="FullWidthMaterialEditTextContainer" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
@@ -98,9 +179,38 @@
 
     <style name="FullWidthMaterialEditText">
         <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Body1</item>
     </style>
+
     <style name="FullWidthMaterialEditText.ExposedDropdownMenu">
         <item name="android:dropDownWidth">match_parent</item>
+    </style>
+
+    <!-- fragment_transaction_edit -->
+    <style name="Details">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">36dp</item>
+    </style>
+
+    <style name="Details.Text">
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Body1</item>
+        <item name="android:paddingStart">8dp</item>
+    </style>
+
+    <style name="Details.Hint">
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Caption2</item>
+        <item name="android:paddingEnd">8dp</item>
+    </style>
+
+    <style name="Details.Hint.Colon">
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Details.Currency">
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Caption2</item>
+        <item name="android:paddingStart">8dp</item>
     </style>
 
 </resources>

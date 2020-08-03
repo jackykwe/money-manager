@@ -20,6 +20,7 @@
     <string name="drawer_menu_about">About</string>
 
     <!-- TransactionsBSDF -->
+    <string name="tbsdf_memo_hint">Memo (required)</string>
     <string name="html_legacy_mdi_help">&#xF02D6;</string>
     <string name="placeholder_currency">AAA</string>
     <string name="button_0">0</string>
@@ -54,5 +55,20 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_sync">Sync</string>
     <string name="menu_search">Search</string>
+
+    <string name="mdi_chevron_right">&#xF0142;</string>
+    <string name="mdi_chevron_left">&#xF0141;</string>
+
+    <!-- fragment_transaction_edit -->
+    <string name="hint_type">Type</string>
+    <string name="hint_account">Account</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_amount_home">Amount\n(Home)</string>
+    <string name="hint_time">Time</string>
+    <string name="hint_memo">Memo</string>
+    <string name="hint_colon">:</string>
+
+    <!-- fragment_category_edit -->
+    <string name="hint_category_name">Category Name</string>
 
 </resources>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="category"
             type="com.kaeonx.moneymanager.userrepository.domain.Category" />
+
         <variable
             name="onClickListener"
             type="com.kaeonx.moneymanager.fragments.categories.CategoryOnClickListener" />
@@ -31,8 +33,8 @@
 
             <include
                 android:id="@+id/categoryIconInclude"
-                app:iconDetail="@{category.toIconDetail()}"
-                layout="@layout/icon_transaction" />
+                layout="@layout/icon_transaction"
+                app:iconDetail="@{category.toIconDetail()}" />
         </FrameLayout>
 
         <TextView
@@ -42,10 +44,9 @@
             android:ellipsize="end"
             android:gravity="center"
             android:lines="1"
+            android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:categoryNameTV_text="@{category.name}"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="11sp"
-            tools:text="Example Text" />
+            tools:text="Category Title" />
 
     </LinearLayout>
 </layout>

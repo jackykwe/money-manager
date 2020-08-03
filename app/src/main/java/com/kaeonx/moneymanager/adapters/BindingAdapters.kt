@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
@@ -123,6 +124,28 @@ fun ImageView.setTbsdHorizontalBarIVBottomTint(colourString: String) {
     drawable.setTintList(ColourHandler.getColorStateList(colourString))
 }
 
+@BindingAdapter("tbsdTypeTV_text")
+fun TextView.setTbsdTypeTVText(type: String) {
+    text = when (type) {
+//        "?" -> IconHandler.getDisplayHex("F0BA6")
+        "?" -> ""
+        "Income" -> IconHandler.getDisplayHex("F0048")
+        "Expenses" -> IconHandler.getDisplayHex("F0060")
+        else -> throw IllegalStateException("Unknown type: $type")
+    }
+}
+
+@BindingAdapter("tbsdBTDateTime_text")
+fun TextView.setTbsdBTDateTimeText(timestamp: Long) {
+    val time = CalendarHandler.getFormattedString(timestamp, UserPDS.getString("dsp_time_format"))
+    val date = CalendarHandler.getFormattedString(timestamp, UserPDS.getString("dsp_date_format"))
+    text = buildSpannedString {
+        bold {
+            append(time)
+        }
+        append("\n$date")
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

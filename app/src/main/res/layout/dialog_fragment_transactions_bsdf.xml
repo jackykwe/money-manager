@@ -163,7 +163,6 @@
         <Button
             android:id="@+id/tbsdBTDateTime"
             style="@style/TBSDFButton"
-            android:text="@{viewModel.dateTimeBTText}"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/tbsdBTPlus"
             app:layout_constraintEnd_toEndOf="parent"
@@ -171,6 +170,7 @@
             app:layout_constraintStart_toEndOf="@+id/tbsdBT9"
             app:layout_constraintTop_toTopOf="@+id/tbsdBT7"
             app:layout_constraintVertical_chainStyle="packed"
+            app:tbsdBTDateTime_text="@{viewModel.currentTransaction.timestamp}"
             tools:text="0003\n030520" />
 
         <Button
@@ -239,14 +239,14 @@
             android:layout_height="48dp"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
-            android:hint="Memo (required)"
+            android:hint="@string/tbsdf_memo_hint"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
             android:nextFocusDown="@id/tbsdAmountTV"
             android:paddingVertical="4dp"
             android:paddingStart="8dp"
             android:text="@={viewModel.memoText}"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             app:layout_constraintEnd_toStartOf="@+id/tbsdCurrencyTV"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -261,8 +261,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@{viewModel.pendingAmtTVText}"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline5"
             android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@+id/endPadding"
             app:layout_constraintHorizontal_bias="0.5"
@@ -288,8 +287,7 @@
             android:maxLines="1"
             android:paddingHorizontal="2dp"
             android:text="@{viewModel.pendingOpTVText}"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline5"
             android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@+id/tbsdPendingAmtTV"
             app:layout_constraintHorizontal_bias="0.5"
@@ -307,8 +305,7 @@
             android:maxLines="1"
             android:paddingHorizontal="8dp"
             android:text="@{viewModel.currentTransaction.originalCurrency}"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             android:visibility="@{viewModel.error == null ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toStartOf="@+id/tbsdAmountTV"
             app:layout_constraintHorizontal_bias="0.5"
@@ -323,8 +320,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@={viewModel.amountTVText}"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="24sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline5"
             app:layout_constraintEnd_toStartOf="@+id/tbsdPendingOpTV"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tbsdCurrencyTV"
@@ -377,31 +373,23 @@
 
             <TextView
                 android:id="@+id/tbsdAccountTV"
+                style="@style/AccountDisplayStrip"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
                 android:layout_gravity="top"
                 android:layout_marginStart="136dp"
                 android:layout_marginTop="12dp"
-                android:fontFamily="@font/fira_sans"
-                android:gravity="center_vertical"
                 android:text="@{viewModel.currentTransaction.account}"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tbsdCategoryTV"
+                style="@style/AccountDisplayStrip"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="136dp"
                 android:layout_marginBottom="12dp"
-                android:fontFamily="@font/fira_sans"
-                android:gravity="center_vertical"
                 android:text="@{viewModel.currentTransaction.category}"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tbsdTypeTV"
@@ -410,13 +398,11 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginStart="144dp"
                 android:layout_marginBottom="12dp"
-                android:autoSizeTextType="uniform"
                 android:fontFamily="@font/material_design_icons"
                 android:gravity="center"
-                android:scaleX="0.7"
-                android:scaleY="0.7"
-                android:text="&#xF0BA6;"
-                android:textColor="@color/white" />
+                android:textAppearance="@style/TextAppearance.MyApp.Headline4"
+                android:textColor="@color/white"
+                app:tbsdTypeTV_text="@{viewModel.currentTransaction.type}" />
 
         </FrameLayout>
 

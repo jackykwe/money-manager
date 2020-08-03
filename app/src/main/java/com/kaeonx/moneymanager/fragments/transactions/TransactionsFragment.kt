@@ -105,7 +105,7 @@ class TransactionsFragment : Fragment() {
                     Transaction(
                         transactionId = null,
                         timestamp = 0L,
-                        type = "Expenses",
+                        type = "?",
                         category = "?",
                         account = "Cash",
                         memo = "",

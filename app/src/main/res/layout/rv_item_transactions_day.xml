@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="dayTransactions"
             type="com.kaeonx.moneymanager.userrepository.domain.DayTransactions" />
@@ -34,7 +36,7 @@
                 <LinearLayout
                     android:id="@+id/dayHeaderLL"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -52,8 +54,6 @@
                     <TextView
                         android:id="@+id/dayIncomeHintTV"
                         style="@style/RvItemTransactionsDayHeader.Hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@string/rv_item_transactions_day_header_income_hint"
                         android:visibility="@{dayTransactions.dayIncome == null ? View.GONE : View.VISIBLE}"
                         tools:visibility="visible" />
@@ -61,8 +61,6 @@
                     <TextView
                         android:id="@+id/dayIncomeCurrencyTV"
                         style="@style/RvItemTransactionsDayHeader.Currency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         app:incomeCurrencyTV_textVisibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
@@ -70,8 +68,6 @@
                     <TextView
                         android:id="@+id/dayIncomeAmountTV"
                         style="@style/RvItemTransactionsDayHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@{dayTransactions.dayIncome}"
                         android:visibility="@{dayTransactions.dayIncome == null ? View.GONE : View.VISIBLE}"
                         tools:text="12.34"
@@ -80,8 +76,6 @@
                     <TextView
                         android:id="@+id/dayExpensesHintTV"
                         style="@style/RvItemTransactionsDayHeader.Hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@string/rv_item_transactions_day_header_expenses_hint"
                         android:visibility="@{dayTransactions.dayExpenses == null ? View.GONE : View.VISIBLE}"
                         tools:visibility="visible" />
@@ -89,8 +83,6 @@
                     <TextView
                         android:id="@+id/dayExpensesCurrencyTV"
                         style="@style/RvItemTransactionsDayHeader.Currency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         app:dayExpensesCurrencyTV_textVisibility="@{dayTransactions}"
                         tools:text="AAA"
                         tools:visibility="visible" />
@@ -98,8 +90,6 @@
                     <TextView
                         android:id="@+id/dayExpensesAmountTV"
                         style="@style/RvItemTransactionsDayHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@{dayTransactions.dayExpenses}"
                         android:visibility="@{dayTransactions.dayExpenses == null ? View.GONE : View.VISIBLE}"
                         tools:text="12.34"
@@ -117,8 +107,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
-        <!--    </androidx.cardview.widget.CardView>-->
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

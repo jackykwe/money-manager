@@ -45,7 +45,7 @@
             android:paddingHorizontal="8dp"
             android:singleLine="true"
             android:text="@{transaction.memo}"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             tools:text="@string/placeholder_memo" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             app:transactionSignTV1_textVisibility="@{transaction.type}"
             tools:ignore="RtlSymmetry"
             tools:text="+" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
             android:text="@{transaction.originalCurrency}"
-            android:textSize="12sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption3"
             app:transactionCurrencyTV_visibility="@{transaction}"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             app:transactionSignTV2_textVisibility="@{transaction.type}"
             tools:ignore="RtlSymmetry"
             tools:text="+" />
@@ -84,7 +84,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{transaction.originalAmount}"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.MyApp.Body2"
             tools:text="@string/placeholder_amount" />
+
     </LinearLayout>
+
 </layout>

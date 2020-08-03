@@ -25,17 +25,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/transactionsHeaderCL"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="@dimen/tab_layout_height">
 
         <TextView
             android:id="@+id/headerLeftArrowTV"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/tab_layout_height"
             android:layout_height="match_parent"
             android:fontFamily="@font/material_design_icons"
             android:gravity="center"
             android:onClick="@{() -> leftArrowClickListener.onClick()}"
-            android:text="&#xF0141;"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:text="@string/mdi_chevron_left"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline4"
             app:layout_constraintEnd_toStartOf="@+id/headerMonthTV"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -48,25 +48,25 @@
             android:gravity="center"
             android:onClick="@{() -> monthClickListener.onClick()}"
             android:text="@{monthText}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline5.Bold"
             app:layout_constraintEnd_toStartOf="@+id/headerRightArrowTV"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/headerLeftArrowTV"
-            tools:text="MAY 2019" />
-
+            tools:text="MONTH YEAR" />
 
         <TextView
             android:id="@+id/headerRightArrowTV"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/tab_layout_height"
             android:layout_height="match_parent"
             android:fontFamily="@font/material_design_icons"
             android:gravity="center"
             android:onClick="@{() -> rightArrowClickListener.onClick()}"
-            android:text="&#xF0142;"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:text="@string/mdi_chevron_right"
+            android:textAppearance="@style/TextAppearance.MyApp.Headline4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/headerMonthTV" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

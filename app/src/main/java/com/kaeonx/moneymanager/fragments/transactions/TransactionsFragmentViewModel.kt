@@ -146,6 +146,7 @@ class TransactionsFragmentViewModel : ViewModel() {
         return PieData(dataSet)
     }
 
+    // Courtesy of https://bezkoder.com/kotlin-sum-sumby-sumbydouble-bigdecimal-list-map-example/
     private fun <T> Iterable<T>.sumByBigDecimal(selector: (T) -> String): BigDecimal {
         var sum: BigDecimal = BigDecimal.ZERO
         for (element in this) {
