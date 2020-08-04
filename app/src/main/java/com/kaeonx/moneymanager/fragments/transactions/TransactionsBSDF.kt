@@ -122,16 +122,32 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
             )
         }
         binding.tbsdAccountTV.setOnClickListener {
-            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionsBSDF) {
+                    navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
+                }
+            }
         }
         binding.tbsdIconInclude.iconRing.setOnClickListener {
-            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionsBSDF) {
+                    navigate(TransactionsBSDFDirections.actionTransactionsBSDFToAccountsDF())
+                }
+            }
         }
         binding.tbsdCategoryTV.setOnClickListener {
-            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionsBSDF) {
+                    navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+                }
+            }
         }
         binding.tbsdIconInclude.iconBG.setOnClickListener {
-            findNavController().navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionsBSDF) {
+                    navigate(TransactionsBSDFDirections.actionTransactionsBSDFToCategoriesDF())
+                }
+            }
         }
 
         viewModel.showToastText.observe(viewLifecycleOwner) {

@@ -43,19 +43,28 @@ class TransactionsFragment : Fragment() {
         binding.transactionsRV.adapter =
             TransactionsRVAdapter(
                 TransactionOnClickListener { transaction ->
-                    findNavController().navigate(
-                        TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
-                            transaction.transactionId!!
-                        )
-                    )
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
+                                    transaction.transactionId!!
+                                )
+                            )
+                        }
+                    }
                 },
                 GenericOnClickListener { viewModel.monthMinusOne() },
                 GenericOnClickListener {
-                    findNavController().navigate(
-                        TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
-                            viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
-                        )
-                    )
+                    // Courtesy of https://stackoverflow.com/a/53737537/7254995
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
+                                    viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
+                                )
+                            )
+                        }
+                    }
                 },
                 GenericOnClickListener { viewModel.monthPlusOne() }
             )
@@ -106,20 +115,24 @@ class TransactionsFragment : Fragment() {
 
         // Setup of FAB
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
-            findNavController().navigate(
-                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(
-                    Transaction(
-                        transactionId = null,
-                        timestamp = 0L,
-                        type = "?",
-                        category = "?",
-                        account = "Cash",
-                        memo = "",
-                        originalCurrency = "SGD",
-                        originalAmount = "0"
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionsFragment) {
+                    navigate(
+                        TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(
+                            Transaction(
+                                transactionId = null,
+                                timestamp = 0L,
+                                type = "?",
+                                category = "?",
+                                account = "Cash",
+                                memo = "",
+                                originalCurrency = "SGD",
+                                originalAmount = "0"
+                            )
+                        )
                     )
-                )
-            )
+                }
+            }
         }
     }
 }

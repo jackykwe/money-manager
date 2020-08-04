@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -92,7 +91,6 @@ class TransactionsRVAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
-            Log.d(TAG, "binding to $item")
             binding.dayTransactions = item
 
             binding.dayTransactionsLL.removeAllViews()
@@ -112,7 +110,6 @@ class TransactionsRVAdapter(
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsDayViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-//                val view = layoutInflater.inflate(R.layout.rv_item_transactions_day, parent, false)
                 val binding = RvItemTransactionsDayBinding.inflate(layoutInflater, parent, false)
                 return TransactionsDayViewHolder(binding)
             }

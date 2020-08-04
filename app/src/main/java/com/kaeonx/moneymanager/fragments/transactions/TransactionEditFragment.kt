@@ -33,11 +33,15 @@ class TransactionEditFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.editTransactionFAB.setOnClickListener {
-            findNavController().navigate(
-                TransactionEditFragmentDirections.actionTransactionEditFragmentToTransactionsBSDF(
-                    viewModel.transaction.value!!
-                )
-            )
+            findNavController().run {
+                if (currentDestination?.id == R.id.transactionEditFragment) {
+                    navigate(
+                        TransactionEditFragmentDirections.actionTransactionEditFragmentToTransactionsBSDF(
+                            viewModel.transaction.value!!
+                        )
+                    )
+                }
+            }
         }
         return binding.root
     }
