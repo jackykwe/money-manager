@@ -1,5 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -91,10 +92,8 @@ class TransactionsRVAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
+            Log.d(TAG, "binding to $item")
             binding.dayTransactions = item
-//            binding.executePendingBindings()
-            // It is always a good idea to execute pending bindings when using binding adapters
-            // in a RecyclerView, since it can be slightly faster to size the views.
 
             binding.dayTransactionsLL.removeAllViews()
             val layoutInflater = LayoutInflater.from(binding.dayTransactionsLL.context)
@@ -102,10 +101,12 @@ class TransactionsRVAdapter(
                 val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
                 itemBinding.transaction = transaction
                 itemBinding.onClickListener = itemOnClickListener
-//                itemBinding.executePendingBindings()
+                itemBinding.executePendingBindings()
                 binding.dayTransactionsLL.addView(itemBinding.root)
             }
             binding.executePendingBindings()
+            // It is always a good idea to execute pending bindings when using binding adapters
+            // in a RecyclerView, since it can be slightly faster to size the views.
         }
 
         companion object {
@@ -123,7 +124,10 @@ class TransactionsRVAdapter(
 
         fun rebind(summaryData: SummaryData) {
             when (binding) {
-                is RvItemTransactionsSummaryBinding -> binding.summaryData = summaryData
+                is RvItemTransactionsSummaryBinding -> {
+                    binding.summaryData = summaryData
+                    binding.executePendingBindings()
+                }
                 else -> throw TODO("Not supported yet")
             }
         }

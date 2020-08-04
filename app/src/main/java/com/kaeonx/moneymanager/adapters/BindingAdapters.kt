@@ -19,6 +19,9 @@ import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 
@@ -283,32 +286,39 @@ fun TextView.setConvertedAmountTV_textVisibility(transaction: Transaction) {
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("budgetPC_adapter")
 fun PieChart.setBudgetPCAdapter(pieData: PieData) {
-    if (legend.isEnabled) {
-        setTouchEnabled(false)
-        setNoDataText("Hello, you wanna provide some data?")
-        description.isEnabled = false
+    CoroutineScope(Dispatchers.Main).launch {
+        // Enable these lines if loading becomes slow and you see outdated graphs while loading
+//        data = null
+//        notifyDataSetChanged()
+//        invalidate()
+        if (legend.isEnabled) {
+            setTouchEnabled(false)
+            setNoDataText("Hello, you wanna provide some data?")
+            description.isEnabled = false
 
-        setDrawEntryLabels(false)
-        //    centerText = ""
-        //    setUsePercentValues(true)
-        holeRadius = 75f
-        transparentCircleRadius = 80f
+            setDrawEntryLabels(false)
+            //    centerText = ""
+            //    setUsePercentValues(true)
+            holeRadius = 75f
+            transparentCircleRadius = 80f
 
-        //    legend.apply {
-        //        setDrawInside(false)
-        //        isWordWrapEnabled = true
-        //        maxSizePercent = 0.75f
-        //        horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-        //        verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-        //        orientation = Legend.LegendOrientation.VERTICAL
-        //        form = Legend.LegendForm.CIRCLE
-        //        direction = Legend.LegendDirection.LEFT_TO_RIGHT
-        //    }
-        legend.isEnabled = false
+            //    legend.apply {
+            //        setDrawInside(false)
+            //        isWordWrapEnabled = true
+            //        maxSizePercent = 0.75f
+            //        horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+            //        verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+            //        orientation = Legend.LegendOrientation.VERTICAL
+            //        form = Legend.LegendForm.CIRCLE
+            //        direction = Legend.LegendDirection.LEFT_TO_RIGHT
+            //    }
+            legend.isEnabled = false
+        }
+        data = pieData
+        notifyDataSetChanged()
+        invalidate()
     }
-    data = pieData
-    notifyDataSetChanged()
-    invalidate()
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

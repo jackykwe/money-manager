@@ -88,8 +88,8 @@ fun List<Transaction>.toDayTransactions(): List<DayTransactions> {
     // Calculates currency, dayIncome and dayExpenses.
     result = result.map {
         // Check if all transactions within each day have the same currency, then calculate new income & expense
-        it.incomeAllHome = this.typeAllHomeCurrency("Income")
-        it.expensesAllHome = this.typeAllHomeCurrency("Expenses")
+        it.incomeAllHome = it.transactions.typeAllHomeCurrency("Income")
+        it.expensesAllHome = it.transactions.typeAllHomeCurrency("Expenses")
 
         // Note: In all calculations, each individual transaction is converted to Home Currency first (if needed)
         val (income, expenses) = it.transactions.calculateIncomeExpenses()

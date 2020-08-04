@@ -62,7 +62,7 @@ class TransactionsFragmentViewModel : ViewModel() {
     private val xeRepository = XERepository.getInstance()
 
     private var previousLiveData: LiveData<List<Transaction>>? = null
-    val sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>>().apply {
+    val sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>?>().apply {
         // TODO: Add budget source as well. Actually no need recalculate. Just update.
         // addSource(_some_budget_source) { value = value }  // Try this
         addSource(_displayCalendar) { updatePreviousLiveData() }
@@ -70,8 +70,8 @@ class TransactionsFragmentViewModel : ViewModel() {
         addSource(xeRepository.xeRows) { value = recalculateDayTransactions() }
     }
 
-    private fun recalculateDayTransactions(): List<DayTransactions> =
-        previousLiveData?.value?.toDayTransactions() ?: listOf()
+    private fun recalculateDayTransactions(): List<DayTransactions>? =
+        previousLiveData?.value?.toDayTransactions()
 
     private fun updatePreviousLiveData() {
         if (previousLiveData != null) {

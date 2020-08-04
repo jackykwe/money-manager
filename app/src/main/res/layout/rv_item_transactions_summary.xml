@@ -116,12 +116,13 @@
                         android:text="@{summaryData.homeCurrency}"
                         android:textAppearance="@style/TextAppearance.MyApp.Caption2"
                         android:visibility="@{summaryData.showCurrencyMode1 ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="@+id/summaryExpensesAmountTV"
                         app:layout_constraintEnd_toStartOf="@+id/summaryExpensesAmountTV"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/summaryExpensesAmountTV"
                         tools:ignore="RtlSymmetry"
-                        tools:layout_editor_absoluteY="60dp"
                         tools:text="@string/placeholder_currency" />
 
                     <TextView

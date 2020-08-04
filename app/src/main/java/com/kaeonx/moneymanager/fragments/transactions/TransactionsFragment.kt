@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -61,9 +61,8 @@ class TransactionsFragment : Fragment() {
             )
 
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                if (it.isEmpty()) return@launch
-                Log.d(TAG, "lifecycleScope.launched with $it")
+            lifecycleScope.launch(Dispatchers.Default) {
+                if (it == null) return@launch  // prevents false firing when ViewModel is initialised
                 (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
                     it,
                     CalendarHandler.getFormattedString(
@@ -73,7 +72,6 @@ class TransactionsFragment : Fragment() {
                         .toUpperCase(Locale.ROOT),
                     viewModel.getSummaryData(it)
                 )
-                Log.d(TAG, "lifecycleScope.launch end")
             }
         }
 
