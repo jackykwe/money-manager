@@ -10,6 +10,18 @@
         <variable
             name="summaryData"
             type="com.kaeonx.moneymanager.fragments.transactions.SummaryData" />
+
+        <variable
+            name="budgetListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+
+        <variable
+            name="expensesListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+
+        <variable
+            name="pieChartListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,6 +48,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/summaryLeftCL"
                     android:layout_width="0dp"
+                    android:onClick="@{() -> budgetListener.onClick()}"
                     android:layout_height="match_parent"
                     app:layout_constraintEnd_toStartOf="@+id/dividerLeft"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -90,6 +103,7 @@
                     android:id="@+id/summaryCentreCL"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:onClick="@{() -> expensesListener.onClick()}"
                     app:layout_constraintEnd_toStartOf="@+id/dividerRight"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/dividerLeft"
@@ -160,6 +174,7 @@
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/budgetPC"
+                    android:onClick="@{() -> pieChartListener.onClick()}"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:budgetPC_adapter="@{summaryData.pieData}"

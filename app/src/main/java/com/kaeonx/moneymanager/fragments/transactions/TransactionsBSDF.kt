@@ -151,10 +151,9 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         }
 
         viewModel.showToastText.observe(viewLifecycleOwner) {
-            if (it != null) {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                viewModel.toastShown()
-            }
+            if (it == null) return@observe
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+            viewModel.toastShown()
         }
 
         viewModel.navigateUp.observe(viewLifecycleOwner) {

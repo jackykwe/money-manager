@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.XERepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -30,7 +30,10 @@ class LobbyFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        CoroutineScope(Dispatchers.Main).launch {
+        //TODO : CHANGE ALL COROUTINESCOPE.LAUNCH() TO LIFECYCLESCOPE.LAUNCH()
+        // todo: remove all data from transactionsfragment, then see if the inflation still causes lag.
+        // todo: if it does, it isn't the data's fault.
+        lifecycleScope.launch(Dispatchers.Main) {
             val userRepository = UserRepository.getInstance()
             delay(200L)
             val xeRepository = XERepository.getInstance()

@@ -151,29 +151,6 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.currency_converter_preferences, rootKey)
-
-//            CoroutineScope(Dispatchers.Default).launch {
-//                val homeCurrency = UserPDS.getString("ccc_home_currency")
-//                val dateFormat = UserPDS.getString("dsp_date_format")
-//                val timeFormat = UserPDS.getString("dsp_time_format")
-//                val xeRowsResult = withContext(Dispatchers.IO) {
-//                    XERepository.getInstance().queryMostUpdatedXERows(homeCurrency)
-//                }
-//                withContext(Dispatchers.Main) {
-//                    if (xeRowsResult.isEmpty()) {
-//                        findPreference<Preference>("ccv_active_table_stats")!!.summary =
-//                            "No active table. Please enable internet connection to retrieve one from the internet."
-//                    } else {
-//                        val timestamp = xeRowsResult[0].updateMillis
-//                        val lastUpdated = CalendarHandler.getFormattedString(
-//                            timestamp,
-//                            "$timeFormat 'on' $dateFormat"
-//                        )
-//                        findPreference<Preference>("ccv_active_table_stats")!!.summary =
-//                            "Base currency: $homeCurrency\nLast updated: $lastUpdated"
-//                    }
-//                }
-//            }
             val homeCurrency = UserPDS.getString("ccc_home_currency")
             val dateFormat = UserPDS.getString("dsp_date_format")
             val timeFormat = UserPDS.getString("dsp_time_format")

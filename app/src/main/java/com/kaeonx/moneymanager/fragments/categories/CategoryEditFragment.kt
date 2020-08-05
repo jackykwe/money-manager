@@ -61,10 +61,9 @@ class CategoryEditFragment : Fragment() {
         }
 
         viewModel.showSnackBarText.observe(viewLifecycleOwner) {
-            if (it != null) {
-                Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-                viewModel.snackBarShown()
-            }
+            if (it == null) return@observe
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+            viewModel.snackBarShown()
         }
         viewModel.navigateUp.observe(viewLifecycleOwner) {
             if (it) {

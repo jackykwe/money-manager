@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,75 +31,11 @@ class TransactionsFragment : Fragment() {
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }
 
-    private var isExpanded = false
-    private var firstLoad = true
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTransactionsBinding.inflate(inflater, container, false)
-
-        binding.transactionsRV.adapter =
-            TransactionsRVAdapter(
-                TransactionOnClickListener { transaction ->
-                    findNavController().run {
-                        if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(
-                                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
-                                    transaction.transactionId!!
-                                )
-                            )
-                        }
-                    }
-                },
-                GenericOnClickListener { viewModel.monthMinusOne() },
-                GenericOnClickListener {
-                    // Courtesy of https://stackoverflow.com/a/53737537/7254995
-                    findNavController().run {
-                        if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(
-                                TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
-                                    viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
-                                )
-                            )
-                        }
-                    }
-                },
-                GenericOnClickListener { viewModel.monthPlusOne() }
-            )
-
-        viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
-            lifecycleScope.launch(Dispatchers.Default) {
-                if (it == null) return@launch  // prevents false firing when ViewModel is initialised
-                (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
-                    it,
-                    CalendarHandler.getFormattedString(
-                        viewModel.displayCalendar.value!!.clone() as Calendar,
-                        "MMM yyyy"
-                    )
-                        .toUpperCase(Locale.ROOT),
-                    viewModel.getSummaryData(it)
-                )
-            }
-        }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                viewModel.updateMonthYear(it[0], it[1])
-                savedStateHandle.set(MY_PICKER_RESULT, null)
-            }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
         // Setup of Toolbar
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             setOnMenuItemClickListener {
@@ -112,6 +49,94 @@ class TransactionsFragment : Fragment() {
                 }
             }
         }
+
+        binding = FragmentTransactionsBinding.inflate(inflater, container, false)
+        binding.transactionsRV.setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
+        binding.transactionsRV.adapter =
+            TransactionsRVAdapter(
+                itemOnClickListener = TransactionOnClickListener { transaction ->
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
+                                    transaction.transactionId!!
+                                )
+                            )
+                        }
+                    }
+                },
+                headerLeftArrowClickListener = GenericOnClickListener { viewModel.monthMinusOne() },
+                headerMonthClickListener = GenericOnClickListener {
+                    // Courtesy of https://stackoverflow.com/a/53737537/7254995
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
+                                    viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
+                                )
+                            )
+                        }
+                    }
+                },
+                headerRightArrowClickListener = GenericOnClickListener { viewModel.monthPlusOne() },
+                summaryBudgetClickListener = GenericOnClickListener {
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(TransactionsFragmentDirections.actionTransactionsFragmentToBudgetFragment())
+                        }
+                    }
+                },
+                summaryIncomeClickListener = GenericOnClickListener { Unit },
+                summaryExpensesClickListener = GenericOnClickListener {
+                    Snackbar.make(
+                        binding.root,
+                        "Navigate to ExpensesTransactionsFragment",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                },
+                summaryPieChartClickListener = GenericOnClickListener {
+                    Snackbar.make(
+                        binding.root,
+                        "Navigate to PieChartHelpFragment",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            )
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
+            if (it == null) return@observe  // prevents false firing when ViewModel is initialised
+            lifecycleScope.launch(Dispatchers.Default) {
+                (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
+                    it,
+                    CalendarHandler.getFormattedString(
+                        viewModel.displayCalendar.value!!.clone() as Calendar,
+                        "MMM yyyy"
+                    )
+                        .toUpperCase(Locale.ROOT)
+                        .also {
+                            Log.d(TAG, "starting getSummaryData(it)")
+                        },
+                    viewModel.getSummaryData(it).also {
+                        Log.d(TAG, "getSummaryData done, submitting...")
+                    }
+                )
+            }
+        }
+
+        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                viewModel.updateMonthYear(it[0], it[1])
+                savedStateHandle.set(MY_PICKER_RESULT, null)
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         // Setup of FAB
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {

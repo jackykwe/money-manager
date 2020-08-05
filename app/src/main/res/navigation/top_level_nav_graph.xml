@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_transactionsFragment_to_monthYearPickerDialogFragment"
             app:destination="@id/monthYearPickerDialogFragment" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_BudgetFragment"
+            app:destination="@id/BudgetFragment" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"

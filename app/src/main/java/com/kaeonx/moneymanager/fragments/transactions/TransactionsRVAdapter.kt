@@ -13,10 +13,7 @@ import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 private const val HEADER = 0
 private const val SUMMARY = 1
@@ -25,24 +22,32 @@ private const val TAG = "trva"
 
 class TransactionsRVAdapter(
     private val itemOnClickListener: TransactionOnClickListener,
-    private val leftArrowClickListener: GenericOnClickListener,
-    private val monthClickListener: GenericOnClickListener,
-    private val rightArrowClickListener: GenericOnClickListener
+    private val headerLeftArrowClickListener: GenericOnClickListener,
+    private val headerMonthClickListener: GenericOnClickListener,
+    private val headerRightArrowClickListener: GenericOnClickListener,
+    private val summaryBudgetClickListener: GenericOnClickListener,
+    private val summaryIncomeClickListener: GenericOnClickListener,
+    private val summaryExpensesClickListener: GenericOnClickListener,
+    private val summaryPieChartClickListener: GenericOnClickListener // show help fragment?
+
 ) :
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
     fun submitListAndAddHeaders(
-        list: List<DayTransactions>,
-        headerData: String,
-        summaryData: SummaryData
+        newList: List<DayTransactions>,
+        newHeaderData: String,
+        newSummaryData: SummaryData
     ) {
+        submitList(listOf())
         CoroutineScope(Dispatchers.Default).launch {
-            val addable = listOf(RVItem.RVItemHeader(headerData), RVItem.RVItemSummary(summaryData))
+            val addable =
+                listOf(RVItem.RVItemHeader(newHeaderData), RVItem.RVItemSummary(newSummaryData))
             val submittable = when {
-                list.isEmpty() -> addable
-                else -> addable + list.map { RVItem.RVItemDayTransactions(it) }
+                newList.isEmpty() -> addable
+                else -> addable + newList.map { RVItem.RVItemDayTransactions(it) }
             }
             withContext(Dispatchers.Main) {
+                delay(300L)  // For a smooth experience (for expanding appBar), since submitList blocks the UI thread when updating the UI (cannot be avoided)
                 submitList(submittable)
             }
         }
@@ -72,16 +77,22 @@ class TransactionsRVAdapter(
                 holder.rebind(item, itemOnClickListener)
             }
             is TransactionsSummaryViewHolder -> {
-                val summaryData = (getItem(position) as RVItem.RVItemSummary).summaryData
-                holder.rebind(summaryData)
+                val newSummaryData = (getItem(position) as RVItem.RVItemSummary).summaryData
+                holder.rebind(
+                    newSummaryData,
+                    summaryBudgetClickListener,
+                    summaryIncomeClickListener,
+                    summaryExpensesClickListener,
+                    summaryPieChartClickListener
+                )
             }
             is TransactionsHeaderViewHolder -> {
                 val monthText = (getItem(position) as RVItem.RVItemHeader).monthText
                 holder.rebind(
                     monthText,
-                    leftArrowClickListener,
-                    monthClickListener,
-                    rightArrowClickListener
+                    headerLeftArrowClickListener,
+                    headerMonthClickListener,
+                    headerRightArrowClickListener
                 )
             }
         }
@@ -119,10 +130,21 @@ class TransactionsRVAdapter(
     class TransactionsSummaryViewHolder private constructor(private val binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(summaryData: SummaryData) {
+        fun rebind(
+            newSummaryData: SummaryData,
+            summaryBudgetClickListener: GenericOnClickListener,
+            summaryIncomeClickListener: GenericOnClickListener,
+            summaryExpensesClickListener: GenericOnClickListener,
+            summaryPieChartClickListener: GenericOnClickListener
+        ) {
             when (binding) {
                 is RvItemTransactionsSummaryBinding -> {
-                    binding.summaryData = summaryData
+                    binding.apply {
+                        summaryData = newSummaryData
+                        budgetListener = summaryBudgetClickListener
+                        expensesListener = summaryExpensesClickListener
+                        pieChartListener = summaryPieChartClickListener
+                    }
                     binding.executePendingBindings()
                 }
                 else -> throw TODO("Not supported yet")
@@ -183,7 +205,6 @@ class TransactionOnClickListener(val clickListener: (transaction: Transaction) -
 class GenericOnClickListener(val clickListener: () -> Unit) {
     fun onClick() = clickListener()
 }
-
 
 sealed class RVItem {
     data class RVItemDayTransactions(val dayTransactions: DayTransactions) : RVItem() {

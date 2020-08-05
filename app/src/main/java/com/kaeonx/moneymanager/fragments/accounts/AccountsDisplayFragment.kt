@@ -26,6 +26,7 @@ class AccountsDisplayFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.accounts.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
             (binding.root.adapter as AccountsDisplayRVAdapter).submitListAndAddTailIfNecessary(it)
         }
     }
