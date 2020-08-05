@@ -13,8 +13,13 @@
         <action
             android:id="@+id/action_titleFragment_to_lobbyFragment"
             app:destination="@id/lobbyFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
             app:popUpTo="@id/titleFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            tools:ignore="PrivateResource" />
     </fragment>
     <action
         android:id="@+id/action_global_titleFragment"
@@ -37,13 +42,19 @@
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit" />
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
         <action
             android:id="@+id/action_transactionsFragment_to_monthYearPickerDialogFragment"
             app:destination="@id/monthYearPickerDialogFragment" />
         <action
             android:id="@+id/action_transactionsFragment_to_BudgetFragment"
-            app:destination="@id/BudgetFragment" />
+            app:destination="@id/BudgetFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"
@@ -102,7 +113,7 @@
         android:id="@+id/categoriesDF"
         android:name="com.kaeonx.moneymanager.fragments.categories.CategoriesDF"
         android:label="CategoriesDF"
-        tools:layout="@layout/dialog_fragment_category_picker" />
+        tools:layout="@layout/fragment_categories" />
 
     <fragment
         android:id="@+id/accountsFragment"
@@ -111,7 +122,12 @@
         tools:layout="@layout/fragment_accounts">
         <action
             android:id="@+id/action_accountsFragment_to_accountEditFragment"
-            app:destination="@id/accountEditFragment" />
+            app:destination="@id/accountEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
     </fragment>
     <fragment
         android:id="@+id/accountEditFragment"
@@ -133,7 +149,12 @@
         tools:layout="@layout/fragment_categories">
         <action
             android:id="@+id/action_categoriesFragment_to_categoryEditFragment"
-            app:destination="@id/categoryEditFragment" />
+            app:destination="@id/categoryEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
     </fragment>
     <fragment
         android:id="@+id/categoryEditFragment"
@@ -156,8 +177,13 @@
         <action
             android:id="@+id/action_lobbyFragment_to_transactionsFragment"
             app:destination="@id/transactionsFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
             app:popUpTo="@id/lobbyFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            tools:ignore="PrivateResource" />
     </fragment>
 
 </navigation>

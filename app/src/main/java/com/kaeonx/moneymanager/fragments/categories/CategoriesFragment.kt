@@ -8,31 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
 private const val TAG = "catFrag"
 
-// The counterpart to this Fragment is CategoriesDF
+// Essentially the same code as CategoriesDF, except for the adapter.
 class CategoriesFragment : Fragment() {
 
     private lateinit var binding: FragmentCategoriesBinding
-
-    private fun enableCatPickerVPFadeAnimation() {
-        // Courtesy of https://stackoverflow.com/a/56310461/7254995
-        binding.catPickerVP.setPageTransformer { page, _ ->
-            page.apply {
-                alpha = 0f
-                animate()
-                    .alpha(1f)
-                    .setDuration(
-                        page.resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-                    )
-                    .setListener(null)
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +25,6 @@ class CategoriesFragment : Fragment() {
     ): View? {
         binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
-//        enableCatPickerVPFadeAnimation()
         binding.catPickerVP.adapter =
             TypeDisplayFragmentStateAdapter(this, true,
                 CategoryOnClickListener { category ->
@@ -55,24 +38,26 @@ class CategoriesFragment : Fragment() {
                         if (currentDestination?.id == R.id.categoriesFragment) {
                             navigate(
                                 CategoriesFragmentDirections.actionCategoriesFragmentToCategoryEditFragment(
-                                    category,
-                                    cond1 && cond2
+                                    oldCategory = category,
+                                    deletable = cond1 && cond2
                                 )
                             )
                         }
                     }
                 }
             )
-//        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default
+//        binding.catPickerVP.setCurrentItem(UserPDS.getString("tst_default_type").let {
+//            when (it) {
+//                "Income" -> 0
+//                "Expenses" -> 1
+//                else -> throw IllegalStateException("Unknown type $it")
+//            }
+//        }, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //        TabLayoutMediator(view.catPickerTL, view.catPickerVP) { tab, position ->
-        TabLayoutMediator(
-            (requireActivity() as MainActivity).binding.appBarMainInclude.catPickerTLExtendedAppBar,
-            binding.catPickerVP
-        ) { tab, position ->
+        TabLayoutMediator(binding.catPickerTL, binding.catPickerVP) { tab, position ->
             tab.text = when (position) {
                 0 -> "Income"
                 1 -> "Expenses"

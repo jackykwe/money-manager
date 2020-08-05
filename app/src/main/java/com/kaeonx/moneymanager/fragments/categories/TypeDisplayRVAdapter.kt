@@ -9,11 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.databinding.RvItemTypeDisplayBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.Serializable
+
+private const val TAG = "tdrva"
 
 class TypeDisplayRVAdapter(
     private val type: String,
@@ -22,10 +21,14 @@ class TypeDisplayRVAdapter(
 ) : ListAdapter<Category, TypeDisplayRVAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     fun submitListAndAddTailIfNecessary(list: List<Category>) {
-        if (!editable) submitList(list) else {
+        if (!editable) {
+            submitList(list)  // for CategoriesDF, launched from TransactionsBSDF
+        } else {
             CoroutineScope(Dispatchers.Default).launch {
-                val submittable = list + listOf(Category(null, type, "Add...", "F065D", "TRANSPARENT"))
+                val submittable =
+                    list + listOf(Category(null, type, "Add...", "F065D", "TRANSPARENT"))
                 withContext(Dispatchers.Main) {
+                    delay(150L)
                     submitList(submittable)
                 }
             }

@@ -25,6 +25,8 @@ private const val TAG = "transactionFrag"
 
 class TransactionsFragment : Fragment() {
 
+    private var firstRun = true
+
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsFragmentViewModel by viewModels()
 
@@ -53,6 +55,7 @@ class TransactionsFragment : Fragment() {
         binding.transactionsRV.setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
         binding.transactionsRV.adapter =
             TransactionsRVAdapter(
+                firstRun = firstRun,
                 itemOnClickListener = TransactionOnClickListener { transaction ->
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
@@ -101,11 +104,7 @@ class TransactionsFragment : Fragment() {
                     ).show()
                 }
             )
-//        lifecycleScope.launch {
-//            delay(600L)
-//            binding.tempPB.visibility = View.GONE
-//            binding.transactionsRV.visibility = View.VISIBLE
-//        }
+        firstRun = false
         return binding.root
     }
 
@@ -161,6 +160,7 @@ class TransactionsFragment : Fragment() {
             }
         }
     }
+
 }
 
 ////            // Courtesy of https://medium.com/androiddevelopers/appcompat-v23-2-daynight-d10f90c83e94

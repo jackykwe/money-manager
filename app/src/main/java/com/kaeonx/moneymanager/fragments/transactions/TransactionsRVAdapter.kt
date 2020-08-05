@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -22,6 +21,7 @@ private const val DAY_TRANSACTIONS = 2
 private const val TAG = "trva"
 
 class TransactionsRVAdapter(
+    private var firstRun: Boolean,
     private val itemOnClickListener: TransactionOnClickListener,
     private val headerLeftArrowClickListener: GenericOnClickListener,
     private val headerMonthClickListener: GenericOnClickListener,
@@ -34,7 +34,7 @@ class TransactionsRVAdapter(
 ) :
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
-    private var firstRun = true
+    private var subsequentRun = true
 
     fun submitListAndAddHeaders(
         newList: List<DayTransactions>,
@@ -42,19 +42,29 @@ class TransactionsRVAdapter(
         newSummaryData: SummaryData
     ) {
         CoroutineScope(Dispatchers.Default).launch {
-//            submitList(listOf())
-            val addable =
-                listOf(RVItem.RVItemHeader(newHeaderData), RVItem.RVItemSummary(newSummaryData))
+            val addable = listOf(
+                RVItem.RVItemHeader(newHeaderData),
+                RVItem.RVItemSummary(newSummaryData)
+            )
             val submittable = when {
                 newList.isEmpty() -> addable
                 else -> addable + newList.map { RVItem.RVItemDayTransactions(it) }
             }
-            withContext(Dispatchers.Main) {
-                if (firstRun) {
-                    Log.d(TAG, "delaying...")
-                    delay(300L)  // For a smooth experience (for expanding appBar), since submitList blocks the UI thread when updating the UI (cannot be avoided)
+            when {
+                firstRun -> {
+                    // For a smooth experience (for expanding appBar),
+                    // since submitList blocks the UI thread when updating the UI (cannot be avoided)
                     firstRun = false
+                    subsequentRun = false
+                    delay(300L)
                 }
+                subsequentRun -> {
+                    // For a smooth experience (for returning from other fragments)
+                    subsequentRun = false
+                    delay(200L)
+                }
+            }
+            withContext(Dispatchers.Main) {
                 submitList(submittable)
             }
         }

@@ -145,13 +145,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            binding.appBarMainInclude.catPickerTLExtendedAppBar.apply {
-                // CatPickerTLExtendedAppBar Visibility
-                visibility = when (destination.id) {
-                    R.id.categoriesFragment -> View.VISIBLE
-                    else -> View.GONE
-                }
-            }
         }
 
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))

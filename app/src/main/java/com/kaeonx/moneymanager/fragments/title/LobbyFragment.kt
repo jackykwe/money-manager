@@ -30,9 +30,6 @@ class LobbyFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        //TODO : CHANGE ALL COROUTINESCOPE.LAUNCH() TO LIFECYCLESCOPE.LAUNCH()
-        // todo: remove all data from transactionsfragment, then see if the inflation still causes lag.
-        // todo: if it does, it isn't the data's fault.
         lifecycleScope.launch(Dispatchers.Main) {
             val userRepository = UserRepository.getInstance()
             delay(200L)
@@ -45,6 +42,12 @@ class LobbyFragment : Fragment() {
                 Log.d("Lobby", "still waiting sir")
                 delay(200L)
             }
+            val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            binding.root.animate()
+                .alpha(0f)
+                .setDuration(animDuration)
+                .setListener(null)
+            delay(animDuration + 50)
             findNavController().navigate(LobbyFragmentDirections.actionLobbyFragmentToTransactionsFragment())
         }
     }

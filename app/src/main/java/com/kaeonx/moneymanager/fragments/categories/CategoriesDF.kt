@@ -8,35 +8,49 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.databinding.DialogFragmentCategoryPickerBinding
+import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
+import com.kaeonx.moneymanager.userrepository.UserPDS
 
 internal const val CATEGORIES_DF_RESULT = "categories_df_result"
 
-// This DialogFragment is used exclusively with TransactionsBSDF.
-// The counterpart to this DialogFragment is CategoriesFragment
-// This is the fragment with the Tabs and ViewPager.
+// Essentially the same code as CategoriesFragment, except for the adapter.
 class CategoriesDF : DialogFragment() {
 
-    private lateinit var binding: DialogFragmentCategoryPickerBinding
+    private lateinit var binding: FragmentCategoriesBinding
 
     // TODO: Enable on touch outside dismiss
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DialogFragmentCategoryPickerBinding.inflate(inflater, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
-        binding.catPickerVP.adapter = TypeDisplayFragmentStateAdapter(this, false, CategoryOnClickListener { category ->
-            findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(CATEGORIES_DF_RESULT, category)
-            findNavController().navigateUp()
-        })
-//        binding.catPickerVP.setCurrentItem(1, false) //todo: bind to default
+        binding.catPickerVP.adapter =
+            TypeDisplayFragmentStateAdapter(this, false,
+                CategoryOnClickListener { category ->
+                    findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(
+                        CATEGORIES_DF_RESULT,
+                        category
+                    )
+                    findNavController().navigateUp()
+                }
+            )
+        binding.catPickerVP.setCurrentItem(UserPDS.getString("tst_default_type").let {
+            when (it) {
+                "Income" -> 0
+                "Expenses" -> 1
+                else -> throw IllegalStateException("Unknown type $it")
+            }
+        }, false)
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-         TabLayoutMediator(binding.catPickerTL, binding.catPickerVP) { tab, position ->
-            when (position) {
-                0 -> { tab.text = "Income" }
-                1 -> { tab.text = "Expenses" }
+        TabLayoutMediator(binding.catPickerTL, binding.catPickerVP) { tab, position ->
+            tab.text = when (position) {
+                0 -> "Income"
+                1 -> "Expenses"
                 else -> throw IllegalArgumentException("Unknown tab position ($position) reached. Position should be 0 or 1 only.")
             }
         }.attach()
