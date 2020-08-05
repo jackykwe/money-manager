@@ -1,5 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -33,13 +34,15 @@ class TransactionsRVAdapter(
 ) :
     ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
 
+    private var firstRun = true
+
     fun submitListAndAddHeaders(
         newList: List<DayTransactions>,
         newHeaderData: String,
         newSummaryData: SummaryData
     ) {
-        submitList(listOf())
         CoroutineScope(Dispatchers.Default).launch {
+//            submitList(listOf())
             val addable =
                 listOf(RVItem.RVItemHeader(newHeaderData), RVItem.RVItemSummary(newSummaryData))
             val submittable = when {
@@ -47,7 +50,11 @@ class TransactionsRVAdapter(
                 else -> addable + newList.map { RVItem.RVItemDayTransactions(it) }
             }
             withContext(Dispatchers.Main) {
-                delay(300L)  // For a smooth experience (for expanding appBar), since submitList blocks the UI thread when updating the UI (cannot be avoided)
+                if (firstRun) {
+                    Log.d(TAG, "delaying...")
+                    delay(300L)  // For a smooth experience (for expanding appBar), since submitList blocks the UI thread when updating the UI (cannot be avoided)
+                    firstRun = false
+                }
                 submitList(submittable)
             }
         }

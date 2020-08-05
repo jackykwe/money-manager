@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -102,7 +101,11 @@ class TransactionsFragment : Fragment() {
                     ).show()
                 }
             )
-
+//        lifecycleScope.launch {
+//            delay(600L)
+//            binding.tempPB.visibility = View.GONE
+//            binding.transactionsRV.visibility = View.VISIBLE
+//        }
         return binding.root
     }
 
@@ -110,20 +113,18 @@ class TransactionsFragment : Fragment() {
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
             if (it == null) return@observe  // prevents false firing when ViewModel is initialised
             lifecycleScope.launch(Dispatchers.Default) {
-                (binding.transactionsRV.adapter as TransactionsRVAdapter).submitListAndAddHeaders(
-                    it,
-                    CalendarHandler.getFormattedString(
-                        viewModel.displayCalendar.value!!.clone() as Calendar,
-                        "MMM yyyy"
+                (binding.transactionsRV.adapter as TransactionsRVAdapter).apply {
+                    submitList(null)
+                    submitListAndAddHeaders(
+                        it,
+                        CalendarHandler.getFormattedString(
+                            viewModel.displayCalendar.value!!.clone() as Calendar,
+                            "MMM yyyy"
+                        )
+                            .toUpperCase(Locale.ROOT),
+                        viewModel.getSummaryData(it)
                     )
-                        .toUpperCase(Locale.ROOT)
-                        .also {
-                            Log.d(TAG, "starting getSummaryData(it)")
-                        },
-                    viewModel.getSummaryData(it).also {
-                        Log.d(TAG, "getSummaryData done, submitting...")
-                    }
-                )
+                }
             }
         }
 
