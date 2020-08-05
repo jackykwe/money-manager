@@ -10,7 +10,6 @@ import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsHeaderBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
-import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.*
@@ -55,8 +54,8 @@ class TransactionsRVAdapter(
             // For a smooth experience (for expanding AppBar on first launch / hamburger animation on navigateUp)
             // since submitList blocks the UI thread when updating the UI (cannot be avoided)
             if (initRun) {
-                initRun = false
                 delay(300L)
+                initRun = false
             }
             withContext(Dispatchers.Main) {
                 submitList(submittable)

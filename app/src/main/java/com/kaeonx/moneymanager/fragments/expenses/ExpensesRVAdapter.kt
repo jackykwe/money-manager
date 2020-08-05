@@ -9,6 +9,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.databinding.RvItemExpensesCategoriesBinding
 import com.kaeonx.moneymanager.databinding.RvItemExpensesSummaryBinding
+import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,11 +24,11 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
 
     private var initRun = true
 
-    fun submitList2(expensesRVData: ExpensesRVData) {
+    fun submitList2(expensesRVPackage: ExpensesRVPackage) {
         CoroutineScope(Dispatchers.Main).launch {
             val submittable = listOf(
-                ExpensesRVItem.ExpensesRVItemSummary(expensesRVData.pieData),
-                ExpensesRVItem.ExpensesRVItemCategories(expensesRVData.expensesCategoriesData)
+                ExpensesRVItem.ExpensesRVItemSummary(expensesRVPackage.pieData),
+                ExpensesRVItem.ExpensesRVItemCategories(expensesRVPackage.expensesLLPackage)
             )
             if (initRun) {
                 delay(300L)
@@ -60,7 +61,7 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
             }
             is ExpensesCategoriesViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).expensesCategoriesData
+                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).expensesLLPackage
                 holder.rebind(data, itemOnClickListener)
             }
         }
@@ -86,8 +87,8 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
     class ExpensesCategoriesViewHolder private constructor(private val binding: RvItemExpensesCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newData: ExpensesCategoriesData, itemOnClickListener: ExpensesOnClickListener) {
-            binding.data = newData
+        fun rebind(newPackage: ExpensesLLPackage, itemOnClickListener: ExpensesOnClickListener) {
+            binding.data = newPackage
             binding.onClickListener = itemOnClickListener
             binding.executePendingBindings()
         }
@@ -132,7 +133,7 @@ sealed class ExpensesRVItem {
         override val rvItemId: Int = 0
     }
 
-    data class ExpensesRVItemCategories(val expensesCategoriesData: ExpensesCategoriesData) :
+    data class ExpensesRVItemCategories(val expensesLLPackage: ExpensesLLPackage) :
         ExpensesRVItem() {
         override val rvItemId: Int = 1
     }
@@ -140,20 +141,25 @@ sealed class ExpensesRVItem {
     abstract val rvItemId: Int
 }
 
-data class ExpensesCategoriesData(
+data class ExpensesLLPackage(
     val monthString: String,
-    val categories: List<ExpenseCategory>
+    val showCurrency: Boolean,
+    val currency: String,
+    val monthAmount: String,
+    val LLData: List<ExpenseLLData>
 )
 
-data class ExpenseCategory(
+data class ExpenseLLData(
+    val iconDetail: IconDetail,
     val categoryName: String,
+    val categoryNamePercent: String,
     val showCurrency: Boolean,
     val currency: String,
     val categoryAmount: String,
     val barData: BarData?  // todo: change to non null
 )
 
-data class ExpensesRVData(
-    val pieData: PieData?, // todo: change to non null
-    val expensesCategoriesData: ExpensesCategoriesData
+data class ExpensesRVPackage(
+    val pieData: PieData?,
+    val expensesLLPackage: ExpensesLLPackage
 )

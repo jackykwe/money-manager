@@ -52,6 +52,7 @@ data class Transaction(
 // TODO: shift this to inside ViewModel.
 // This function assumes that all Transactions in the List are in the same month.
 internal suspend fun List<Transaction>.toDayTransactions(): List<DayTransactions> {
+    // List<Transaction> is sorted in DESCENDING timestamp order.
     return withContext(Dispatchers.Default) {
         val initCalendar =
             Calendar.getInstance()  // so that calculations below won't shift when done at 23:59:59
@@ -102,8 +103,6 @@ internal suspend fun List<Transaction>.toDayTransactions(): List<DayTransactions
             it.dayIncome = income
             it.dayExpenses = expenses
 
-            // Sort by descending date then return
-            it.transactions.reverse()
             it
         } as ArrayList<DayTransactions>
         result.reverse()

@@ -15,7 +15,10 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.google.android.material.textfield.TextInputLayout
+import com.kaeonx.moneymanager.databinding.RvLlItemCategoryBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
+import com.kaeonx.moneymanager.fragments.expenses.ExpenseLLData
+import com.kaeonx.moneymanager.fragments.expenses.ExpensesOnClickListener
 import com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -375,6 +378,25 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
 //    }
 }
 
+
+@BindingAdapter(
+    "categoriesTransactionsLL_expenseCategoryList",
+    "categoriesTransactionsLL_onClickListener"
+)
+fun LinearLayout.setCategoriesTransactionsLLAdapter(
+    list: List<ExpenseLLData>,
+    itemOnClickListener: ExpensesOnClickListener
+) {
+    removeAllViews()
+    val layoutInflater = LayoutInflater.from(context)
+    for (expenseCategory in list) {
+        val itemBinding = RvLlItemCategoryBinding.inflate(layoutInflater, null, false)
+        itemBinding.expenseLLData = expenseCategory
+        itemBinding.onClickListener = itemOnClickListener
+        itemBinding.executePendingBindings()
+        addView(itemBinding.root)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

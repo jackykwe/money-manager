@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
-            name="transaction"
-            type="com.kaeonx.moneymanager.userrepository.domain.Transaction" />
+            name="expenseLLData"
+            type="com.kaeonx.moneymanager.fragments.expenses.ExpenseLLData" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.expenses.ExpensesOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +22,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(transaction)}"
+        android:onClick="@{() -> onClickListener.onClick(expenseLLData.categoryName)}"
         android:orientation="horizontal"
         android:padding="8dp">
 
@@ -38,7 +39,7 @@
             <include
                 android:id="@+id/categoryIconInclude"
                 layout="@layout/icon_transaction"
-                app:iconDetail="@{transaction.toIconDetail()}" />
+                app:iconDetail="@{expenseLLData.iconDetail}" />
         </FrameLayout>
 
         <TextView
@@ -48,25 +49,25 @@
             android:layout_weight="1"
             android:paddingHorizontal="8dp"
             android:singleLine="true"
-            android:text="@{transaction.memo}"
+            android:text="@{expenseLLData.categoryNamePercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@id/barrier"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/placeholder_memo" />
+            tools:text="Category Name" />
 
         <TextView
             android:id="@+id/transactionCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:text="@{transaction.originalCurrency}"
+            android:visibility="@{expenseLLData.showCurrency ? View.VISIBLE : View.GONE}"
+            android:text="@{expenseLLData.currency}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption4"
             app:layout_constraintBottom_toBottomOf="@+id/transactionValueTV"
             app:layout_constraintEnd_toStartOf="@+id/transactionValueTV"
             app:layout_constraintTop_toTopOf="@+id/transactionValueTV"
-            app:transactionCurrencyTV_visibility="@{transaction}"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
 
@@ -74,7 +75,7 @@
             android:id="@+id/transactionValueTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{transaction.originalAmount}"
+            android:text="@{expenseLLData.categoryAmount}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/categoryTV"

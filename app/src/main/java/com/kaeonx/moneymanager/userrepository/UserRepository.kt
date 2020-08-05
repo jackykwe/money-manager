@@ -22,8 +22,8 @@ class UserRepository private constructor() {
     // TODO: Check for security holes
     private val database = UserDatabase.getInstance()
 
-    private val _transactions = database.userDatabaseDao.getAllTransactions()
-    val transactions = Transformations.map(_transactions) { it.toDomain() }
+//    private val _transactions = database.userDatabaseDao.getAllTransactions()
+//    val transactions = Transformations.map(_transactions) { it.toDomain() }
 
     private val _accounts = database.userDatabaseDao.getAllAccounts()
     val accounts = Transformations.map(_accounts) { it.toDomain() }

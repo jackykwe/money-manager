@@ -22,13 +22,13 @@ interface UserDatabaseDao {
     @Query("DELETE FROM transactions_table")
     suspend fun clearAllData()
 
-    @Query("SELECT * FROM transactions_table")
-    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
+//    @Query("SELECT * FROM transactions_table ORDER BY timestamp DESC")
+//    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
 
     @Query("SELECT * FROM transactions_table WHERE transactionId = :transactionId")
     fun getTransaction(transactionId: Int): LiveData<DatabaseTransaction>
 
-    @Query("SELECT * FROM transactions_table WHERE timestamp BETWEEN :startMillis AND :endMillis")
+    @Query("SELECT * FROM transactions_table WHERE timestamp BETWEEN :startMillis AND :endMillis ORDER BY timestamp DESC")
     fun getTransactionsBetween(
         startMillis: Long,
         endMillis: Long

@@ -14,6 +14,7 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +39,17 @@ class ExpensesViewModel(
         _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
         CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
     )
-    private val _expensesRVData = MediatorLiveData<ExpensesRVData?>().apply {
+    private val _expensesRVData = MediatorLiveData<ExpensesRVPackage?>().apply {
 //        addSource(_displayCalendar) { updatePreviousLiveData() }  // added just for future compatibility
         addSource(_transactions) { recalculateExpensesRVData(it) }
         addSource(xeRepository.xeRows) { recalculateExpensesRVData(_transactions.value) }
     }
-    val expensesRVData: LiveData<ExpensesRVData?>
+    val expensesRVPackage: LiveData<ExpensesRVPackage?>
         get() = _expensesRVData
+
+    private fun getLegendName(name: String): String {
+        return if (name.length > 10) "${name.substring(1..10)}..." else name
+    }
 
     private fun recalculateExpensesRVData(list: List<Transaction>?) {
         if (list == null) return
@@ -71,50 +76,62 @@ class ExpensesViewModel(
                 }
             }
 
-            val expenseCategoryList = arrayListOf<ExpenseCategory>()
-            amountsMap.forEach {
-                expenseCategoryList.add(
-                    ExpenseCategory(
-                        categoryName = it.key,
-                        showCurrency = showCurrency,
-                        currency = homeCurrency,
-                        categoryAmount = CurrencyHandler.displayAmount(it.value),
-                        barData = null
-                    )
-                )
-            }
+            val expensesLLDataList = arrayListOf<ExpenseLLData>()
 
-            // Construction of PieData
             val total = amountsMap.values.asIterable().sumByBigDecimal { it }
 //            val highestCategory = amountsMap.maxBy { it.value }
             val entries = arrayListOf<PieEntry>()
             val colourList = arrayListOf<Int>()
             val repositoryCategories = userRepository.categories.value!!
-            amountsMap.asIterable().sortedByDescending { it.value }.forEach { entry ->
-                val percent = entry.value.divide(total, MathContext(2, RoundingMode.HALF_UP))
-                entries.add(PieEntry(percent.toFloat(), entry.key))
-                colourList.add(
-                    ColourHandler.getColourObject(
-                        repositoryCategories
-                            .find { it.name == entry.key && it.type == "Expenses" }?.colourString
-                            ?: "Black"
+            amountsMap.asIterable()
+                .sortedBy { it.key }  // sort by ASCENDING name (secondary)
+                .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
+                .forEach { entry ->
+                    val percent = entry.value.times(BigDecimal("100"))
+                        .divide(total, MathContext(3, RoundingMode.HALF_UP))
+                    val truncatedName = getLegendName(entry.key)
+                    val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
+
+                    // For PieData
+                    entries.add(PieEntry(percent.toFloat(), "$truncatedName ($percentDisplay%)"))
+
+                    val categoryObject =
+                        repositoryCategories.find { it.name == entry.key && it.type == "Expenses" }
+                            ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
+                    colourList.add(
+                        ColourHandler.getColourObject(categoryObject.colourString)
                     )
-                )
-            }
+
+                    // For expensesLLData
+                    expensesLLDataList.add(
+                        ExpenseLLData(
+                            iconDetail = categoryObject.toIconDetail(),
+                            categoryName = entry.key,  // Needed for onClickListener to identify the expensesCategory
+                            categoryNamePercent = "${entry.key} ($percentDisplay%)",
+                            showCurrency = showCurrency,
+                            currency = homeCurrency,
+                            categoryAmount = CurrencyHandler.displayAmount(entry.value),
+                            barData = null
+                        )
+                    )
+                }
             val dataSet = PieDataSet(entries, null).apply {
                 colors = colourList
                 setDrawValues(false)
-//            sliceSpace = 1f  // in dp (as float)
+                sliceSpace = 2f  // in dp (as float)
             }
 
-            val result = ExpensesRVData(
-                pieData = PieData(dataSet),
-                expensesCategoriesData = ExpensesCategoriesData(
+            val result = ExpensesRVPackage(
+                pieData = if (entries.isEmpty()) null else PieData(dataSet),
+                expensesLLPackage = ExpensesLLPackage(
                     monthString = CalendarHandler.getFormattedString(
                         _displayCalendar.value,
                         "MMM yyyy"
-                    ),
-                    categories = expenseCategoryList.toList()
+                    ).toUpperCase(),
+                    showCurrency = showCurrency,
+                    currency = homeCurrency,
+                    monthAmount = CurrencyHandler.displayAmount(total),
+                    LLData = expensesLLDataList.toList()
                 )
             )
 
