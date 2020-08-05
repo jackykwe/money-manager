@@ -49,6 +49,7 @@ data class Transaction(
 }
 
 
+// TODO: shift this to inside ViewModel.
 // This function assumes that all Transactions in the List are in the same month.
 internal suspend fun List<Transaction>.toDayTransactions(): List<DayTransactions> {
     return withContext(Dispatchers.Default) {

@@ -10,6 +10,10 @@
         <variable
             name="dayTransactions"
             type="com.kaeonx.moneymanager.userrepository.domain.DayTransactions" />
+
+        <variable
+            name="onClickListener"
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -106,7 +110,9 @@
                     android:id="@+id/dayTransactionsLL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    app:dayTransactionsLL_dayTransactions="@{dayTransactions}"
+                    app:dayTransactionsLL_onClickListener="@{onClickListener}" />
 
             </LinearLayout>
 

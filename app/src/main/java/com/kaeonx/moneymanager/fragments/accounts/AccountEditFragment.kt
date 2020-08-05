@@ -22,7 +22,7 @@ import com.kaeonx.moneymanager.adapters.ColourIntensityPickerArrayAdapter
 import com.kaeonx.moneymanager.databinding.FragmentAccountEditBinding
 
 class AccountEditFragment : Fragment() {
-
+    // TODO: NOT OPTIMISED YET FOR SMOOTHNESS - INTRODUCE SOME DELAYS?
     private lateinit var binding : FragmentAccountEditBinding
 
     private val args: AccountEditFragmentArgs by navArgs()

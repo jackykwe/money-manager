@@ -12,6 +12,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
+import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -20,9 +21,7 @@ import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import com.kaeonx.moneymanager.userrepository.domain.toDayTransactions
 import com.kaeonx.moneymanager.xerepository.XERepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
@@ -45,7 +44,7 @@ class TransactionsFragmentViewModel : ViewModel() {
         get() = _displayCalendar
 
     private var previousLiveData: LiveData<List<Transaction>>? = null
-    val sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>?>().apply {
+    private val _sensitiveDayTransactions = MediatorLiveData<List<DayTransactions>?>().apply {
         // TODO: Add budget source as well. Actually no need recalculate. Just update.
         // addSource(_some_budget_source) { value = value }  // Try this
         addSource(_displayCalendar) { updatePreviousLiveData() }
@@ -60,21 +59,23 @@ class TransactionsFragmentViewModel : ViewModel() {
             }
         }
     }
+    val sensitiveDayTransactions: LiveData<List<DayTransactions>?>
+        get() = _sensitiveDayTransactions
 
     private suspend fun recalculateDayTransactions(): List<DayTransactions>? =
         previousLiveData?.value?.toDayTransactions()
 
     private fun updatePreviousLiveData() {
         if (previousLiveData != null) {
-            sensitiveDayTransactions.removeSource(previousLiveData!!)
+            _sensitiveDayTransactions.removeSource(previousLiveData!!)
         }
         previousLiveData = userRepository.getTransactionsBetween(
-            displayCalendar.value!!.timeInMillis,  // no need clone, since no edits will be made to it
-            CalendarHandler.getEndOfMonthMillis(displayCalendar.value!!.clone() as Calendar)
+            _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
+            CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
         )
-        sensitiveDayTransactions.addSource(previousLiveData!!) {
+        _sensitiveDayTransactions.addSource(previousLiveData!!) {
             viewModelScope.launch {
-                sensitiveDayTransactions.value = recalculateDayTransactions()
+                _sensitiveDayTransactions.value = recalculateDayTransactions()
             }
         }
     }
@@ -116,11 +117,11 @@ class TransactionsFragmentViewModel : ViewModel() {
         return displayMonthFirstMillis.compareTo(currentMonthFirstMillis)
     }
 
-    internal suspend fun getSummaryData(list: List<DayTransactions>): SummaryData {
+    internal suspend fun getSummaryData(list: List<DayTransactions>): TransactionsSummaryData {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
         val budget = BigDecimal("1000")  // TODO: Grab budget
-        val income = list.sumByBigDecimal { it.dayIncome ?: "0" }
-        val expenses = list.sumByBigDecimal { it.dayExpenses ?: "0" }
+        val income = list.sumByBigDecimal { BigDecimal(it.dayIncome ?: "0") }
+        val expenses = list.sumByBigDecimal { BigDecimal(it.dayExpenses ?: "0") }
         val days = _displayCalendar.value.getActualMaximum(Calendar.DAY_OF_MONTH)
 
         val compare = displayMonthCompare()
@@ -134,7 +135,7 @@ class TransactionsFragmentViewModel : ViewModel() {
             BigDecimal(day).divide(BigDecimal(days), MathContext(2, RoundingMode.HALF_UP))
 
         val entries: List<PieEntry>
-        val colorList: List<Int>
+        val colourList: List<Int>
         if (expenses < budget) {
             val exDivBud = expenses.divide(budget, MathContext(2, RoundingMode.HALF_UP))
             if (exDivBud <= dayDivDays) {
@@ -143,7 +144,7 @@ class TransactionsFragmentViewModel : ViewModel() {
                     PieEntry(dayDivDays.minus(exDivBud).toFloat(), "target ex"),
                     PieEntry(BigDecimal.ONE.minus(dayDivDays).toFloat(), "remainder")
                 )
-                colorList = listOf(
+                colourList = listOf(
                     App.context.resources.getColor(R.color.green_500, null),
                     App.context.resources.getColor(R.color.grey_200, null),
                     App.context.resources.getColor(R.color.white, null)
@@ -154,7 +155,7 @@ class TransactionsFragmentViewModel : ViewModel() {
                     PieEntry(exDivBud.minus(dayDivDays).toFloat(), "ex"),
                     PieEntry(BigDecimal.ONE.minus(exDivBud).toFloat(), "remainder")
                 )
-                colorList = listOf(
+                colourList = listOf(
                     App.context.resources.getColor(R.color.green_500, null),
                     App.context.resources.getColor(R.color.green_200, null),
                     App.context.resources.getColor(R.color.white, null)
@@ -167,7 +168,7 @@ class TransactionsFragmentViewModel : ViewModel() {
                 PieEntry(budDivEx.toFloat(), "bud"),
                 PieEntry(BigDecimal.ONE.minus(budDivEx).toFloat(), "over ex")
             )
-            colorList = listOf(
+            colourList = listOf(
                 App.context.resources.getColor(R.color.green_500, null),
                 App.context.resources.getColor(R.color.green_200, null),
                 App.context.resources.getColor(R.color.red_500, null)
@@ -175,7 +176,7 @@ class TransactionsFragmentViewModel : ViewModel() {
         }
 
         val dataSet = PieDataSet(entries, null).apply {
-            colors = colorList
+            colors = colourList
             setDrawValues(false)
 //            sliceSpace = 1f  // in dp (as float)
         }
@@ -184,7 +185,7 @@ class TransactionsFragmentViewModel : ViewModel() {
         val bool2 = !(UserPDS.getBoolean("ccc_hide_matching_currency") &&
                 list.all { it.incomeAllHome } &&
                 list.all { it.expensesAllHome })
-        return SummaryData(
+        return TransactionsSummaryData(
             homeCurrency = homeCurrency,
             showCurrencyMode1 = bool1,
             showCurrencyMode2 = bool2,
@@ -194,16 +195,5 @@ class TransactionsFragmentViewModel : ViewModel() {
             monthBalance = CurrencyHandler.displayAmount(income.minus(expenses)),
             pieData = PieData(dataSet)
         )
-    }
-
-    // Courtesy of https://bezkoder.com/kotlin-sum-sumby-sumbydouble-bigdecimal-list-map-example/
-    private suspend fun <T> Iterable<T>.sumByBigDecimal(selector: (T) -> String): BigDecimal {
-        return withContext(Dispatchers.Default) {
-            var sum: BigDecimal = BigDecimal.ZERO
-            for (element in this@sumByBigDecimal) {
-                sum = sum.plus(BigDecimal(selector(element)))
-            }
-            sum
-        }
     }
 }

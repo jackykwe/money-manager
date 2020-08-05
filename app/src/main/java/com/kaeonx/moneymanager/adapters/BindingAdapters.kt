@@ -1,8 +1,10 @@
 package com.kaeonx.moneymanager.adapters
 
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
@@ -10,8 +12,11 @@ import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.google.android.material.textfield.TextInputLayout
+import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
+import com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
@@ -19,9 +24,6 @@ import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 
@@ -54,6 +56,22 @@ fun TextView.setDayExpensesCurrencyTVVisibility(dayTransactions: DayTransactions
     val cond1 = dayTransactions.dayExpenses == null
     val cond2 = dayTransactions.expensesAllHome && UserPDS.getBoolean("ccc_hide_matching_currency")
     visibility = if (cond1 || cond2) View.GONE else View.VISIBLE
+}
+
+@BindingAdapter("dayTransactionsLL_dayTransactions", "dayTransactionsLL_onClickListener")
+fun LinearLayout.setDayTransactionsLLAdapter(
+    dayTransactions: DayTransactions,
+    itemOnClickListener: TransactionOnClickListener
+) {
+    removeAllViews()
+    val layoutInflater = LayoutInflater.from(context)
+    for (transaction in dayTransactions.transactions) {
+        val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
+        itemBinding.transaction = transaction
+        itemBinding.onClickListener = itemOnClickListener
+        itemBinding.executePendingBindings()
+        addView(itemBinding.root)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -281,45 +299,82 @@ fun TextView.setConvertedAmountTV_textVisibility(transaction: Transaction) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
+ * rv_item_expenses_summary
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("expensesPC_adapter")
+fun PieChart.setExpensesPCAdapter(pieData: PieData?) {
+    if (description.isEnabled) {
+        setTouchEnabled(false)
+        setNoDataText("Hello, you wanna provide some data?")
+        setDrawEntryLabels(false)
+        //    centerText = ""
+        //    setUsePercentValues(true)
+        holeRadius = 75f
+        transparentCircleRadius = 80f
+
+//        legend.isEnabled = true
+        legend.apply {
+            setDrawInside(false)
+            isWordWrapEnabled = true
+            maxSizePercent = 0.75f
+            horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+            verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+            orientation = Legend.LegendOrientation.VERTICAL
+            form = Legend.LegendForm.CIRCLE
+            direction = Legend.LegendDirection.LEFT_TO_RIGHT
+        }
+
+        description.isEnabled = false
+    }
+    data = pieData
+    notifyDataSetChanged()
+    invalidate()
+//    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/**
  * rv_item_transactions_summary
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("budgetPC_adapter")
 fun PieChart.setBudgetPCAdapter(pieData: PieData) {
-    CoroutineScope(Dispatchers.Main).launch {
-        // Enable these lines if loading becomes slow and you see outdated graphs while loading
+//    CoroutineScope(Dispatchers.Main).launch {
+    // Enable these lines if loading becomes slow and you see outdated graphs while loading
 //        data = null
 //        notifyDataSetChanged()
 //        invalidate()
-        if (legend.isEnabled) {
-            setTouchEnabled(false)
-            setNoDataText("Hello, you wanna provide some data?")
-            description.isEnabled = false
+    if (legend.isEnabled) {
+        setTouchEnabled(false)
+        setNoDataText("Hello, you wanna provide some data?")
+        description.isEnabled = false
 
-            setDrawEntryLabels(false)
-            //    centerText = ""
-            //    setUsePercentValues(true)
-            holeRadius = 75f
-            transparentCircleRadius = 80f
+        setDrawEntryLabels(false)
+        //    centerText = ""
+        //    setUsePercentValues(true)
+        holeRadius = 75f
+        transparentCircleRadius = 80f
 
-            //    legend.apply {
-            //        setDrawInside(false)
-            //        isWordWrapEnabled = true
-            //        maxSizePercent = 0.75f
-            //        horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
-            //        verticalAlignment = Legend.LegendVerticalAlignment.CENTER
-            //        orientation = Legend.LegendOrientation.VERTICAL
-            //        form = Legend.LegendForm.CIRCLE
-            //        direction = Legend.LegendDirection.LEFT_TO_RIGHT
-            //    }
-            legend.isEnabled = false
-        }
-        data = pieData
-        notifyDataSetChanged()
-        invalidate()
+        //    legend.apply {
+        //        setDrawInside(false)
+        //        isWordWrapEnabled = true
+        //        maxSizePercent = 0.75f
+        //        horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        //        verticalAlignment = Legend.LegendVerticalAlignment.CENTER
+        //        orientation = Legend.LegendOrientation.VERTICAL
+        //        form = Legend.LegendForm.CIRCLE
+        //        direction = Legend.LegendDirection.LEFT_TO_RIGHT
+        //    }
+        legend.isEnabled = false
     }
-
+    data = pieData
+    notifyDataSetChanged()
+    invalidate()
+//    }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

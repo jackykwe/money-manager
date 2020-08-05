@@ -55,6 +55,14 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_expensesFragment"
+            app:destination="@id/expensesFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"
@@ -184,6 +192,19 @@
             app:popUpTo="@id/lobbyFragment"
             app:popUpToInclusive="true"
             tools:ignore="PrivateResource" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/expensesFragment"
+        android:name="com.kaeonx.moneymanager.fragments.expenses.ExpensesFragment"
+        android:label="Expenses"
+        tools:layout="@layout/fragment_expenses">
+        <argument
+            android:name="displayCalendar"
+            app:argType="java.util.Calendar" />
+        <argument
+            android:name="showCurrency"
+            app:argType="boolean" />
     </fragment>
 
 </navigation>

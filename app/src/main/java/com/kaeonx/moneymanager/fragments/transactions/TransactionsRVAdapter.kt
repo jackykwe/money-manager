@@ -21,7 +21,6 @@ private const val DAY_TRANSACTIONS = 2
 private const val TAG = "trva"
 
 class TransactionsRVAdapter(
-    private var firstRun: Boolean,
     private val itemOnClickListener: TransactionOnClickListener,
     private val headerLeftArrowClickListener: GenericOnClickListener,
     private val headerMonthClickListener: GenericOnClickListener,
@@ -30,39 +29,34 @@ class TransactionsRVAdapter(
     private val summaryIncomeClickListener: GenericOnClickListener,
     private val summaryExpensesClickListener: GenericOnClickListener,
     private val summaryPieChartClickListener: GenericOnClickListener // show help fragment?
-
 ) :
-    ListAdapter<RVItem, RecyclerView.ViewHolder>(RVItemDiffCallback()) {
+    ListAdapter<TransactionsRVItem, RecyclerView.ViewHolder>(TransactionsRVItemDiffCallback()) {
 
-    private var subsequentRun = true
+    private var initRun = true
 
     fun submitListAndAddHeaders(
         newList: List<DayTransactions>,
         newHeaderData: String,
-        newSummaryData: SummaryData
+        newTransactionsSummaryData: TransactionsSummaryData
     ) {
         CoroutineScope(Dispatchers.Default).launch {
             val addable = listOf(
-                RVItem.RVItemHeader(newHeaderData),
-                RVItem.RVItemSummary(newSummaryData)
+                TransactionsRVItem.TransactionsRVItemHeader(newHeaderData),
+                TransactionsRVItem.TransactionsRVItemSummary(newTransactionsSummaryData)
             )
             val submittable = when {
                 newList.isEmpty() -> addable
-                else -> addable + newList.map { RVItem.RVItemDayTransactions(it) }
+                else -> addable + newList.map {
+                    TransactionsRVItem.TransactionsRVItemDayTransactions(
+                        it
+                    )
+                }
             }
-            when {
-                firstRun -> {
-                    // For a smooth experience (for expanding appBar),
-                    // since submitList blocks the UI thread when updating the UI (cannot be avoided)
-                    firstRun = false
-                    subsequentRun = false
-                    delay(300L)
-                }
-                subsequentRun -> {
-                    // For a smooth experience (for returning from other fragments)
-                    subsequentRun = false
-                    delay(200L)
-                }
+            // For a smooth experience (for expanding AppBar on first launch / hamburger animation on navigateUp)
+            // since submitList blocks the UI thread when updating the UI (cannot be avoided)
+            if (initRun) {
+                initRun = false
+                delay(300L)
             }
             withContext(Dispatchers.Main) {
                 submitList(submittable)
@@ -72,9 +66,9 @@ class TransactionsRVAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is RVItem.RVItemHeader -> HEADER
-            is RVItem.RVItemSummary -> SUMMARY
-            is RVItem.RVItemDayTransactions -> DAY_TRANSACTIONS
+            is TransactionsRVItem.TransactionsRVItemHeader -> HEADER
+            is TransactionsRVItem.TransactionsRVItemSummary -> SUMMARY
+            is TransactionsRVItem.TransactionsRVItemDayTransactions -> DAY_TRANSACTIONS
         }
     }
 
@@ -83,18 +77,25 @@ class TransactionsRVAdapter(
             HEADER -> TransactionsHeaderViewHolder.inflateAndCreateViewHolderFrom(parent)
             SUMMARY -> TransactionsSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
             DAY_TRANSACTIONS -> TransactionsDayViewHolder.inflateAndCreateViewHolderFrom(parent)
-            else -> throw IllegalArgumentException("Illegal viewType: ${viewType}. viewType must be either 0 or 1.")
+            else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TransactionsDayViewHolder -> {
-                val item = (getItem(position) as RVItem.RVItemDayTransactions).dayTransactions
-                holder.rebind(item, itemOnClickListener)
+            is TransactionsHeaderViewHolder -> {
+                val monthText =
+                    (getItem(position) as TransactionsRVItem.TransactionsRVItemHeader).monthText
+                holder.rebind(
+                    monthText,
+                    headerLeftArrowClickListener,
+                    headerMonthClickListener,
+                    headerRightArrowClickListener
+                )
             }
             is TransactionsSummaryViewHolder -> {
-                val newSummaryData = (getItem(position) as RVItem.RVItemSummary).summaryData
+                val newSummaryData =
+                    (getItem(position) as TransactionsRVItem.TransactionsRVItemSummary).transactionsSummaryData
                 holder.rebind(
                     newSummaryData,
                     summaryBudgetClickListener,
@@ -103,43 +104,38 @@ class TransactionsRVAdapter(
                     summaryPieChartClickListener
                 )
             }
-            is TransactionsHeaderViewHolder -> {
-                val monthText = (getItem(position) as RVItem.RVItemHeader).monthText
-                holder.rebind(
-                    monthText,
-                    headerLeftArrowClickListener,
-                    headerMonthClickListener,
-                    headerRightArrowClickListener
-                )
+            is TransactionsDayViewHolder -> {
+                val item =
+                    (getItem(position) as TransactionsRVItem.TransactionsRVItemDayTransactions).dayTransactions
+                holder.rebind(item, itemOnClickListener)
             }
         }
     }
 
-    class TransactionsDayViewHolder private constructor(private val binding: RvItemTransactionsDayBinding) :
+    class TransactionsHeaderViewHolder private constructor(private val binding: RvItemTransactionsHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
-            binding.dayTransactions = item
-
-            binding.dayTransactionsLL.removeAllViews()
-            val layoutInflater = LayoutInflater.from(binding.dayTransactionsLL.context)
-            for (transaction in item.transactions) {
-                val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
-                itemBinding.transaction = transaction
-                itemBinding.onClickListener = itemOnClickListener
-                itemBinding.executePendingBindings()
-                binding.dayTransactionsLL.addView(itemBinding.root)
+        fun rebind(
+            newMonthText: String,
+            newLeftArrowClickListener: GenericOnClickListener,
+            newMonthClickListener: GenericOnClickListener,
+            newRightArrowClickListener: GenericOnClickListener
+        ) {
+            binding.apply {
+                leftArrowClickListener = newLeftArrowClickListener
+                monthClickListener = newMonthClickListener
+                monthText = newMonthText
+                rightArrowClickListener = newRightArrowClickListener
+                executePendingBindings()
             }
-            binding.executePendingBindings()
-            // It is always a good idea to execute pending bindings when using binding adapters
-            // in a RecyclerView, since it can be slightly faster to size the views.
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsDayViewHolder {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsHeaderViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvItemTransactionsDayBinding.inflate(layoutInflater, parent, false)
-                return TransactionsDayViewHolder(binding)
+                val binding =
+                    RvItemTransactionsHeaderBinding.inflate(layoutInflater, parent, false)
+                return TransactionsHeaderViewHolder(binding)
             }
         }
     }
@@ -148,7 +144,7 @@ class TransactionsRVAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(
-            newSummaryData: SummaryData,
+            newTransactionsSummaryData: TransactionsSummaryData,
             summaryBudgetClickListener: GenericOnClickListener,
             summaryIncomeClickListener: GenericOnClickListener,
             summaryExpensesClickListener: GenericOnClickListener,
@@ -157,12 +153,12 @@ class TransactionsRVAdapter(
             when (binding) {
                 is RvItemTransactionsSummaryBinding -> {
                     binding.apply {
-                        summaryData = newSummaryData
+                        summaryData = newTransactionsSummaryData
                         budgetListener = summaryBudgetClickListener
                         expensesListener = summaryExpensesClickListener
                         pieChartListener = summaryPieChartClickListener
+                        executePendingBindings()
                     }
-                    binding.executePendingBindings()
                 }
                 else -> throw TODO("Not supported yet")
             }
@@ -178,40 +174,42 @@ class TransactionsRVAdapter(
         }
     }
 
-    class TransactionsHeaderViewHolder private constructor(private val binding: RvItemTransactionsHeaderBinding) :
+    class TransactionsDayViewHolder private constructor(private val binding: RvItemTransactionsDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(
-            monthText: String,
-            leftArrowClickListener: GenericOnClickListener,
-            monthClickListener: GenericOnClickListener,
-            rightArrowClickListener: GenericOnClickListener
-        ) {
-            binding.leftArrowClickListener = leftArrowClickListener
-            binding.monthClickListener = monthClickListener
-            binding.monthText = monthText
-            binding.rightArrowClickListener = rightArrowClickListener
-            binding.executePendingBindings()
+        fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
+            binding.apply {
+                dayTransactions = item
+                onClickListener = itemOnClickListener
+                executePendingBindings()
+            }
+            // It is always a good idea to execute pending bindings when using binding adapters
+            // in a RecyclerView, since it can be slightly faster to size the views.
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsHeaderViewHolder {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsDayViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding =
-                    RvItemTransactionsHeaderBinding.inflate(layoutInflater, parent, false)
-                return TransactionsHeaderViewHolder(binding)
+                val binding = RvItemTransactionsDayBinding.inflate(layoutInflater, parent, false)
+                return TransactionsDayViewHolder(binding)
             }
         }
     }
 }
 
-class RVItemDiffCallback : DiffUtil.ItemCallback<RVItem>() {
-    override fun areItemsTheSame(oldItem: RVItem, newItem: RVItem): Boolean {
-        return oldItem.rvItemId == newItem.rvItemId
+class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>() {
+    override fun areItemsTheSame(
+        oldItemTransactions: TransactionsRVItem,
+        newItemTransactions: TransactionsRVItem
+    ): Boolean {
+        return oldItemTransactions.rvItemId == newItemTransactions.rvItemId
     }
 
-    override fun areContentsTheSame(oldItem: RVItem, newItem: RVItem): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(
+        oldItemTransactions: TransactionsRVItem,
+        newItemTransactions: TransactionsRVItem
+    ): Boolean {
+        return oldItemTransactions == newItemTransactions
     }
 }
 
@@ -223,23 +221,25 @@ class GenericOnClickListener(val clickListener: () -> Unit) {
     fun onClick() = clickListener()
 }
 
-sealed class RVItem {
-    data class RVItemDayTransactions(val dayTransactions: DayTransactions) : RVItem() {
+sealed class TransactionsRVItem {
+    data class TransactionsRVItemDayTransactions(val dayTransactions: DayTransactions) :
+        TransactionsRVItem() {
         override val rvItemId: Int = dayTransactions.dayOfMonth
     }
 
-    data class RVItemHeader(val monthText: String) : RVItem() {
+    data class TransactionsRVItemHeader(val monthText: String) : TransactionsRVItem() {
         override val rvItemId: Int = Int.MIN_VALUE
     }
 
-    data class RVItemSummary(val summaryData: SummaryData) : RVItem() {
+    data class TransactionsRVItemSummary(val transactionsSummaryData: TransactionsSummaryData) :
+        TransactionsRVItem() {
         override val rvItemId: Int = Int.MIN_VALUE + 1
     }
 
     abstract val rvItemId: Int
 }
 
-data class SummaryData(
+data class TransactionsSummaryData(
     val homeCurrency: String,
     val showCurrencyMode1: Boolean,  // affects budget, expenses
     val showCurrencyMode2: Boolean,  // affects income, expenses, balance

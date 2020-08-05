@@ -25,8 +25,6 @@ private const val TAG = "transactionFrag"
 
 class TransactionsFragment : Fragment() {
 
-    private var firstRun = true
-
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsFragmentViewModel by viewModels()
 
@@ -52,10 +50,9 @@ class TransactionsFragment : Fragment() {
         }
 
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
-        binding.transactionsRV.setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
-        binding.transactionsRV.adapter =
-            TransactionsRVAdapter(
-                firstRun = firstRun,
+        binding.transactionsRV.apply {
+            setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
+            adapter = TransactionsRVAdapter(
                 itemOnClickListener = TransactionOnClickListener { transaction ->
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
@@ -90,11 +87,16 @@ class TransactionsFragment : Fragment() {
                 },
                 summaryIncomeClickListener = GenericOnClickListener { Unit },
                 summaryExpensesClickListener = GenericOnClickListener {
-                    Snackbar.make(
-                        binding.root,
-                        "Navigate to ExpensesTransactionsFragment",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToExpensesFragment(
+                                    viewModel.displayCalendar.value!!.clone() as Calendar,
+                                    true // todo: viewModel to have a var with private set
+                                )
+                            )
+                        }
+                    }
                 },
                 summaryPieChartClickListener = GenericOnClickListener {
                     Snackbar.make(
@@ -104,9 +106,10 @@ class TransactionsFragment : Fragment() {
                     ).show()
                 }
             )
-        firstRun = false
+        }
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {

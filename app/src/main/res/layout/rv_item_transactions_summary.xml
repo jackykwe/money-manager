@@ -9,7 +9,7 @@
 
         <variable
             name="summaryData"
-            type="com.kaeonx.moneymanager.fragments.transactions.SummaryData" />
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionsSummaryData" />
 
         <variable
             name="budgetListener"

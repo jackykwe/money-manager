@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "tevm"
 
 class TransactionEditViewModel(private val transactionId: Int): ViewModel() {
-
+    // TODO: NOT OPTIMISED YET FOR SMOOTHNESS - INTRODUCE SOME DELAYS?
     private val userRepository = UserRepository.getInstance()
 
     private val _transaction = userRepository.getTransaction(transactionId)

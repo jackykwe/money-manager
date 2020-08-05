@@ -113,7 +113,7 @@ class ColourHandler private constructor() {
          */
         ////////////////////////////////////////////////////////////////////////////////
 
-        fun getColorObject(colourString: String) = when (colourString) {
+        fun getColourObject(colourString: String) = when (colourString) {
             "Red,50" -> App.context.resources.getColor(R.color.red_50, null)
             "Red,100" -> App.context.resources.getColor(R.color.red_100, null)
             "Red,200" -> App.context.resources.getColor(R.color.red_200, null)
@@ -393,7 +393,7 @@ class ColourHandler private constructor() {
             else -> App.context.resources.getColor(R.color.black, null)
         }
 
-        fun getColorObject(colourFamily: String, colourIntensity: String?) = when (colourFamily) {
+        fun getColourObject(colourFamily: String, colourIntensity: String?) = when (colourFamily) {
             "Red" -> {
                 when (colourIntensity) {
                     "50" -> App.context.resources.getColor(R.color.red_50, null)
