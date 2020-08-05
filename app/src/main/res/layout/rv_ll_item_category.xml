@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -44,27 +45,44 @@
 
         <TextView
             android:id="@+id/categoryTV"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:paddingHorizontal="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="2dp"
             android:singleLine="true"
-            android:text="@{expenseLLData.categoryNamePercent}"
+            android:text="@{expenseLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintEnd_toStartOf="@id/categoryPercentTV"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Category Name" />
+
+        <TextView
+            android:id="@+id/categoryPercentTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="2dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            android:text="@{expenseLLData.categoryPercent}"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintStart_toEndOf="@+id/categoryTV"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="(99.9%)" />
 
         <TextView
             android:id="@+id/transactionCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:visibility="@{expenseLLData.showCurrency ? View.VISIBLE : View.GONE}"
             android:text="@{expenseLLData.currency}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+            android:visibility="@{expenseLLData.showCurrency ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@+id/transactionValueTV"
             app:layout_constraintEnd_toStartOf="@+id/transactionValueTV"
             app:layout_constraintTop_toTopOf="@+id/transactionValueTV"

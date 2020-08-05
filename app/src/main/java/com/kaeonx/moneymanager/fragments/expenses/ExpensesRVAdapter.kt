@@ -152,7 +152,7 @@ data class ExpensesLLPackage(
 data class ExpenseLLData(
     val iconDetail: IconDetail,
     val categoryName: String,
-    val categoryNamePercent: String,
+    val categoryPercent: String,
     val showCurrency: Boolean,
     val currency: String,
     val categoryAmount: String,

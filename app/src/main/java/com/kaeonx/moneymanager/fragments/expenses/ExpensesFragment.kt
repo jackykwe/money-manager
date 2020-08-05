@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.expenses
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +45,6 @@ class ExpensesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.expensesRVPackage.observe(viewLifecycleOwner) {
-            Log.d(TAG, "receied $it")
             (binding.expensesRV.adapter as ExpensesRVAdapter).apply {
                 if (it == null) return@observe
                 submitList(null)

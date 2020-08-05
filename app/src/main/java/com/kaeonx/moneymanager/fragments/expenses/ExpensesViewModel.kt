@@ -107,7 +107,7 @@ class ExpensesViewModel(
                         ExpenseLLData(
                             iconDetail = categoryObject.toIconDetail(),
                             categoryName = entry.key,  // Needed for onClickListener to identify the expensesCategory
-                            categoryNamePercent = "${entry.key} ($percentDisplay%)",
+                            categoryPercent = "($percentDisplay%)",
                             showCurrency = showCurrency,
                             currency = homeCurrency,
                             categoryAmount = CurrencyHandler.displayAmount(entry.value),

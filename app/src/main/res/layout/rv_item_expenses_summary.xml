@@ -31,7 +31,7 @@
                 android:id="@+id/expensesPC"
                 android:layout_width="match_parent"
                 app:expensesPC_adapter="@{pieData}"
-                android:layout_height="200dp" />
+                android:layout_height="144dp" />
 
         </com.google.android.material.card.MaterialCardView>
 
