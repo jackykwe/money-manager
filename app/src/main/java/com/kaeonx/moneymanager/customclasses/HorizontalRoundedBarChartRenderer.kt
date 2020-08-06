@@ -10,6 +10,9 @@ import com.github.mikephil.charting.utils.Utils
 import com.github.mikephil.charting.utils.ViewPortHandler
 import kotlin.math.ceil
 
+// Courtesy of
+// https://github.com/PhilJay/MPAndroidChart/issues/803
+// https://github.com/WW-Digital/MPAndroidChart/commit/f940a527418aa0b695cd4f7fdf8b07922317cb17
 internal class HorizontalRoundedBarChartRenderer(
     chart: BarDataProvider,
     animator: ChartAnimator,

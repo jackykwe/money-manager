@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTypeDetailBinding
 
 private const val TAG = "exfrag"
@@ -41,6 +42,10 @@ class TypeDetailFragment : Fragment() {
             adapter = TypeDetailRVAdapter(
                 TypeDetailOnClickListener {
                     Toast.makeText(requireContext(), "Oh? You want $it?", Toast.LENGTH_SHORT).show()
+                },
+                GenericOnClickListener {
+                    Toast.makeText(requireContext(), "Oh? You want to swap?", Toast.LENGTH_SHORT)
+                        .show()
                 }
             )
         }

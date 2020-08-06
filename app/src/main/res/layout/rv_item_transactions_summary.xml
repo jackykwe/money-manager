@@ -13,15 +13,15 @@
 
         <variable
             name="budgetListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
 
         <variable
             name="expensesListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
 
         <variable
             name="pieChartListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

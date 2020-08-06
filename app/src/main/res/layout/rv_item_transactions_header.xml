@@ -11,15 +11,15 @@
 
         <variable
             name="leftArrowClickListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
 
         <variable
             name="monthClickListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
 
         <variable
             name="rightArrowClickListener"
-            type="com.kaeonx.moneymanager.fragments.transactions.GenericOnClickListener" />
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

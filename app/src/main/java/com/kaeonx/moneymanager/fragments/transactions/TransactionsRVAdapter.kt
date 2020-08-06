@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.PieData
+import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsHeaderBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
@@ -214,10 +215,6 @@ class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>
 
 class TransactionOnClickListener(val clickListener: (transaction: Transaction) -> Unit) {
     fun onClick(transaction: Transaction) = clickListener(transaction)
-}
-
-class GenericOnClickListener(val clickListener: () -> Unit) {
-    fun onClick() = clickListener()
 }
 
 sealed class TransactionsRVItem {

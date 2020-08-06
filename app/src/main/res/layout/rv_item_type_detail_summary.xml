@@ -7,6 +7,10 @@
         <variable
             name="packet"
             type="com.kaeonx.moneymanager.fragments.type.TypeRVPacket" />
+
+        <variable
+            name="pieCentreClickListener"
+            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,14 +29,47 @@
             android:layout_width="match_parent"
             android:layout_height="144dp">
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/typeSummaryPC"
+            <FrameLayout
+                android:id="@+id/typeSummaryPCFL"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:typeSummaryPC_adapter="@{packet.summaryPieData}"
                 app:layout_constraintEnd_toStartOf="@+id/typeSummaryLegendLL"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/typeSummaryPC"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="6dp"
+                    app:typeSummaryPC_adapter="@{packet.summaryPieData}" />
+
+                <!-- Courtesy of https://medium.com/@flawyte/android-best-way-to-add-a-ripple-to-an-imageview-a8345e499a64 -->
+
+                <ImageView
+                    android:id="@+id/rippleIV"
+                    android:layout_width="99dp"
+                    android:layout_height="99dp"
+                    android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ripple_basic_circle"
+                    android:clickable="true"
+                    android:onClick="@{() -> pieCentreClickListener.onClick()}"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/basic_circle"
+                    android:tint="@android:color/transparent"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:layout_width="99dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Expenses\n⇌"
+                    android:textAppearance="@style/TextAppearance.MyApp.Caption2" />
+
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/typeSummaryLegendLL"
@@ -40,13 +77,13 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
-                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}"
-                app:layout_constraintBottom_toBottomOf="@id/typeSummaryPC"
+                app:layout_constraintBottom_toBottomOf="@id/typeSummaryPCFL"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/typeSummaryPC"
-                app:layout_constraintTop_toTopOf="@id/typeSummaryPC" />
+                app:layout_constraintStart_toEndOf="@+id/typeSummaryPCFL"
+                app:layout_constraintTop_toTopOf="@id/typeSummaryPCFL"
+                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

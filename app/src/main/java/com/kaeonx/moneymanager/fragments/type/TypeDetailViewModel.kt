@@ -161,6 +161,7 @@ class TypeDetailViewModel(
             val dataSet = PieDataSet(entries, null).apply {
                 colors = colourList
                 setDrawValues(false)
+                selectionShift = 0f  // removes padding
                 sliceSpace = 2f  // in dp (as float)
             }
 

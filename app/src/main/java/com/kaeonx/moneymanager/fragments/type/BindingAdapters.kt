@@ -114,14 +114,12 @@ fun HorizontalBarChart.setCategoryHBCAdapter(barData: BarData) {
         setDrawValueAboveBar(false)
         setDrawBarShadow(false)
 
+        setViewPortOffsets(0f, 0f, 0f, 0f)  // remove padding
+        renderer = HorizontalRoundedBarChartRenderer(this, this.animator, this.viewPortHandler)
         legend.isEnabled = false
     }
-    setViewPortOffsets(0f, 0f, 0f, 0f)  // remove padding
-
     data = barData
     notifyDataSetChanged()
-
-    renderer = HorizontalRoundedBarChartRenderer(this, this.animator, this.viewPortHandler)
 //    invalidate()
     // Courtesy of https://stackoverflow.com/a/35111662/7254995
     // Forces viewPortOffsets to take effect

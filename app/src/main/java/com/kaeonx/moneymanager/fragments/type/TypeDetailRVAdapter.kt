@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
+import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.RvItemTypeDetailCategoriesBinding
 import com.kaeonx.moneymanager.databinding.RvItemTypeDetailSummaryBinding
 import com.kaeonx.moneymanager.userrepository.domain.IconDetail
@@ -19,7 +20,10 @@ private const val SUMMARY = 0
 private const val CATEGORIES = 1
 private const val TAG = "exrva"
 
-class TypeDetailRVAdapter(private val itemOnClickListener: TypeDetailOnClickListener) :
+class TypeDetailRVAdapter(
+    private val itemOnClickListener: TypeDetailOnClickListener,
+    private val pieCentreClickListener: GenericOnClickListener
+) :
     ListAdapter<TypeDetailRVItem, RecyclerView.ViewHolder>(TypeDetailRVItemDiffCallback()) {
 
     private var initRun = true
@@ -58,7 +62,7 @@ class TypeDetailRVAdapter(private val itemOnClickListener: TypeDetailOnClickList
             is TypeDetailSummaryViewHolder -> {
                 val data =
                     (getItem(position) as TypeDetailRVItem.TypeDetailRVItemSummary).typeRVPacket
-                holder.rebind(data)
+                holder.rebind(data, pieCentreClickListener)
             }
             is TypeDetailCategoriesViewHolder -> {
                 val data =
@@ -71,8 +75,9 @@ class TypeDetailRVAdapter(private val itemOnClickListener: TypeDetailOnClickList
     class TypeDetailSummaryViewHolder private constructor(private val binding: RvItemTypeDetailSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPacket: TypeRVPacket) {
+        fun rebind(newPacket: TypeRVPacket, pieCentreClickListener: GenericOnClickListener) {
             binding.packet = newPacket
+            binding.pieCentreClickListener = pieCentreClickListener
             binding.executePendingBindings()
         }
 
