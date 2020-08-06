@@ -8,8 +8,8 @@
         <import type="android.graphics.Typeface" />
 
         <variable
-            name="legendLLData"
-            type="com.kaeonx.moneymanager.fragments.expenses.ExpensesLegendLLData" />
+            name="typeLegendLLData"
+            type="com.kaeonx.moneymanager.fragments.type.TypeLegendLLData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +23,7 @@
             android:layout_height="12dp"
             android:scaleType="fitXY"
             android:src="@drawable/basic_circle"
-            app:color_tint="@{legendLLData.colour}"
+            app:color_tint="@{typeLegendLLData.colour}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/nameTV"
             app:layout_constraintHorizontal_bias="0"
@@ -39,8 +39,8 @@
             android:gravity="center_vertical"
             android:paddingHorizontal="4dp"
             android:singleLine="true"
-            android:text="@{legendLLData.categoryName}"
-            app:nameTV_typeface="@{legendLLData.categoryName}"
+            android:text="@{typeLegendLLData.categoryName}"
+            app:nameTV_typeface="@{typeLegendLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/formIV"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="@{legendLLData.categoryPercent}"
+            android:text="@{typeLegendLLData.categoryPercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption3"
             app:layout_constraintBottom_toBottomOf="@id/nameTV"
             app:layout_constraintEnd_toEndOf="parent"

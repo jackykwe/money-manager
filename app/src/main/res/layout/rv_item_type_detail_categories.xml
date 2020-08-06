@@ -9,11 +9,11 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.expenses.TypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.type.TypeRVPacket" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.expenses.ExpensesOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.type.ExpensesOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -43,7 +43,7 @@
                     android:id="@+id/categoriesMonthTV"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{packet.detailMonthString}"
+                    android:text="@{packet.categoriesMonthString}"
                     android:textAppearance="@style/TextAppearance.MyApp.Body2.Bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/barrier"
@@ -52,13 +52,13 @@
                     tools:text="AUG 2020" />
 
                 <TextView
-                    android:id="@+id/categoriesCurrencyTV"
+                    android:id="@+id/categoriesMonthCurrencyTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingEnd="4dp"
-                    android:text="@{packet.detailCurrency}"
+                    android:text="@{packet.categoriesMonthCurrency}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-                    android:visibility="@{packet.detailShowCurrency ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{packet.categoriesShowMonthCurrency ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/categoriesMonthAmountTV"
                     app:layout_constraintEnd_toStartOf="@id/categoriesMonthAmountTV"
                     app:layout_constraintStart_toEndOf="@id/barrier"
@@ -70,7 +70,7 @@
                     android:id="@+id/categoriesMonthAmountTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{packet.detailMonthAmount}"
+                    android:text="@{packet.categoriesMonthAmount}"
                     android:textAppearance="@style/TextAppearance.MyApp.Body2"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="left"
-                    app:constraint_referenced_ids="categoriesCurrencyTV,categoriesMonthAmountTV"
+                    app:constraint_referenced_ids="categoriesMonthCurrencyTV,categoriesMonthAmountTV"
                     tools:layout_editor_absoluteX="387dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.expenses
+package com.kaeonx.moneymanager.fragments.type
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -72,8 +72,8 @@ class ExpensesViewModel(
                 }
             }
 
-            val legendLLDataAL = arrayListOf<ExpensesLegendLLData>()
-            val detailLLDataAL = arrayListOf<ExpenseDetailLLData>()
+            val legendLLDataAL = arrayListOf<TypeLegendLLData>()
+            val detailLLDataAL = arrayListOf<TypeCategoryLLData>()
 
             val total = amountsMap.values.asIterable().sumByBigDecimal { it }
             val highestEntry = amountsMap.maxBy { it.value }
@@ -100,7 +100,7 @@ class ExpensesViewModel(
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
-                            ExpensesLegendLLData(
+                            TypeLegendLLData(
                                 colour = colourInt,
                                 categoryName = entry.key,
                                 categoryPercent = "($percentDisplay%)"
@@ -116,7 +116,7 @@ class ExpensesViewModel(
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
-                            ExpensesLegendLLData(
+                            TypeLegendLLData(
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
@@ -128,7 +128,7 @@ class ExpensesViewModel(
 
                     // For detailLLData
                     detailLLDataAL.add(
-                        ExpenseDetailLLData(
+                        TypeCategoryLLData(
                             iconDetail = categoryObject.toIconDetail(),
                             categoryName = entry.key,  // Needed for onClickListener to identify the expensesCategory
                             categoryPercent = "($percentDisplay%)",
@@ -166,13 +166,13 @@ class ExpensesViewModel(
             val result = TypeRVPacket(
                 summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
                 summaryLegendLLData = legendLLDataAL.toList(),
-                detailMonthString = CalendarHandler.getFormattedString(
+                categoriesMonthString = CalendarHandler.getFormattedString(
                     _displayCalendar.value,
                     "MMM yyyy"
                 ).toUpperCase(Locale.ROOT),
-                detailShowCurrency = showCurrency,
-                detailCurrency = homeCurrency,
-                detailMonthAmount = CurrencyHandler.displayAmount(total),
+                categoriesShowMonthCurrency = showCurrency,
+                categoriesMonthCurrency = homeCurrency,
+                categoriesMonthAmount = CurrencyHandler.displayAmount(total),
                 detailLLData = detailLLDataAL.toList()
             )
 

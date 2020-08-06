@@ -196,7 +196,7 @@
 
     <fragment
         android:id="@+id/expensesFragment"
-        android:name="com.kaeonx.moneymanager.fragments.expenses.ExpensesFragment"
+        android:name="com.kaeonx.moneymanager.fragments.type.ExpensesFragment"
         android:label="Expenses"
         tools:layout="@layout/fragment_type_detail">
         <argument

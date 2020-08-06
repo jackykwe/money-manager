@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.expenses
+package com.kaeonx.moneymanager.fragments.type
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -148,21 +148,21 @@ sealed class ExpensesRVItem {
 
 data class TypeRVPacket(
     val summaryPieData: PieData?,
-    val summaryLegendLLData: List<ExpensesLegendLLData>,
-    val detailMonthString: String,
-    val detailShowCurrency: Boolean,
-    val detailCurrency: String,
-    val detailMonthAmount: String,
-    val detailLLData: List<ExpenseDetailLLData>
+    val summaryLegendLLData: List<TypeLegendLLData>,
+    val categoriesMonthString: String,
+    val categoriesShowMonthCurrency: Boolean,
+    val categoriesMonthCurrency: String,
+    val categoriesMonthAmount: String,
+    val detailLLData: List<TypeCategoryLLData>
 )
 
-data class ExpensesLegendLLData(
+data class TypeLegendLLData(
     val colour: Int,
     val categoryName: String,
     val categoryPercent: String
 )
 
-data class ExpenseDetailLLData(
+data class TypeCategoryLLData(
     val iconDetail: IconDetail,
     val categoryName: String,
     val categoryPercent: String,

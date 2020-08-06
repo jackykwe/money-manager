@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.expenses
+package com.kaeonx.moneymanager.fragments.type
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

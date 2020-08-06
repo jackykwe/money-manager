@@ -6,7 +6,7 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.expenses.TypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.type.TypeRVPacket" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

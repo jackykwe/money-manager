@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.expenses
+package com.kaeonx.moneymanager.fragments.type
 
 import android.view.LayoutInflater
 import android.widget.LinearLayout
@@ -42,12 +42,12 @@ fun PieChart.setTypeSummaryPCAdapter(pieData: PieData?) {
 }
 
 @BindingAdapter("typeSummaryLegendLL_data")
-fun LinearLayout.setTypeSummaryLegendLLData(list: List<ExpensesLegendLLData>) {
+fun LinearLayout.setTypeSummaryLegendLLData(list: List<TypeLegendLLData>) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
-    for (legendLLData in list) {
+    for (typeLegendLLData in list) {
         val itemBinding = LlItemTypeDetailLegendBinding.inflate(layoutInflater, null, false)
-        itemBinding.legendLLData = legendLLData
+        itemBinding.typeLegendLLData = typeLegendLLData
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
     }
@@ -72,14 +72,14 @@ fun TextView.setNameTVTypeface(name: String) {
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("categoriesLL_expenseCategoryList", "categoriesLL_onClickListener")
 fun LinearLayout.setCategoriesLLAdapter(
-    list: List<ExpenseDetailLLData>,
+    list: List<TypeCategoryLLData>,
     itemOnClickListener: ExpensesOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
-    for (typeLLData in list) {
+    for (typeCategoryLLData in list) {
         val itemBinding = RvLlItemTypeBinding.inflate(layoutInflater, null, false)
-        itemBinding.typeLLData = typeLLData
+        itemBinding.typeCategoryLLData = typeCategoryLLData
         itemBinding.onClickListener = itemOnClickListener
         itemBinding.executePendingBindings()
         addView(itemBinding.root)

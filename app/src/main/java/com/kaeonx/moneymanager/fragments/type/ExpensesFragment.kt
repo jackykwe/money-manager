@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.expenses
+package com.kaeonx.moneymanager.fragments.type
 
 import android.os.Bundle
 import android.view.LayoutInflater
