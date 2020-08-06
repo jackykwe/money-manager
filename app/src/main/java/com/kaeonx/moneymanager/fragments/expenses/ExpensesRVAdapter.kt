@@ -161,7 +161,6 @@ data class ExpensesLegendLLData(
     val categoryPercent: String
 )
 
-
 data class ExpenseDetailLLData(
     val iconDetail: IconDetail,
     val categoryName: String,
@@ -169,6 +168,6 @@ data class ExpenseDetailLLData(
     val showCurrency: Boolean,
     val currency: String,
     val categoryAmount: String,
-    val barData: BarData?  // todo: change to non null
+    val barData: BarData
 )
 

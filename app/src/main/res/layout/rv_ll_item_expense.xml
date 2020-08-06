@@ -46,17 +46,20 @@
             android:id="@+id/categoryTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:singleLine="true"
             android:text="@{expenseLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/categoryHBC"
             app:layout_constraintEnd_toStartOf="@id/categoryPercentTV"
-            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="Category Name Category Name Category Name " />
 
         <TextView
@@ -68,9 +71,10 @@
             android:singleLine="true"
             android:text="@{expenseLLData.categoryPercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption3"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryTV"
             app:layout_constraintEnd_toStartOf="@id/barrier"
             app:layout_constraintStart_toEndOf="@+id/categoryTV"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/categoryTV"
             tools:text="(99.9%)" />
 
         <TextView
@@ -109,10 +113,14 @@
         <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/categoryHBC"
             android:layout_width="0dp"
-            android:layout_height="16dp"
+            android:layout_height="6dp"
+            android:layout_marginStart="8dp"
+            app:categoryHBC_adapter="@{expenseLLData.barData}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/categoryIconFL"
-            app:layout_constraintTop_toBottomOf="@id/categoryTV" />
+            app:layout_constraintTop_toBottomOf="@+id/categoryTV" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

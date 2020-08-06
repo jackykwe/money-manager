@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.data.*
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
@@ -78,10 +76,11 @@ class ExpensesViewModel(
             val detailLLDataAL = arrayListOf<ExpenseDetailLLData>()
 
             val total = amountsMap.values.asIterable().sumByBigDecimal { it }
-//            val highestCategory = amountsMap.maxBy { it.value }
+            val highestEntry = amountsMap.maxBy { it.value }
+            val repositoryCategories = userRepository.categories.value!!
+
             val entries = arrayListOf<PieEntry>()
             val colourList = arrayListOf<Int>()
-            val repositoryCategories = userRepository.categories.value!!
             var valueAccumulator = BigDecimal.ZERO
             amountsMap.asIterable()
                 .sortedBy { it.key }  // sort by ASCENDING name (secondary)
@@ -90,6 +89,7 @@ class ExpensesViewModel(
                     val categoryObject = repositoryCategories
                         .find { it.name == entry.key && it.type == "Expenses" }
                         ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
+                    val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
                         .divide(total, MathContext(3, RoundingMode.HALF_UP))
@@ -97,7 +97,6 @@ class ExpensesViewModel(
 
                     // For PieData & legendLLData
                     if (amountsMap.size <= LEGEND_ITEM_MAX_COUNT || index < LEGEND_ITEM_MAX_COUNT - 1) {
-                        val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
@@ -113,12 +112,12 @@ class ExpensesViewModel(
                             .divide(total, MathContext(3, RoundingMode.HALF_UP))
                         val accumulatorPercentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
-                        val colourInt = ColourHandler.getColourObject("Black")
+                        val accumulatorColourInt = ColourHandler.getColourObject("Black")
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
-                        colourList.add(colourInt)
+                        colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
                             ExpensesLegendLLData(
-                                colour = colourInt,  // todo: sensitive to theme (white or sth for dark theme)
+                                colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
                             )
@@ -136,7 +135,25 @@ class ExpensesViewModel(
                             showCurrency = showCurrency,
                             currency = homeCurrency,
                             categoryAmount = CurrencyHandler.displayAmount(entry.value),
-                            barData = null
+                            barData = BarData(
+                                BarDataSet(
+                                    listOf(
+                                        BarEntry(
+                                            0f,
+                                            entry.value.divide(
+                                                highestEntry!!.value,
+                                                MathContext(3, RoundingMode.HALF_EVEN)
+                                            ).toFloat()
+                                        )
+                                    ),
+                                    null
+                                ).apply {
+                                    color = colourInt
+                                    setDrawValues(false)
+                                }
+                            ).apply {
+                                barWidth = 1f
+                            }
                         )
                     )
                 }
