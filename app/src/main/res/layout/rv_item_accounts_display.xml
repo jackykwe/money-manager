@@ -40,6 +40,8 @@
             android:id="@+id/accountNameTV"
             style="@style/AccountDisplayStrip"
             android:layout_width="match_parent"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:paddingHorizontal="12dp"
             android:textColor="@color/white"
             app:accountNameTV_text="@{account.name}"

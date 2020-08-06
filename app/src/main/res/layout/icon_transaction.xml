@@ -22,7 +22,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/basic_ring"
             android:visibility="@{iconDetail.iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            app:iconRing_tint="@{iconDetail.iconRingColourString}" />
+            app:colour_string_tint="@{iconDetail.iconRingColourString}" />
 
         <ImageView
             android:id="@+id/iconBG"
@@ -34,7 +34,7 @@
             android:scaleY="0.8"
             android:src="@drawable/basic_circle"
             android:visibility="@{iconDetail.iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            app:iconBG_tint="@{iconDetail.iconBGColourString}"
+            app:colour_string_tint="@{iconDetail.iconBGColourString}"
             tools:tint="@color/colorPrimary" />
 
         <TextView

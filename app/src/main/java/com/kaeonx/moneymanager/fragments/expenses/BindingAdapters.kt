@@ -2,9 +2,13 @@ package com.kaeonx.moneymanager.fragments.expenses
 
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.text.buildSpannedString
+import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
+import com.kaeonx.moneymanager.databinding.LlItemExpensesLegendBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemCategoryBinding
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +39,26 @@ fun PieChart.setExpensesPCAdapter(pieData: PieData?) {
 
 @BindingAdapter("expensesLegendLL_data")
 fun LinearLayout.setExpensesLegendLLData(list: List<ExpensesLegendLLData>) {
-//    Log.d(TAG, "${pieData.dataSet.getEntryForIndex(0)}")
+    removeAllViews()
+    val layoutInflater = LayoutInflater.from(context)
+    for (legendLLData in list) {
+        val itemBinding = LlItemExpensesLegendBinding.inflate(layoutInflater, null, false)
+        itemBinding.legendLLData = legendLLData
+        itemBinding.executePendingBindings()
+        addView(itemBinding.root)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * ll_item_expenses_legend
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("nameTV_typeface")
+fun TextView.setNameTVTypeface(name: String) {
+    if (name == "(multiple)") {
+        text = buildSpannedString { italic { append(name) } }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

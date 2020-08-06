@@ -25,8 +25,10 @@ import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
+private const val LEGEND_ITEM_MAX_COUNT = 6
+
 class ExpensesViewModel(
-    private val initCalendar: Calendar,
+    initCalendar: Calendar,
     private val showCurrency: Boolean
 ) : ViewModel() {
 
@@ -85,21 +87,19 @@ class ExpensesViewModel(
                 .sortedBy { it.key }  // sort by ASCENDING name (secondary)
                 .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
                 .forEachIndexed { index, entry ->
+                    val categoryObject = repositoryCategories
+                        .find { it.name == entry.key && it.type == "Expenses" }
+                        ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
+
                     val percent = entry.value.times(BigDecimal("100"))
                         .divide(total, MathContext(3, RoundingMode.HALF_UP))
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
-                    val categoryObject = repositoryCategories
-                        .find { it.name == entry.key && it.type == "Expenses" }
-                        ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
-                    val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
-
-                    // For PieData
-                    entries.add(PieEntry(percent.toFloat(), entry.key))
-                    colourList.add(colourInt)
-
-                    // For legendLLData
-                    if (amountsMap.size <= 5 || index < 4) {
+                    // For PieData & legendLLData
+                    if (amountsMap.size <= LEGEND_ITEM_MAX_COUNT || index < LEGEND_ITEM_MAX_COUNT - 1) {
+                        val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
+                        entries.add(PieEntry(percent.toFloat(), entry.key))
+                        colourList.add(colourInt)
                         legendLLDataAL.add(
                             ExpensesLegendLLData(
                                 colour = colourInt,
@@ -109,13 +109,17 @@ class ExpensesViewModel(
                         )
                     } else if (index == amountsMap.size - 1) {
                         valueAccumulator = valueAccumulator.plus(entry.value)
-                        val accumulatorPercentDisplay = valueAccumulator
-                            .times(BigDecimal("100"))
-                            .divide(total, MathContext(1, RoundingMode.HALF_EVEN))
+                        val accumulatorPercent = valueAccumulator.times(BigDecimal("100"))
+                            .divide(total, MathContext(3, RoundingMode.HALF_UP))
+                        val accumulatorPercentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
+
+                        val colourInt = ColourHandler.getColourObject("Black")
+                        entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
+                        colourList.add(colourInt)
                         legendLLDataAL.add(
                             ExpensesLegendLLData(
-                                colour = ColourHandler.getColourObject("Black"),  // todo: sensitive to theme (white or sth for dark theme)
-                                categoryName = "Others",
+                                colour = colourInt,  // todo: sensitive to theme (white or sth for dark theme)
+                                categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
                             )
                         )

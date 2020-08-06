@@ -1,5 +1,6 @@
 package com.kaeonx.moneymanager.adapters
 
+import android.content.res.ColorStateList
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -10,18 +11,9 @@ import com.kaeonx.moneymanager.handlers.IconHandler
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * For icon_transaction.xml
+ *
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("iconRing_tint")
-fun ImageView.setIconRingTint(colourString: String) {
-    imageTintList = ColourHandler.getColorStateList(colourString)
-}
-
-@BindingAdapter("iconBG_tint")
-fun ImageView.setIconBGTint(colourString: String) {
-    imageTintList = ColourHandler.getColorStateList(colourString)
-}
-
 @BindingAdapter("iconTV_text")
 fun TextView.setIconTVText(iconHex: String) {
     text = IconHandler.getDisplayHex(iconHex)
@@ -32,6 +24,16 @@ fun TextView.setIconTVText(iconHex: String) {
  * Generic
  */
 ////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("colour_string_tint")
+fun ImageView.setColourStringTint(colourString: String) {
+    imageTintList = ColourHandler.getColorStateList(colourString)
+}
+
+@BindingAdapter("color_tint")
+fun ImageView.setColorTint(color: Int) {
+    imageTintList = ColorStateList.valueOf(color)
+}
+
 @BindingAdapter("error_text")
 fun TextInputLayout.setErrorText(errorString: String?) {
     error = errorString

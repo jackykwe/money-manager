@@ -38,13 +38,16 @@
             <LinearLayout
                 android:id="@+id/expensesLegendLL"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
+                app:expensesLegendLL_data="@{packet.summaryLegendLLData}"
+                app:layout_constraintBottom_toBottomOf="@id/expensesPC"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:expensesLegendLL_data="@{packet.summaryLegendLLData}"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/expensesPC" />
+                app:layout_constraintStart_toEndOf="@+id/expensesPC"
+                app:layout_constraintTop_toTopOf="@id/expensesPC" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

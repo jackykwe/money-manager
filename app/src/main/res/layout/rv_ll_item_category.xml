@@ -24,7 +24,6 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
         android:onClick="@{() -> onClickListener.onClick(expenseLLData.categoryName)}"
-        android:orientation="horizontal"
         android:padding="8dp">
 
         <FrameLayout
@@ -47,29 +46,28 @@
             android:id="@+id/categoryTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:singleLine="true"
             android:text="@{expenseLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/categoryPercentTV"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Category Name" />
+            tools:text="Category Name Category Name Category Name " />
 
         <TextView
             android:id="@+id/categoryPercentTV"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:paddingStart="2dp"
             android:paddingEnd="8dp"
             android:singleLine="true"
             android:text="@{expenseLLData.categoryPercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="@id/barrier"
             app:layout_constraintStart_toEndOf="@+id/categoryTV"
             app:layout_constraintTop_toTopOf="parent"
