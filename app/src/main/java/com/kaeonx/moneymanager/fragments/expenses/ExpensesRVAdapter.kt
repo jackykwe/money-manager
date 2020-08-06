@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
-import com.kaeonx.moneymanager.databinding.RvItemExpensesCategoriesBinding
+import com.kaeonx.moneymanager.databinding.RvItemExpensesDetailBinding
 import com.kaeonx.moneymanager.databinding.RvItemExpensesSummaryBinding
 import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 import kotlinx.coroutines.CoroutineScope
@@ -24,11 +24,11 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
 
     private var initRun = true
 
-    fun submitList2(expensesRVPackage: ExpensesRVPackage) {
+    fun submitList2(expensesRVPacket: ExpensesRVPacket) {
         CoroutineScope(Dispatchers.Main).launch {
             val submittable = listOf(
-                ExpensesRVItem.ExpensesRVItemSummary(expensesRVPackage.pieData),
-                ExpensesRVItem.ExpensesRVItemCategories(expensesRVPackage.expensesLLPackage)
+                ExpensesRVItem.ExpensesRVItemSummary(expensesRVPacket),
+                ExpensesRVItem.ExpensesRVItemCategories(expensesRVPacket)
             )
             if (initRun) {
                 delay(300L)
@@ -48,7 +48,7 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             SUMMARY -> ExpensesSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
-            CATEGORIES -> ExpensesCategoriesViewHolder.inflateAndCreateViewHolderFrom(parent)
+            CATEGORIES -> ExpensesDetailViewHolder.inflateAndCreateViewHolderFrom(parent)
             else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
     }
@@ -56,12 +56,13 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ExpensesSummaryViewHolder -> {
-                val newPieData = (getItem(position) as ExpensesRVItem.ExpensesRVItemSummary).pieData
-                holder.rebind(newPieData)
-            }
-            is ExpensesCategoriesViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).expensesLLPackage
+                    (getItem(position) as ExpensesRVItem.ExpensesRVItemSummary).expensesRVPacket
+                holder.rebind(data)
+            }
+            is ExpensesDetailViewHolder -> {
+                val data =
+                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).expensesRVPacket
                 holder.rebind(data, itemOnClickListener)
             }
         }
@@ -70,8 +71,8 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
     class ExpensesSummaryViewHolder private constructor(private val binding: RvItemExpensesSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPieData: PieData?) {
-            binding.pieData = newPieData
+        fun rebind(newPacket: ExpensesRVPacket) {
+            binding.packet = newPacket
             binding.executePendingBindings()
         }
 
@@ -84,20 +85,23 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         }
     }
 
-    class ExpensesCategoriesViewHolder private constructor(private val binding: RvItemExpensesCategoriesBinding) :
+    class ExpensesDetailViewHolder private constructor(private val binding: RvItemExpensesDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPackage: ExpensesLLPackage, itemOnClickListener: ExpensesOnClickListener) {
-            binding.data = newPackage
+        fun rebind(
+            newPacket: ExpensesRVPacket,
+            itemOnClickListener: ExpensesOnClickListener
+        ) {
+            binding.packet = newPacket
             binding.onClickListener = itemOnClickListener
             binding.executePendingBindings()
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesCategoriesViewHolder {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesDetailViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvItemExpensesCategoriesBinding.inflate(layoutInflater, parent, false)
-                return ExpensesCategoriesViewHolder(binding)
+                val binding = RvItemExpensesDetailBinding.inflate(layoutInflater, parent, false)
+                return ExpensesDetailViewHolder(binding)
             }
         }
     }
@@ -129,11 +133,11 @@ class ExpensesOnClickListener(val clickListener: (category: String) -> Unit) {
 //}
 
 sealed class ExpensesRVItem {
-    data class ExpensesRVItemSummary(val pieData: PieData?) : ExpensesRVItem() {
+    data class ExpensesRVItemSummary(val expensesRVPacket: ExpensesRVPacket) : ExpensesRVItem() {
         override val rvItemId: Int = 0
     }
 
-    data class ExpensesRVItemCategories(val expensesLLPackage: ExpensesLLPackage) :
+    data class ExpensesRVItemCategories(val expensesRVPacket: ExpensesRVPacket) :
         ExpensesRVItem() {
         override val rvItemId: Int = 1
     }
@@ -141,15 +145,24 @@ sealed class ExpensesRVItem {
     abstract val rvItemId: Int
 }
 
-data class ExpensesLLPackage(
-    val monthString: String,
-    val showCurrency: Boolean,
-    val currency: String,
-    val monthAmount: String,
-    val LLData: List<ExpenseLLData>
+data class ExpensesRVPacket(
+    val summaryPieData: PieData?,
+    val summaryLegendLLData: List<ExpensesLegendLLData>,
+    val detailMonthString: String,
+    val detailShowCurrency: Boolean,
+    val detailCurrency: String,
+    val detailMonthAmount: String,
+    val detailLLData: List<ExpenseDetailLLData>
 )
 
-data class ExpenseLLData(
+data class ExpensesLegendLLData(
+    val colour: Int,
+    val categoryName: String,
+    val categoryPercent: String
+)
+
+
+data class ExpenseDetailLLData(
     val iconDetail: IconDetail,
     val categoryName: String,
     val categoryPercent: String,
@@ -159,7 +172,3 @@ data class ExpenseLLData(
     val barData: BarData?  // todo: change to non null
 )
 
-data class ExpensesRVPackage(
-    val pieData: PieData?,
-    val expensesLLPackage: ExpensesLLPackage
-)
