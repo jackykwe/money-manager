@@ -9,7 +9,7 @@
 
         <variable
             name="expenseLLData"
-            type="com.kaeonx.moneymanager.fragments.expenses.ExpenseLLData" />
+            type="com.kaeonx.moneymanager.fragments.expenses.ExpenseDetailLLData" />
 
         <variable
             name="onClickListener"

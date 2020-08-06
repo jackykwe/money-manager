@@ -44,7 +44,7 @@ class ExpensesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.expensesRVPackage.observe(viewLifecycleOwner) {
+        viewModel.expensesRVPacket.observe(viewLifecycleOwner) {
             (binding.expensesRV.adapter as ExpensesRVAdapter).apply {
                 if (it == null) return@observe
                 submitList(null)

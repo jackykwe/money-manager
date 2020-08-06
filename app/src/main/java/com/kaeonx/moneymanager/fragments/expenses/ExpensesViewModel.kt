@@ -39,17 +39,13 @@ class ExpensesViewModel(
         _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
         CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
     )
-    private val _expensesRVData = MediatorLiveData<ExpensesRVPackage?>().apply {
+    private val _expensesRVData = MediatorLiveData<ExpensesRVPacket?>().apply {
 //        addSource(_displayCalendar) { updatePreviousLiveData() }  // added just for future compatibility
         addSource(_transactions) { recalculateExpensesRVData(it) }
         addSource(xeRepository.xeRows) { recalculateExpensesRVData(_transactions.value) }
     }
-    val expensesRVPackage: LiveData<ExpensesRVPackage?>
+    val expensesRVPacket: LiveData<ExpensesRVPacket?>
         get() = _expensesRVData
-
-    private fun getLegendName(name: String): String {
-        return if (name.length > 10) "${name.substring(1..10)}..." else name
-    }
 
     private fun recalculateExpensesRVData(list: List<Transaction>?) {
         if (list == null) return
@@ -76,35 +72,60 @@ class ExpensesViewModel(
                 }
             }
 
-            val expensesLLDataList = arrayListOf<ExpenseLLData>()
+            val legendLLDataAL = arrayListOf<ExpensesLegendLLData>()
+            val detailLLDataAL = arrayListOf<ExpenseDetailLLData>()
 
             val total = amountsMap.values.asIterable().sumByBigDecimal { it }
 //            val highestCategory = amountsMap.maxBy { it.value }
             val entries = arrayListOf<PieEntry>()
             val colourList = arrayListOf<Int>()
             val repositoryCategories = userRepository.categories.value!!
+            var valueAccumulator = BigDecimal.ZERO
             amountsMap.asIterable()
                 .sortedBy { it.key }  // sort by ASCENDING name (secondary)
                 .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
-                .forEach { entry ->
+                .forEachIndexed { index, entry ->
                     val percent = entry.value.times(BigDecimal("100"))
                         .divide(total, MathContext(3, RoundingMode.HALF_UP))
-                    val truncatedName = getLegendName(entry.key)
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
+                    val categoryObject = repositoryCategories
+                        .find { it.name == entry.key && it.type == "Expenses" }
+                        ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
+                    val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
+
                     // For PieData
-                    entries.add(PieEntry(percent.toFloat(), "$truncatedName ($percentDisplay%)"))
+                    entries.add(PieEntry(percent.toFloat(), entry.key))
+                    colourList.add(colourInt)
 
-                    val categoryObject =
-                        repositoryCategories.find { it.name == entry.key && it.type == "Expenses" }
-                            ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
-                    colourList.add(
-                        ColourHandler.getColourObject(categoryObject.colourString)
-                    )
+                    // For legendLLData
+                    if (amountsMap.size <= 5 || index < 4) {
+                        legendLLDataAL.add(
+                            ExpensesLegendLLData(
+                                colour = colourInt,
+                                categoryName = entry.key,
+                                categoryPercent = "($percentDisplay%)"
+                            )
+                        )
+                    } else if (index == amountsMap.size - 1) {
+                        valueAccumulator = valueAccumulator.plus(entry.value)
+                        val accumulatorPercentDisplay = valueAccumulator
+                            .times(BigDecimal("100"))
+                            .divide(total, MathContext(1, RoundingMode.HALF_EVEN))
+                        legendLLDataAL.add(
+                            ExpensesLegendLLData(
+                                colour = ColourHandler.getColourObject("Black"),  // todo: sensitive to theme (white or sth for dark theme)
+                                categoryName = "Others",
+                                categoryPercent = "($accumulatorPercentDisplay%)"
+                            )
+                        )
+                    } else {
+                        valueAccumulator = valueAccumulator.plus(entry.value)
+                    }
 
-                    // For expensesLLData
-                    expensesLLDataList.add(
-                        ExpenseLLData(
+                    // For detailLLData
+                    detailLLDataAL.add(
+                        ExpenseDetailLLData(
                             iconDetail = categoryObject.toIconDetail(),
                             categoryName = entry.key,  // Needed for onClickListener to identify the expensesCategory
                             categoryPercent = "($percentDisplay%)",
@@ -121,18 +142,17 @@ class ExpensesViewModel(
                 sliceSpace = 2f  // in dp (as float)
             }
 
-            val result = ExpensesRVPackage(
-                pieData = if (entries.isEmpty()) null else PieData(dataSet),
-                expensesLLPackage = ExpensesLLPackage(
-                    monthString = CalendarHandler.getFormattedString(
-                        _displayCalendar.value,
-                        "MMM yyyy"
-                    ).toUpperCase(),
-                    showCurrency = showCurrency,
-                    currency = homeCurrency,
-                    monthAmount = CurrencyHandler.displayAmount(total),
-                    LLData = expensesLLDataList.toList()
-                )
+            val result = ExpensesRVPacket(
+                summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
+                summaryLegendLLData = legendLLDataAL.toList(),
+                detailMonthString = CalendarHandler.getFormattedString(
+                    _displayCalendar.value,
+                    "MMM yyyy"
+                ).toUpperCase(Locale.ROOT),
+                detailShowCurrency = showCurrency,
+                detailCurrency = homeCurrency,
+                detailMonthAmount = CurrencyHandler.displayAmount(total),
+                detailLLData = detailLLDataAL.toList()
             )
 
             withContext(Dispatchers.Main) {
