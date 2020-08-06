@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
-import com.kaeonx.moneymanager.databinding.RvItemExpensesDetailBinding
-import com.kaeonx.moneymanager.databinding.RvItemExpensesSummaryBinding
+import com.kaeonx.moneymanager.databinding.RvItemTypeDetailCategoriesBinding
+import com.kaeonx.moneymanager.databinding.RvItemTypeDetailSummaryBinding
 import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,11 +24,11 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
 
     private var initRun = true
 
-    fun submitList2(expensesRVPacket: ExpensesRVPacket) {
+    fun submitList2(typeRVPacket: TypeRVPacket) {
         CoroutineScope(Dispatchers.Main).launch {
             val submittable = listOf(
-                ExpensesRVItem.ExpensesRVItemSummary(expensesRVPacket),
-                ExpensesRVItem.ExpensesRVItemCategories(expensesRVPacket)
+                ExpensesRVItem.ExpensesRVItemSummary(typeRVPacket),
+                ExpensesRVItem.ExpensesRVItemCategories(typeRVPacket)
             )
             if (initRun) {
                 delay(300L)
@@ -57,21 +57,21 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         when (holder) {
             is ExpensesSummaryViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemSummary).expensesRVPacket
+                    (getItem(position) as ExpensesRVItem.ExpensesRVItemSummary).typeRVPacket
                 holder.rebind(data)
             }
             is ExpensesDetailViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).expensesRVPacket
+                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).typeRVPacket
                 holder.rebind(data, itemOnClickListener)
             }
         }
     }
 
-    class ExpensesSummaryViewHolder private constructor(private val binding: RvItemExpensesSummaryBinding) :
+    class ExpensesSummaryViewHolder private constructor(private val binding: RvItemTypeDetailSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPacket: ExpensesRVPacket) {
+        fun rebind(newPacket: TypeRVPacket) {
             binding.packet = newPacket
             binding.executePendingBindings()
         }
@@ -79,17 +79,17 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesSummaryViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvItemExpensesSummaryBinding.inflate(layoutInflater, parent, false)
+                val binding = RvItemTypeDetailSummaryBinding.inflate(layoutInflater, parent, false)
                 return ExpensesSummaryViewHolder(binding)
             }
         }
     }
 
-    class ExpensesDetailViewHolder private constructor(private val binding: RvItemExpensesDetailBinding) :
+    class ExpensesDetailViewHolder private constructor(private val binding: RvItemTypeDetailCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(
-            newPacket: ExpensesRVPacket,
+            newPacket: TypeRVPacket,
             itemOnClickListener: ExpensesOnClickListener
         ) {
             binding.packet = newPacket
@@ -100,7 +100,8 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesDetailViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvItemExpensesDetailBinding.inflate(layoutInflater, parent, false)
+                val binding =
+                    RvItemTypeDetailCategoriesBinding.inflate(layoutInflater, parent, false)
                 return ExpensesDetailViewHolder(binding)
             }
         }
@@ -133,11 +134,11 @@ class ExpensesOnClickListener(val clickListener: (category: String) -> Unit) {
 //}
 
 sealed class ExpensesRVItem {
-    data class ExpensesRVItemSummary(val expensesRVPacket: ExpensesRVPacket) : ExpensesRVItem() {
+    data class ExpensesRVItemSummary(val typeRVPacket: TypeRVPacket) : ExpensesRVItem() {
         override val rvItemId: Int = 0
     }
 
-    data class ExpensesRVItemCategories(val expensesRVPacket: ExpensesRVPacket) :
+    data class ExpensesRVItemCategories(val typeRVPacket: TypeRVPacket) :
         ExpensesRVItem() {
         override val rvItemId: Int = 1
     }
@@ -145,7 +146,7 @@ sealed class ExpensesRVItem {
     abstract val rvItemId: Int
 }
 
-data class ExpensesRVPacket(
+data class TypeRVPacket(
     val summaryPieData: PieData?,
     val summaryLegendLLData: List<ExpensesLegendLLData>,
     val detailMonthString: String,

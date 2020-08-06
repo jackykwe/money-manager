@@ -12,16 +12,16 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.customclasses.HorizontalRoundedBarChartRenderer
-import com.kaeonx.moneymanager.databinding.LlItemExpensesLegendBinding
-import com.kaeonx.moneymanager.databinding.RvLlItemExpenseBinding
+import com.kaeonx.moneymanager.databinding.LlItemTypeDetailLegendBinding
+import com.kaeonx.moneymanager.databinding.RvLlItemTypeBinding
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * rv_item_expenses_summary
+ * rv_item_type_detail_summary
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("expensesPC_adapter")
-fun PieChart.setExpensesPCAdapter(pieData: PieData?) {
+@BindingAdapter("typeSummaryPC_adapter")
+fun PieChart.setTypeSummaryPCAdapter(pieData: PieData?) {
     if (legend.isEnabled) {
         setTouchEnabled(false)
         setNoDataText("Hello, you wanna provide some data?")
@@ -41,12 +41,12 @@ fun PieChart.setExpensesPCAdapter(pieData: PieData?) {
     invalidate()
 }
 
-@BindingAdapter("expensesLegendLL_data")
-fun LinearLayout.setExpensesLegendLLData(list: List<ExpensesLegendLLData>) {
+@BindingAdapter("typeSummaryLegendLL_data")
+fun LinearLayout.setTypeSummaryLegendLLData(list: List<ExpensesLegendLLData>) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     for (legendLLData in list) {
-        val itemBinding = LlItemExpensesLegendBinding.inflate(layoutInflater, null, false)
+        val itemBinding = LlItemTypeDetailLegendBinding.inflate(layoutInflater, null, false)
         itemBinding.legendLLData = legendLLData
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
@@ -55,7 +55,7 @@ fun LinearLayout.setExpensesLegendLLData(list: List<ExpensesLegendLLData>) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * ll_item_expenses_legend
+ * ll_item_type_detail_legend
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("nameTV_typeface")
@@ -67,22 +67,19 @@ fun TextView.setNameTVTypeface(name: String) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * rv_item_expenses_detail
+ * rv_item_type_detail_categories
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter(  //TODO: CHANGE THIS UGLY NAME
-    "categoriesTransactionsLL_expenseCategoryList",
-    "categoriesTransactionsLL_onClickListener"
-)
-fun LinearLayout.setCategoriesTransactionsLLAdapter(
+@BindingAdapter("categoriesLL_expenseCategoryList", "categoriesLL_onClickListener")
+fun LinearLayout.setCategoriesLLAdapter(
     list: List<ExpenseDetailLLData>,
     itemOnClickListener: ExpensesOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
-    for (expenseCategory in list) {
-        val itemBinding = RvLlItemExpenseBinding.inflate(layoutInflater, null, false)
-        itemBinding.expenseLLData = expenseCategory
+    for (typeLLData in list) {
+        val itemBinding = RvLlItemTypeBinding.inflate(layoutInflater, null, false)
+        itemBinding.typeLLData = typeLLData
         itemBinding.onClickListener = itemOnClickListener
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
@@ -91,7 +88,7 @@ fun LinearLayout.setCategoriesTransactionsLLAdapter(
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * rv_ll_item_expense
+ * rv_ll_item_type
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("categoryHBC_adapter")

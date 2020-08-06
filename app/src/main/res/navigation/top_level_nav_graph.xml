@@ -198,7 +198,7 @@
         android:id="@+id/expensesFragment"
         android:name="com.kaeonx.moneymanager.fragments.expenses.ExpensesFragment"
         android:label="Expenses"
-        tools:layout="@layout/fragment_expenses">
+        tools:layout="@layout/fragment_type_detail">
         <argument
             android:name="displayCalendar"
             app:argType="java.util.Calendar" />

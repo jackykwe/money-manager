@@ -6,11 +6,10 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.expenses.ExpensesRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.expenses.TypeRVPacket" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/expensesCV"
         style="@style/RvItemTransactionsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,30 +26,29 @@
             android:layout_height="144dp">
 
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/expensesPC"
+                android:id="@+id/typeSummaryPC"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:expensesPC_adapter="@{packet.summaryPieData}"
-                app:layout_constraintEnd_toStartOf="@+id/expensesLegendLL"
+                app:typeSummaryPC_adapter="@{packet.summaryPieData}"
+                app:layout_constraintEnd_toStartOf="@+id/typeSummaryLegendLL"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <LinearLayout
-                android:id="@+id/expensesLegendLL"
+                android:id="@+id/typeSummaryLegendLL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
-                app:expensesLegendLL_data="@{packet.summaryLegendLLData}"
-                app:layout_constraintBottom_toBottomOf="@id/expensesPC"
+                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}"
+                app:layout_constraintBottom_toBottomOf="@id/typeSummaryPC"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/expensesPC"
-                app:layout_constraintTop_toTopOf="@id/expensesPC" />
+                app:layout_constraintStart_toEndOf="@+id/typeSummaryPC"
+                app:layout_constraintTop_toTopOf="@id/typeSummaryPC" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </com.google.android.material.card.MaterialCardView>
 

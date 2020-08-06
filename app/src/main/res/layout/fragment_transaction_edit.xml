@@ -52,7 +52,7 @@
                             android:id="@+id/categoryIconFL"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            app:layout_constraintEnd_toStartOf="@+id/categoryTV"
+                            app:layout_constraintEnd_toStartOf="@+id/categoryNameTV"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintHorizontal_chainStyle="packed"
                             app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +65,7 @@
                         </FrameLayout>
 
                         <TextView
-                            android:id="@+id/categoryTV"
+                            android:id="@+id/categoryNameTV"
                             android:layout_width="0dp"
                             android:layout_height="60dp"
                             android:gravity="center_vertical"

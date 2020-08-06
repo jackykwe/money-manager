@@ -9,7 +9,7 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.expenses.ExpensesRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.expenses.TypeRVPacket" />
 
         <variable
             name="onClickListener"
@@ -17,7 +17,6 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/categoriesCV"
         style="@style/RvItemTransactionsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,13 +27,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/categoriesCardLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/categoriesHeaderLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -62,15 +59,15 @@
                     android:text="@{packet.detailCurrency}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption3"
                     android:visibility="@{packet.detailShowCurrency ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@id/categoriesAmountTV"
-                    app:layout_constraintEnd_toStartOf="@id/categoriesAmountTV"
+                    app:layout_constraintBottom_toBottomOf="@id/categoriesMonthAmountTV"
+                    app:layout_constraintEnd_toStartOf="@id/categoriesMonthAmountTV"
                     app:layout_constraintStart_toEndOf="@id/barrier"
-                    app:layout_constraintTop_toTopOf="@id/categoriesAmountTV"
+                    app:layout_constraintTop_toTopOf="@id/categoriesMonthAmountTV"
                     tools:ignore="RtlSymmetry"
                     tools:text="@string/placeholder_currency" />
 
                 <TextView
-                    android:id="@+id/categoriesAmountTV"
+                    android:id="@+id/categoriesMonthAmountTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{packet.detailMonthAmount}"
@@ -85,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="left"
-                    app:constraint_referenced_ids="categoriesCurrencyTV,categoriesAmountTV"
+                    app:constraint_referenced_ids="categoriesCurrencyTV,categoriesMonthAmountTV"
                     tools:layout_editor_absoluteX="387dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -97,12 +94,12 @@
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
-                android:id="@+id/categoriesTransactionsLL"
+                android:id="@+id/categoriesLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:categoriesTransactionsLL_expenseCategoryList="@{packet.detailLLData}"
-                app:categoriesTransactionsLL_onClickListener="@{onClickListener}" />
+                app:categoriesLL_expenseCategoryList="@{packet.detailLLData}"
+                app:categoriesLL_onClickListener="@{onClickListener}" />
 
         </LinearLayout>
 

@@ -8,7 +8,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="expenseLLData"
+            name="typeLLData"
             type="com.kaeonx.moneymanager.fragments.expenses.ExpenseDetailLLData" />
 
         <variable
@@ -17,13 +17,12 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/transactionLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(expenseLLData.categoryName)}"
+        android:onClick="@{() -> onClickListener.onClick(typeLLData.categoryName)}"
         android:padding="8dp">
 
         <FrameLayout
@@ -33,24 +32,24 @@
             android:padding="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/categoryHBC"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/categoryTV"
+            app:layout_constraintTop_toTopOf="@+id/categoryNameTV"
             tools:layout_editor_absoluteX="8dp">
 
             <include
                 android:id="@+id/categoryIconInclude"
                 layout="@layout/icon_transaction"
-                app:iconDetail="@{expenseLLData.iconDetail}" />
+                app:iconDetail="@{typeLLData.iconDetail}" />
         </FrameLayout>
 
         <TextView
-            android:id="@+id/categoryTV"
+            android:id="@+id/categoryNameTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:paddingStart="8dp"
             android:paddingEnd="2dp"
             android:singleLine="true"
-            android:text="@{expenseLLData.categoryName}"
+            android:text="@{typeLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/categoryHBC"
@@ -69,36 +68,36 @@
             android:paddingStart="2dp"
             android:paddingEnd="8dp"
             android:singleLine="true"
-            android:text="@{expenseLLData.categoryPercent}"
+            android:text="@{typeLLData.categoryPercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-            app:layout_constraintBottom_toBottomOf="@+id/categoryTV"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryNameTV"
             app:layout_constraintEnd_toStartOf="@id/barrier"
-            app:layout_constraintStart_toEndOf="@+id/categoryTV"
-            app:layout_constraintTop_toTopOf="@+id/categoryTV"
+            app:layout_constraintStart_toEndOf="@+id/categoryNameTV"
+            app:layout_constraintTop_toTopOf="@+id/categoryNameTV"
             tools:text="(99.9%)" />
 
         <TextView
-            android:id="@+id/transactionCurrencyTV"
+            android:id="@+id/categoryCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
-            android:text="@{expenseLLData.currency}"
+            android:text="@{typeLLData.currency}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption4"
-            android:visibility="@{expenseLLData.showCurrency ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/transactionValueTV"
-            app:layout_constraintEnd_toStartOf="@+id/transactionValueTV"
-            app:layout_constraintTop_toTopOf="@+id/transactionValueTV"
+            android:visibility="@{typeLLData.showCurrency ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryAmountTV"
+            app:layout_constraintEnd_toStartOf="@+id/categoryAmountTV"
+            app:layout_constraintTop_toTopOf="@+id/categoryAmountTV"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
 
         <TextView
-            android:id="@+id/transactionValueTV"
+            android:id="@+id/categoryAmountTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{expenseLLData.categoryAmount}"
+            android:text="@{typeLLData.categoryAmount}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/categoryTV"
+            app:layout_constraintTop_toTopOf="@+id/categoryNameTV"
             tools:text="@string/placeholder_amount" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -106,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="left"
-            app:constraint_referenced_ids="transactionValueTV,transactionCurrencyTV"
+            app:constraint_referenced_ids="categoryAmountTV,categoryCurrencyTV"
             tools:layout_editor_absoluteX="403dp"
             tools:layout_editor_absoluteY="8dp" />
 
@@ -115,12 +114,12 @@
             android:layout_width="0dp"
             android:layout_height="6dp"
             android:layout_marginStart="8dp"
-            app:categoryHBC_adapter="@{expenseLLData.barData}"
+            app:categoryHBC_adapter="@{typeLLData.barData}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/categoryIconFL"
-            app:layout_constraintTop_toBottomOf="@+id/categoryTV" />
+            app:layout_constraintTop_toBottomOf="@+id/categoryNameTV" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

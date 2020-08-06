@@ -39,12 +39,12 @@ class ExpensesViewModel(
         _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
         CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
     )
-    private val _expensesRVData = MediatorLiveData<ExpensesRVPacket?>().apply {
+    private val _expensesRVData = MediatorLiveData<TypeRVPacket?>().apply {
 //        addSource(_displayCalendar) { updatePreviousLiveData() }  // added just for future compatibility
         addSource(_transactions) { recalculateExpensesRVData(it) }
         addSource(xeRepository.xeRows) { recalculateExpensesRVData(_transactions.value) }
     }
-    val expensesRVPacket: LiveData<ExpensesRVPacket?>
+    val typeRVPacket: LiveData<TypeRVPacket?>
         get() = _expensesRVData
 
     private fun recalculateExpensesRVData(list: List<Transaction>?) {
@@ -163,7 +163,7 @@ class ExpensesViewModel(
                 sliceSpace = 2f  // in dp (as float)
             }
 
-            val result = ExpensesRVPacket(
+            val result = TypeRVPacket(
                 summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
                 summaryLegendLLData = legendLLDataAL.toList(),
                 detailMonthString = CalendarHandler.getFormattedString(
