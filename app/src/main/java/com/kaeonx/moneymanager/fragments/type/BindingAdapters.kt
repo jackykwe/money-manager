@@ -70,10 +70,10 @@ fun TextView.setNameTVTypeface(name: String) {
  * rv_item_type_detail_categories
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("categoriesLL_expenseCategoryList", "categoriesLL_onClickListener")
+@BindingAdapter("categoriesLL_typeCategoryList", "categoriesLL_onClickListener")
 fun LinearLayout.setCategoriesLLAdapter(
     list: List<TypeCategoryLLData>,
-    itemOnClickListener: ExpensesOnClickListener
+    itemOnClickListener: TypeDetailOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)

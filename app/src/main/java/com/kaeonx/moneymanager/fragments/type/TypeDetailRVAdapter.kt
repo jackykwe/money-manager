@@ -19,16 +19,16 @@ private const val SUMMARY = 0
 private const val CATEGORIES = 1
 private const val TAG = "exrva"
 
-class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener) :
-    ListAdapter<ExpensesRVItem, RecyclerView.ViewHolder>(ExpensesRVItemDiffCallback()) {
+class TypeDetailRVAdapter(private val itemOnClickListener: TypeDetailOnClickListener) :
+    ListAdapter<TypeDetailRVItem, RecyclerView.ViewHolder>(TypeDetailRVItemDiffCallback()) {
 
     private var initRun = true
 
     fun submitList2(typeRVPacket: TypeRVPacket) {
         CoroutineScope(Dispatchers.Main).launch {
             val submittable = listOf(
-                ExpensesRVItem.ExpensesRVItemSummary(typeRVPacket),
-                ExpensesRVItem.ExpensesRVItemCategories(typeRVPacket)
+                TypeDetailRVItem.TypeDetailRVItemSummary(typeRVPacket),
+                TypeDetailRVItem.TypeDetailRVItemCategories(typeRVPacket)
             )
             if (initRun) {
                 delay(300L)
@@ -40,35 +40,35 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
-            is ExpensesRVItem.ExpensesRVItemSummary -> SUMMARY
-            is ExpensesRVItem.ExpensesRVItemCategories -> CATEGORIES
+            is TypeDetailRVItem.TypeDetailRVItemSummary -> SUMMARY
+            is TypeDetailRVItem.TypeDetailRVItemCategories -> CATEGORIES
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            SUMMARY -> ExpensesSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
-            CATEGORIES -> ExpensesDetailViewHolder.inflateAndCreateViewHolderFrom(parent)
+            SUMMARY -> TypeDetailSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
+            CATEGORIES -> TypeDetailCategoriesViewHolder.inflateAndCreateViewHolderFrom(parent)
             else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ExpensesSummaryViewHolder -> {
+            is TypeDetailSummaryViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemSummary).typeRVPacket
+                    (getItem(position) as TypeDetailRVItem.TypeDetailRVItemSummary).typeRVPacket
                 holder.rebind(data)
             }
-            is ExpensesDetailViewHolder -> {
+            is TypeDetailCategoriesViewHolder -> {
                 val data =
-                    (getItem(position) as ExpensesRVItem.ExpensesRVItemCategories).typeRVPacket
+                    (getItem(position) as TypeDetailRVItem.TypeDetailRVItemCategories).typeRVPacket
                 holder.rebind(data, itemOnClickListener)
             }
         }
     }
 
-    class ExpensesSummaryViewHolder private constructor(private val binding: RvItemTypeDetailSummaryBinding) :
+    class TypeDetailSummaryViewHolder private constructor(private val binding: RvItemTypeDetailSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(newPacket: TypeRVPacket) {
@@ -77,20 +77,20 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesSummaryViewHolder {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TypeDetailSummaryViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = RvItemTypeDetailSummaryBinding.inflate(layoutInflater, parent, false)
-                return ExpensesSummaryViewHolder(binding)
+                return TypeDetailSummaryViewHolder(binding)
             }
         }
     }
 
-    class ExpensesDetailViewHolder private constructor(private val binding: RvItemTypeDetailCategoriesBinding) :
+    class TypeDetailCategoriesViewHolder private constructor(private val binding: RvItemTypeDetailCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(
             newPacket: TypeRVPacket,
-            itemOnClickListener: ExpensesOnClickListener
+            itemOnClickListener: TypeDetailOnClickListener
         ) {
             binding.packet = newPacket
             binding.onClickListener = itemOnClickListener
@@ -98,33 +98,33 @@ class ExpensesRVAdapter(private val itemOnClickListener: ExpensesOnClickListener
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): ExpensesDetailViewHolder {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TypeDetailCategoriesViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding =
                     RvItemTypeDetailCategoriesBinding.inflate(layoutInflater, parent, false)
-                return ExpensesDetailViewHolder(binding)
+                return TypeDetailCategoriesViewHolder(binding)
             }
         }
     }
 }
 
-class ExpensesRVItemDiffCallback : DiffUtil.ItemCallback<ExpensesRVItem>() {
+class TypeDetailRVItemDiffCallback : DiffUtil.ItemCallback<TypeDetailRVItem>() {
     override fun areItemsTheSame(
-        oldItemExpenses: ExpensesRVItem,
-        newItemExpenses: ExpensesRVItem
+        oldItemTypeDetail: TypeDetailRVItem,
+        newItemTypeDetail: TypeDetailRVItem
     ): Boolean {
-        return oldItemExpenses.rvItemId == newItemExpenses.rvItemId
+        return oldItemTypeDetail.rvItemId == newItemTypeDetail.rvItemId
     }
 
     override fun areContentsTheSame(
-        oldItemExpenses: ExpensesRVItem,
-        newItemExpenses: ExpensesRVItem
+        oldItemTypeDetail: TypeDetailRVItem,
+        newItemTypeDetail: TypeDetailRVItem
     ): Boolean {
-        return oldItemExpenses == newItemExpenses
+        return oldItemTypeDetail == newItemTypeDetail
     }
 }
 
-class ExpensesOnClickListener(val clickListener: (category: String) -> Unit) {
+class TypeDetailOnClickListener(val clickListener: (category: String) -> Unit) {
     fun onClick(category: String) = clickListener(category)
 }
 
@@ -133,17 +133,18 @@ class ExpensesOnClickListener(val clickListener: (category: String) -> Unit) {
 //    fun onClick() = clickListener()
 //}
 
-sealed class ExpensesRVItem {
-    data class ExpensesRVItemSummary(val typeRVPacket: TypeRVPacket) : ExpensesRVItem() {
+sealed class TypeDetailRVItem {
+    abstract val rvItemId: Int
+
+    data class TypeDetailRVItemSummary(val typeRVPacket: TypeRVPacket) : TypeDetailRVItem() {
         override val rvItemId: Int = 0
     }
 
-    data class ExpensesRVItemCategories(val typeRVPacket: TypeRVPacket) :
-        ExpensesRVItem() {
+    data class TypeDetailRVItemCategories(val typeRVPacket: TypeRVPacket) :
+        TypeDetailRVItem() {
         override val rvItemId: Int = 1
     }
 
-    abstract val rvItemId: Int
 }
 
 data class TypeRVPacket(

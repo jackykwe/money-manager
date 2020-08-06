@@ -9,33 +9,37 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTypeDetailBinding
 
 private const val TAG = "exfrag"
 
-class ExpensesFragment : Fragment() {
+class TypeDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentTypeDetailBinding
 
-    private val args: ExpensesFragmentArgs by navArgs()
+    private val args: TypeDetailFragmentArgs by navArgs()
     private val viewModelFactory by lazy {
-        ExpensesViewModelFactory(
+        TypeDetailViewModelFactory(
+            args.type,
             args.displayCalendar,
             args.showCurrency
         )
     }
-    private val viewModel: ExpensesViewModel by viewModels { viewModelFactory }
+    private val viewModel: TypeDetailViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
+            args.type
         binding = FragmentTypeDetailBinding.inflate(inflater, container, false)
         binding.typeRV.apply {
             setHasFixedSize(true)
-            adapter = ExpensesRVAdapter(
-                ExpensesOnClickListener {
+            adapter = TypeDetailRVAdapter(
+                TypeDetailOnClickListener {
                     Toast.makeText(requireContext(), "Oh? You want $it?", Toast.LENGTH_SHORT).show()
                 }
             )
@@ -45,7 +49,7 @@ class ExpensesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.typeRVPacket.observe(viewLifecycleOwner) {
-            (binding.typeRV.adapter as ExpensesRVAdapter).apply {
+            (binding.typeRV.adapter as TypeDetailRVAdapter).apply {
                 if (it == null) return@observe
 //                submitList(null)
                 submitList2(it)

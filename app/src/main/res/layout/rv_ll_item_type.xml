@@ -13,7 +13,7 @@
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.type.ExpensesOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.type.TypeDetailOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

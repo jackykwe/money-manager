@@ -25,7 +25,8 @@ import java.util.*
 
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
-class ExpensesViewModel(
+class TypeDetailViewModel(
+    private val type: String,
     initCalendar: Calendar,
     private val showCurrency: Boolean
 ) : ViewModel() {
@@ -39,21 +40,21 @@ class ExpensesViewModel(
         _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
         CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
     )
-    private val _expensesRVData = MediatorLiveData<TypeRVPacket?>().apply {
-//        addSource(_displayCalendar) { updatePreviousLiveData() }  // added just for future compatibility
-        addSource(_transactions) { recalculateExpensesRVData(it) }
-        addSource(xeRepository.xeRows) { recalculateExpensesRVData(_transactions.value) }
+    private val _typeRVPacket = MediatorLiveData<TypeRVPacket?>().apply {
+//        addSource(_displayCalendar) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
+        addSource(_transactions) { recalculateTypeRVPacket(it) }
+        addSource(xeRepository.xeRows) { recalculateTypeRVPacket(_transactions.value) }
     }
     val typeRVPacket: LiveData<TypeRVPacket?>
-        get() = _expensesRVData
+        get() = _typeRVPacket
 
-    private fun recalculateExpensesRVData(list: List<Transaction>?) {
+    private fun recalculateTypeRVPacket(list: List<Transaction>?) {
         if (list == null) return
         viewModelScope.launch(Dispatchers.Default) {
             val homeCurrency = UserPDS.getString("ccc_home_currency")
 
             val amountsMap = mutableMapOf<String, BigDecimal>()
-            list.filter { it.type == "Expenses" }.run {
+            list.filter { it.type == type }.run {
                 map { it.category }.toSet().forEach {
                     amountsMap[it] = BigDecimal.ZERO
                 }
@@ -87,8 +88,8 @@ class ExpensesViewModel(
                 .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
                 .forEachIndexed { index, entry ->
                     val categoryObject = repositoryCategories
-                        .find { it.name == entry.key && it.type == "Expenses" }
-                        ?: Category(null, "Expenses", entry.key, "F02D6", "Black")
+                        .find { it.name == entry.key && it.type == type }
+                        ?: Category(null, type, entry.key, "F02D6", "Black")
                     val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
@@ -130,7 +131,7 @@ class ExpensesViewModel(
                     detailLLDataAL.add(
                         TypeCategoryLLData(
                             iconDetail = categoryObject.toIconDetail(),
-                            categoryName = entry.key,  // Needed for onClickListener to identify the expensesCategory
+                            categoryName = entry.key,  // Needed for onClickListener to identify the typeCategory pressed
                             categoryPercent = "($percentDisplay%)",
                             showCurrency = showCurrency,
                             currency = homeCurrency,
@@ -177,7 +178,7 @@ class ExpensesViewModel(
             )
 
             withContext(Dispatchers.Main) {
-                _expensesRVData.value = result
+                _typeRVPacket.value = result
             }
         }
     }

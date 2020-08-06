@@ -48,7 +48,7 @@
             android:id="@+id/action_transactionsFragment_to_monthYearPickerDialogFragment"
             app:destination="@id/monthYearPickerDialogFragment" />
         <action
-            android:id="@+id/action_transactionsFragment_to_BudgetFragment"
+            android:id="@+id/action_transactionsFragment_to_budgetFragment"
             app:destination="@id/BudgetFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
@@ -56,8 +56,8 @@
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
         <action
-            android:id="@+id/action_transactionsFragment_to_expensesFragment"
-            app:destination="@id/expensesFragment"
+            android:id="@+id/action_transactionsFragment_to_typeDetailFragment"
+            app:destination="@id/typeDetailFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
@@ -195,10 +195,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/expensesFragment"
-        android:name="com.kaeonx.moneymanager.fragments.type.ExpensesFragment"
-        android:label="Expenses"
+        android:id="@+id/typeDetailFragment"
+        android:name="com.kaeonx.moneymanager.fragments.type.TypeDetailFragment"
         tools:layout="@layout/fragment_type_detail">
+        <argument
+            android:name="type"
+            app:argType="string" />
         <argument
             android:name="displayCalendar"
             app:argType="java.util.Calendar" />

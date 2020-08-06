@@ -13,7 +13,7 @@
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.type.ExpensesOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.type.TypeDetailOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:categoriesLL_expenseCategoryList="@{packet.detailLLData}"
+                app:categoriesLL_typeCategoryList="@{packet.detailLLData}"
                 app:categoriesLL_onClickListener="@{onClickListener}" />
 
         </LinearLayout>
