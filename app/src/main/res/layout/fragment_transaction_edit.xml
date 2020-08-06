@@ -52,11 +52,10 @@
                             android:id="@+id/categoryIconFL"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            app:layout_constraintEnd_toStartOf="@+id/categoryNameTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="packed"
+                            app:layout_constraintBottom_toBottomOf="@+id/categoryNameTV"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
+                            app:layout_constraintTop_toTopOf="@+id/categoryNameTV"
+                            tools:layout_editor_absoluteX="0dp">
 
                             <include
                                 android:id="@+id/categoryIconFLInclude"
@@ -67,16 +66,18 @@
                         <TextView
                             android:id="@+id/categoryNameTV"
                             android:layout_width="0dp"
-                            android:layout_height="60dp"
+                            android:layout_height="wrap_content"
                             android:gravity="center_vertical"
+                            android:minHeight="60dp"
                             android:paddingStart="12dp"
                             android:text="@{viewModel.transaction.category}"
                             android:textAppearance="@style/TextAppearance.MyApp.Headline5"
+                            app:layout_constraintBottom_toTopOf="@id/divider"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
-                            app:layout_constraintTop_toTopOf="@+id/categoryIconFL"
-                            tools:text="Category" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Category Name Category Name Category Name Category Name Category Name Category Name " />
 
                         <View
                             android:id="@+id/divider"
@@ -86,7 +87,7 @@
                             android:background="?android:attr/listDivider"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/categoryIconFL" />
+                            app:layout_constraintTop_toBottomOf="@+id/categoryNameTV" />
 
                         <androidx.constraintlayout.widget.Barrier
                             android:id="@+id/barrier"
@@ -94,32 +95,28 @@
                             android:layout_height="wrap_content"
                             app:barrierDirection="bottom"
                             app:constraint_referenced_ids="originalAmountHintTV,convertedCurrencyTV,originalAmountTV,convertedAmountTV,convertedAmountHintTV,originalCurrencyTV,typeConvertedAmountColonTV,typeOriginalAmountColonTV"
-                            tools:layout_editor_absoluteY="238dp" />
+                            tools:layout_editor_absoluteY="335dp" />
 
                         <TextView
                             android:id="@+id/typeHintTV"
                             style="@style/Details.Hint"
+                            android:layout_width="75dp"
                             android:layout_marginTop="16dp"
                             android:text="@string/hint_type"
-                            app:layout_constraintBottom_toTopOf="@+id/accountHintTV"
                             app:layout_constraintEnd_toStartOf="@+id/typeHintColonTV"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_weight="1"
+                            app:layout_constraintHorizontal_chainStyle="packed"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/divider"
-                            app:layout_constraintVertical_chainStyle="packed" />
+                            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
                         <TextView
                             android:id="@+id/typeTV"
                             style="@style/Details.Text"
                             android:text="@{viewModel.transaction.type}"
-                            app:layout_constraintBottom_toTopOf="@+id/accountTV"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_weight="3"
                             app:layout_constraintStart_toEndOf="@+id/typeHintColonTV"
-                            app:layout_constraintTop_toTopOf="@+id/typeHintTV"
-                            app:layout_constraintVertical_chainStyle="packed"
+                            app:layout_constraintTop_toTopOf="@+id/typeHintColonTV"
                             tools:text="Expenses" />
 
                         <TextView
@@ -127,22 +124,18 @@
                             style="@style/Details.Hint.Colon"
                             android:layout_width="wrap_content"
                             android:text="@string/hint_colon"
-                            app:layout_constraintBottom_toTopOf="@+id/typeAccountColonTV"
                             app:layout_constraintEnd_toStartOf="@+id/typeTV"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/typeHintTV"
-                            app:layout_constraintTop_toTopOf="@+id/typeHintTV"
-                            app:layout_constraintVertical_chainStyle="packed" />
+                            app:layout_constraintTop_toTopOf="@+id/typeHintTV" />
 
                         <TextView
                             android:id="@+id/originalAmountHintTV"
                             style="@style/Details.Hint"
                             android:text="@string/hint_amount"
-                            app:layout_constraintBottom_toTopOf="@+id/convertedAmountHintTV"
                             app:layout_constraintEnd_toEndOf="@+id/accountHintTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/accountHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/accountHintTV" />
+                            app:layout_constraintTop_toBottomOf="@id/accountTV" />
 
                         <TextView
                             android:id="@+id/originalAmountTV"
@@ -150,7 +143,6 @@
                             android:paddingStart="4dp"
                             android:text="@{viewModel.transaction.originalAmount}"
                             app:layout_constraintEnd_toEndOf="@+id/accountTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/originalCurrencyTV"
                             app:layout_constraintTop_toTopOf="@+id/originalCurrencyTV"
                             tools:ignore="RtlSymmetry"
@@ -159,37 +151,29 @@
                         <TextView
                             android:id="@+id/accountTV"
                             style="@style/Details.Text"
-                            android:layout_height="36dp"
+                            android:layout_height="wrap_content"
+                            android:minHeight="36dp"
                             android:text="@{viewModel.transaction.account}"
-                            app:layout_constraintBottom_toTopOf="@+id/originalCurrencyTV"
-                            app:layout_constraintEnd_toEndOf="@+id/typeTV"
-                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintEnd_toEndOf="@id/typeTV"
                             app:layout_constraintStart_toStartOf="@+id/typeTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeTV"
-                            tools:text="Cash" />
+                            app:layout_constraintTop_toTopOf="@+id/typeAccountColonTV"
+                            tools:text="Account Name Account Name Account Name Account Name Account Name Account Name Account Name Account Name " />
 
                         <TextView
                             android:id="@+id/originalCurrencyTV"
                             style="@style/Details.Currency"
                             android:layout_width="wrap_content"
                             android:text="@{viewModel.transaction.originalCurrency}"
-                            app:layout_constraintBottom_toTopOf="@+id/convertedCurrencyTV"
-                            app:layout_constraintEnd_toStartOf="@+id/originalAmountTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toEndOf="@+id/typeHintColonTV"
                             app:layout_constraintStart_toStartOf="@+id/accountTV"
-                            app:layout_constraintTop_toBottomOf="@+id/accountTV"
+                            app:layout_constraintTop_toTopOf="@+id/typeOriginalAmountColonTV"
                             tools:text="@string/placeholder_currency" />
 
                         <TextView
                             android:id="@+id/timeTV"
                             style="@style/Details.Text"
-                            app:layout_constraintBottom_toTopOf="@+id/memoTV"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/originalCurrencyTV"
-                            app:layout_constraintTop_toBottomOf="@+id/barrier"
+                            app:layout_constraintTop_toTopOf="@+id/typeTimeColonTV"
                             app:timeTV_text="@{viewModel.transaction.timestamp}"
                             tools:text="HHmm on ddMMyy" />
 
@@ -199,12 +183,10 @@
                             android:layout_height="wrap_content"
                             android:minHeight="36dp"
                             android:text="@{viewModel.transaction.memo}"
-                            app:layout_constraintBottom_toTopOf="@+id/view"
-                            app:layout_constraintEnd_toEndOf="@+id/timeTV"
-                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintEnd_toEndOf="@id/timeTV"
                             app:layout_constraintStart_toStartOf="@+id/timeTV"
-                            app:layout_constraintTop_toBottomOf="@+id/timeTV"
-                            tools:text="Sample Memo Ohhhhhhhhhhhhhh noooooooooooooooooo" />
+                            app:layout_constraintTop_toTopOf="@+id/typeMemoColonTV"
+                            tools:text="Sample Memo Ohhhhhhhhhhhhhh noooooooooooooooooo yes even longer let's go" />
 
                         <TextView
                             android:id="@+id/convertedAmountTV"
@@ -214,7 +196,6 @@
                             android:visibility="gone"
                             app:convertedAmountTV_textVisiibility="@{viewModel.transaction}"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/convertedCurrencyTV"
                             app:layout_constraintTop_toTopOf="@+id/convertedCurrencyTV"
                             tools:ignore="RtlSymmetry"
@@ -227,13 +208,8 @@
                             android:text="@string/placeholder_currency"
                             android:visibility="gone"
                             app:convertedCurrencyTV_textVisiibility="@{viewModel.transaction}"
-                            app:layout_constraintBottom_toTopOf="@+id/timeTV"
-                            app:layout_constraintEnd_toStartOf="@+id/convertedAmountTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintHorizontal_chainStyle="packed"
-                            app:layout_constraintStart_toEndOf="@+id/typeOriginalAmountColonTV"
                             app:layout_constraintStart_toStartOf="@+id/originalCurrencyTV"
-                            app:layout_constraintTop_toBottomOf="@+id/originalCurrencyTV"
+                            app:layout_constraintTop_toTopOf="@+id/typeConvertedAmountColonTV"
                             tools:visibility="visible" />
 
 
@@ -243,95 +219,80 @@
                             android:text="@string/hint_amount_home"
                             android:visibility="gone"
                             app:convertedAmountHintTV_visibility="@{viewModel.transaction}"
-                            app:layout_constraintBottom_toTopOf="@+id/timeHintTV"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountHintTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/originalAmountHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/originalAmountHintTV"
+                            app:layout_constraintTop_toBottomOf="@+id/originalAmountTV"
                             tools:visibility="visible" />
 
                         <TextView
                             android:id="@+id/timeHintTV"
                             style="@style/Details.Hint"
                             android:text="@string/hint_time"
-                            app:layout_constraintBottom_toTopOf="@+id/memoHintTV"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountHintTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/originalAmountHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/barrier"
-                            app:layout_constraintVertical_chainStyle="packed" />
+                            app:layout_constraintTop_toBottomOf="@id/barrier" />
 
                         <TextView
                             android:id="@+id/memoHintTV"
                             style="@style/Details.Hint"
                             android:text="@string/hint_memo"
-                            app:layout_constraintBottom_toTopOf="@+id/view"
                             app:layout_constraintEnd_toEndOf="@+id/timeHintTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/timeHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/timeHintTV" />
+                            app:layout_constraintTop_toBottomOf="@id/timeTV"
+                            tools:layout_editor_absoluteY="371dp" />
 
                         <TextView
                             android:id="@+id/accountHintTV"
                             style="@style/Details.Hint"
                             android:text="@string/hint_account"
-                            app:layout_constraintBottom_toTopOf="@+id/originalAmountHintTV"
                             app:layout_constraintEnd_toEndOf="@+id/typeHintTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/typeHintTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeHintTV" />
+                            app:layout_constraintTop_toBottomOf="@id/typeTV"
+                            tools:layout_editor_absoluteY="185dp" />
 
                         <TextView
                             android:id="@+id/typeAccountColonTV"
                             style="@style/Details.Hint.Colon"
                             android:text="@string/hint_colon"
-                            app:layout_constraintBottom_toTopOf="@+id/typeOriginalAmountColonTV"
-                            app:layout_constraintEnd_toEndOf="@+id/typeHintColonTV"
-                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintEnd_toEndOf="@id/typeHintColonTV"
                             app:layout_constraintStart_toStartOf="@+id/typeHintColonTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeHintColonTV" />
+                            app:layout_constraintTop_toTopOf="@+id/accountHintTV" />
 
                         <TextView
                             android:id="@+id/typeOriginalAmountColonTV"
                             style="@style/Details.Hint.Colon"
                             android:text="@string/hint_colon"
-                            app:layout_constraintBottom_toTopOf="@+id/typeConvertedAmountColonTV"
-                            app:layout_constraintEnd_toEndOf="@+id/typeAccountColonTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="@+id/typeAccountColonTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeAccountColonTV" />
+                            app:layout_constraintEnd_toEndOf="@id/typeAccountColonTV"
+                            app:layout_constraintStart_toStartOf="@id/typeAccountColonTV"
+                            app:layout_constraintTop_toTopOf="@+id/originalAmountHintTV" />
 
                         <TextView
                             android:id="@+id/typeConvertedAmountColonTV"
                             style="@style/Details.Hint.Colon"
                             android:text="@string/hint_colon"
                             app:convertedAmountHintTV_visibility="@{viewModel.transaction}"
-                            app:layout_constraintBottom_toTopOf="@+id/typeTimeColonTV"
-                            app:layout_constraintEnd_toEndOf="@+id/typeOriginalAmountColonTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="@+id/typeOriginalAmountColonTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeOriginalAmountColonTV" />
+                            app:layout_constraintEnd_toEndOf="@id/typeOriginalAmountColonTV"
+                            app:layout_constraintStart_toStartOf="@id/typeOriginalAmountColonTV"
+                            app:layout_constraintTop_toTopOf="@+id/convertedAmountHintTV"
+                            tools:layout_editor_absoluteX="90dp" />
 
                         <TextView
                             android:id="@+id/typeTimeColonTV"
                             style="@style/Details.Hint.Colon"
                             android:text="@string/hint_colon"
-                            app:layout_constraintBottom_toTopOf="@+id/typeMemoColonTV"
                             app:layout_constraintEnd_toEndOf="@+id/typeOriginalAmountColonTV"
-                            app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="@+id/typeOriginalAmountColonTV"
-                            app:layout_constraintTop_toBottomOf="@+id/barrier"
-                            app:layout_constraintVertical_chainStyle="packed" />
+                            app:layout_constraintTop_toTopOf="@+id/timeHintTV" />
 
                         <TextView
                             android:id="@+id/typeMemoColonTV"
                             style="@style/Details.Hint.Colon"
                             android:text="@string/hint_colon"
-                            app:layout_constraintBottom_toTopOf="@+id/view"
-                            app:layout_constraintEnd_toEndOf="@+id/typeTimeColonTV"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="@+id/typeTimeColonTV"
-                            app:layout_constraintTop_toBottomOf="@+id/typeTimeColonTV" />
+                            app:layout_constraintEnd_toEndOf="@id/typeTimeColonTV"
+                            app:layout_constraintStart_toStartOf="@id/typeTimeColonTV"
+                            app:layout_constraintTop_toTopOf="@id/memoHintTV"
+                            tools:layout_editor_absoluteX="90dp"
+                            tools:layout_editor_absoluteY="374dp" />
 
                         <View
                             android:id="@+id/view"

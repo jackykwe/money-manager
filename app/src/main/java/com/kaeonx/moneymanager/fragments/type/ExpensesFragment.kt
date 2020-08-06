@@ -47,10 +47,9 @@ class ExpensesFragment : Fragment() {
         viewModel.typeRVPacket.observe(viewLifecycleOwner) {
             (binding.typeRV.adapter as ExpensesRVAdapter).apply {
                 if (it == null) return@observe
-                submitList(null)
+//                submitList(null)
                 submitList2(it)
             }
         }
     }
-
 }
