@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.fragments.type
+package com.kaeonx.moneymanager.fragments.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

@@ -196,7 +196,7 @@
 
     <fragment
         android:id="@+id/detailTypeFragment"
-        android:name="com.kaeonx.moneymanager.fragments.type.DetailTypeFragment"
+        android:name="com.kaeonx.moneymanager.fragments.detail.DetailTypeFragment"
         tools:layout="@layout/fragment_detail_type">
         <argument
             android:name="initType"

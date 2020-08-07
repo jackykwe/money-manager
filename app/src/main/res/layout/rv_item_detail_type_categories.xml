@@ -9,11 +9,11 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.type.DetailTypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeRVPacket" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.type.DetailTypeOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
