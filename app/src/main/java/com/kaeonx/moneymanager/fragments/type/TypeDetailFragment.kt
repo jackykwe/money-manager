@@ -34,8 +34,8 @@ class TypeDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
-            args.type
+//        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
+//            args.type
         binding = FragmentTypeDetailBinding.inflate(inflater, container, false)
         binding.typeRV.apply {
             setHasFixedSize(true)
@@ -44,8 +44,7 @@ class TypeDetailFragment : Fragment() {
                     Toast.makeText(requireContext(), "Oh? You want $it?", Toast.LENGTH_SHORT).show()
                 },
                 GenericOnClickListener {
-                    Toast.makeText(requireContext(), "Oh? You want to swap?", Toast.LENGTH_SHORT)
-                        .show()
+                    viewModel.swapType()
                 }
             )
         }
@@ -53,6 +52,11 @@ class TypeDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.type.observe(viewLifecycleOwner) {
+            (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
+                it
+        }
+
         viewModel.typeRVPacket.observe(viewLifecycleOwner) {
             (binding.typeRV.adapter as TypeDetailRVAdapter).apply {
                 if (it == null) return@observe

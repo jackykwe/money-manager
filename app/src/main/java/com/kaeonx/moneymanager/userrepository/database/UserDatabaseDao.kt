@@ -22,6 +22,16 @@ interface UserDatabaseDao {
     @Query("DELETE FROM transactions_table")
     suspend fun clearAllData()
 
+    @Query("UPDATE transactions_table SET category = :newCategoryName WHERE category = :oldCategoryName AND type = :type")
+    suspend fun updateTransactionsRenameCategory(
+        type: String,
+        oldCategoryName: String,
+        newCategoryName: String
+    )
+
+    @Query("UPDATE transactions_table SET account = :newAccountName WHERE account = :oldAccountName")
+    suspend fun updateTransactionsRenameAccount(oldAccountName: String, newAccountName: String)
+
 //    @Query("SELECT * FROM transactions_table ORDER BY timestamp DESC")
 //    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
 

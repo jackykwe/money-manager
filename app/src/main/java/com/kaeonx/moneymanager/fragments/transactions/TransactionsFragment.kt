@@ -15,6 +15,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -154,9 +155,9 @@ class TransactionsFragment : Fragment() {
                                 timestamp = 0L,
                                 type = "?",
                                 category = "?",
-                                account = "Cash",
+                                account = UserPDS.getString("tst_default_account"),
                                 memo = "",
-                                originalCurrency = "SGD",
+                                originalCurrency = UserPDS.getString("ccc_home_currency"),
                                 originalAmount = "0"
                             )
                         )

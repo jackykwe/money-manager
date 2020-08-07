@@ -1,5 +1,6 @@
 package com.kaeonx.moneymanager.fragments.type
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -38,6 +39,7 @@ class TypeDetailRVAdapter(
                 delay(300L)
                 initRun = false
             }
+            Log.d(TAG, "Submittting hmm")
             submitList(submittable)
         }
     }
@@ -153,6 +155,7 @@ sealed class TypeDetailRVItem {
 }
 
 data class TypeRVPacket(
+    val summaryType: String,
     val summaryPieData: PieData?,
     val summaryLegendLLData: List<TypeLegendLLData>,
     val categoriesMonthString: String,

@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.fragments.accounts
 import androidx.lifecycle.*
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.ColourHandler
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import kotlinx.coroutines.launch
@@ -19,11 +20,14 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
     }
 
     private val userRepository = UserRepository.getInstance()
-    private val otherAccountNames = userRepository.accounts.value!!.filter { it.name != oldAccount.name }.map { it.name } // TODO: ASYNC
+    private val otherAccountNames =
+        userRepository.accounts.value!!.filter { it.name != oldAccount.name }
+            .map { it.name } // TODO: ASYNC
 
     private var _currentAccount = MutableLiveData2(oldAccount.copy())
     val currentAccount: LiveData<Account>
         get() = _currentAccount
+
     fun changesWereMade(): Boolean {
         return oldAccount != _currentAccount.value
     }
@@ -39,7 +43,8 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
     var colourFamilies = MutableLiveData2(ColourHandler.getColourFamiliesFull())
     var colourIntensities = MutableLiveData2(ColourHandler.getColourIntensitiesFull())
 
-    val colourFamilySpinnerText = MutableLiveData<String>(ColourHandler.readColourFamily(_currentAccount.value.colourString))
+    val colourFamilySpinnerText =
+        MutableLiveData<String>(ColourHandler.readColourFamily(_currentAccount.value.colourString))
     val colourFamilySpinnerError: LiveData<String?> = Transformations.map(colourFamilySpinnerText) {
         when (it) {
             "Black", "White" -> {
@@ -48,7 +53,9 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
                 null
             }
             "Blue Grey", "Brown", "Grey" -> {
-                if (colourIntensitySpinnerText.value == null) { colourIntensitySpinnerText.value = "500" }
+                if (colourIntensitySpinnerText.value == null) {
+                    colourIntensitySpinnerText.value = "500"
+                }
                 colourIntensities.value = ColourHandler.getColourIntensitiesPartial()
                 updateColours()
                 null
@@ -57,7 +64,9 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
             "Deep Orange", "Pink", "Indigo", "Cyan", "Light Green",
             "Amber", "Purple", "Blue", "Teal", "Lime",
             "Orange" -> {
-                if (colourIntensitySpinnerText.value == null) { colourIntensitySpinnerText.value = "500" }
+                if (colourIntensitySpinnerText.value == null) {
+                    colourIntensitySpinnerText.value = "500"
+                }
                 colourIntensities.value = ColourHandler.getColourIntensitiesFull()
                 updateColours()
                 null
@@ -69,12 +78,18 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         }
     }
 
-    var colourIntensitySpinnerText = MutableLiveData(ColourHandler.readColourIntensity(_currentAccount.value.colourString))
+    var colourIntensitySpinnerText =
+        MutableLiveData(ColourHandler.readColourIntensity(_currentAccount.value.colourString))
     val colourIntensitySpinnerError = Transformations.map(colourIntensitySpinnerText) {
         when (it) {
             "A100", "A200", "A400", "A700" -> {
                 colourFamilies.value = ColourHandler.getColourFamiliesPartial()
-                if (colourFamilySpinnerText.value.toString() in listOf("Blue Grey", "Brown", "Grey")) {
+                if (colourFamilySpinnerText.value.toString() in listOf(
+                        "Blue Grey",
+                        "Brown",
+                        "Grey"
+                    )
+                ) {
                     "BUG! Please screenshot and report this bug. [A]"
                 } else {
                     updateColours()
@@ -119,7 +134,8 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    val accountNameETText = MutableLiveData<String>(_currentAccount.value.name)  // Two-way binding; cannot use MutableLiveData2
+    val accountNameETText =
+        MutableLiveData<String>(_currentAccount.value.name)  // Two-way binding; cannot use MutableLiveData2
     val accountNameETError = Transformations.map(accountNameETText) {
         val trimmed = it.trim()
         when {
@@ -137,11 +153,22 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         when {
             accountNameETError.value != null -> _showSnackBarText.value = "Invalid Account Name"
             colourFamilySpinnerError.value != null -> _showSnackBarText.value = "Invalid Colour"
-            colourIntensitySpinnerError.value != null -> _showSnackBarText.value = "Invalid Colour Intensity"
+            colourIntensitySpinnerError.value != null -> _showSnackBarText.value =
+                "Invalid Colour Intensity"
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {
+                        // TODO: MAKE THESE INTO A TRANSACTION. EITHER ALL PASS OR ALL FAIL. NO HALFWAY.
+                        // TODO ^ might become buggy if this continues (though you can always rerun it
+                        // TODO: and it'll correct itself)
                         userRepository.upsertAccount(_currentAccount.value)
+                        userRepository.updateTransactionsRenameAccount(
+                            oldAccountName = oldAccount.name,
+                            newAccountName = _currentAccount.value.name
+                        )
+                        if (UserPDS.getString("tst_default_account") == oldAccount.name) {
+                            UserPDS.putString("tst_default_account", _currentAccount.value.name)
+                        }
                         _navigateUp.value = true
                     }
                 } else {
@@ -154,19 +181,29 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
     fun deleteOldAccount() {
         viewModelScope.launch {
             userRepository.deleteAccount(oldAccount)
+            if (UserPDS.getString("tst_default_account") == oldAccount.name) {
+                UserPDS.putString(
+                    "tst_default_account",
+                    userRepository.accounts.value!!.find { it.name != oldAccount.name }!!.name
+                    // The .find check is there in case the LiveData hasn't been updated yet.
+                )
+            }
             _navigateUp.value = true
         }
     }
 
     private val _showSnackBarText = MutableLiveData2<String?>(null)
-    val showSnackBarText : LiveData<String?>
+    val showSnackBarText: LiveData<String?>
         get() = _showSnackBarText
+
     fun snackBarShown() {
         _showSnackBarText.value = null
     }
+
     private val _navigateUp = MutableLiveData2(false)
-    val navigateUp : LiveData<Boolean>
+    val navigateUp: LiveData<Boolean>
         get() = _navigateUp
+
     fun navigateUpHandled() {
         _navigateUp.value = false
     }

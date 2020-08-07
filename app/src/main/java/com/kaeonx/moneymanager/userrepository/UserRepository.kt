@@ -90,6 +90,25 @@ class UserRepository private constructor() {
         }
     }
 
+    suspend fun updateTransactionsRenameCategory(
+        type: String,
+        oldCategoryName: String,
+        newCategoryName: String
+    ) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.updateTransactionsRenameCategory(
+                type,
+                oldCategoryName,
+                newCategoryName
+            )
+        }
+    }
+
+    suspend fun updateTransactionsRenameAccount(oldAccountName: String, newAccountName: String) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.updateTransactionsRenameAccount(oldAccountName, newAccountName)
+        }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////
     /**

@@ -162,6 +162,11 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
                 if (changesWereMade()) {
                     viewModelScope.launch {
                         userRepository.upsertCategory(_currentCategory.value)
+                        userRepository.updateTransactionsRenameCategory(
+                            type = _currentCategory.value.type,
+                            oldCategoryName = oldCategory.name,
+                            newCategoryName = _currentCategory.value.name
+                        )
                         _navigateUp.value = true
                     }
                 } else {

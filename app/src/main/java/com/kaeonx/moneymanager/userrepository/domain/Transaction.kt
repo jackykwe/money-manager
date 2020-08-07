@@ -43,7 +43,7 @@ data class Transaction(
             repository.categories.value!!.find { it.name == this.category && it.type == this.type }
                 ?: Category(null, type, category, "F02D6", "Black")
         val accountObj = repository.accounts.value!!.find { it.name == this.account }
-            ?: Account(null, account, "White")
+            ?: Account(null, account, "TRANSPARENT")
         return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
     }
 }

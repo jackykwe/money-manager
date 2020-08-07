@@ -26,13 +26,25 @@ import java.util.*
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
 class TypeDetailViewModel(
-    private val type: String,
+    private val initType: String,
     initCalendar: Calendar,
     private val showCurrency: Boolean
 ) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()
+
+    private val _type = MutableLiveData2(initType)  // current Type
+    val type: LiveData<String>
+        get() = _type
+
+    internal fun swapType() {
+        _type.value = when (_type.value) {
+            "Income" -> "Expenses"
+            "Expenses" -> "Income"
+            else -> throw IllegalStateException("Unknown type ${_type.value}")
+        }
+    }
 
     private val _displayCalendar = MutableLiveData2(initCalendar)
 
@@ -42,6 +54,7 @@ class TypeDetailViewModel(
     )
     private val _typeRVPacket = MediatorLiveData<TypeRVPacket?>().apply {
 //        addSource(_displayCalendar) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
+        addSource(_type) { recalculateTypeRVPacket(_transactions.value) }
         addSource(_transactions) { recalculateTypeRVPacket(it) }
         addSource(xeRepository.xeRows) { recalculateTypeRVPacket(_transactions.value) }
     }
@@ -54,7 +67,7 @@ class TypeDetailViewModel(
             val homeCurrency = UserPDS.getString("ccc_home_currency")
 
             val amountsMap = mutableMapOf<String, BigDecimal>()
-            list.filter { it.type == type }.run {
+            list.filter { it.type == _type.value }.run {
                 map { it.category }.toSet().forEach {
                     amountsMap[it] = BigDecimal.ZERO
                 }
@@ -88,8 +101,8 @@ class TypeDetailViewModel(
                 .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
                 .forEachIndexed { index, entry ->
                     val categoryObject = repositoryCategories
-                        .find { it.name == entry.key && it.type == type }
-                        ?: Category(null, type, entry.key, "F02D6", "Black")
+                        .find { it.name == entry.key && it.type == _type.value }
+                        ?: Category(null, _type.value, entry.key, "F02D6", "Black")
                     val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
@@ -166,6 +179,7 @@ class TypeDetailViewModel(
             }
 
             val result = TypeRVPacket(
+                summaryType = _type.value,
                 summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
                 summaryLegendLLData = legendLLDataAL.toList(),
                 categoriesMonthString = CalendarHandler.getFormattedString(

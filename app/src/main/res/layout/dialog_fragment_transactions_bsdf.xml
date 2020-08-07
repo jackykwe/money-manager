@@ -345,6 +345,7 @@
                 android:layout_marginTop="12dp"
                 android:scaleType="fitXY"
                 android:tint="@color/grey_500"
+                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
                 app:srcCompat="@drawable/basic_rectangle"
                 app:tbsdHorizontalBarIVTop_tint="@{viewModel.currentTransaction.toIconDetail().iconRingColourString}" />
 
@@ -356,6 +357,7 @@
                 android:layout_marginBottom="12dp"
                 android:scaleType="fitXY"
                 android:tint="@color/grey_500"
+                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
                 app:srcCompat="@drawable/basic_rectangle"
                 app:tbsdHorizontalBarIVBottom_tint="@{viewModel.currentTransaction.toIconDetail().iconBGColourString}" />
 
