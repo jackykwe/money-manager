@@ -219,4 +219,57 @@
         <item name="android:paddingStart">8dp</item>
     </style>
 
+    <!-- rv_item_detail_X_summary -->
+    <style name="RVItemDetailXSummaryCard" parent="RVItemDetailXBodyCard">
+        <item name="contentPaddingBottom">8dp</item>
+        <item name="contentPaddingLeft">8dp</item>
+        <item name="contentPaddingRight">8dp</item>
+    </style>
+
+    <!-- rv_item_detail_X_body -->
+    <style name="RVItemDetailXBodyCard" parent="RvItemTransactionsCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintStart_toStartOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+    </style>
+
+    <style name="RVItemDetailXBodyLL">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="RVItemDetailXBodyLLCL">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingHorizontal">8dp</item>
+    </style>
+
+    <style name="RVItemDetailXBodyRangeTV">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Body2.Bold</item>
+    </style>
+
+    <style name="RVItemDetailXBodyCardRangeCurrencyTV">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingEnd">4dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Caption3</item>
+    </style>
+
+    <style name="RVItemDetailXBodyRangeAmountTV">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.MyApp.Body2</item>
+    </style>
+
 </resources>

@@ -204,9 +204,39 @@
         <argument
             android:name="initCalendar"
             app:argType="java.util.Calendar" />
+        <action
+            android:id="@+id/action_detailTypeFragment_to_detailCategoryFragment"
+            app:destination="@id/detailCategoryFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailCategoryFragment"
+        android:name="com.kaeonx.moneymanager.fragments.detail.DetailCategoryFragment"
+        tools:layout="@layout/fragment_detail_category">
         <argument
-            android:name="showCurrency"
-            app:argType="boolean" />
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="category"
+            app:argType="string" />
+        <argument
+            android:name="calendarStart"
+            app:argType="java.util.Calendar" />
+        <argument
+            android:name="calendarEnd"
+            app:argType="java.util.Calendar" />
+        <action
+            android:id="@+id/action_detailCategoryFragment_to_transactionEditFragment"
+            app:destination="@id/transactionEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
     </fragment>
 
 </navigation>

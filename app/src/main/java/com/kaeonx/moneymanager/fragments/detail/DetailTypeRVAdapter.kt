@@ -20,7 +20,7 @@ private const val SUMMARY = 0
 private const val CATEGORIES = 1
 
 class DetailTypeRVAdapter(
-    private val itemTypeOnClickListener: DetailTypeOnClickListener,
+    private val itemOnClickListener: DetailTypeOnClickListener,
     private val pieCentreClickListener: GenericOnClickListener
 ) :
     ListAdapter<DetailTypeRVItem, RecyclerView.ViewHolder>(DetailTypeRVItemDiffCallback()) {
@@ -66,7 +66,7 @@ class DetailTypeRVAdapter(
             is DetailTypeCategoriesViewHolder -> {
                 val data =
                     (getItem(position) as DetailTypeRVItem.DetailTypeRVItemCategories).detailTypeRVPacket
-                holder.rebind(data, itemTypeOnClickListener)
+                holder.rebind(data, itemOnClickListener)
             }
         }
     }
@@ -74,11 +74,8 @@ class DetailTypeRVAdapter(
     class DetailTypeSummaryViewHolder private constructor(private val binding: RvItemDetailTypeSummaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(
-            newPacketDetail: DetailTypeRVPacket,
-            pieCentreClickListener: GenericOnClickListener
-        ) {
-            binding.packet = newPacketDetail
+        fun rebind(newPacket: DetailTypeRVPacket, pieCentreClickListener: GenericOnClickListener) {
+            binding.packet = newPacket
             binding.pieCentreClickListener = pieCentreClickListener
             binding.executePendingBindings()
         }
@@ -95,12 +92,9 @@ class DetailTypeRVAdapter(
     class DetailTypeCategoriesViewHolder private constructor(private val binding: RvItemDetailTypeCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(
-            newPacketDetail: DetailTypeRVPacket,
-            itemTypeOnClickListener: DetailTypeOnClickListener
-        ) {
-            binding.packet = newPacketDetail
-            binding.onClickListener = itemTypeOnClickListener
+        fun rebind(newPacket: DetailTypeRVPacket, onClickListener: DetailTypeOnClickListener) {
+            binding.packet = newPacket
+            binding.onClickListener = onClickListener
             binding.executePendingBindings()
         }
 
@@ -131,8 +125,8 @@ class DetailTypeRVItemDiffCallback : DiffUtil.ItemCallback<DetailTypeRVItem>() {
     }
 }
 
-class DetailTypeOnClickListener(val clickListener: (category: String) -> Unit) {
-    fun onClick(category: String) = clickListener(category)
+class DetailTypeOnClickListener(val clickListener: (type: String, category: String) -> Unit) {
+    fun onClick(type: String, category: String) = clickListener(type, category)
 }
 
 // Can reuse
@@ -158,12 +152,12 @@ sealed class DetailTypeRVItem {
 data class DetailTypeRVPacket(
     val summaryType: String,
     val summaryPieData: PieData?,
-    val summaryLegendLLDatumDetails: List<DetailTypeLegendLLData>,
-    val categoriesMonthString: String,
-    val categoriesShowMonthCurrency: Boolean,
-    val categoriesMonthCurrency: String,
-    val categoriesMonthAmount: String,
-    val detailLLDatumDetails: List<DetailTypeCategoryLLData>
+    val summaryLegendLLData: List<DetailTypeLegendLLData>,
+    val categoriesRangeString: String,
+    val categoriesShowRangeCurrency: Boolean,
+    val categoriesRangeCurrency: String,
+    val categoriesRangeAmount: String,
+    val categoryLLData: List<DetailTypeCategoryLLData>
 )
 
 data class DetailTypeLegendLLData(
@@ -174,6 +168,7 @@ data class DetailTypeLegendLLData(
 
 data class DetailTypeCategoryLLData(
     val iconDetail: IconDetail,
+    val type: String,
     val categoryName: String,
     val categoryPercent: String,
     val showCurrency: Boolean,

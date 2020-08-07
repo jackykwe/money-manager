@@ -26,9 +26,8 @@ import java.util.*
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
 class DetailTypeViewModel(
-    private val initType: String,
-    initCalendar: Calendar,
-    private val showCurrency: Boolean
+    initType: String,
+    initCalendar: Calendar
 ) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
@@ -46,28 +45,36 @@ class DetailTypeViewModel(
         }
     }
 
-    private val _displayCalendar = MutableLiveData2(initCalendar)
+    private val _displayCalendarStart = MutableLiveData2(initCalendar)
+    val displayCalendarStart: LiveData<Calendar>
+        get() = _displayCalendarStart
+    private val _displayCalendarEnd =
+        MutableLiveData2(CalendarHandler.getEndOfMonthCalendar(initCalendar.clone() as Calendar))
+    val displayCalendarEnd: LiveData<Calendar>
+        get() = _displayCalendarEnd
 
     private val _transactions = userRepository.getTransactionsBetween(
-        _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
-        CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
+        _displayCalendarStart.value.timeInMillis,  // no need clone, since no edits will be made to it
+        _displayCalendarEnd.value.timeInMillis
     )
-    private val _typeRVPacket = MediatorLiveData<DetailTypeRVPacket?>().apply {
-//        addSource(_displayCalendar) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
-        addSource(_type) { recalculateTypeRVPacket(_transactions.value) }
-        addSource(_transactions) { recalculateTypeRVPacket(it) }
-        addSource(xeRepository.xeRows) { recalculateTypeRVPacket(_transactions.value) }
+    private val _detailTypeRVPacket = MediatorLiveData<DetailTypeRVPacket?>().apply {
+//        addSource(_displayCalendarStart) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
+        addSource(_type) { recalculateDetailTypeRVPacket(_transactions.value) }
+        addSource(_transactions) { recalculateDetailTypeRVPacket(it) }
+        addSource(xeRepository.xeRows) { recalculateDetailTypeRVPacket(_transactions.value) }
     }
     val detailTypeRVPacket: LiveData<DetailTypeRVPacket?>
-        get() = _typeRVPacket
+        get() = _detailTypeRVPacket
 
-    private fun recalculateTypeRVPacket(list: List<Transaction>?) {
+    private fun recalculateDetailTypeRVPacket(list: List<Transaction>?) {
         if (list == null) return
         viewModelScope.launch(Dispatchers.Default) {
             val homeCurrency = UserPDS.getString("ccc_home_currency")
 
+            val showRangeCurrency: Boolean
             val amountsMap = mutableMapOf<String, BigDecimal>()
             list.filter { it.type == _type.value }.run {
+                showRangeCurrency = any { it.originalCurrency != homeCurrency }
                 map { it.category }.toSet().forEach {
                     amountsMap[it] = BigDecimal.ZERO
                 }
@@ -87,9 +94,9 @@ class DetailTypeViewModel(
             }
 
             val legendLLDataAL = arrayListOf<DetailTypeLegendLLData>()
-            val detailLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
+            val categoryLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
-            val total = amountsMap.values.asIterable().sumByBigDecimal { it }
+            val rangeAmount = amountsMap.values.asIterable().sumByBigDecimal { it }
             val highestEntry = amountsMap.maxBy { it.value }
             val repositoryCategories = userRepository.categories.value!!
 
@@ -106,7 +113,7 @@ class DetailTypeViewModel(
                     val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
-                        .divide(total, MathContext(3, RoundingMode.HALF_UP))
+                        .divide(rangeAmount, MathContext(3, RoundingMode.HALF_UP))
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                     // For PieData & legendLLData
@@ -123,7 +130,7 @@ class DetailTypeViewModel(
                     } else if (index == amountsMap.size - 1) {
                         valueAccumulator = valueAccumulator.plus(entry.value)
                         val accumulatorPercent = valueAccumulator.times(BigDecimal("100"))
-                            .divide(total, MathContext(3, RoundingMode.HALF_UP))
+                            .divide(rangeAmount, MathContext(3, RoundingMode.HALF_UP))
                         val accumulatorPercentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                         val accumulatorColourInt = ColourHandler.getColourObject("Black")
@@ -141,12 +148,13 @@ class DetailTypeViewModel(
                     }
 
                     // For detailLLData
-                    detailLLDataAL.add(
+                    categoryLLDataAL.add(
                         DetailTypeCategoryLLData(
                             iconDetail = categoryObject.toIconDetail(),
+                            type = _type.value,
                             categoryName = entry.key,  // Needed for onClickListener to identify the typeCategory pressed
                             categoryPercent = "($percentDisplay%)",
-                            showCurrency = showCurrency,
+                            showCurrency = showRangeCurrency,
                             currency = homeCurrency,
                             categoryAmount = CurrencyHandler.displayAmount(entry.value),
                             barData = BarData(
@@ -181,19 +189,19 @@ class DetailTypeViewModel(
             val result = DetailTypeRVPacket(
                 summaryType = _type.value,
                 summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
-                summaryLegendLLDatumDetails = legendLLDataAL.toList(),
-                categoriesMonthString = CalendarHandler.getFormattedString(
-                    _displayCalendar.value,
+                summaryLegendLLData = legendLLDataAL.toList(),
+                categoriesRangeString = CalendarHandler.getFormattedString(  // TODO: Refactor Month into Range
+                    _displayCalendarStart.value,
                     "MMM yyyy"
                 ).toUpperCase(Locale.ROOT),
-                categoriesShowMonthCurrency = showCurrency,
-                categoriesMonthCurrency = homeCurrency,
-                categoriesMonthAmount = CurrencyHandler.displayAmount(total),
-                detailLLDatumDetails = detailLLDataAL.toList()
+                categoriesShowRangeCurrency = showRangeCurrency,
+                categoriesRangeCurrency = homeCurrency,
+                categoriesRangeAmount = CurrencyHandler.displayAmount(rangeAmount),
+                categoryLLData = categoryLLDataAL.toList()
             )
 
             withContext(Dispatchers.Main) {
-                _typeRVPacket.value = result
+                _detailTypeRVPacket.value = result
             }
         }
     }

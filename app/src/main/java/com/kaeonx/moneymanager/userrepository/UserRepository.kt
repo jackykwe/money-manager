@@ -72,6 +72,23 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
+    fun getCategoryTransactionsBetween(
+        type: String,
+        category: String,
+        startMillis: Long,
+        endMillis: Long
+    ): LiveData<List<Transaction>> =
+        Transformations.map(
+            database.userDatabaseDao.getCategoryTransactionsBetween(
+                type,
+                category,
+                startMillis,
+                endMillis
+            )
+        ) {
+            it.toDomain()
+        }
+
     suspend fun upsertTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertTransaction(transaction.toDatabase())
@@ -162,7 +179,7 @@ class UserRepository private constructor() {
 
         fun getInstance(): UserRepository {
             synchronized(this) {
-                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
+                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")

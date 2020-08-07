@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="categoryTransactionLLData"
+            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryTransactionLLData" />
+
+        <variable
+            name="onClickListener"
+            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryOnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_ll_item_height"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:padding="8dp">
+
+        <FrameLayout
+            android:id="@+id/categoryIconFL"
+            android:layout_width="@dimen/category_icon_FL_size"
+            android:layout_height="@dimen/category_icon_FL_size"
+            app:layout_constraintBottom_toBottomOf="@+id/transactionDateTimeTV"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            tools:layout_editor_absoluteX="8dp">
+
+            <include
+                android:id="@+id/categoryIconInclude"
+                layout="@layout/icon_transaction"
+                app:iconDetail="@{categoryTransactionLLData.transaction.toIconDetail()}" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/transactionMemoTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="2dp"
+            android:singleLine="true"
+            android:text="@{categoryTransactionLLData.transaction.memo}"
+            android:textAppearance="@style/TextAppearance.MyApp.Body3"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/transactionHBC"
+            app:layout_constraintEnd_toStartOf="@id/transactionPercentTV"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Memo Memo Memo Memo Memo Memo Memo Memo " />
+
+        <TextView
+            android:id="@+id/transactionPercentTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="2dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            android:text="@{categoryTransactionLLData.transactionPercent}"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption3"
+            app:layout_constraintBottom_toBottomOf="@+id/transactionMemoTV"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintStart_toEndOf="@+id/transactionMemoTV"
+            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            tools:text="(99.9%)" />
+
+        <TextView
+            android:id="@+id/transactionCurrencyTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:text="@{categoryTransactionLLData.transaction.originalCurrency}"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+            android:visibility="@{categoryTransactionLLData.showCurrency ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/transactionAmountTV"
+            app:layout_constraintEnd_toStartOf="@+id/transactionAmountTV"
+            app:layout_constraintTop_toTopOf="@+id/transactionAmountTV"
+            tools:ignore="RtlSymmetry"
+            tools:text="@string/placeholder_currency" />
+
+        <TextView
+            android:id="@+id/transactionAmountTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{categoryTransactionLLData.transaction.originalAmount}"
+            android:textAppearance="@style/TextAppearance.MyApp.Body3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            tools:text="@string/placeholder_amount" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="left"
+            app:constraint_referenced_ids="transactionAmountTV,transactionCurrencyTV"
+            tools:layout_editor_absoluteX="403dp"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/transactionHBC"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_marginVertical="2dp"
+            android:layout_marginStart="8dp"
+            app:bodyHBC_adapter="@{categoryTransactionLLData.barData}"
+            app:layout_constraintBottom_toTopOf="@+id/transactionDateTimeTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/categoryIconFL"
+            app:layout_constraintTop_toBottomOf="@+id/transactionMemoTV" />
+
+        <TextView
+            android:id="@+id/transactionDateTimeTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/categoryIconFL"
+            app:layout_constraintTop_toBottomOf="@+id/transactionHBC"
+            app:layout_constraintVertical_bias="0.0"
+            app:timeTV_text="@{categoryTransactionLLData.transaction.timestamp}"
+            tools:ignore="RtlSymmetry"
+            tools:text="@string/placeholder_currency" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

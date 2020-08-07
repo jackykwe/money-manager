@@ -87,7 +87,7 @@ fun AutoCompleteTextView.updateColourIntensitySpinnerAdapter(
     (adapter as ColourIntensityPickerArrayAdapter).updateData(newColourFamily, newColourIntensities)
 }
 
-
+// REUSED in rv_ll_item_detail_category
 @BindingAdapter("timeTV_text")
 fun TextView.setTimeTVText(timestamp: Long) {
     val dateFormat = UserPDS.getString("dsp_date_format")

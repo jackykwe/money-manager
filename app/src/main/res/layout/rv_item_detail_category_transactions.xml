@@ -9,11 +9,11 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryRVPacket" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView style="@style/RVItemDetailXBodyCard">
@@ -25,7 +25,7 @@
                 <TextView
                     android:id="@+id/transactionsRangeTV"
                     style="@style/RVItemDetailXBodyRangeTV"
-                    android:text="@{packet.categoriesRangeString}"
+                    android:text="@{packet.transactionsRangeString}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/barrier"
                     app:layout_constraintStart_toStartOf="parent"
@@ -35,8 +35,8 @@
                 <TextView
                     android:id="@+id/transactionsRangeCurrencyTV"
                     style="@style/RVItemDetailXBodyCardRangeCurrencyTV"
-                    android:text="@{packet.categoriesRangeCurrency}"
-                    android:visibility="@{packet.categoriesShowRangeCurrency ? View.VISIBLE : View.GONE}"
+                    android:text="@{packet.transactionsRangeCurrency}"
+                    android:visibility="@{packet.transactionsShowRangeCurrency ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/transactionsRangeAmountTV"
                     app:layout_constraintEnd_toStartOf="@id/transactionsRangeAmountTV"
                     app:layout_constraintStart_toEndOf="@id/barrier"
@@ -46,7 +46,7 @@
                 <TextView
                     android:id="@+id/transactionsRangeAmountTV"
                     style="@style/RVItemDetailXBodyRangeAmountTV"
-                    android:text="@{packet.categoriesRangeAmount}"
+                    android:text="@{packet.transactionsRangeAmount}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -72,11 +72,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:categoriesLL_onClickListener="@{onClickListener}"
-                app:categoriesLL_categoryLLData="@{packet.categoryLLData}" />
+                app:transactionsLL_onClickListener="@{onClickListener}"
+                app:transactionsLL_transactionLLData="@{packet.transactionLLData}" />
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-
 </layout>
