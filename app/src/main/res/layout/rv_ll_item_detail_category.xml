@@ -21,6 +21,7 @@
         android:layout_height="@dimen/card_ll_item_height"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{() -> onClickListener.onClick(categoryTransactionLLData.transaction.transactionId)}"
         android:gravity="center"
         android:padding="8dp">
 

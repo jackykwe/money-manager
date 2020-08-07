@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/RVItemDetailXSummaryCard">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/rv_item_detail_x_summary_CL_height">
+    <data>
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/categorySummaryLC"
+        <variable
+            name="packet"
+            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryRVPacket" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView style="@style/RVItemDetailXSummaryCard">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_margin="18dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/categorySummaryDescriptorLL" />
-        <!--        app:typeSummaryPC_adapter="@{packet.summaryPieData}"-->
+            android:layout_height="@dimen/rv_item_detail_x_summary_CL_height">
 
-        <LinearLayout
-            android:id="@+id/categorySummaryDescriptorLL"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:nestedScrollingEnabled="false"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/categorySummaryLC"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
-        <!--        app:typeSummaryLegendLL_data="@{packet.summaryLegendLLDatumDetails}"-->
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/categorySummaryLC"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_margin="0dp"
+                app:categorySummaryLC_adapter="@{packet.summaryLineData}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/categorySummaryDescriptorLL" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/categorySummaryDescriptorLL"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/categorySummaryLC"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+            <!--        app:typeSummaryLegendLL_data="@{packet.summaryLegendLLDatumDetails}"-->
 
-</com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

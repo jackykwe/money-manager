@@ -3,47 +3,32 @@ package com.kaeonx.moneymanager.fragments.detail
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.LineData
 import com.kaeonx.moneymanager.databinding.RvLlItemDetailCategoryBinding
 
-//
-//////////////////////////////////////////////////////////////////////////////////
-///**
-// * rv_item_detail_type_summary
-// */
-//////////////////////////////////////////////////////////////////////////////////
-//@BindingAdapter("typeSummaryPC_adapter")
-//fun PieChart.setTypeSummaryPCAdapter(pieData: PieData?) {
-//    if (legend.isEnabled) {
-//        setTouchEnabled(false)
-//        setNoDataText("Hello, you wanna provide some data?")
-//        setDrawMarkers(false)
-//        description.isEnabled = false
-//
-//        setDrawEntryLabels(false)
-//        //    centerText = ""
-//        //    setUsePercentValues(true)
-//        holeRadius = 75f
-//        transparentCircleRadius = 80f
-//
-//        legend.isEnabled = false
-//    }
-//    data = pieData
-//    notifyDataSetChanged()
-//    invalidate()
-//}
-//
-//@BindingAdapter("typeSummaryLegendLL_data")
-//fun LinearLayout.setTypeSummaryLegendLLData(list: List<DetailTypeLegendLLData>) {
-//    removeAllViews()
-//    val layoutInflater = LayoutInflater.from(context)
-//    for (typeLegendLLData in list) {
-//        val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
-//        itemBinding.typeLegendLLData = typeLegendLLData
-//        itemBinding.executePendingBindings()
-//        addView(itemBinding.root)
-//    }
-//}
-//
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * rv_item_detail_category_summary
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("categorySummaryLC_adapter")
+fun LineChart.setTypeSummaryPCAdapter(lineData: LineData) {
+    if (legend.isEnabled) {
+        setTouchEnabled(false)
+        setNoDataText("Hello, you wanna provide some data?")
+        setDrawMarkers(false)
+        description.isEnabled = false
+
+        setViewPortOffsets(0f, 0f, 0f, 0f)  // remove padding
+        legend.isEnabled = false
+    }
+    data = lineData
+    notifyDataSetChanged()
+    invalidate()
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////
 ///**
 // * ll_item_detail_type_legend

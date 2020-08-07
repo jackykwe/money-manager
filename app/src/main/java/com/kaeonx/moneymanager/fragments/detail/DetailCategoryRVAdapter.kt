@@ -72,9 +72,8 @@ class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategor
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(newPacket: DetailCategoryRVPacket) {
-//            binding.packet = newPacketDetail
-//            binding.pieCentreClickListener = pieCentreClickListener
-//            binding.executePendingBindings()
+            binding.packet = newPacket
+            binding.executePendingBindings()
         }
 
         companion object {
@@ -146,7 +145,7 @@ sealed class DetailCategoryRVItem {
 
 data class DetailCategoryRVPacket(
     val summaryCategory: String,
-    val summaryLineData: LineData?,
+    val summaryLineData: LineData,
     val transactionsRangeString: String,
     val transactionsShowRangeCurrency: Boolean,
     val transactionsRangeCurrency: String,
