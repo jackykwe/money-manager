@@ -25,7 +25,7 @@ import java.util.*
 
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
-class TypeDetailViewModel(
+class DetailTypeViewModel(
     private val initType: String,
     initCalendar: Calendar,
     private val showCurrency: Boolean
@@ -52,13 +52,13 @@ class TypeDetailViewModel(
         _displayCalendar.value.timeInMillis,  // no need clone, since no edits will be made to it
         CalendarHandler.getEndOfMonthMillis(_displayCalendar.value.clone() as Calendar)
     )
-    private val _typeRVPacket = MediatorLiveData<TypeRVPacket?>().apply {
+    private val _typeRVPacket = MediatorLiveData<DetailTypeRVPacket?>().apply {
 //        addSource(_displayCalendar) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
         addSource(_type) { recalculateTypeRVPacket(_transactions.value) }
         addSource(_transactions) { recalculateTypeRVPacket(it) }
         addSource(xeRepository.xeRows) { recalculateTypeRVPacket(_transactions.value) }
     }
-    val typeRVPacket: LiveData<TypeRVPacket?>
+    val detailTypeRVPacket: LiveData<DetailTypeRVPacket?>
         get() = _typeRVPacket
 
     private fun recalculateTypeRVPacket(list: List<Transaction>?) {
@@ -86,8 +86,8 @@ class TypeDetailViewModel(
                 }
             }
 
-            val legendLLDataAL = arrayListOf<TypeLegendLLData>()
-            val detailLLDataAL = arrayListOf<TypeCategoryLLData>()
+            val legendLLDataAL = arrayListOf<DetailTypeLegendLLData>()
+            val detailLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
             val total = amountsMap.values.asIterable().sumByBigDecimal { it }
             val highestEntry = amountsMap.maxBy { it.value }
@@ -114,7 +114,7 @@ class TypeDetailViewModel(
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
-                            TypeLegendLLData(
+                            DetailTypeLegendLLData(
                                 colour = colourInt,
                                 categoryName = entry.key,
                                 categoryPercent = "($percentDisplay%)"
@@ -130,7 +130,7 @@ class TypeDetailViewModel(
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
-                            TypeLegendLLData(
+                            DetailTypeLegendLLData(
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
@@ -142,7 +142,7 @@ class TypeDetailViewModel(
 
                     // For detailLLData
                     detailLLDataAL.add(
-                        TypeCategoryLLData(
+                        DetailTypeCategoryLLData(
                             iconDetail = categoryObject.toIconDetail(),
                             categoryName = entry.key,  // Needed for onClickListener to identify the typeCategory pressed
                             categoryPercent = "($percentDisplay%)",
@@ -178,10 +178,10 @@ class TypeDetailViewModel(
                 sliceSpace = 2f  // in dp (as float)
             }
 
-            val result = TypeRVPacket(
+            val result = DetailTypeRVPacket(
                 summaryType = _type.value,
                 summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
-                summaryLegendLLData = legendLLDataAL.toList(),
+                summaryLegendLLDatumDetails = legendLLDataAL.toList(),
                 categoriesMonthString = CalendarHandler.getFormattedString(
                     _displayCalendar.value,
                     "MMM yyyy"
@@ -189,7 +189,7 @@ class TypeDetailViewModel(
                 categoriesShowMonthCurrency = showCurrency,
                 categoriesMonthCurrency = homeCurrency,
                 categoriesMonthAmount = CurrencyHandler.displayAmount(total),
-                detailLLData = detailLLDataAL.toList()
+                detailLLDatumDetails = detailLLDataAL.toList()
             )
 
             withContext(Dispatchers.Main) {

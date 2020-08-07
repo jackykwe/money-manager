@@ -56,8 +56,8 @@
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
         <action
-            android:id="@+id/action_transactionsFragment_to_typeDetailFragment"
-            app:destination="@id/typeDetailFragment"
+            android:id="@+id/action_transactionsFragment_to_detailTypeFragment"
+            app:destination="@id/detailTypeFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
@@ -195,14 +195,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/typeDetailFragment"
-        android:name="com.kaeonx.moneymanager.fragments.type.TypeDetailFragment"
-        tools:layout="@layout/fragment_type_detail">
+        android:id="@+id/detailTypeFragment"
+        android:name="com.kaeonx.moneymanager.fragments.type.DetailTypeFragment"
+        tools:layout="@layout/fragment_detail_type">
         <argument
-            android:name="type"
+            android:name="initType"
             app:argType="string" />
         <argument
-            android:name="displayCalendar"
+            android:name="initCalendar"
             app:argType="java.util.Calendar" />
         <argument
             android:name="showCurrency"

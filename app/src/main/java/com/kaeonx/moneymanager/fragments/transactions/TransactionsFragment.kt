@@ -92,8 +92,8 @@ class TransactionsFragment : Fragment() {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
                             navigate(
-                                TransactionsFragmentDirections.actionTransactionsFragmentToTypeDetailFragment(
-                                    "Expenses",
+                                TransactionsFragmentDirections.actionTransactionsFragmentToDetailTypeFragment(
+                                    "Expenses",  // todo: When there are more than one possible summary setting, peg to that.
                                     viewModel.displayCalendar.value!!.clone() as Calendar,
                                     true // todo: viewModel to have a var with private set
                                 )

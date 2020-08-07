@@ -9,11 +9,11 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.type.TypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.type.DetailTypeRVPacket" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.type.TypeDetailOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.type.DetailTypeOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -97,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:categoriesLL_typeCategoryList="@{packet.detailLLData}"
+                app:categoriesLL_typeCategoryList="@{packet.detailLLDatumDetails}"
                 app:categoriesLL_onClickListener="@{onClickListener}" />
 
         </LinearLayout>

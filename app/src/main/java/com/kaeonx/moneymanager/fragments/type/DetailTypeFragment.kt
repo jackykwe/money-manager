@@ -11,23 +11,21 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
-import com.kaeonx.moneymanager.databinding.FragmentTypeDetailBinding
+import com.kaeonx.moneymanager.databinding.FragmentDetailTypeBinding
 
-private const val TAG = "exfrag"
+class DetailTypeFragment : Fragment() {
 
-class TypeDetailFragment : Fragment() {
+    private lateinit var binding: FragmentDetailTypeBinding
 
-    private lateinit var binding: FragmentTypeDetailBinding
-
-    private val args: TypeDetailFragmentArgs by navArgs()
+    private val args: DetailTypeFragmentArgs by navArgs()
     private val viewModelFactory by lazy {
-        TypeDetailViewModelFactory(
-            args.type,
-            args.displayCalendar,
+        DetailTypeViewModelFactory(
+            args.initType,
+            args.initCalendar,
             args.showCurrency
         )
     }
-    private val viewModel: TypeDetailViewModel by viewModels { viewModelFactory }
+    private val typeViewModel: DetailTypeViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,15 +34,15 @@ class TypeDetailFragment : Fragment() {
     ): View? {
 //        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
 //            args.type
-        binding = FragmentTypeDetailBinding.inflate(inflater, container, false)
+        binding = FragmentDetailTypeBinding.inflate(inflater, container, false)
         binding.typeRV.apply {
             setHasFixedSize(true)
-            adapter = TypeDetailRVAdapter(
-                TypeDetailOnClickListener {
+            adapter = DetailTypeRVAdapter(
+                DetailTypeOnClickListener {
                     Toast.makeText(requireContext(), "Oh? You want $it?", Toast.LENGTH_SHORT).show()
                 },
                 GenericOnClickListener {
-                    viewModel.swapType()
+                    typeViewModel.swapType()
                 }
             )
         }
@@ -52,13 +50,13 @@ class TypeDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.type.observe(viewLifecycleOwner) {
+        typeViewModel.type.observe(viewLifecycleOwner) {
             (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
                 it
         }
 
-        viewModel.typeRVPacket.observe(viewLifecycleOwner) {
-            (binding.typeRV.adapter as TypeDetailRVAdapter).apply {
+        typeViewModel.detailTypeRVPacket.observe(viewLifecycleOwner) {
+            (binding.typeRV.adapter as DetailTypeRVAdapter).apply {
                 if (it == null) return@observe
 //                submitList(null)
                 submitList2(it)

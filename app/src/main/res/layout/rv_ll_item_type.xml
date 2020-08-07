@@ -9,11 +9,11 @@
 
         <variable
             name="typeCategoryLLData"
-            type="com.kaeonx.moneymanager.fragments.type.TypeCategoryLLData" />
+            type="com.kaeonx.moneymanager.fragments.type.DetailTypeCategoryLLData" />
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.type.TypeDetailOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.type.DetailTypeOnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

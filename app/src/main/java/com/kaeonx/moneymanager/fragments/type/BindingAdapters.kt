@@ -12,12 +12,12 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.customclasses.HorizontalRoundedBarChartRenderer
-import com.kaeonx.moneymanager.databinding.LlItemTypeDetailLegendBinding
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemTypeBinding
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * rv_item_type_detail_summary
+ * rv_item_detail_type_summary
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("typeSummaryPC_adapter")
@@ -42,11 +42,11 @@ fun PieChart.setTypeSummaryPCAdapter(pieData: PieData?) {
 }
 
 @BindingAdapter("typeSummaryLegendLL_data")
-fun LinearLayout.setTypeSummaryLegendLLData(list: List<TypeLegendLLData>) {
+fun LinearLayout.setTypeSummaryLegendLLData(list: List<DetailTypeLegendLLData>) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     for (typeLegendLLData in list) {
-        val itemBinding = LlItemTypeDetailLegendBinding.inflate(layoutInflater, null, false)
+        val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
         itemBinding.typeLegendLLData = typeLegendLLData
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
@@ -55,7 +55,7 @@ fun LinearLayout.setTypeSummaryLegendLLData(list: List<TypeLegendLLData>) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * ll_item_type_detail_legend
+ * ll_item_detail_type_legend
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("nameTV_typeface")
@@ -67,20 +67,20 @@ fun TextView.setNameTVTypeface(name: String) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * rv_item_type_detail_categories
+ * rv_item_detail_type_categories
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("categoriesLL_typeCategoryList", "categoriesLL_onClickListener")
 fun LinearLayout.setCategoriesLLAdapter(
-    list: List<TypeCategoryLLData>,
-    itemOnClickListener: TypeDetailOnClickListener
+    list: List<DetailTypeCategoryLLData>,
+    itemTypeOnClickListener: DetailTypeOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     for (typeCategoryLLData in list) {
         val itemBinding = RvLlItemTypeBinding.inflate(layoutInflater, null, false)
         itemBinding.typeCategoryLLData = typeCategoryLLData
-        itemBinding.onClickListener = itemOnClickListener
+        itemBinding.onClickListener = itemTypeOnClickListener
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
     }

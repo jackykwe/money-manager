@@ -6,7 +6,7 @@
 
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.type.TypeRVPacket" />
+            type="com.kaeonx.moneymanager.fragments.type.DetailTypeRVPacket" />
 
         <variable
             name="pieCentreClickListener"
@@ -83,7 +83,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/typeSummaryPCFL"
                 app:layout_constraintTop_toTopOf="@id/typeSummaryPCFL"
-                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}" />
+                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLDatumDetails}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
