@@ -48,18 +48,16 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/summaryLeftCL"
                     android:layout_width="0dp"
-                    android:onClick="@{() -> budgetListener.onClick()}"
                     android:layout_height="match_parent"
+                    android:onClick="@{() -> budgetListener.onClick()}"
                     app:layout_constraintEnd_toStartOf="@+id/dividerLeft"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:id="@+id/summaryBudgetAmountTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/RvItemtransactionsSummaryAmount"
                         android:text="@{summaryData.budget}"
-                        android:textAppearance="@style/TextAppearance.MyApp.Body1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -73,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:paddingEnd="4dp"
                         android:text="@{summaryData.homeCurrency}"
-                        android:textAppearance="@style/TextAppearance.MyApp.Caption2"
+                        android:textAppearance="@style/TextAppearance.MyApp.Caption3"
                         android:visibility="@{summaryData.showCurrencyMode1 ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/summaryBudgetAmountTV"
                         app:layout_constraintEnd_toStartOf="@+id/summaryBudgetAmountTV"
@@ -102,6 +100,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/summaryCentreCL"
                     android:layout_width="0dp"
+                    android:padding="8dp"
                     android:layout_height="match_parent"
                     android:onClick="@{() -> expensesListener.onClick()}"
                     app:layout_constraintEnd_toStartOf="@+id/dividerRight"
@@ -111,10 +110,8 @@
 
                     <TextView
                         android:id="@+id/summaryExpensesAmountTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/RvItemtransactionsSummaryAmount"
                         android:text="@{summaryData.monthExpenses}"
-                        android:textAppearance="@style/TextAppearance.MyApp.Body1"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -128,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:paddingEnd="4dp"
                         android:text="@{summaryData.homeCurrency}"
-                        android:textAppearance="@style/TextAppearance.MyApp.Caption2"
+                        android:textAppearance="@style/TextAppearance.MyApp.Caption3"
                         android:visibility="@{summaryData.showCurrencyMode1 ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/summaryExpensesAmountTV"
                         app:layout_constraintEnd_toStartOf="@+id/summaryExpensesAmountTV"
@@ -174,9 +171,9 @@
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/budgetPC"
-                    android:onClick="@{() -> pieChartListener.onClick()}"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:onClick="@{() -> pieChartListener.onClick()}"
                     app:budgetPC_adapter="@{summaryData.pieData}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"

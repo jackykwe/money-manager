@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CalendarHandler private constructor() {
+
     companion object {
 
         fun getFormattedString(calendar: Calendar, pattern: String): String {

@@ -54,18 +54,15 @@ class DetailCategoryViewModel(
     val categoryTypeRVPacket: LiveData<DetailCategoryRVPacket?>
         get() = _categoryTypeRVPacket
 
-    private fun generateRangeString(): String {
-        val start = CalendarHandler.getFormattedString(calendarStart, "MMM yyyy")
-            .toUpperCase(Locale.ROOT)
-        val end = CalendarHandler.getFormattedString(calendarEnd, "MMM yyyy")
-            .toUpperCase(Locale.ROOT)
-        return "$start - $end"
-    }
-
     private val numberOfDays =
         BigDecimal(calendarEnd.timeInMillis - calendarStart.timeInMillis)
             .divide(BigDecimal("86400000"), 0, RoundingMode.UP)
             .toInt()
+    private val numberOfMonths = run {
+        val yearDiff = calendarEnd.get(Calendar.YEAR) - calendarStart.get(Calendar.YEAR)
+        val monthDiff = calendarEnd.get(Calendar.MONTH) - calendarStart.get(Calendar.MONTH)
+        return@run 1 + yearDiff * 12 + monthDiff
+    }
 
     private fun calculateDayNumber(millis: Long): Int =
         BigDecimal(millis - calendarStart.timeInMillis)
@@ -73,6 +70,38 @@ class DetailCategoryViewModel(
             .setScale(0, RoundingMode.FLOOR)
             .toInt()
             .plus(1)  // Floor and plus(1) to account for 00:00 transactions.
+
+    private fun generateXAxisLabelMap(): Map<Float, String> {
+        return when (numberOfMonths) {
+            1 -> mapOf(
+                1f to "1",
+                5f to "5",
+                10f to "10",
+                15f to "15",
+                20f to "20",
+                25f to "25",
+                30f to "30"
+            )
+            12 -> {
+                val result = mutableMapOf<Float, String>()
+                val localCal = calendarStart.clone() as Calendar
+                do {
+                    result[localCal.get(Calendar.DAY_OF_YEAR).toFloat()] =
+                        CalendarHandler.getFormattedString(localCal.clone() as Calendar, "MMM")
+                } while (localCal.get(Calendar.MONTH) != 0)
+                result.toMap()
+            }
+            else -> throw IllegalStateException("Variable ranges are not implemented yet")
+        }
+    }
+
+    private fun generateRangeString(): String = when (numberOfMonths) {
+        1 -> CalendarHandler.getFormattedString(calendarStart.clone() as Calendar, "MMM yyyy")
+            .toUpperCase(Locale.ROOT)
+        12 -> CalendarHandler.getFormattedString(calendarStart.clone() as Calendar, "yyyy")
+            .toUpperCase(Locale.ROOT)
+        else -> throw IllegalStateException("Variable ranges not yet implemented")
+    }
 
     private fun recalculateTypeRVPacket(list: List<Transaction>?) {
         if (list == null) return
@@ -105,7 +134,7 @@ class DetailCategoryViewModel(
             }
 
             val transactionLLDataAL = arrayListOf<DetailCategoryTransactionLLData>()
-            list.sortedByDescending { it.homeAmount } // So that highest valued transaction stays on top
+            list//.sortedByDescending { it.homeAmount } // So that highest valued transaction stays on top
                 .forEach {
                     // Calculates everything else
                     val percent = it.homeAmount.times(BigDecimal("100"))
@@ -115,7 +144,7 @@ class DetailCategoryViewModel(
                     transactionLLDataAL.add(
                         DetailCategoryTransactionLLData(
                             transaction = it,
-                            transactionPercent = CurrencyHandler.displayAmount(percentDisplay),
+                            transactionPercent = "(${CurrencyHandler.displayAmount(percentDisplay)}%)",
                             showCurrency = it.originalCurrency != homeCurrency,
                             barData = BarData(
                                 BarDataSet(
@@ -142,11 +171,12 @@ class DetailCategoryViewModel(
                 }
             // CALCULATION OF EVERYTHING ELSE (END)
 
-            // CALCULATION OF LINE DATA (START)
+            // CALCULATION OF LINE DATA AND EXTRAS (START)
             val dayAmountMap = mutableMapOf<Float, BigDecimal>()
             for (i in 1..numberOfDays) {
                 dayAmountMap[i.toFloat()] = BigDecimal.ZERO
             }
+
             list.forEach {
                 val dayNumber = calculateDayNumber(it.timestamp).toFloat()
                 dayAmountMap.replace(dayNumber, dayAmountMap[dayNumber]!!.plus(it.homeAmount))
@@ -165,11 +195,32 @@ class DetailCategoryViewModel(
                 }
             // CALCULATION OF LINE DATA (END)
 
+            val dayAverageBD = rangeAmount.divide(BigDecimal(numberOfDays), 2, RoundingMode.HALF_UP)
+            val monthAverageBD = if (numberOfMonths > 1) {
+                rangeAmount.divide(
+                    BigDecimal(numberOfMonths),
+                    2,
+                    RoundingMode.HALF_UP
+                )
+            } else null
             val result = DetailCategoryRVPacket(
                 summaryCategory = category,
                 summaryLineData = LineData(dataSet).apply {
                     setDrawValues(false)
                 },
+                summaryExtras = DetailCategorySummaryExtras(
+                    dayAverageValue = dayAverageBD.toFloat(),
+                    dayAverageText = "Daily Average: " +
+                            (if (showRangeCurrency) "$homeCurrency " else "") +
+                            CurrencyHandler.displayAmount(dayAverageBD),
+                    monthAverageValue = monthAverageBD?.toFloat(),
+                    monthAverageText = monthAverageBD?.let {
+                        "Daily Average: " +
+                                (if (showRangeCurrency) "$homeCurrency " else "") +
+                                CurrencyHandler.displayAmount(it)
+                    },
+                    xAxisLabelMap = generateXAxisLabelMap()
+                ),
                 transactionsRangeString = generateRangeString(),
                 transactionsShowRangeCurrency = showRangeCurrency,
                 transactionsRangeCurrency = homeCurrency,

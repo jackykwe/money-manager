@@ -146,11 +146,20 @@ sealed class DetailCategoryRVItem {
 data class DetailCategoryRVPacket(
     val summaryCategory: String,
     val summaryLineData: LineData,
+    val summaryExtras: DetailCategorySummaryExtras,
     val transactionsRangeString: String,
     val transactionsShowRangeCurrency: Boolean,
     val transactionsRangeCurrency: String,
     val transactionsRangeAmount: String,
     val transactionLLData: List<DetailCategoryTransactionLLData>
+)
+
+data class DetailCategorySummaryExtras(
+    val dayAverageValue: Float,
+    val dayAverageText: String,
+    val monthAverageValue: Float?,
+    val monthAverageText: String?,
+    val xAxisLabelMap: Map<Float, String>
 )
 
 data class DetailCategoryTransactionLLData(

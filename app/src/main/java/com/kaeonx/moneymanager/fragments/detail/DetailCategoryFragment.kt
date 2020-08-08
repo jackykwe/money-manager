@@ -49,11 +49,6 @@ class DetailCategoryFragment : Fragment() {
                             )
                         }
                     }
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Oh? You want $transactionId?",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
                 }
             )
         }
