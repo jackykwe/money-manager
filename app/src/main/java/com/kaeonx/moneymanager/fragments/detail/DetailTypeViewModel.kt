@@ -52,15 +52,33 @@ class DetailTypeViewModel(
     val displayCalendarEnd: LiveData<Calendar>
         get() = _displayCalendarEnd
 
-    private val _transactions = userRepository.getTransactionsBetween(
-        _displayCalendarStart.value.timeInMillis,  // no need clone, since no edits will be made to it
-        _displayCalendarEnd.value.timeInMillis
-    )
+    internal fun selectMonth(newMonth: Int, newYear: Int) {
+        isYearMode = false
+        _displayCalendarStart.value = _displayCalendarStart.value.apply {
+            set(Calendar.MONTH, newMonth)
+            set(Calendar.YEAR, newYear)
+        }
+        _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
+            _displayCalendarStart.value.clone() as Calendar
+        )
+    }
+
+    private var _transactions: LiveData<List<Transaction>>? = null
+    private fun updateTransactions() {
+        if (_transactions != null) {
+            _detailTypeRVPacket.removeSource(_transactions!!)
+        }
+        _transactions = userRepository.getTransactionsBetween(
+            _displayCalendarStart.value.timeInMillis,  // no need clone, since no edits will be made to it
+            _displayCalendarEnd.value.timeInMillis  // no need clone, since no edits will be made to it
+        )
+        _detailTypeRVPacket.addSource(_transactions!!) { recalculateDetailTypeRVPacket(it) }
+    }
+
     private val _detailTypeRVPacket = MediatorLiveData<DetailTypeRVPacket?>().apply {
-//        addSource(_displayCalendarStart) { recalculateTypeRVPacket(_transactions.value) }  // TODO: CHANGE BETWEEN MONTH, YEAR, AND CUSTOM DATE RANGE
-        addSource(_type) { recalculateDetailTypeRVPacket(_transactions.value) }
-        addSource(_transactions) { recalculateDetailTypeRVPacket(it) }
-        addSource(xeRepository.xeRows) { recalculateDetailTypeRVPacket(_transactions.value) }
+        addSource(_displayCalendarEnd) { updateTransactions() }
+        addSource(_type) { recalculateDetailTypeRVPacket(_transactions?.value) }
+        addSource(xeRepository.xeRows) { recalculateDetailTypeRVPacket(_transactions?.value) }
     }
     val detailTypeRVPacket: LiveData<DetailTypeRVPacket?>
         get() = _detailTypeRVPacket
@@ -121,6 +139,7 @@ class DetailTypeViewModel(
                         colourList.add(colourInt)
                         legendLLDataAL.add(
                             DetailTypeLegendLLData(
+                                noDataFlag = false,
                                 colour = colourInt,
                                 categoryName = entry.key,
                                 categoryPercent = "($percentDisplay%)"
@@ -130,13 +149,15 @@ class DetailTypeViewModel(
                         valueAccumulator = valueAccumulator.plus(entry.value)
                         val accumulatorPercent = valueAccumulator.times(BigDecimal("100"))
                             .divide(rangeAmount, 3, RoundingMode.HALF_UP)
-                        val accumulatorPercentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
+                        val accumulatorPercentDisplay =
+                            percent.setScale(1, RoundingMode.HALF_EVEN)
 
                         val accumulatorColourInt = ColourHandler.getColourObject("Black")
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
                             DetailTypeLegendLLData(
+                                noDataFlag = false,
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
@@ -179,21 +200,48 @@ class DetailTypeViewModel(
                         )
                     )
                 }
-            val dataSet = PieDataSet(entries, null).apply {
-                colors = colourList
-                setDrawValues(false)
-                selectionShift = 0f  // removes padding
-                sliceSpace = 2f  // in dp (as float)
+            val dataSet = if (entries.isNotEmpty()) {
+                PieDataSet(entries, null).apply {
+                    colors = colourList
+                    setDrawValues(false)
+                    selectionShift = 0f  // removes padding
+                    sliceSpace = 2f  // in dp (as float)
+                }
+            } else {
+                PieDataSet(listOf(PieEntry(1f, "noData")), null).apply {
+                    colors = listOf(ColourHandler.getColourObject("Grey,200"))
+                    setDrawValues(false)
+                    selectionShift = 0f  // removes padding
+                    sliceSpace = 2f  // in dp (as float)
+                }
+            }
+
+            if (legendLLDataAL.isEmpty()) {
+                legendLLDataAL.add(
+                    DetailTypeLegendLLData(
+                        noDataFlag = true,
+                        colour = ColourHandler.getColourObject("Grey,200"),
+                        categoryName = "Nothing to show",
+                        categoryPercent = ""
+                    )
+                )
             }
 
             val result = DetailTypeRVPacket(
                 summaryType = _type.value,
-                summaryPieData = if (entries.isEmpty()) null else PieData(dataSet),
+                summaryPieData = PieData(dataSet),
                 summaryLegendLLData = legendLLDataAL.toList(),
-                categoriesRangeString = CalendarHandler.getFormattedString(  // TODO: Refactor Month into Range
-                    _displayCalendarStart.value,
-                    "MMM yyyy"
-                ).toUpperCase(Locale.ROOT),
+                categoriesRangeString = if (isYearMode) {
+                    CalendarHandler.getFormattedString(
+                        _displayCalendarStart.value.clone() as Calendar,
+                        "yyyy"
+                    ).toUpperCase(Locale.ROOT)
+                } else {
+                    CalendarHandler.getFormattedString(
+                        _displayCalendarStart.value.clone() as Calendar,
+                        "MMM yyyy"
+                    )
+                },
                 categoriesShowRangeCurrency = showRangeCurrency,
                 categoriesRangeCurrency = homeCurrency,
                 categoriesRangeAmount = CurrencyHandler.displayAmount(rangeAmount),
@@ -203,6 +251,27 @@ class DetailTypeViewModel(
             withContext(Dispatchers.Main) {
                 _detailTypeRVPacket.value = result
             }
+        }
+    }
+
+    private var isYearMode = false
+    private lateinit var archiveCalendarStart: Calendar
+    internal fun toggleView() {
+        if (!isYearMode) {
+            archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar
+            _displayCalendarStart.value = CalendarHandler.getStartOfYearCalendar(
+                _displayCalendarStart.value
+            )
+            _displayCalendarEnd.value = CalendarHandler.getEndOfYearCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = true
+        } else {
+            _displayCalendarStart.value = archiveCalendarStart
+            _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = false
         }
     }
 }

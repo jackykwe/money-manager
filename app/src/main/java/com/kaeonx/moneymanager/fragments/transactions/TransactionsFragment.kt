@@ -73,6 +73,7 @@ class TransactionsFragment : Fragment() {
                         if (currentDestination?.id == R.id.transactionsFragment) {
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
+                                    R.id.transactionsFragment,
                                     viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
                                 )
                             )

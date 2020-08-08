@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="android.graphics.Typeface" />
+        <import type="android.view.View" />
 
         <variable
             name="typeLegendLLData"
@@ -40,7 +40,6 @@
             android:paddingHorizontal="4dp"
             android:singleLine="true"
             android:text="@{typeLegendLLData.categoryName}"
-            app:nameTV_typeface="@{typeLegendLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/formIV"
@@ -48,6 +47,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/formIV"
             app:layout_constraintTop_toTopOf="@id/formIV"
+            app:nameTV_typeface="@{typeLegendLLData.categoryName}"
             tools:layout_editor_absoluteY="0dp"
             tools:text="Category Name Category Name Category Name Category Name Ellipsise" />
 
@@ -64,7 +64,6 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/nameTV"
             app:layout_constraintTop_toTopOf="@id/nameTV"
-            tools:layout_editor_absoluteY="0dp"
             tools:text="(99.9%)" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

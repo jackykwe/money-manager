@@ -8,12 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -144,9 +143,9 @@ class TransactionsFragmentViewModel : ViewModel() {
                     PieEntry(BigDecimal.ONE.minus(dayDivDays).toFloat(), "remainder")
                 )
                 colourList = listOf(
-                    App.context.resources.getColor(R.color.green_500, null),
-                    App.context.resources.getColor(R.color.grey_200, null),
-                    App.context.resources.getColor(R.color.white, null)
+                    ColourHandler.getColourObject("Green,500"),
+                    ColourHandler.getColourObject("Grey,200"),
+                    ColourHandler.getColourObject("White")
                 )
             } else {
                 entries = listOf(
@@ -155,9 +154,9 @@ class TransactionsFragmentViewModel : ViewModel() {
                     PieEntry(BigDecimal.ONE.minus(exDivBud).toFloat(), "remainder")
                 )
                 colourList = listOf(
-                    App.context.resources.getColor(R.color.green_500, null),
-                    App.context.resources.getColor(R.color.green_200, null),
-                    App.context.resources.getColor(R.color.white, null)
+                    ColourHandler.getColourObject("Green,500"),
+                    ColourHandler.getColourObject("Amber,500"),
+                    ColourHandler.getColourObject("White")
                 )
             }
         } else {
@@ -168,9 +167,9 @@ class TransactionsFragmentViewModel : ViewModel() {
                 PieEntry(BigDecimal.ONE.minus(budDivEx).toFloat(), "over ex")
             )
             colourList = listOf(
-                App.context.resources.getColor(R.color.green_500, null),
-                App.context.resources.getColor(R.color.green_200, null),
-                App.context.resources.getColor(R.color.red_500, null)
+                ColourHandler.getColourObject("Green,500"),
+                ColourHandler.getColourObject("Amber,500"),
+                ColourHandler.getColourObject("Red,500")
             )
         }
 

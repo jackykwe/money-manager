@@ -13,6 +13,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentDetailTypeBinding
+import com.kaeonx.moneymanager.fragments.transactions.MY_PICKER_RESULT
 
 class DetailTypeFragment : Fragment() {
 
@@ -27,13 +28,13 @@ class DetailTypeFragment : Fragment() {
     }
     private val viewModel: DetailTypeViewModel by viewModels { viewModelFactory }
 
+    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.detailTypeFragment).savedStateHandle }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
-//            args.type
         binding = FragmentDetailTypeBinding.inflate(inflater, container, false)
         binding.detailTypeRV.apply {
             setHasFixedSize(true)
@@ -71,6 +72,43 @@ class DetailTypeFragment : Fragment() {
             (binding.detailTypeRV.adapter as DetailTypeRVAdapter).apply {
 //                submitList(null)
                 submitList2(it)
+            }
+        }
+
+        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
+            if (it != null && it.isNotEmpty()) {
+                viewModel.selectMonth(it[0], it[1])
+                savedStateHandle.set(MY_PICKER_RESULT, null)
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_toggle_view -> {
+                        viewModel.toggleView()
+                        true
+                    }
+                    R.id.menu_select_month -> {
+                        findNavController().run {
+                            if (currentDestination?.id == R.id.detailTypeFragment) {
+                                navigate(
+                                    DetailTypeFragmentDirections.actionDetailTypeFragmentToMonthYearPickerDialogFragment(
+                                        R.id.detailTypeFragment,
+                                        viewModel.displayCalendarStart.value!!  // no need clone, since no edits will be made to it
+                                    )
+                                )
+                            }
+                        }
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
             }
         }
     }

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.databinding.DialogFragmentYearPickerBinding
 import java.util.*
 
@@ -46,14 +45,14 @@ class MonthYearPickerDialogFragment : DialogFragment() {
             .setView(binding.root)
             .setTitle("Select Year")
             .setPositiveButton("OK") { _, _ ->
-                findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle.set(
+                findNavController().getBackStackEntry(args.originFragmentId).savedStateHandle.set(
                     MY_PICKER_RESULT, arrayOf(binding.monthNP.value, binding.yearNP.value)
                 )
                 findNavController().navigateUp()
             }
             .setNegativeButton("CANCEL") { _, _ -> }
             .setNeutralButton("TODAY") { _, _ ->
-                findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle.set(
+                findNavController().getBackStackEntry(args.originFragmentId).savedStateHandle.set(
                     MY_PICKER_RESULT, resetArray
                 )
                 findNavController().navigateUp()

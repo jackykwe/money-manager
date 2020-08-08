@@ -9,6 +9,7 @@ import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemDetailTypeBinding
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,10 +43,14 @@ fun LinearLayout.setTypeSummaryLegendLLData(list: List<DetailTypeLegendLLData>) 
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     for (typeLegendLLData in list) {
-        val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
-        itemBinding.typeLegendLLData = typeLegendLLData
-        itemBinding.executePendingBindings()
-        addView(itemBinding.root)
+        if (typeLegendLLData.noDataFlag) {
+            addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
+        } else {
+            val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
+            itemBinding.typeLegendLLData = typeLegendLLData
+            itemBinding.executePendingBindings()
+            addView(itemBinding.root)
+        }
     }
 }
 

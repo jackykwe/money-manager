@@ -161,6 +161,7 @@ data class DetailTypeRVPacket(
 )
 
 data class DetailTypeLegendLLData(
+    val noDataFlag: Boolean,
     val colour: Int,
     val categoryName: String,
     val categoryPercent: String
