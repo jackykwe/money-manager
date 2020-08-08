@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
@@ -113,7 +112,7 @@ class DetailTypeViewModel(
                     val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
-                        .divide(rangeAmount, MathContext(3, RoundingMode.HALF_UP))
+                        .divide(rangeAmount, 3, RoundingMode.HALF_UP)
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                     // For PieData & legendLLData
@@ -130,7 +129,7 @@ class DetailTypeViewModel(
                     } else if (index == amountsMap.size - 1) {
                         valueAccumulator = valueAccumulator.plus(entry.value)
                         val accumulatorPercent = valueAccumulator.times(BigDecimal("100"))
-                            .divide(rangeAmount, MathContext(3, RoundingMode.HALF_UP))
+                            .divide(rangeAmount, 3, RoundingMode.HALF_UP)
                         val accumulatorPercentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                         val accumulatorColourInt = ColourHandler.getColourObject("Black")
@@ -164,7 +163,8 @@ class DetailTypeViewModel(
                                             0f,
                                             entry.value.divide(
                                                 highestEntry!!.value,
-                                                MathContext(3, RoundingMode.HALF_EVEN)
+                                                3,
+                                                RoundingMode.HALF_UP
                                             ).toFloat()
                                         )
                                     ),

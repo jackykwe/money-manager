@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
@@ -91,7 +90,7 @@ class DetailCategoryViewModel(
             var highestAmount = BigDecimal.ZERO
             list.forEach {
                 // Calculates rangeAmount and highestAmount
-                val homeAmount = if (it.originalCurrency == homeCurrency) {
+                it.homeAmount = if (it.originalCurrency == homeCurrency) {
                     BigDecimal(it.originalAmount)
                 } else {
                     CurrencyHandler.convertAmount(
@@ -100,99 +99,77 @@ class DetailCategoryViewModel(
                         homeCurrency
                     )
                 }
-                rangeAmount = rangeAmount.plus(homeAmount)
-                if (homeAmount > highestAmount) highestAmount =
-                    homeAmount  // remember that _transactions is sorted by DESC timestamp
+                rangeAmount = rangeAmount.plus(it.homeAmount)
+                if (it.homeAmount > highestAmount) highestAmount =
+                    it.homeAmount  // remember that _transactions is sorted by DESC timestamp
             }
 
             val transactionLLDataAL = arrayListOf<DetailCategoryTransactionLLData>()
-            list.sortedByDescending {  // So that highest valued transaction stays on top
-                if (it.originalCurrency == homeCurrency) {
-                    BigDecimal(it.originalAmount)
-                } else {
-                    CurrencyHandler.convertAmount(
-                        BigDecimal(it.originalAmount),
-                        it.originalCurrency,
-                        homeCurrency
-                    )
-                }
-            }.forEach {
-                // Calculates everything else
-                val homeAmount = if (it.originalCurrency == homeCurrency) {
-                    BigDecimal(it.originalAmount)
-                } else {
-                    CurrencyHandler.convertAmount(
-                        BigDecimal(it.originalAmount),
-                        it.originalCurrency,
-                        homeCurrency
-                    )
-                }
-                val percent = homeAmount.times(BigDecimal("100"))
-                    .divide(rangeAmount, MathContext(3, RoundingMode.HALF_UP))
-                val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
+            list.sortedByDescending { it.homeAmount } // So that highest valued transaction stays on top
+                .forEach {
+                    // Calculates everything else
+                    val percent = it.homeAmount.times(BigDecimal("100"))
+                        .divide(rangeAmount, 3, RoundingMode.HALF_UP)
+                    val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
-                transactionLLDataAL.add(
-                    DetailCategoryTransactionLLData(
-                        transaction = it,
-                        transactionPercent = CurrencyHandler.displayAmount(percentDisplay),
-                        showCurrency = it.originalCurrency != homeCurrency,
-                        barData = BarData(
-                            BarDataSet(
-                                listOf(
-                                    BarEntry(
-                                        0f,
-                                        homeAmount.divide(
-                                            highestAmount,
-                                            MathContext(3, RoundingMode.HALF_EVEN)
-                                        ).toFloat()
-                                    )
-                                ),
-                                null
+                    transactionLLDataAL.add(
+                        DetailCategoryTransactionLLData(
+                            transaction = it,
+                            transactionPercent = CurrencyHandler.displayAmount(percentDisplay),
+                            showCurrency = it.originalCurrency != homeCurrency,
+                            barData = BarData(
+                                BarDataSet(
+                                    listOf(
+                                        BarEntry(
+                                            0f,
+                                            it.homeAmount.divide(
+                                                highestAmount,
+                                                3,
+                                                RoundingMode.HALF_UP
+                                            ).toFloat()
+                                        )
+                                    ),
+                                    null
+                                ).apply {
+                                    color = colourInt
+                                    setDrawValues(false)
+                                }
                             ).apply {
-                                color = colourInt
-                                setDrawValues(false)
+                                barWidth = 1f
                             }
-                        ).apply {
-                            barWidth = 1f
-                        }
+                        )
                     )
-                )
-            }
+                }
             // CALCULATION OF EVERYTHING ELSE (END)
 
             // CALCULATION OF LINE DATA (START)
             val dayAmountMap = mutableMapOf<Float, BigDecimal>()
-            Log.d(TAG, "numberOfDays is $numberOfDays")
             for (i in 1..numberOfDays) {
                 dayAmountMap[i.toFloat()] = BigDecimal.ZERO
             }
             list.forEach {
-                val homeAmount = if (it.originalCurrency == homeCurrency) {
-                    BigDecimal(it.originalAmount)
-                } else {
-                    CurrencyHandler.convertAmount(
-                        BigDecimal(it.originalAmount),
-                        it.originalCurrency,
-                        homeCurrency
-                    )
-                }
                 val dayNumber = calculateDayNumber(it.timestamp).toFloat()
-                dayAmountMap.replace(dayNumber, dayAmountMap[dayNumber]!!.plus(homeAmount))
+                dayAmountMap.replace(dayNumber, dayAmountMap[dayNumber]!!.plus(it.homeAmount))
             }
-            val dataSet = LineDataSet(
-                dayAmountMap.map { Entry(it.key, it.value.toFloat()) },
-                null
-            ).apply {
-                color = colourInt
-//                setDrawCircles(false)
-                mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                axisDependency = YAxis.AxisDependency.LEFT
-            }
+            val dataSet =
+                LineDataSet(
+                    dayAmountMap.map { Entry(it.key, it.value.toFloat()) },
+                    null
+                ).apply {
+                    setDrawCircles(false)
+                    color = colourInt
+                    lineWidth = 1f
+                    mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+                    cubicIntensity = 1f
+                    axisDependency = YAxis.AxisDependency.LEFT
+                }
             // CALCULATION OF LINE DATA (END)
 
             val result = DetailCategoryRVPacket(
                 summaryCategory = category,
-                summaryLineData = LineData(dataSet),
+                summaryLineData = LineData(dataSet).apply {
+                    setDrawValues(false)
+                },
                 transactionsRangeString = generateRangeString(),
                 transactionsShowRangeCurrency = showRangeCurrency,
                 transactionsRangeCurrency = homeCurrency,

@@ -110,7 +110,7 @@
         <com.github.mikephil.charting.charts.HorizontalBarChart
             android:id="@+id/transactionHBC"
             android:layout_width="0dp"
-            android:layout_height="6dp"
+            android:layout_height="4dp"
             android:layout_marginVertical="2dp"
             android:layout_marginStart="8dp"
             app:bodyHBC_adapter="@{categoryTransactionLLData.barData}"

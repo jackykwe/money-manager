@@ -21,7 +21,7 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_margin="0dp"
-                app:categorySummaryLC_adapter="@{packet.summaryLineData}"
+                app:categorySummaryLC_lineData="@{packet.summaryLineData}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/categorySummaryDescriptorLL" />
 
@@ -29,6 +29,7 @@
                 android:id="@+id/categorySummaryDescriptorLL"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
+                android:visibility="gone"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/categorySummaryLC"

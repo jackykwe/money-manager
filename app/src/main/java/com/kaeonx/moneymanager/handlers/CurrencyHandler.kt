@@ -3,7 +3,6 @@ package com.kaeonx.moneymanager.handlers
 import com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel
 import com.kaeonx.moneymanager.xerepository.XERepository
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 
 class CurrencyHandler private constructor() {
@@ -45,7 +44,8 @@ class CurrencyHandler private constructor() {
                 else -> displayAmountAsBigDecimal(
                     bigDecimal.divide(
                         BigDecimal(rateString),
-                        MathContext(9, RoundingMode.HALF_UP)
+                        9,
+                        RoundingMode.HALF_UP
                     )
                 )
             }

@@ -10,7 +10,6 @@ import com.kaeonx.moneymanager.userrepository.domain.Category
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
@@ -135,7 +134,11 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
                         _error.value = ErrorType.DIV_ZERO
                         return
                     } else {
-                        operand1 = operand1.divide(operand2, MathContext(9, RoundingMode.HALF_UP))  // div operator uses RoundingMode.HALF_EVEN
+                        operand1 = operand1.divide(
+                            operand2,
+                            9,
+                            RoundingMode.HALF_UP
+                        )  // div operator uses RoundingMode.HALF_EVEN
                     }
                 }
                 null -> throw IllegalStateException("_pendingAmtTVText is not null or empty, but _pendingOperation is null.")

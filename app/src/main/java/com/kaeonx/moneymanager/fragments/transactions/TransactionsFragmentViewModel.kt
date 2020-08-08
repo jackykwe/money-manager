@@ -23,7 +23,6 @@ import com.kaeonx.moneymanager.userrepository.domain.toDayTransactions
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.math.MathContext
 import java.math.RoundingMode
 import java.util.*
 
@@ -132,12 +131,12 @@ class TransactionsFragmentViewModel : ViewModel() {
             else -> throw IllegalStateException("Did I fail math")
         }
         val dayDivDays =
-            BigDecimal(day).divide(BigDecimal(days), MathContext(2, RoundingMode.HALF_UP))
+            BigDecimal(day).divide(BigDecimal(days), 2, RoundingMode.HALF_UP)
 
         val entries: List<PieEntry>
         val colourList: List<Int>
         if (expenses < budget) {
-            val exDivBud = expenses.divide(budget, MathContext(2, RoundingMode.HALF_UP))
+            val exDivBud = expenses.divide(budget, 2, RoundingMode.HALF_UP)
             if (exDivBud <= dayDivDays) {
                 entries = listOf(
                     PieEntry(exDivBud.toFloat(), "ex"),
@@ -162,7 +161,7 @@ class TransactionsFragmentViewModel : ViewModel() {
                 )
             }
         } else {
-            val budDivEx = budget.divide(expenses, MathContext(2, RoundingMode.HALF_UP))
+            val budDivEx = budget.divide(expenses, 2, RoundingMode.HALF_UP)
             entries = listOf(
                 PieEntry(dayDivDays.times(budDivEx).toFloat(), "target ex"),
                 PieEntry(budDivEx.toFloat(), "bud"),

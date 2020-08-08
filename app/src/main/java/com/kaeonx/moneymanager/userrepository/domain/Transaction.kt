@@ -6,6 +6,7 @@ import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,6 +24,9 @@ data class Transaction(
     var memo: String,
     var originalCurrency: String,
     var originalAmount: String) : Parcelable {
+
+    @IgnoredOnParcel
+    internal lateinit var homeAmount: BigDecimal
 
     fun toDatabase(): DatabaseTransaction {
         return DatabaseTransaction(
