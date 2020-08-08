@@ -25,9 +25,6 @@ import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
 
-// TODO: ADD DIALOG FRAGMENTS TO NAVIGATION
-// I'm dealing with all dialogs using the not so new method - supportFragmentManager / childFragmentManager
-// and not using Navigation UI for now. Navigation UI is only used for when the fragment_transactions screen changes.
 private const val TAG = "matvt"
 
 class MainActivity : AppCompatActivity() {

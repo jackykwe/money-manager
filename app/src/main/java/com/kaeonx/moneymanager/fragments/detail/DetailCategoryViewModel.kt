@@ -88,6 +88,7 @@ class DetailCategoryViewModel(
                 do {
                     result[localCal.get(Calendar.DAY_OF_YEAR).toFloat()] =
                         CalendarHandler.getFormattedString(localCal.clone() as Calendar, "MMM")
+                    localCal.add(Calendar.MONTH, 1)
                 } while (localCal.get(Calendar.MONTH) != 0)
                 result.toMap()
             }
@@ -215,7 +216,7 @@ class DetailCategoryViewModel(
                             CurrencyHandler.displayAmount(dayAverageBD),
                     monthAverageValue = monthAverageBD?.toFloat(),
                     monthAverageText = monthAverageBD?.let {
-                        "Daily Average: " +
+                        "Monthly Average: " +
                                 (if (showRangeCurrency) "$homeCurrency " else "") +
                                 CurrencyHandler.displayAmount(it)
                     },

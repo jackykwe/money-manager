@@ -30,12 +30,12 @@ class AuthViewModel : ViewModel() {
     private val _currentUser = MutableLiveData2<FirebaseUser?>(null)
     val currentUser = Transformations.map(_currentUser) {
         userId = _currentUser.value?.uid
-        Log.d(TAG, "userId is $userId")
+        Log.d(TAG, "Transformation: userId is $userId")
         it
     }
 
     init {
-        Log.d(TAG, "userId is $userId")
+        Log.d(TAG, "Init: userId is $userId")
         refreshAuthMLD()
     }
 
