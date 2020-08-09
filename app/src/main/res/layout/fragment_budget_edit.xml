@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.kaeonx.moneymanager.fragments.budget.BudgetEditViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/categoryIconFL"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/categoryIconFLInclude"
+                layout="@layout/icon_transaction"
+                app:iconDetail="@{viewModel.currentBudget.toIconDetail()}" />
+
+        </FrameLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/categoryNameETContainer"
+            style="@style/FullWidthMaterialEditTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:enabled="false"
+            android:hint="@string/hint_category_name"
+            app:layout_constraintTop_toBottomOf="@+id/categoryIconFL">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/categoryNameET"
+                style="@style/FullWidthMaterialEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:inputType="textCapWords"
+                android:text="@{viewModel.currentBudget.category}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/currencyContainer"
+            style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/spinner_hint_currency"
+            app:error_text="@{viewModel.currencySpinnerError}"
+            app:layout_constraintTop_toBottomOf="@+id/categoryNameETContainer">
+
+            <AutoCompleteTextView
+                android:id="@+id/currencySpinner"
+                style="@style/FullWidthMaterialEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:autoCompleteTextView_text="@={viewModel.currencySpinnerText}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/amountETContainer"
+            style="@style/FullWidthMaterialEditTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_monthly_budget"
+            app:endIconDrawable="@drawable/mdi_auto_fix"
+            app:endIconMode="custom"
+            app:errorIconDrawable="@drawable/mdi_auto_fix"
+            app:error_text="@{viewModel.amountETError}"
+            app:helperText="@{viewModel.amountETHelperText}"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/currencyContainer">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/amountET"
+                style="@style/FullWidthMaterialEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:nextFocusDown="@id/categoryIconFL"
+                android:text="@={viewModel.amountETText}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -128,7 +128,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         val trimmed = it.trim()
         when {
             trimmed.isBlank() -> "Category Name must not be empty"
-            trimmed == "Add..." || trimmed == "(multiple)" -> "This Category Name is reserved"
+            trimmed in listOf("Add...", "(multiple)", "Overall") -> "This Category Name is reserved"
             otherCategoryNames.contains(trimmed) -> "This Category Name already exists"
             else -> {
                 _currentCategory.value = _currentCategory.value.copy(name = trimmed)

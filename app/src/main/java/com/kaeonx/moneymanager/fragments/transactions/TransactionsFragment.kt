@@ -84,7 +84,7 @@ class TransactionsFragment : Fragment() {
                 summaryBudgetClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(TransactionsFragmentDirections.actionTransactionsFragmentToBudgetFragment())
+                            navigate(TransactionsFragmentDirections.actionTransactionsFragmentToBudgetsFragment())
                         }
                     }
                 },

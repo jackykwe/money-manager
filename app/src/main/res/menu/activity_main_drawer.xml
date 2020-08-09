@@ -10,7 +10,7 @@
             android:icon="@drawable/mdi_file_excel"
             android:title="@string/drawer_menu_transactions" />
         <item
-            android:id="@+id/BudgetFragment"
+            android:id="@+id/budgetsFragment"
             android:icon="@drawable/mdi_file_excel"
             android:title="@string/drawer_menu_budget" />
         <item

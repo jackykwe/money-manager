@@ -10,6 +10,9 @@ internal class CalendarHandler private constructor() {
 
     companion object {
 
+        /**
+         * You **must** clone the calendar.
+         */
         internal fun getFormattedString(calendar: Calendar, pattern: String): String {
             val dateFormat = DateFormat.getDateTimeInstance() as SimpleDateFormat
             dateFormat.applyPattern(pattern)
@@ -67,6 +70,9 @@ internal class CalendarHandler private constructor() {
             }
         }
 
+        /**
+         * You **must** clone the calendar.
+         */
         internal fun getStartOfMonthMillis(calendar: Calendar): Long {
             return calendar.apply {
                 set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
@@ -77,6 +83,9 @@ internal class CalendarHandler private constructor() {
             }.timeInMillis
         }
 
+        /**
+         * You **must** clone the calendar.
+         */
         internal fun getEndOfMonthMillis(calendar: Calendar): Long {
             return calendar.apply {
                 set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))

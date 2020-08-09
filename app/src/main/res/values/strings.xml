@@ -57,6 +57,7 @@
     <string name="menu_search">Search</string>
     <string name="menu_toggle_view">Toggle View</string>
     <string name="menu_select_month">Select Month</string>
+    <string name="menu_add_ellipsis">Add…</string>
 
     <string name="mdi_chevron_right">&#xF0142;</string>
     <string name="mdi_chevron_left">&#xF0141;</string>
@@ -75,5 +76,9 @@
 
     <!-- ll_item_detail_type_no_data -->
     <string name="nothing_to_show">Nothing to show</string>
+
+    <!-- fragment_budget_edit -->
+    <string name="spinner_hint_currency">Currency</string>
+    <string name="hint_monthly_budget">Monthly Budget</string>
 
 </resources>

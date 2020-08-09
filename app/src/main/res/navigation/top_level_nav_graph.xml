@@ -48,8 +48,8 @@
             android:id="@+id/action_transactionsFragment_to_monthYearPickerDialogFragment"
             app:destination="@id/monthYearPickerDialogFragment" />
         <action
-            android:id="@+id/action_transactionsFragment_to_budgetFragment"
-            app:destination="@id/BudgetFragment"
+            android:id="@+id/action_transactionsFragment_to_budgetsFragment"
+            app:destination="@id/budgetsFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
@@ -79,7 +79,8 @@
     <dialog
         android:id="@+id/monthYearPickerDialogFragment"
         android:name="com.kaeonx.moneymanager.fragments.transactions.MonthYearPickerDialogFragment"
-        android:label="MonthYearPickerDialogFragment">
+        android:label="MonthYearPickerDialogFragment"
+        tools:layout="@layout/dialog_fragment_year_picker">
         <argument
             android:name="originFragmentId"
             app:argType="integer" />
@@ -89,10 +90,28 @@
     </dialog>
 
     <fragment
-        android:id="@+id/BudgetFragment"
-        android:name="com.kaeonx.moneymanager.fragments.budget.BudgetFragment"
+        android:id="@+id/budgetsFragment"
+        android:name="com.kaeonx.moneymanager.fragments.budget.BudgetsFragment"
         android:label="Budget"
-        tools:layout="@layout/fragment_budget" />
+        tools:layout="@layout/fragment_budgets">
+        <action
+            android:id="@+id/action_budgetsFragment_to_budgetEditFragment"
+            app:destination="@id/budgetEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
+    </fragment>
+    <fragment
+        android:id="@+id/budgetEditFragment"
+        android:name="com.kaeonx.moneymanager.fragments.budget.BudgetEditFragment"
+        android:label="Edit Budget"
+        tools:layout="@layout/fragment_budget_edit">
+        <argument
+            android:name="oldBudget"
+            app:argType="com.kaeonx.moneymanager.userrepository.domain.Budget" />
+    </fragment>
 
     <fragment
         android:id="@+id/debtFragment"

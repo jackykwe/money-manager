@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                 // DrawerLockMode
                 when (destination.id) {
                     R.id.transactionsFragment,
-                    R.id.BudgetFragment,
+                    R.id.budgetsFragment,
                     R.id.debtFragment,
                     R.id.categoriesFragment,
                     R.id.accountsFragment -> setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)

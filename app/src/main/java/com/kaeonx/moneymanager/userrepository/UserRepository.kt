@@ -8,10 +8,7 @@ import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
 import com.kaeonx.moneymanager.userrepository.database.toMap
-import com.kaeonx.moneymanager.userrepository.domain.Account
-import com.kaeonx.moneymanager.userrepository.domain.Category
-import com.kaeonx.moneymanager.userrepository.domain.Preference
-import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import com.kaeonx.moneymanager.userrepository.domain.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -57,12 +54,15 @@ class UserRepository private constructor() {
      * Transaction
      */
     ////////////////////////////////////////////////////////////////////////////////
-    fun getTransaction(transactionId: Int): LiveData<Transaction> =
+    internal fun getTransaction(transactionId: Int): LiveData<Transaction> =
         Transformations.map(database.userDatabaseDao.getTransaction(transactionId)) {
             it.toDomain()
         }
 
-    fun getTransactionsBetween(startMillis: Long, endMillis: Long): LiveData<List<Transaction>> =
+    internal fun getTransactionsBetween(
+        startMillis: Long,
+        endMillis: Long
+    ): LiveData<List<Transaction>> =
         Transformations.map(
             database.userDatabaseDao.getTransactionsBetween(
                 startMillis,
@@ -72,7 +72,13 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
-    fun getCategoryTransactionsBetween(
+    internal suspend fun getTransactionsBetweenSuspend(
+        startMillis: Long,
+        endMillis: Long
+    ): List<Transaction> =
+        database.userDatabaseDao.getTransactionsBetweenSuspend(startMillis, endMillis).toDomain()
+
+    internal fun getCategoryTransactionsBetween(
         type: String,
         category: String,
         startMillis: Long,
@@ -89,25 +95,25 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
-    suspend fun upsertTransaction(transaction: Transaction) {
+    internal suspend fun upsertTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertTransaction(transaction.toDatabase())
         }
     }
 
-    suspend fun deleteTransaction(transaction: Transaction) {
+    internal suspend fun deleteTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.deleteTransaction(transaction.toDatabase())
         }
     }
 
-    suspend fun clearAllData() {
+    internal suspend fun clearAllData() {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.clearAllData()
         }
     }
 
-    suspend fun updateTransactionsRenameCategory(
+    internal suspend fun updateTransactionsRenameCategory(
         type: String,
         oldCategoryName: String,
         newCategoryName: String
@@ -121,7 +127,10 @@ class UserRepository private constructor() {
         }
     }
 
-    suspend fun updateTransactionsRenameAccount(oldAccountName: String, newAccountName: String) {
+    internal suspend fun updateTransactionsRenameAccount(
+        oldAccountName: String,
+        newAccountName: String
+    ) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.updateTransactionsRenameAccount(oldAccountName, newAccountName)
         }
@@ -132,13 +141,13 @@ class UserRepository private constructor() {
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
-    suspend fun upsertAccount(account: Account) {
+    internal suspend fun upsertAccount(account: Account) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertAccount(account.toDatabase())
         }
     }
 
-    suspend fun deleteAccount(account: Account) {
+    internal suspend fun deleteAccount(account: Account) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.deleteAccount(account.toDatabase())
         }
@@ -149,15 +158,37 @@ class UserRepository private constructor() {
      * Categories
      */
     ////////////////////////////////////////////////////////////////////////////////
-    suspend fun upsertCategory(category: Category) {
+    internal suspend fun upsertCategory(category: Category) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertCategory(category.toDatabase())
         }
     }
 
-    suspend fun deleteCategory(category: Category) {
+    internal suspend fun deleteCategory(category: Category) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.deleteCategory(category.toDatabase())
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Budget
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    internal suspend fun upsertBudget(budget: Budget) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.upsertBudget(budget.toDatabase())
+        }
+    }
+
+    internal fun getAllBudgets(): LiveData<List<Budget>> =
+        Transformations.map(database.userDatabaseDao.getAllBudgets()) {
+            it.toDomain()
+        }
+
+    internal suspend fun deleteBudget(budget: Budget) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteBudget(budget.toDatabase())
         }
     }
 
@@ -166,7 +197,7 @@ class UserRepository private constructor() {
      * Preferences
      */
     ////////////////////////////////////////////////////////////////////////////////
-    suspend fun upsertPreference(preference: Preference) {
+    internal suspend fun upsertPreference(preference: Preference) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertPreference(preference.toDatabase())
         }
@@ -179,7 +210,7 @@ class UserRepository private constructor() {
 
         fun getInstance(): UserRepository {
             synchronized(this) {
-                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error
+                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
