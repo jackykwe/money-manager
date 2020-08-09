@@ -13,17 +13,17 @@
             type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
     </data>
 
-    <com.google.android.material.card.MaterialCardView style="@style/RVItemDetailXSummaryCard">
+    <com.google.android.material.card.MaterialCardView style="@style/ChartComponentsLine">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/rv_item_detail_x_summary_CL_height">
+            android:layout_height="@dimen/chart_components_line_card_LC_height">
 
             <FrameLayout
-                android:id="@+id/categorySummaryLC"
+                android:id="@+id/lineChart"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:layout_constraintEnd_toStartOf="@+id/categorySummaryDescriptorLL"
+                app:layout_constraintEnd_toStartOf="@+id/descriptorLL"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent">
 
@@ -62,17 +62,17 @@
             </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/categorySummaryDescriptorLL"
+                android:id="@+id/descriptorLL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="@id/categorySummaryLC"
+                app:layout_constraintBottom_toBottomOf="@id/lineChart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
-                app:layout_constraintStart_toEndOf="@+id/categorySummaryLC"
-                app:layout_constraintTop_toTopOf="@id/categorySummaryLC"
+                app:layout_constraintStart_toEndOf="@+id/lineChart"
+                app:layout_constraintTop_toTopOf="@id/lineChart"
                 app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

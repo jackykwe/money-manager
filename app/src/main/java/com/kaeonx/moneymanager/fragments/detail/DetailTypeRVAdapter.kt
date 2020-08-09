@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
+import com.kaeonx.moneymanager.chartcomponents.LineChartPacket
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
+import com.kaeonx.moneymanager.databinding.ChartComponentLineCardBinding
 import com.kaeonx.moneymanager.databinding.RvItemDetailTypeCategoriesBinding
 import com.kaeonx.moneymanager.databinding.RvItemDetailTypeSummaryBinding
 import com.kaeonx.moneymanager.userrepository.domain.IconDetail
@@ -17,7 +19,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val SUMMARY = 0
-private const val CATEGORIES = 1
+private const val PLOT = 1
+private const val CATEGORIES = 2
 
 class DetailTypeRVAdapter(
     private val itemOnClickListener: DetailTypeOnClickListener,
@@ -31,6 +34,7 @@ class DetailTypeRVAdapter(
         CoroutineScope(Dispatchers.Main).launch {
             val submittable = listOf(
                 DetailTypeRVItem.DetailTypeRVItemSummary(detailTypeRVPacket),
+                DetailTypeRVItem.DetailTypeRVItemPlot(detailTypeRVPacket),
                 DetailTypeRVItem.DetailTypeRVItemCategories(detailTypeRVPacket)
             )
             if (initRun) {
@@ -44,6 +48,7 @@ class DetailTypeRVAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is DetailTypeRVItem.DetailTypeRVItemSummary -> SUMMARY
+            is DetailTypeRVItem.DetailTypeRVItemPlot -> PLOT
             is DetailTypeRVItem.DetailTypeRVItemCategories -> CATEGORIES
         }
     }
@@ -51,6 +56,7 @@ class DetailTypeRVAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             SUMMARY -> DetailTypeSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
+            PLOT -> DetailTypePlotViewHolder.inflateAndCreateViewHolderFrom(parent)
             CATEGORIES -> DetailTypeCategoriesViewHolder.inflateAndCreateViewHolderFrom(parent)
             else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
@@ -62,6 +68,11 @@ class DetailTypeRVAdapter(
                 val data =
                     (getItem(position) as DetailTypeRVItem.DetailTypeRVItemSummary).detailTypeRVPacket
                 holder.rebind(data, pieCentreClickListener)
+            }
+            is DetailTypePlotViewHolder -> {
+                val data =
+                    (getItem(position) as DetailTypeRVItem.DetailTypeRVItemPlot).detailTypeRVPacket
+                holder.rebind(data)
             }
             is DetailTypeCategoriesViewHolder -> {
                 val data =
@@ -88,6 +99,24 @@ class DetailTypeRVAdapter(
             }
         }
     }
+
+    class DetailTypePlotViewHolder private constructor(private val binding: ChartComponentLineCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun rebind(newPacket: DetailTypeRVPacket) {
+            binding.packet = newPacket.lineChartPacket
+            binding.executePendingBindings()
+        }
+
+        companion object {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): DetailTypePlotViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ChartComponentLineCardBinding.inflate(layoutInflater, parent, false)
+                return DetailTypePlotViewHolder(binding)
+            }
+        }
+    }
+
 
     class DetailTypeCategoriesViewHolder private constructor(private val binding: RvItemDetailTypeCategoriesBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -142,17 +171,23 @@ sealed class DetailTypeRVItem {
         override val rvItemId: Int = 0
     }
 
-    data class DetailTypeRVItemCategories(val detailTypeRVPacket: DetailTypeRVPacket) :
+    data class DetailTypeRVItemPlot(val detailTypeRVPacket: DetailTypeRVPacket) :
         DetailTypeRVItem() {
         override val rvItemId: Int = 1
+    }
+
+    data class DetailTypeRVItemCategories(val detailTypeRVPacket: DetailTypeRVPacket) :
+        DetailTypeRVItem() {
+        override val rvItemId: Int = 2
     }
 
 }
 
 data class DetailTypeRVPacket(
     val summaryType: String,
-    val summaryPieData: PieData?,
+    val summaryPieData: PieData,
     val summaryLegendLLData: List<DetailTypeLegendLLData>,
+    val lineChartPacket: LineChartPacket,
     val categoriesRangeString: String,
     val categoriesShowRangeCurrency: Boolean,
     val categoriesRangeCurrency: String,

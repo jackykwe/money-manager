@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.*
+import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
@@ -89,38 +90,39 @@ class DetailTypeViewModel(
             val homeCurrency = UserPDS.getString("ccc_home_currency")
 
             val showRangeCurrency: Boolean
-            val amountsMap = mutableMapOf<String, BigDecimal>()
-            list.filter { it.type == _type.value }.run {
+            val categoryAmountsMap = mutableMapOf<String, BigDecimal>()
+            val typeFilteredList = list.filter { it.type == _type.value }
+            typeFilteredList.run {
                 showRangeCurrency = any { it.originalCurrency != homeCurrency }
                 map { it.category }.toSet().forEach {
-                    amountsMap[it] = BigDecimal.ZERO
+                    categoryAmountsMap[it] = BigDecimal.ZERO
                 }
                 forEach {
-                    if (it.originalCurrency == homeCurrency) {
-                        amountsMap[it.category] =
-                            amountsMap[it.category]!!.plus(BigDecimal(it.originalAmount))
+                    it.homeAmount = if (it.originalCurrency == homeCurrency) {
+                        BigDecimal(it.originalAmount)
                     } else {
-                        val value = CurrencyHandler.convertAmount(
+                        CurrencyHandler.convertAmount(
                             BigDecimal(it.originalAmount),
                             it.originalCurrency,
                             homeCurrency
                         )
-                        amountsMap[it.category] = amountsMap[it.category]!!.plus(value)
                     }
+                    categoryAmountsMap[it.category] =
+                        categoryAmountsMap[it.category]!!.plus(it.homeAmount)
                 }
             }
 
             val legendLLDataAL = arrayListOf<DetailTypeLegendLLData>()
             val categoryLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
-            val rangeAmount = amountsMap.values.asIterable().sumByBigDecimal { it }
-            val highestEntry = amountsMap.maxBy { it.value }
+            val rangeAmount = categoryAmountsMap.values.asIterable().sumByBigDecimal { it }
+            val highestCategory = categoryAmountsMap.maxBy { it.value }
             val repositoryCategories = userRepository.categories.value!!
 
             val entries = arrayListOf<PieEntry>()
             val colourList = arrayListOf<Int>()
             var valueAccumulator = BigDecimal.ZERO
-            amountsMap.asIterable()
+            categoryAmountsMap.asIterable()
                 .sortedBy { it.key }  // sort by ASCENDING name (secondary)
                 .sortedByDescending { it.value }  // sort by DESCENDING amount (primary)
                 .forEachIndexed { index, entry ->
@@ -134,7 +136,7 @@ class DetailTypeViewModel(
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                     // For PieData & legendLLData
-                    if (amountsMap.size <= LEGEND_ITEM_MAX_COUNT || index < LEGEND_ITEM_MAX_COUNT - 1) {
+                    if (categoryAmountsMap.size <= LEGEND_ITEM_MAX_COUNT || index < LEGEND_ITEM_MAX_COUNT - 1) {
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
@@ -145,7 +147,7 @@ class DetailTypeViewModel(
                                 categoryPercent = "($percentDisplay%)"
                             )
                         )
-                    } else if (index == amountsMap.size - 1) {
+                    } else if (index == categoryAmountsMap.size - 1) {
                         valueAccumulator = valueAccumulator.plus(entry.value)
                         val accumulatorPercent = valueAccumulator.times(BigDecimal("100"))
                             .divide(rangeAmount, 3, RoundingMode.HALF_UP)
@@ -183,7 +185,7 @@ class DetailTypeViewModel(
                                         BarEntry(
                                             0f,
                                             entry.value.divide(
-                                                highestEntry!!.value,
+                                                highestCategory!!.value,
                                                 3,
                                                 RoundingMode.HALF_UP
                                             ).toFloat()
@@ -231,16 +233,32 @@ class DetailTypeViewModel(
                 summaryType = _type.value,
                 summaryPieData = PieData(dataSet),
                 summaryLegendLLData = legendLLDataAL.toList(),
+                lineChartPacket = generateLineChartPacket(
+                    list = typeFilteredList,
+                    calendarStart = _displayCalendarStart.value,
+                    numberOfDays = CalendarHandler.calculateNumberOfDays(
+                        _displayCalendarStart.value,
+                        _displayCalendarEnd.value
+                    ),
+                    numberOfMonths = CalendarHandler.calculateNumberOfMonths(
+                        _displayCalendarStart.value,
+                        _displayCalendarEnd.value
+                    ),
+                    colourInt = ColourHandler.getColourObject("Black"),
+                    rangeAmount = rangeAmount,
+                    showCurrency = showRangeCurrency,
+                    homeCurrency = homeCurrency
+                ),
                 categoriesRangeString = if (isYearMode) {
                     CalendarHandler.getFormattedString(
                         _displayCalendarStart.value.clone() as Calendar,
                         "yyyy"
-                    ).toUpperCase(Locale.ROOT)
+                    )
                 } else {
                     CalendarHandler.getFormattedString(
                         _displayCalendarStart.value.clone() as Calendar,
                         "MMM yyyy"
-                    )
+                    ).toUpperCase(Locale.ROOT)
                 },
                 categoriesShowRangeCurrency = showRangeCurrency,
                 categoriesRangeCurrency = homeCurrency,

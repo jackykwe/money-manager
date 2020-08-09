@@ -1,14 +1,13 @@
 package com.kaeonx.moneymanager.fragments.detail
 
-
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.LineData
-import com.kaeonx.moneymanager.databinding.RvItemDetailCategorySummaryBinding
+import com.kaeonx.moneymanager.chartcomponents.LineChartPacket
+import com.kaeonx.moneymanager.databinding.ChartComponentLineCardBinding
 import com.kaeonx.moneymanager.databinding.RvItemDetailCategoryTransactionsBinding
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.CoroutineScope
@@ -68,11 +67,11 @@ class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategor
         }
     }
 
-    class DetailCategorySummaryViewHolder private constructor(private val binding: RvItemDetailCategorySummaryBinding) :
+    class DetailCategorySummaryViewHolder private constructor(private val binding: ChartComponentLineCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun rebind(newPacket: DetailCategoryRVPacket) {
-            binding.packet = newPacket
+            binding.packet = newPacket.lineChartPacket
             binding.executePendingBindings()
         }
 
@@ -80,7 +79,7 @@ class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategor
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): DetailCategorySummaryViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding =
-                    RvItemDetailCategorySummaryBinding.inflate(layoutInflater, parent, false)
+                    ChartComponentLineCardBinding.inflate(layoutInflater, parent, false)
                 return DetailCategorySummaryViewHolder(binding)
             }
         }
@@ -144,22 +143,12 @@ sealed class DetailCategoryRVItem {
 }
 
 data class DetailCategoryRVPacket(
-    val summaryCategory: String,
-    val summaryLineData: LineData,
-    val summaryExtras: DetailCategorySummaryExtras,
+    val lineChartPacket: LineChartPacket,
     val transactionsRangeString: String,
     val transactionsShowRangeCurrency: Boolean,
     val transactionsRangeCurrency: String,
     val transactionsRangeAmount: String,
     val transactionLLData: List<DetailCategoryTransactionLLData>
-)
-
-data class DetailCategorySummaryExtras(
-    val dayAverageValue: Float,
-    val dayAverageText: String,
-    val monthAverageValue: Float?,
-    val monthAverageText: String?,
-    val xAxisLabelMap: Map<Float, String>
 )
 
 data class DetailCategoryTransactionLLData(

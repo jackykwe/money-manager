@@ -5,8 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
@@ -54,47 +56,8 @@ class DetailCategoryViewModel(
     val categoryTypeRVPacket: LiveData<DetailCategoryRVPacket?>
         get() = _categoryTypeRVPacket
 
-    private val numberOfDays =
-        BigDecimal(calendarEnd.timeInMillis - calendarStart.timeInMillis)
-            .divide(BigDecimal("86400000"), 0, RoundingMode.UP)
-            .toInt()
-    private val numberOfMonths = run {
-        val yearDiff = calendarEnd.get(Calendar.YEAR) - calendarStart.get(Calendar.YEAR)
-        val monthDiff = calendarEnd.get(Calendar.MONTH) - calendarStart.get(Calendar.MONTH)
-        return@run 1 + yearDiff * 12 + monthDiff
-    }
-
-    private fun calculateDayNumber(millis: Long): Int =
-        BigDecimal(millis - calendarStart.timeInMillis)
-            .divide(BigDecimal("86400000"), 4, RoundingMode.HALF_UP)
-            .setScale(0, RoundingMode.FLOOR)
-            .toInt()
-            .plus(1)  // Floor and plus(1) to account for 00:00 transactions.
-
-    private fun generateXAxisLabelMap(): Map<Float, String> {
-        return when (numberOfMonths) {
-            1 -> mapOf(
-                1f to "1",
-                5f to "5",
-                10f to "10",
-                15f to "15",
-                20f to "20",
-                25f to "25",
-                30f to "30"
-            )
-            12 -> {
-                val result = mutableMapOf<Float, String>()
-                val localCal = calendarStart.clone() as Calendar
-                do {
-                    result[localCal.get(Calendar.DAY_OF_YEAR).toFloat()] =
-                        CalendarHandler.getFormattedString(localCal.clone() as Calendar, "MMM")
-                    localCal.add(Calendar.MONTH, 1)
-                } while (localCal.get(Calendar.MONTH) != 0)
-                result.toMap()
-            }
-            else -> throw IllegalStateException("Variable ranges are not implemented yet")
-        }
-    }
+    private val numberOfDays = CalendarHandler.calculateNumberOfDays(calendarStart, calendarEnd)
+    private val numberOfMonths = CalendarHandler.calculateNumberOfMonths(calendarStart, calendarEnd)
 
     private fun generateRangeString(): String = when (numberOfMonths) {
         1 -> CalendarHandler.getFormattedString(calendarStart.clone() as Calendar, "MMM yyyy")
@@ -114,7 +77,6 @@ class DetailCategoryViewModel(
                     .colourString
             )
 
-            // CALCULATION OF EVERYTHING ELSE (START)
             val showRangeCurrency = list.any { it.originalCurrency != homeCurrency }
             var rangeAmount = BigDecimal.ZERO
             var highestAmount = BigDecimal.ZERO
@@ -170,57 +132,17 @@ class DetailCategoryViewModel(
                         )
                     )
                 }
-            // CALCULATION OF EVERYTHING ELSE (END)
 
-            // CALCULATION OF LINE DATA AND EXTRAS (START)
-            val dayAmountMap = mutableMapOf<Float, BigDecimal>()
-            for (i in 1..numberOfDays) {
-                dayAmountMap[i.toFloat()] = BigDecimal.ZERO
-            }
-
-            list.forEach {
-                val dayNumber = calculateDayNumber(it.timestamp).toFloat()
-                dayAmountMap.replace(dayNumber, dayAmountMap[dayNumber]!!.plus(it.homeAmount))
-            }
-            val dataSet =
-                LineDataSet(
-                    dayAmountMap.map { Entry(it.key, it.value.toFloat()) },
-                    null
-                ).apply {
-                    setDrawCircles(false)
-                    color = colourInt
-                    lineWidth = 1f
-                    mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-                    cubicIntensity = 1f
-                    axisDependency = YAxis.AxisDependency.LEFT
-                }
-            // CALCULATION OF LINE DATA (END)
-
-            val dayAverageBD = rangeAmount.divide(BigDecimal(numberOfDays), 2, RoundingMode.HALF_UP)
-            val monthAverageBD = if (numberOfMonths > 1) {
-                rangeAmount.divide(
-                    BigDecimal(numberOfMonths),
-                    2,
-                    RoundingMode.HALF_UP
-                )
-            } else null
             val result = DetailCategoryRVPacket(
-                summaryCategory = category,
-                summaryLineData = LineData(dataSet).apply {
-                    setDrawValues(false)
-                },
-                summaryExtras = DetailCategorySummaryExtras(
-                    dayAverageValue = dayAverageBD.toFloat(),
-                    dayAverageText = "Daily Average: " +
-                            (if (showRangeCurrency) "$homeCurrency " else "") +
-                            CurrencyHandler.displayAmount(dayAverageBD),
-                    monthAverageValue = monthAverageBD?.toFloat(),
-                    monthAverageText = monthAverageBD?.let {
-                        "Monthly Average: " +
-                                (if (showRangeCurrency) "$homeCurrency " else "") +
-                                CurrencyHandler.displayAmount(it)
-                    },
-                    xAxisLabelMap = generateXAxisLabelMap()
+                lineChartPacket = generateLineChartPacket(
+                    list = list,
+                    calendarStart = calendarStart,
+                    numberOfDays = numberOfDays,
+                    numberOfMonths = numberOfMonths,
+                    colourInt = colourInt,
+                    rangeAmount = rangeAmount,
+                    showCurrency = showRangeCurrency,
+                    homeCurrency = homeCurrency
                 ),
                 transactionsRangeString = generateRangeString(),
                 transactionsShowRangeCurrency = showRangeCurrency,

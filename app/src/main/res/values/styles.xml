@@ -232,9 +232,9 @@
     </style>
 
     <!-- rv_item_detail_X_summary -->
-    <style name="RVItemDetailXSummaryCard" parent="RVItemDetailXBodyCard">
+    <style name="ChartComponentsLine" parent="RVItemDetailXBodyCard">
         <item name="contentPaddingBottom">8dp</item>
-        <item name="contentPaddingLeft">8dp</item>
+        <item name="contentPaddingLeft">4dp</item>
         <item name="contentPaddingRight">8dp</item>
     </style>
 

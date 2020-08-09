@@ -8,7 +8,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tab_layout_height">48dp</dimen>
 
-    <dimen name="rv_item_detail_x_summary_CL_height">144dp</dimen>
+    <dimen name="chart_components_line_card_LC_height">144dp</dimen>
 
     <dimen name="card_ll_item_height">48dp</dimen>
     <dimen name="category_icon_FL_size">32dp</dimen>

@@ -18,10 +18,10 @@ import com.kaeonx.moneymanager.databinding.RvLlItemDetailTypeBinding
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("typeSummaryPC_adapter")
-fun PieChart.setTypeSummaryPCAdapter(pieData: PieData?) {
+fun PieChart.setTypeSummaryPCAdapter(pieData: PieData) {
     if (legend.isEnabled) {
         setTouchEnabled(false)
-        setNoDataText("Hello, you wanna provide some data?")
+        setNoDataText("Please report this bug.")
         setDrawMarkers(false)
         description.isEnabled = false
 

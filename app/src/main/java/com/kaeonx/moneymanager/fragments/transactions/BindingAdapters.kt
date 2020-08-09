@@ -31,7 +31,7 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
 //        invalidate()
     if (legend.isEnabled) {
         setTouchEnabled(false)
-        setNoDataText("Hello, you wanna provide some data?")
+        setNoDataText("Please report this bug.")
         description.isEnabled = false
 
         setDrawEntryLabels(false)
