@@ -1,16 +1,64 @@
 package com.kaeonx.moneymanager.chartcomponents
 
+import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.kaeonx.moneymanager.customclasses.XAxisRendererSpecificLabel
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * chart_component_pie_card_with_legend
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("pieChart_pieData")
+fun PieChart.setPieChartAdapter(pieData: PieData) {
+    if (legend.isEnabled) {
+        setTouchEnabled(false)
+        setNoDataText("Please report this bug.")
+        setDrawMarkers(false)
+        description.isEnabled = false
+
+        setDrawEntryLabels(false)
+        //    centerText = ""
+        //    setUsePercentValues(true)
+        holeRadius = 75f
+        transparentCircleRadius = 80f
+
+        legend.isEnabled = false
+    }
+    data = pieData
+    notifyDataSetChanged()
+    invalidate()
+}
+
+@BindingAdapter("pieChartLegendLL_data")
+fun LinearLayout.setPieChartLegendLLData(list: List<PieChartLegendLLData>) {
+    removeAllViews()
+    val layoutInflater = LayoutInflater.from(context)
+    for (typeLegendLLData in list) {
+        if (typeLegendLLData.noDataFlag) {
+            addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
+        } else {
+            val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
+            itemBinding.typeLegendLLData = typeLegendLLData
+            itemBinding.executePendingBindings()
+            addView(itemBinding.root)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

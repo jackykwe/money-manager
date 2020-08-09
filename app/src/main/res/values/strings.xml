@@ -73,4 +73,7 @@
     <!-- fragment_category_edit -->
     <string name="hint_category_name">Category Name</string>
 
+    <!-- ll_item_detail_type_no_data -->
+    <string name="nothing_to_show">Nothing to show</string>
+
 </resources>

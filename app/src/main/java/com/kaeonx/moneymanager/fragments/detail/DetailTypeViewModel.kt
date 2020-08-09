@@ -5,6 +5,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.*
+import com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData
+import com.kaeonx.moneymanager.chartcomponents.PieChartWLPacket
 import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
@@ -112,7 +114,7 @@ class DetailTypeViewModel(
                 }
             }
 
-            val legendLLDataAL = arrayListOf<DetailTypeLegendLLData>()
+            val legendLLDataAL = arrayListOf<PieChartLegendLLData>()
             val categoryLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
             val rangeAmount = categoryAmountsMap.values.asIterable().sumByBigDecimal { it }
@@ -140,7 +142,7 @@ class DetailTypeViewModel(
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
-                            DetailTypeLegendLLData(
+                            PieChartLegendLLData(
                                 noDataFlag = false,
                                 colour = colourInt,
                                 categoryName = entry.key,
@@ -158,7 +160,7 @@ class DetailTypeViewModel(
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
-                            DetailTypeLegendLLData(
+                            PieChartLegendLLData(
                                 noDataFlag = false,
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
@@ -220,7 +222,7 @@ class DetailTypeViewModel(
 
             if (legendLLDataAL.isEmpty()) {
                 legendLLDataAL.add(
-                    DetailTypeLegendLLData(
+                    PieChartLegendLLData(
                         noDataFlag = true,
                         colour = ColourHandler.getColourObject("Grey,200"),
                         categoryName = "Nothing to show",
@@ -230,9 +232,11 @@ class DetailTypeViewModel(
             }
 
             val result = DetailTypeRVPacket(
-                summaryType = _type.value,
-                summaryPieData = PieData(dataSet),
-                summaryLegendLLData = legendLLDataAL.toList(),
+                pieChartWLPacket = PieChartWLPacket(
+                    pieChartCentreText = "${_type.value}\n⇌",
+                    pieData = PieData(dataSet),
+                    pieChartLegendLLData = legendLLDataAL.toList()
+                ),
                 lineChartPacket = generateLineChartPacket(
                     list = typeFilteredList,
                     calendarStart = _displayCalendarStart.value,

@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.chartcomponents.LineChartPacket
+import com.kaeonx.moneymanager.chartcomponents.PieChartWLPacket
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.ChartComponentLineCardBinding
+import com.kaeonx.moneymanager.databinding.ChartComponentPieCardWithLegendBinding
 import com.kaeonx.moneymanager.databinding.RvItemDetailTypeCategoriesBinding
-import com.kaeonx.moneymanager.databinding.RvItemDetailTypeSummaryBinding
 import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ private const val CATEGORIES = 2
 
 class DetailTypeRVAdapter(
     private val itemOnClickListener: DetailTypeOnClickListener,
-    private val pieCentreClickListener: GenericOnClickListener
+    private val pieCentreClickListener: GenericOnClickListener?
 ) :
     ListAdapter<DetailTypeRVItem, RecyclerView.ViewHolder>(DetailTypeRVItemDiffCallback()) {
 
@@ -82,11 +82,11 @@ class DetailTypeRVAdapter(
         }
     }
 
-    class DetailTypeSummaryViewHolder private constructor(private val binding: RvItemDetailTypeSummaryBinding) :
+    class DetailTypeSummaryViewHolder private constructor(private val binding: ChartComponentPieCardWithLegendBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPacket: DetailTypeRVPacket, pieCentreClickListener: GenericOnClickListener) {
-            binding.packet = newPacket
+        fun rebind(newPacket: DetailTypeRVPacket, pieCentreClickListener: GenericOnClickListener?) {
+            binding.packet = newPacket.pieChartWLPacket
             binding.pieCentreClickListener = pieCentreClickListener
             binding.executePendingBindings()
         }
@@ -94,7 +94,8 @@ class DetailTypeRVAdapter(
         companion object {
             fun inflateAndCreateViewHolderFrom(parent: ViewGroup): DetailTypeSummaryViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RvItemDetailTypeSummaryBinding.inflate(layoutInflater, parent, false)
+                val binding =
+                    ChartComponentPieCardWithLegendBinding.inflate(layoutInflater, parent, false)
                 return DetailTypeSummaryViewHolder(binding)
             }
         }
@@ -184,22 +185,13 @@ sealed class DetailTypeRVItem {
 }
 
 data class DetailTypeRVPacket(
-    val summaryType: String,
-    val summaryPieData: PieData,
-    val summaryLegendLLData: List<DetailTypeLegendLLData>,
+    val pieChartWLPacket: PieChartWLPacket,
     val lineChartPacket: LineChartPacket,
     val categoriesRangeString: String,
     val categoriesShowRangeCurrency: Boolean,
     val categoriesRangeCurrency: String,
     val categoriesRangeAmount: String,
     val categoryLLData: List<DetailTypeCategoryLLData>
-)
-
-data class DetailTypeLegendLLData(
-    val noDataFlag: Boolean,
-    val colour: Int,
-    val categoryName: String,
-    val categoryPercent: String
 )
 
 data class DetailTypeCategoryLLData(
@@ -212,4 +204,3 @@ data class DetailTypeCategoryLLData(
     val categoryAmount: String,
     val barData: BarData
 )
-

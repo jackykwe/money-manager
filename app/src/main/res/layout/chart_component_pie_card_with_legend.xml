@@ -4,9 +4,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="packet"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeRVPacket" />
+            type="com.kaeonx.moneymanager.chartcomponents.PieChartWLPacket" />
 
         <variable
             name="pieCentreClickListener"
@@ -23,17 +25,17 @@
                 android:id="@+id/lineChart"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                app:layout_constraintEnd_toStartOf="@+id/descriptorLL"
+                app:layout_constraintEnd_toStartOf="@+id/legendLL"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/typeSummaryPC"
+                    android:id="@+id/pieChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
-                    app:typeSummaryPC_adapter="@{packet.summaryPieData}" />
+                    app:pieChart_pieData="@{packet.pieData}" />
 
                 <!-- Courtesy of https://medium.com/@flawyte/android-best-way-to-add-a-ripple-to-an-imageview-a8345e499a64 -->
 
@@ -49,20 +51,22 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/basic_circle"
                     android:tint="@android:color/transparent"
-                    android:tintMode="src_in" />
+                    android:tintMode="src_in"
+                    android:visibility="@{pieCentreClickListener == null ? View.GONE : View.VISIBLE}" />
 
                 <TextView
+                    android:id="@+id/centreTV"
                     android:layout_width="99dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@{packet.summaryType.concat(`\n⇌`)}"
+                    android:text="@{packet.pieChartCentreText}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption2" />
 
             </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/descriptorLL"
+                android:id="@+id/legendLL"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
@@ -73,7 +77,7 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/lineChart"
                 app:layout_constraintTop_toTopOf="@id/lineChart"
-                app:typeSummaryLegendLL_data="@{packet.summaryLegendLLData}" />
+                app:pieChartLegendLL_data="@{packet.pieChartLegendLLData}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,7 +9,7 @@
 
         <variable
             name="typeLegendLLData"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailTypeLegendLLData" />
+            type="com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
