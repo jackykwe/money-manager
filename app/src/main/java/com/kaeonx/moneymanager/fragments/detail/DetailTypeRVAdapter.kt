@@ -159,11 +159,6 @@ class DetailTypeOnClickListener(val clickListener: (type: String, category: Stri
     fun onClick(type: String, category: String) = clickListener(type, category)
 }
 
-// Can reuse
-//class GenericOnClickListener(val clickListener: () -> Unit) {
-//    fun onClick() = clickListener()
-//}
-
 sealed class DetailTypeRVItem {
     abstract val rvItemId: Int
 

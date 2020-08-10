@@ -15,7 +15,6 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
-import com.kaeonx.moneymanager.userrepository.domain.Budget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,7 +25,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "budgetvm"
 
-class BudgetViewModel : ViewModel() {
+class BudgetsViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
 
@@ -34,10 +33,10 @@ class BudgetViewModel : ViewModel() {
         private set
 
     private val _budgets = userRepository.getAllBudgets()
-    private val _budgetLLData = MediatorLiveData<List<BudgetLLData>?>().apply {
+    private val _budgetLLData = MediatorLiveData<BudgetsRVPacket?>().apply {
         addSource(_budgets) { if (it != null) recalculateBudgetLLData() }
     }
-    val budgetLLData: LiveData<List<BudgetLLData>?>
+    val budgetsRVPacket: LiveData<BudgetsRVPacket?>
         get() = _budgetLLData
 
     private fun recalculateBudgetLLData() {
@@ -70,7 +69,7 @@ class BudgetViewModel : ViewModel() {
                 CalendarHandler.getStartOfMonthMillis(displayMonth.clone() as Calendar)
             val endMillis = CalendarHandler.getEndOfMonthMillis(displayMonth.clone() as Calendar)
 
-            val result = _budgets.value!!.map { budget ->
+            val budgetLLData = _budgets.value!!.map { budget ->
                 val spentAmountIBC: BigDecimal  // In Budget's Currency
                 userRepository.getTransactionsBetweenSuspend(
                     type = "Expenses",
@@ -179,21 +178,16 @@ class BudgetViewModel : ViewModel() {
                     barData = barData
                 )
             }
+            val result = BudgetsRVPacket(
+                budgetText = CalendarHandler.getFormattedString(
+                    displayMonth.clone() as Calendar,
+                    "MMM yyyy"
+                ).toUpperCase(Locale.ROOT),
+                budgetLLData = budgetLLData
+            )
 
             updateAddOptionsJob.join()
             withContext(Dispatchers.Main) { _budgetLLData.value = result }
         }
     }
 }
-
-class BudgetOnClickListener(val clickListener: (category: String) -> Unit) {
-    fun onClick(category: String) = clickListener(category)
-}
-
-data class BudgetLLData(
-    val budget: Budget,
-    val showCurrency: Boolean,
-    val spentAmount: String,
-    val spentPercent: String,
-    val barData: BarData
-)

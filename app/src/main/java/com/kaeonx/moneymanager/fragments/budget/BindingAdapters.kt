@@ -1,10 +1,38 @@
 package com.kaeonx.moneymanager.fragments.budget
 
+import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.kaeonx.moneymanager.chartcomponents.HorizontalRoundedStackedBarChartRenderer
+import com.kaeonx.moneymanager.databinding.LlItemBudgetBinding
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * rv_item_budgets
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("budgetsLL_budgetLLData", "budgetsLL_onClickListener")
+fun LinearLayout.setBudgetsLLAdapter(
+    list: List<BudgetLLData>,
+    onClickListener: BudgetOnClickListener
+) {
+    removeAllViews()
+    val layoutInflater = LayoutInflater.from(context)
+    if (list.isEmpty()) {
+        addView(LlItemBudgetBinding.inflate(layoutInflater, null, false).root)
+    } else {
+        for (budgetLLData in list) {
+            val itemBinding = LlItemBudgetBinding.inflate(layoutInflater, null, false)
+            itemBinding.budgetLLData = budgetLLData
+            itemBinding.onClickListener = onClickListener
+            itemBinding.executePendingBindings()
+            addView(itemBinding.root)
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /**

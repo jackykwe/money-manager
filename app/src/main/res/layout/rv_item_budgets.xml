@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="packet"
+            type="com.kaeonx.moneymanager.fragments.budget.BudgetsRVPacket" />
+
+        <variable
+            name="onClickListener"
+            type="com.kaeonx.moneymanager.fragments.budget.BudgetOnClickListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/budgetCV"
+        style="@style/RVItemDetailXBodyCard">
+
+        <LinearLayout style="@style/RVItemDetailXBodyLL">
+
+            <androidx.constraintlayout.widget.ConstraintLayout style="@style/RVItemDetailXBodyLLCL">
+
+                <TextView
+                    android:id="@+id/budgetTextTV"
+                    style="@style/RVItemDetailXBodyRangeTV"
+                    android:text="@{packet.budgetText}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="AUG 2020" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:id="@+id/budgetsLL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:budgetsLL_onClickListener="@{onClickListener}"
+                app:budgetsLL_budgetLLData="@{packet.budgetLLData}" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/budgetCV"
-    style="@style/RvItemTransactionsCard"
+    android:id="@+id/budgetRV"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:alpha="0"
-    app:contentPaddingTop="0dp">
-
-    <LinearLayout
-        android:id="@+id/budgetLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:minHeight="@dimen/card_ll_item_height"
-        android:orientation="vertical"
-        tools:layout_height="200dp" />
-
-</com.google.android.material.card.MaterialCardView>
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="8dp"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:listitem="@layout/rv_item_budgets" />
