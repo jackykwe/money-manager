@@ -104,13 +104,14 @@ class MainActivity : AppCompatActivity() {
                 // (because the options need to be controlled from within the fragment)
                 when (destination.id) {
                     R.id.transactionsBSDF -> Unit  // Pair 1
-                    R.id.monthYearPickerDialogFragment -> Unit  // Pair 2, Pair 3
+                    R.id.monthYearPickerDialogFragment -> Unit  // Pair 2, Pair 3, Pair 4
                     else -> menu.clear()
                 }
                 when (destination.id) {
                     R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 1
                     R.id.transactionsFragment -> inflateMenu(R.menu.fragment_transactions)  // Pair 2
                     R.id.detailTypeFragment -> inflateMenu(R.menu.fragment_detail_type)  // Pair 3
+                    R.id.budgetsFragment -> inflateMenu(R.menu.fragment_budgets)  // Pair 4
                     else -> Unit
                 }
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
@@ -25,15 +26,27 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "budgetvm"
 
-class BudgetsViewModel : ViewModel() {
+class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
+
+    private val _displayCalendar = MutableLiveData2(initCalendar)
+    val displayCalendar: LiveData<Calendar>
+        get() = _displayCalendar
+
+    internal fun selectMonth(newMonth: Int, newYear: Int) {
+        _displayCalendar.value = _displayCalendar.value.apply {
+            this.set(Calendar.MONTH, newMonth)
+            this.set(Calendar.YEAR, newYear)
+        }
+    }
 
     internal var addOptions: Array<SpannedString>? = null
         private set
 
     private val _budgets = userRepository.getAllBudgets()
     private val _budgetLLData = MediatorLiveData<BudgetsRVPacket?>().apply {
+        addSource(_displayCalendar) { if (_budgets.value != null) recalculateBudgetLLData() }
         addSource(_budgets) { if (it != null) recalculateBudgetLLData() }
     }
     val budgetsRVPacket: LiveData<BudgetsRVPacket?>
@@ -64,10 +77,10 @@ class BudgetsViewModel : ViewModel() {
 
             val homeCurrency = UserPDS.getString("ccc_home_currency")
 
-            val displayMonth = Calendar.getInstance()  //TODO: ANY MONTH
-            val startMillis =
-                CalendarHandler.getStartOfMonthMillis(displayMonth.clone() as Calendar)
-            val endMillis = CalendarHandler.getEndOfMonthMillis(displayMonth.clone() as Calendar)
+            val startMillis = _displayCalendar.value.timeInMillis
+            val endMillis = CalendarHandler.getEndOfMonthMillis(
+                _displayCalendar.value.clone() as Calendar
+            )
 
             val budgetLLData = _budgets.value!!.map { budget ->
                 val spentAmountIBC: BigDecimal  // In Budget's Currency
@@ -100,7 +113,9 @@ class BudgetsViewModel : ViewModel() {
 
                 // Calculations for barData
                 val dayDivDays = CalendarHandler.getDayDivDays(
-                    CalendarHandler.getStartOfMonthCalendar(displayMonth.clone() as Calendar)
+                    CalendarHandler.getStartOfMonthCalendar(
+                        _displayCalendar.value.clone() as Calendar
+                    )
                 )
                 val entries: List<BarEntry>
                 val colourList: List<Int>
@@ -180,7 +195,7 @@ class BudgetsViewModel : ViewModel() {
             }
             val result = BudgetsRVPacket(
                 budgetText = CalendarHandler.getFormattedString(
-                    displayMonth.clone() as Calendar,
+                    _displayCalendar.value.clone() as Calendar,
                     "MMM yyyy"
                 ).toUpperCase(Locale.ROOT),
                 budgetLLData = budgetLLData

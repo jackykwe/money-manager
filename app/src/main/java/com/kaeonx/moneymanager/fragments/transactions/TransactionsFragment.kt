@@ -84,7 +84,11 @@ class TransactionsFragment : Fragment() {
                 summaryBudgetClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(TransactionsFragmentDirections.actionTransactionsFragmentToBudgetsFragment())
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToBudgetsFragment(
+                                    initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
+                                )
+                            )
                         }
                     }
                 },

@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.chartcomponents
 
 import android.graphics.Canvas
 import android.graphics.RectF
+import android.util.Log
 import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
@@ -26,8 +27,8 @@ internal class HorizontalRoundedStackedBarChartRenderer(
     private val mBarShadowRectBuffer = RectF()
 
     override fun drawDataSet(c: Canvas, dataSet: IBarDataSet, index: Int) {
-        val cornerDimens =
-            c.height / 2f  // Courtesy of https://stackoverflow.com/a/37206613/7254995
+        // Courtesy of https://stackoverflow.com/a/37206613/7254995
+        val cornerDimens = c.height / 2f
 
         val trans = mChart.getTransformer(dataSet.axisDependency)
         mBarBorderPaint.color = dataSet.barBorderColor
@@ -86,9 +87,7 @@ internal class HorizontalRoundedStackedBarChartRenderer(
         if (isSingleColor) {
             mRenderPaint.color = dataSet.color
         }
-        // DRAW REVERSE
-        var j = buffer.size() - 1
-        while (j >= 0) {
+        for (j in buffer.size() - 1 downTo 0 step 4) {
             // Don't think these will affect the drawing, since they check for top and bottom floats.
             if (!mViewPortHandler.isInBoundsTop(buffer.buffer[j])) break
             if (!mViewPortHandler.isInBoundsBottom(buffer.buffer[j - 2])) continue
@@ -99,18 +98,24 @@ internal class HorizontalRoundedStackedBarChartRenderer(
             }
             when (j) {
                 // This code assumes there are always exactly 3 parts in each stacked bar.
+                // I can never achieve full accuracy with these graphs.
+                // These graphs are approximations anyway, so even though this code is imperfect,
+                // I'll leave it as it is. The correct way to do this is to use masks, which is
+                // beyond my level right now.
                 3 -> {  // Left most bar
-                    c.drawRect(  // I modified this with - cornerDimens
-                        buffer.buffer[j - 3] + cornerDimens,
-                        buffer.buffer[j - 2],
-                        buffer.buffer[j - 1],
-                        buffer.buffer[j],
-                        mRenderPaint
-                    )
+                    val left = buffer.buffer[j - 3]
+                    var right = buffer.buffer[j - 1]
+                    if (right - left < cornerDimens && right != left) {
+                        right += 2 * cornerDimens
+                    } else if (right == left || right >= buffer.buffer[10] - cornerDimens) {
+                        Unit
+                    } else {
+                        right += cornerDimens
+                    }
                     c.drawRoundRect(
-                        buffer.buffer[j - 3],
+                        left,
                         buffer.buffer[j - 2],
-                        buffer.buffer[j - 1] + cornerDimens,
+                        right,
                         buffer.buffer[j],
                         cornerDimens,
                         cornerDimens,
@@ -118,17 +123,21 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                     )
                 }
                 7 -> {  // Middle Bar
-                    c.drawRect(  // I modified this with - cornerDimens
-                        buffer.buffer[j - 3],
-                        buffer.buffer[j - 2],
-                        buffer.buffer[j - 1],
-                        buffer.buffer[j],
-                        mRenderPaint
-                    )
+                    var left = buffer.buffer[j - 3]
+                    var right = buffer.buffer[j - 1]
+                    if (right - left < cornerDimens && right != left) {
+                        left -= cornerDimens
+                        right += cornerDimens
+                    } else if (right == left || left <= buffer.buffer[0] + cornerDimens || right >= buffer.buffer[10] - cornerDimens) {
+                        Unit
+                    } else {
+                        left -= cornerDimens
+                        right += cornerDimens
+                    }
                     c.drawRoundRect(
-                        buffer.buffer[j - 3] - cornerDimens,
+                        left,
                         buffer.buffer[j - 2],
-                        buffer.buffer[j - 1] + cornerDimens,
+                        right,
                         buffer.buffer[j],
                         cornerDimens,
                         cornerDimens,
@@ -136,17 +145,19 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                     )
                 }
                 11 -> {
-                    c.drawRect(  // I modified this with - cornerDimens
-                        buffer.buffer[j - 3],
-                        buffer.buffer[j - 2],
-                        buffer.buffer[j - 1] - cornerDimens,
-                        buffer.buffer[j],
-                        mRenderPaint
-                    )
+                    var left = buffer.buffer[j - 3].also { Log.d("lobby", "left is $it") }
+                    val right = buffer.buffer[j - 1].also { Log.d("lobby", "right is $it") }
+                    if (right - left < cornerDimens && right != left) {
+                        left -= 2 * cornerDimens
+                    } else if (right == left || left <= buffer.buffer[0] + cornerDimens) {
+                        Unit
+                    } else {
+                        left -= cornerDimens
+                    }
                     c.drawRoundRect(
-                        buffer.buffer[j - 3] - cornerDimens,
+                        left,
                         buffer.buffer[j - 2],
-                        buffer.buffer[j - 1],
+                        right,
                         buffer.buffer[j],
                         cornerDimens,
                         cornerDimens,
@@ -164,59 +175,6 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                     buffer.buffer[j + 3], cornerDimens, cornerDimens, mBarBorderPaint
                 )
             }
-            j -= 4
         }
-        /* while (j < buffer.size()) {
-            if (!mViewPortHandler.isInBoundsTop(buffer.buffer[j + 3])) break
-            if (!mViewPortHandler.isInBoundsBottom(buffer.buffer[j + 1])) {
-                j += 4
-                continue
-            }
-            if (!isSingleColor) {
-                // Set the color for the currently drawn value. If the index
-                // is out of bounds, reuse colors.
-                mRenderPaint.color = dataSet.getColor(j / 4)
-            }
-            when (j) {
-                // This code assumes there are always exactly 3 parts in each stacked bar.
-                0 -> {
-                    c.drawRect(
-                        buffer.buffer[j] + cornerDimens, buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], mRenderPaint
-                    )
-                    c.drawRoundRect(
-                        buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], cornerDimens, cornerDimens, mRenderPaint
-                    ).also { Log.d("lobby", "I drew start bar") }
-                }
-                4 -> {
-                    c.drawRect(
-                        buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], mRenderPaint
-                    ).also { Log.d("lobby", "I drew middle bar with buffer ${buffer.buffer[j]} and ${buffer.buffer[j+2]}") }
-                }
-                8 -> {
-                    c.drawRect(  // I modified this with - cornerDimens
-                        buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2] - cornerDimens,
-                        buffer.buffer[j + 3], mRenderPaint
-                    )
-                    c.drawRoundRect(
-                        buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                        buffer.buffer[j + 3], cornerDimens, cornerDimens, mRenderPaint
-                    ).also { Log.d("lobby", "I drew end bar") }
-                }
-            }
-            if (drawBorder) {
-//                c.drawRect(  // I modified this with - cornerDimens
-//                    buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2] - cornerDimens,
-//                    buffer.buffer[j + 3], mBarBorderPaint
-//                )
-                c.drawRoundRect(
-                    buffer.buffer[j], buffer.buffer[j + 1], buffer.buffer[j + 2],
-                    buffer.buffer[j + 3], cornerDimens, cornerDimens, mBarBorderPaint
-                )
-            }
-            j += 4
-        } */
     }
 }
