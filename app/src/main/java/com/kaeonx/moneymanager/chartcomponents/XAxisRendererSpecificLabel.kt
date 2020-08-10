@@ -1,4 +1,4 @@
-package com.kaeonx.moneymanager.customclasses
+package com.kaeonx.moneymanager.chartcomponents
 
 import android.graphics.Canvas
 import com.github.mikephil.charting.components.XAxis

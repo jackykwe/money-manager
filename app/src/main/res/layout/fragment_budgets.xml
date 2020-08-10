@@ -2,10 +2,12 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/budgetCV"
     style="@style/RvItemTransactionsCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
+    android:alpha="0"
     app:contentPaddingTop="0dp">
 
     <LinearLayout
@@ -16,7 +18,5 @@
         android:minHeight="@dimen/card_ll_item_height"
         android:orientation="vertical"
         tools:layout_height="200dp" />
-    <!--    app:dayTransactionsLL_dayTransactions="@{dayTransactions}"-->
-    <!--    app:dayTransactionsLL_onClickListener="@{onClickListener}"-->
 
 </com.google.android.material.card.MaterialCardView>

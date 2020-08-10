@@ -27,7 +27,7 @@ import java.util.*
 
 private const val TAG = "tfvm"
 
-class TransactionsFragmentViewModel : ViewModel() {
+class TransactionsViewModel : ViewModel() {
     init {
         Log.d(TAG, "TFVM started, with userId $userId")
     }
@@ -109,32 +109,22 @@ class TransactionsFragmentViewModel : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private fun displayMonthCompare(): Int {
-        val currentMonthFirstMillis = CalendarHandler.getStartOfMonthMillis(Calendar.getInstance())
-        val displayMonthFirstMillis = _displayCalendar.value.timeInMillis
-        return displayMonthFirstMillis.compareTo(currentMonthFirstMillis)
-    }
+//    private fun displayMonthCompare(): Int {
+//        val currentMonthFirstMillis = CalendarHandler.getStartOfMonthMillis(Calendar.getInstance())
+//        val displayMonthFirstMillis = _displayCalendar.value.timeInMillis
+//        return displayMonthFirstMillis.compareTo(currentMonthFirstMillis)
+//    }
 
     internal suspend fun getSummaryData(list: List<DayTransactions>): TransactionsSummaryData {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
         val budget = BigDecimal("1000")  // TODO: Grab budget
         val income = list.sumByBigDecimal { BigDecimal(it.dayIncome ?: "0") }
         val expenses = list.sumByBigDecimal { BigDecimal(it.dayExpenses ?: "0") }
-        val days = _displayCalendar.value.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-        val compare = displayMonthCompare()
-        val day = when {
-            compare == 0 -> Calendar.getInstance().get(Calendar.DAY_OF_MONTH)  // current month
-            compare < 0 -> days
-            compare > 0 -> 0
-            else -> throw IllegalStateException("Did I fail math")
-        }
-        val dayDivDays =
-            BigDecimal(day).divide(BigDecimal(days), 2, RoundingMode.HALF_UP)
+        val dayDivDays = CalendarHandler.getDayDivDays(_displayCalendar.value)
 
         val entries: List<PieEntry>
         val colourList: List<Int>
-        if (expenses < budget) {
+        if (expenses <= budget) {
             val exDivBud = expenses.divide(budget, 2, RoundingMode.HALF_UP)
             if (exDivBud <= dayDivDays) {
                 entries = listOf(
@@ -161,9 +151,10 @@ class TransactionsFragmentViewModel : ViewModel() {
             }
         } else {
             val budDivEx = budget.divide(expenses, 2, RoundingMode.HALF_UP)
+            val dayDivDaysTimesBudDivEx = dayDivDays.times(budDivEx)
             entries = listOf(
-                PieEntry(dayDivDays.times(budDivEx).toFloat(), "target ex"),
-                PieEntry(budDivEx.toFloat(), "bud"),
+                PieEntry(dayDivDaysTimesBudDivEx.toFloat(), "target ex"),
+                PieEntry(budDivEx.minus(dayDivDaysTimesBudDivEx).toFloat(), "bud"),
                 PieEntry(BigDecimal.ONE.minus(budDivEx).toFloat(), "over ex")
             )
             colourList = listOf(

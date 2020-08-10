@@ -28,7 +28,7 @@ private const val TAG = "transactionFrag"
 class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
-    private val viewModel: TransactionsFragmentViewModel by viewModels()
+    private val viewModel: TransactionsViewModel by viewModels()
 
     private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }
 

@@ -44,8 +44,10 @@ interface UserDatabaseDao {
         endMillis: Long
     ): LiveData<List<DatabaseTransaction>>
 
-    @Query("SELECT * FROM transactions_table WHERE timestamp BETWEEN :startMillis AND :endMillis ORDER BY timestamp DESC")
+    @Query("SELECT * FROM transactions_table WHERE (timestamp BETWEEN :startMillis AND :endMillis) AND (category = :category) AND (type = :type) ORDER BY timestamp DESC")
     suspend fun getTransactionsBetweenSuspend(
+        type: String,
+        category: String,
         startMillis: Long,
         endMillis: Long
     ): List<DatabaseTransaction>

@@ -78,8 +78,12 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
     }
 
     private suspend fun generateAmountText(startMillis: Long, endMillis: Long): String =
-        userRepository.getTransactionsBetweenSuspend(startMillis, endMillis)
-            .filter { it.category == _currentBudget.value.category && it.type == "Expenses" }
+        userRepository.getTransactionsBetweenSuspend(
+            type = "Expenses",
+            category = _currentBudget.value.category,
+            startMillis = startMillis,
+            endMillis = endMillis
+        )
             .run {
                 var rangeAmount = BigDecimal.ZERO
                 forEach {

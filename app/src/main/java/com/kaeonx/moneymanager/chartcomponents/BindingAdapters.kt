@@ -13,7 +13,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.kaeonx.moneymanager.customclasses.XAxisRendererSpecificLabel
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -113,6 +112,7 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
         }
     }
     axisLeft.apply {
+        removeAllLimitLines()  // prevents stacking of LimitLines when ViewHolder is reused
         addLimitLine(
             LimitLine(
                 lineChartPacket.lowerLimitLineValue, lineChartPacket.lowerLimitLineText

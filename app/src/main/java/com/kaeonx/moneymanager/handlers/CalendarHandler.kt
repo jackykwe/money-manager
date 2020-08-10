@@ -60,6 +60,9 @@ internal class CalendarHandler private constructor() {
                 .toInt()
                 .plus(1)  // Floor and plus(1) to account for 00:00 transactions.
 
+        /**
+         * You **must** clone the calendar.
+         */
         internal fun getStartOfMonthCalendar(calendar: Calendar): Calendar {
             return calendar.apply {
                 set(Calendar.DAY_OF_MONTH, getActualMinimum(Calendar.DAY_OF_MONTH))
@@ -96,6 +99,9 @@ internal class CalendarHandler private constructor() {
             }.timeInMillis
         }
 
+        /**
+         * You **must** clone the calendar.
+         */
         internal fun getEndOfMonthCalendar(calendar: Calendar): Calendar {
             return calendar.apply {
                 set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -125,6 +131,32 @@ internal class CalendarHandler private constructor() {
                 set(Calendar.MINUTE, getActualMaximum(Calendar.MINUTE))
                 set(Calendar.SECOND, getActualMaximum(Calendar.SECOND))
                 set(Calendar.MILLISECOND, getActualMaximum(Calendar.MILLISECOND))
+            }
+        }
+
+        /**
+         * @param displayMonthStartCalendar This Calendar's millis should be equal to the first
+         * millisecond of the month. There is no need to clone it.
+         */
+        internal fun getDayDivDays(displayMonthStartCalendar: Calendar): BigDecimal {
+            val currentCal = Calendar.getInstance()
+            val currentMonthStartMillis = getStartOfMonthMillis(currentCal.clone() as Calendar)
+            val displayMonthStartMillis = displayMonthStartCalendar.timeInMillis
+            return when {
+                displayMonthStartMillis == currentMonthStartMillis -> {
+                    BigDecimal(
+                        currentCal.get(Calendar.DAY_OF_MONTH)
+                    ).divide(
+                        displayMonthStartCalendar.getActualMaximum(
+                            Calendar.DAY_OF_MONTH
+                        ).toBigDecimal(),
+                        2,
+                        RoundingMode.HALF_UP
+                    )
+                }
+                displayMonthStartMillis > currentMonthStartMillis -> BigDecimal.ZERO
+                displayMonthStartMillis < currentMonthStartMillis -> BigDecimal.ONE
+                else -> throw IllegalStateException("Did I fail math?")
             }
         }
 

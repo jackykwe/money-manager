@@ -73,10 +73,17 @@ class UserRepository private constructor() {
         }
 
     internal suspend fun getTransactionsBetweenSuspend(
+        type: String,
+        category: String,
         startMillis: Long,
         endMillis: Long
     ): List<Transaction> =
-        database.userDatabaseDao.getTransactionsBetweenSuspend(startMillis, endMillis).toDomain()
+        database.userDatabaseDao.getTransactionsBetweenSuspend(
+            type,
+            category,
+            startMillis,
+            endMillis
+        ).toDomain()
 
     internal fun getCategoryTransactionsBetween(
         type: String,

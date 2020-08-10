@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.handlers
 
-import com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel
 import com.kaeonx.moneymanager.xerepository.XERepository
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -35,22 +34,22 @@ class CurrencyHandler private constructor() {
 
         internal fun largePercentFormatter(bigDecimal: BigDecimal): String {
             return if (bigDecimal >= BigDecimal("1E6")) {
-                DecimalFormat("0.0E0").apply {
+                DecimalFormat("'('0.0E0'%)'").apply {
                     roundingMode = RoundingMode.HALF_UP
                 }.format(bigDecimal)
             } else {
-                bigDecimal.toPlainString()
+                "(${bigDecimal.toPlainString()}%)"
             }
         }
 
-        private fun displayAmountAsBigDecimal(bigDecimal: BigDecimal): BigDecimal {
-            if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO
-            val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
-            val twoDPSTZ = twoDP.stripTrailingZeros()
-            return if (twoDPSTZ.scale() <= 0) twoDPSTZ else twoDP
-        }
+//        private fun displayAmountAsBigDecimal(bigDecimal: BigDecimal): BigDecimal {
+//            if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO
+//            val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
+//            val twoDPSTZ = twoDP.stripTrailingZeros()
+//            return if (twoDPSTZ.scale() <= 0) twoDPSTZ else twoDP
+//        }
 
-        fun convertAmount(
+        internal fun convertAmount(
             bigDecimal: BigDecimal,
             foreignCurrencySrc: String,
             homeCurrencyDst: String
@@ -62,14 +61,40 @@ class CurrencyHandler private constructor() {
                 ?.rate
             return when (rateString) {
                 null -> BigDecimal.ZERO
-                else -> displayAmountAsBigDecimal(
-                    bigDecimal.divide(
-                        BigDecimal(rateString),
-                        9,
-                        RoundingMode.HALF_UP
-                    )
+                else -> bigDecimal.divide(
+                    BigDecimal(rateString),
+                    2,
+                    RoundingMode.HALF_UP
                 )
             }
         }
+
+        internal fun convertAmountViaProxy(
+            bigDecimal: BigDecimal,
+            foreignCurrencySrc: String,
+            homeCurrencyPxy: String,
+            foreignCurrencyDst: String
+        ): BigDecimal {
+            // value(foreignSrc) / rate(homeSrc) = value(home)
+            // value(home) x rate(homeDst) = value(foreignDst)
+            val rateSrcHome: String?
+            val rateHomeDst: String?
+            XERepository.getInstance().xeRows.value!!.run {
+                rateSrcHome =
+                    find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == homeCurrencyPxy }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
+                        ?.rate
+                rateHomeDst =
+                    find { it.foreignCurrency == foreignCurrencyDst && it.baseCurrency == homeCurrencyPxy }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
+                        ?.rate
+            }
+            return if (rateSrcHome == null || rateHomeDst == null) BigDecimal.ZERO else {
+                bigDecimal.times(BigDecimal(rateHomeDst)).divide(
+                    BigDecimal(rateSrcHome),
+                    2,
+                    RoundingMode.HALF_UP
+                )
+            }
+        }
+
     }
 }

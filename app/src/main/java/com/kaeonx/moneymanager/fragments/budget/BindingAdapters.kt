@@ -1,21 +1,18 @@
-package com.kaeonx.moneymanager.fragments.detail
+package com.kaeonx.moneymanager.fragments.budget
 
 import androidx.databinding.BindingAdapter
-import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
-import com.kaeonx.moneymanager.chartcomponents.HorizontalRoundedBarChartRenderer
+import com.kaeonx.moneymanager.chartcomponents.HorizontalRoundedStackedBarChartRenderer
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
- * (rv_ll_item_detail_X)
- * rv_ll_item_detail_type
- * rv_ll_item_detail_category
+ * ll_item_budget
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("bodyHBC_adapter")
-fun HorizontalBarChart.setBodyHBCAdapter(barData: BarData) {
+@BindingAdapter("stackedHBC_adapter")
+fun HorizontalBarChart.setStackedHBCAdapter(barData: BarData) {
     if (legend.isEnabled) {
         setTouchEnabled(false)
         setNoDataText("Please report this bug.")
@@ -28,7 +25,7 @@ fun HorizontalBarChart.setBodyHBCAdapter(barData: BarData) {
 
         setViewPortOffsets(0f, 0f, 0f, 0f)  // remove padding
         renderer =
-            HorizontalRoundedBarChartRenderer(
+            HorizontalRoundedStackedBarChartRenderer(
                 this,
                 this.animator,
                 this.viewPortHandler
@@ -54,6 +51,4 @@ fun HorizontalBarChart.setBodyHBCAdapter(barData: BarData) {
     // Courtesy of https://stackoverflow.com/a/35111662/7254995
     // Forces viewPortOffsets to take effect
     post { invalidate() }
-
-    animateY(500, Easing.EaseOutQuart)
 }

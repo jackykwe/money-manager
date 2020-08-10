@@ -25,6 +25,8 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
+private const val TAG = "dtvm"
+
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
 class DetailTypeViewModel(
@@ -156,7 +158,7 @@ class DetailTypeViewModel(
                             .divide(rangeAmount, 3, RoundingMode.HALF_UP)
                         // should be between 0 and 100. No need LargePercentFormatter.
                         val accumulatorPercentDisplay =
-                            percent.setScale(1, RoundingMode.HALF_EVEN)
+                            accumulatorPercent.setScale(1, RoundingMode.HALF_EVEN)
 
                         val accumulatorColourInt = ColourHandler.getColourObject("Black")
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
@@ -166,7 +168,7 @@ class DetailTypeViewModel(
                                 noDataFlag = false,
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
-                                categoryPercent = "($accumulatorPercentDisplay%)"
+                                categoryPercent = "($accumulatorPercentDisplay Jesushelp%)"
                             )
                         )
                     } else {
