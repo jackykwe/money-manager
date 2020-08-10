@@ -45,7 +45,8 @@
     <string name="cancel">Cancel</string>
 
     <!-- TransactionsFragment RV -->
-    <string name="placeholder_amount">999999.99</string>
+    <string name="placeholder_amount">9999999.99</string>
+    <string name="placeholder_percent">(999999.9%)</string>
     <string name="placeholder_memo">dinner @ kopitiam blah blah blah blah blah. I\'m going to make it super long.</string>
     <string name="rv_item_transactions_day_header_income_hint">Income:</string>
     <string name="rv_item_transactions_day_header_expenses_hint">Expenses:</string>

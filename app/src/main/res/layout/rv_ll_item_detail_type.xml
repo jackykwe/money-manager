@@ -29,9 +29,9 @@
             android:id="@+id/categoryIconFL"
             android:layout_width="@dimen/category_icon_FL_size"
             android:layout_height="@dimen/category_icon_FL_size"
-            app:layout_constraintBottom_toBottomOf="@+id/transactionHBC"
+            app:layout_constraintBottom_toBottomOf="@+id/budgetHBC"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
             tools:layout_editor_absoluteX="8dp">
 
             <include
@@ -41,7 +41,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/transactionMemoTV"
+            android:id="@+id/budgetCategoryTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="8dp"
@@ -50,8 +50,8 @@
             android:text="@{typeCategoryLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@+id/transactionHBC"
-            app:layout_constraintEnd_toStartOf="@id/transactionPercentTV"
+            app:layout_constraintBottom_toTopOf="@+id/budgetHBC"
+            app:layout_constraintEnd_toStartOf="@id/budgetSpentPercentTV"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
@@ -60,7 +60,7 @@
             tools:text="Category Name Category Name Category Name " />
 
         <TextView
-            android:id="@+id/transactionPercentTV"
+            android:id="@+id/budgetSpentPercentTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="2dp"
@@ -68,34 +68,34 @@
             android:singleLine="true"
             android:text="@{typeCategoryLLData.categoryPercent}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-            app:layout_constraintBottom_toBottomOf="@+id/transactionMemoTV"
+            app:layout_constraintBottom_toBottomOf="@+id/budgetCategoryTV"
             app:layout_constraintEnd_toStartOf="@id/barrier"
-            app:layout_constraintStart_toEndOf="@+id/transactionMemoTV"
-            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            app:layout_constraintStart_toEndOf="@+id/budgetCategoryTV"
+            app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
             tools:text="(99.9%)" />
 
         <TextView
-            android:id="@+id/transactionCurrencyTV"
+            android:id="@+id/budgetCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"
             android:text="@{typeCategoryLLData.currency}"
             android:textAppearance="@style/TextAppearance.MyApp.Caption4"
             android:visibility="@{typeCategoryLLData.showCurrency ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@+id/transactionAmountTV"
-            app:layout_constraintEnd_toStartOf="@+id/transactionAmountTV"
-            app:layout_constraintTop_toTopOf="@+id/transactionAmountTV"
+            app:layout_constraintBottom_toBottomOf="@+id/budgetAmountTV"
+            app:layout_constraintEnd_toStartOf="@+id/budgetAmountTV"
+            app:layout_constraintTop_toTopOf="@+id/budgetAmountTV"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
 
         <TextView
-            android:id="@+id/transactionAmountTV"
+            android:id="@+id/budgetAmountTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{typeCategoryLLData.categoryAmount}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+            app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
             tools:text="@string/placeholder_amount" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -103,12 +103,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="left"
-            app:constraint_referenced_ids="transactionAmountTV,transactionCurrencyTV"
+            app:constraint_referenced_ids="budgetAmountTV,budgetCurrencyTV"
             tools:layout_editor_absoluteX="403dp"
             tools:layout_editor_absoluteY="8dp" />
 
         <com.github.mikephil.charting.charts.HorizontalBarChart
-            android:id="@+id/transactionHBC"
+            android:id="@+id/budgetHBC"
             android:layout_width="0dp"
             android:layout_height="6dp"
             android:layout_marginStart="8dp"
@@ -118,7 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/categoryIconFL"
-            app:layout_constraintTop_toBottomOf="@+id/transactionMemoTV" />
+            app:layout_constraintTop_toBottomOf="@+id/budgetCategoryTV" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -102,6 +102,7 @@ class DetailCategoryViewModel(
                     // Calculates everything else
                     val percent = it.homeAmount.times(BigDecimal("100"))
                         .divide(rangeAmount, 3, RoundingMode.HALF_UP)
+                    // should be between 0 and 100. No need LargePercentFormatter.
                     val percentDisplay = percent.setScale(1, RoundingMode.HALF_EVEN)
 
                     transactionLLDataAL.add(

@@ -4,21 +4,42 @@ import com.kaeonx.moneymanager.fragments.transactions.TransactionsBSDFViewModel
 import com.kaeonx.moneymanager.xerepository.XERepository
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class CurrencyHandler private constructor() {
     companion object {
 
-        fun displayAmount(bigDecimal: BigDecimal): String {
+        private fun largeValueFormatter(bigDecimal: BigDecimal): String {
+            return if (bigDecimal >= BigDecimal("1E7")) {
+                DecimalFormat("0.00E0").apply {
+                    roundingMode = RoundingMode.HALF_UP
+                }.format(bigDecimal)
+            } else {
+                bigDecimal.toPlainString()
+            }
+        }
+
+        internal fun displayAmount(bigDecimal: BigDecimal): String {
             if (bigDecimal.compareTo(BigDecimal.ZERO) == 0) return "0"
 
-            val twoDP = bigDecimal.setScale(TransactionsBSDFViewModel.MAX_DP, RoundingMode.HALF_UP)
+            val twoDP = bigDecimal.setScale(2, RoundingMode.HALF_UP)
             // if (twoDP.compareTo(BigDecimal.ZERO) == 0) return null  // fixes weird 0.00 being returned as 0.00 instead of 0
 
             val twoDPSTZ = twoDP.stripTrailingZeros()
             return if (twoDPSTZ.scale() <= 0) {
-                twoDPSTZ.toPlainString()  // twoDPSTZ is a whole number, return integer representation (twoDPSTZ)
+                largeValueFormatter(twoDPSTZ)  // twoDPSTZ is a whole number, return integer representation (twoDPSTZ)
             } else {
-                twoDP.toPlainString()  // twoDPSTZ is not a whole number, return 2 DP representation (twoDP)
+                largeValueFormatter(twoDP)  // twoDPSTZ is not a whole number, return 2 DP representation (twoDP)
+            }
+        }
+
+        internal fun largePercentFormatter(bigDecimal: BigDecimal): String {
+            return if (bigDecimal >= BigDecimal("1E6")) {
+                DecimalFormat("0.0E0").apply {
+                    roundingMode = RoundingMode.HALF_UP
+                }.format(bigDecimal)
+            } else {
+                bigDecimal.toPlainString()
             }
         }
 

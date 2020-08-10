@@ -37,7 +37,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/transactionMemoTV"
+            android:id="@+id/budgetCategoryTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -58,7 +58,7 @@
             tools:text="+" />
 
         <TextView
-            android:id="@+id/transactionCurrencyTV"
+            android:id="@+id/budgetCurrencyTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="4dp"

@@ -38,7 +38,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/transactionMemoTV"
+            android:id="@+id/budgetCategoryTV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"

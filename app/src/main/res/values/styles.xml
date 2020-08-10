@@ -165,11 +165,9 @@
     <style name="RvItemtransactionsSummaryAmount">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:autoSizeMaxTextSize">16sp</item>
-        <item name="android:autoSizeMinTextSize">10sp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">middle</item>
         <item name="android:textAppearance">@style/TextAppearance.MyApp.Body1</item>
         <item name="layout_constrainedWidth">true</item>
     </style>

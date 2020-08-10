@@ -52,9 +52,9 @@
                             android:id="@+id/categoryIconFL"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/transactionMemoTV"
+                            app:layout_constraintBottom_toBottomOf="@+id/budgetCategoryTV"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/transactionMemoTV"
+                            app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
                             tools:layout_editor_absoluteX="0dp">
 
                             <include
@@ -64,7 +64,7 @@
                         </FrameLayout>
 
                         <TextView
-                            android:id="@+id/transactionMemoTV"
+                            android:id="@+id/budgetCategoryTV"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
@@ -87,7 +87,7 @@
                             android:background="?android:attr/listDivider"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/transactionMemoTV" />
+                            app:layout_constraintTop_toBottomOf="@+id/budgetCategoryTV" />
 
                         <androidx.constraintlayout.widget.Barrier
                             android:id="@+id/barrier"

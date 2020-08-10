@@ -11,7 +11,8 @@ class BudgetViewModel : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
 
-    internal lateinit var addOptions: Array<SpannedString>
+    internal var addOptions: Array<SpannedString>? = null
+        private set
 
     private val _budgets = userRepository.getAllBudgets()
     val budgets = Transformations.map(_budgets) { result ->
@@ -35,4 +36,8 @@ class BudgetViewModel : ViewModel() {
         }
         result
     }
+}
+
+class BudgetOnClickListener(val clickListener: (category: String) -> Unit) {
+    fun onClick(category: String) = clickListener(category)
 }

@@ -31,6 +31,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
         valueToEntry(_currentBudget.value.originalCurrency)
     )
     val currencySpinnerError = Transformations.map(currencySpinnerText) {
+        amountETText.value = amountETText.value  // to update amountETHelperText
         // it (currencySpinnerText.value) is ENTRY form. You need to run entryToValue(it)
         // to get the 3 character currency code.
         if (it.isNullOrBlank()) "Please report this bug."

@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.findNavController
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetsBinding
+import com.kaeonx.moneymanager.databinding.LlItemBudgetBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "bdgfm"
 
@@ -43,8 +47,20 @@ class BudgetsFragment : Fragment() {
             ).root
         )
 
-        viewModel.budgets.observe(viewLifecycleOwner) {
+        viewModel.budgets.observe(viewLifecycleOwner) { list ->
             Log.d(TAG, "Observing budgets LD!")
+            binding.budgetLL.apply {
+                removeAllViews()
+                for (budget in list) {
+                    val itemBinding = LlItemBudgetBinding.inflate(layoutInflater, null, false)
+//                    itemBinding.budget = budget
+//                    itemBinding.onClickListener = BudgetOnClickListener {
+//                        Toast.makeText(requireContext(), "Wow, you want $it?", Toast.LENGTH_SHORT).show()
+//                    }
+//                    itemBinding.executePendingBindings()
+                    addView(itemBinding.root)
+                }
+            }
         }
     }
 
@@ -52,12 +68,19 @@ class BudgetsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         // TODO: Don't inflate (or disable) if all available budgets have been created
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_budgets)
+            lifecycleScope.launch {
+                while (viewModel.addOptions == null) {
+                    delay(1L)
+                    Log.d(TAG, "wow still null")
+                }
+                if (viewModel.addOptions!!.isNotEmpty()) inflateMenu(R.menu.fragment_budgets)
+            }
 
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_add_budget -> {
-                        val options = viewModel.addOptions
+                        val options =
+                            viewModel.addOptions!!  // if you can click the plus icon, means options is non null.
                         // Show dialog to choose the category to add
                         AlertDialog.Builder(requireContext())
                             .setTitle("Create budget for:")
