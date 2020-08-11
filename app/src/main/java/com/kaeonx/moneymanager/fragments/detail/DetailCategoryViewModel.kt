@@ -26,11 +26,11 @@ import java.util.*
 private const val TAG = "dcvm"
 
 class DetailCategoryViewModel(
-    private val yearModeEnabled: Boolean,
-    private val initIsYearMode: Boolean,
+    yearModeEnabled: Boolean,
+    initIsYearMode: Boolean,
     private val type: String,
     private val category: String,
-    private val initCalendar: Calendar
+    initCalendar: Calendar
 ) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
@@ -94,7 +94,9 @@ class DetailCategoryViewModel(
         if (_transactions != null) {
             _categoryTypeRVPacket.removeSource(_transactions!!)
         }
-        _transactions = userRepository.getTransactionsBetween(
+        _transactions = userRepository.getCategoryTransactionsBetween(
+            type,
+            category,
             _displayCalendarStart.value.timeInMillis,  // no need clone, since no edits will be made to it
             _displayCalendarEnd.value.timeInMillis  // no need clone, since no edits will be made to it
         )

@@ -13,6 +13,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetDetailBinding
 import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
+import java.util.*
 
 class BudgetDetailFragment : Fragment() {
 
@@ -41,7 +42,15 @@ class BudgetDetailFragment : Fragment() {
                 expensesOnClickListener = BudgetDetailOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.budgetDetailFragment) {
-                            Unit
+                            navigate(
+                                BudgetDetailFragmentDirections.actionBudgetDetailFragmentToDetailCategoryFragment(
+                                    yearModeEnabled = false,
+                                    initIsYearMode = false,
+                                    type = "Expenses",
+                                    category = args.category,
+                                    initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
+                                )
+                            )
                         }
                     }
                 },
@@ -73,6 +82,7 @@ class BudgetDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            inflateMenu(R.menu.fragment_general_select_month)
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_select_month -> {

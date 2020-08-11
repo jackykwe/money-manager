@@ -71,7 +71,11 @@ class DetailCategoryFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-
+            if (args.yearModeEnabled) {
+                inflateMenu(R.menu.fragment_general_select_month_with_toggle_view)
+            } else {
+                inflateMenu(R.menu.fragment_general_select_month)
+            }
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_toggle_view -> {

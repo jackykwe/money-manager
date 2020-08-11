@@ -44,7 +44,7 @@ class MYPickerDialog private constructor() {
             return AlertDialog
                 .Builder(context)
                 .setView(binding.root)
-                .setTitle("Select Year")
+                .setTitle("Select Month")
                 .setPositiveButton("OK") { _, _ ->
                     resultListener.onClick(arrayOf(binding.monthNP.value, binding.yearNP.value))
                 }

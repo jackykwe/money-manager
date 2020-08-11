@@ -134,6 +134,10 @@ class TransactionsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            inflateMenu(R.menu.fragment_transactions)
+        }
+
         // Setup of FAB
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
             findNavController().run {
