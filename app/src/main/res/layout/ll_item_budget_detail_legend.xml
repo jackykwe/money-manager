@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="budgetLegendLLData"
+            type="com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData.BudgetDetailPCLLD" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingHorizontal="2dp"
+        android:paddingVertical="6dp">
+
+        <ImageView
+            android:id="@+id/form0IV"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/basic_circle"
+            android:visibility="@{budgetLegendLLData.showFormsFromLeft > 0 ? View.VISIBLE : View.GONE}"
+            app:color_tint="@{budgetLegendLLData.form0Colour}"
+            app:layout_constraintBottom_toBottomOf="@id/nameTV"
+            app:layout_constraintEnd_toStartOf="@+id/form1IV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/nameTV" />
+
+        <ImageView
+            android:id="@+id/form1IV"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/basic_circle"
+            android:visibility="@{budgetLegendLLData.showFormsFromLeft > 1 ? View.VISIBLE : View.GONE}"
+            app:color_tint="@{budgetLegendLLData.form1Colour}"
+            app:layout_constraintBottom_toBottomOf="@id/nameTV"
+            app:layout_constraintEnd_toStartOf="@+id/form2IV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/form0IV"
+            app:layout_constraintTop_toTopOf="@id/nameTV"
+            tools:layout_editor_absoluteY="10dp" />
+
+        <ImageView
+            android:id="@+id/form2IV"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="2dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/basic_circle"
+            android:visibility="@{budgetLegendLLData.showFormsFromLeft > 2 ? View.VISIBLE : View.GONE}"
+            app:color_tint="@{budgetLegendLLData.form2Colour}"
+            app:layout_constraintBottom_toBottomOf="@id/nameTV"
+            app:layout_constraintEnd_toStartOf="@+id/formIVBarrier"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/form1IV"
+            app:layout_constraintTop_toTopOf="@id/nameTV"
+            tools:layout_editor_absoluteY="10dp" />
+
+        <TextView
+            android:id="@+id/nameTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@{budgetLegendLLData.name}"
+            android:textAppearance="@style/TextAppearance.MyApp.Body3"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/amountTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/formIVBarrier"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:ignore="RtlSymmetry"
+            tools:text="Category Name Category Name" />
+
+        <TextView
+            android:id="@+id/currencyTV"
+            style="@style/RVItemDetailXBodyCardRangeCurrencyTV"
+            android:gravity="center_vertical"
+            android:text="@{budgetLegendLLData.currency}"
+            android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+            android:visibility="@{budgetLegendLLData.showCurrency ? View.VISIBLE : View.GONE}"
+            app:budgetCurrencyTV_typeface="@{budgetLegendLLData}"
+            app:layout_constraintBottom_toBottomOf="@id/amountTV"
+            app:layout_constraintStart_toStartOf="@id/nameTV"
+            app:layout_constraintTop_toTopOf="@id/amountTV"
+            tools:text="@string/placeholder_currency" />
+
+        <TextView
+            android:id="@+id/amountTV"
+            style="@style/RVItemDetailXBodyRangeAmountTV"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:text="@{budgetLegendLLData.amount}"
+            android:textAppearance="@style/TextAppearance.MyApp.Body3"
+            app:budgetAmountTV_typeface="@{budgetLegendLLData}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/amountTVBarrier"
+            app:layout_constraintTop_toBottomOf="@+id/nameTV"
+            tools:layout_editor_absoluteX="64dp"
+            tools:text="@string/placeholder_amount" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/amountTVBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="form1IV,currencyTV,form2IV,form0IV"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/formIVBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="form1IV,form2IV,form0IV"
+            app:layout_constraintEnd_toStartOf="@+id/nameTV"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/form2IV"
+            tools:layout_editor_absoluteY="8dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

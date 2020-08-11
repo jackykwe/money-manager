@@ -9,9 +9,25 @@ data class PieChartWLPacket(
     val pieChartLegendLLData: List<PieChartLegendLLData>
 )
 
-data class PieChartLegendLLData(
-    val noDataFlag: Boolean,
-    val colour: Int,
-    val categoryName: String,
-    val categoryPercent: String
-)
+sealed class PieChartLegendLLData {
+
+    data class DetailCategoryPCLLD(
+        val noDataFlag: Boolean,
+        val colour: Int,
+        val categoryName: String,
+        val categoryPercent: String
+    ) : PieChartLegendLLData()
+
+    data class BudgetDetailPCLLD(
+        val showFormsFromLeft: Int,
+        val form0Colour: Int,
+        val form1Colour: Int,
+        val form2Colour: Int,
+        val name: String,
+        val showCurrency: Boolean,
+        val currency: String,
+        val amount: String
+    ) : PieChartLegendLLData()
+
+}
+

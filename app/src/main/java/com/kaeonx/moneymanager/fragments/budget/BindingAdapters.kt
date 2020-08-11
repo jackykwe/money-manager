@@ -2,11 +2,15 @@ package com.kaeonx.moneymanager.fragments.budget
 
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.text.bold
+import androidx.core.text.buildSpannedString
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.HorizontalBarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.kaeonx.moneymanager.chartcomponents.HorizontalRoundedStackedBarChartRenderer
+import com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData
 import com.kaeonx.moneymanager.databinding.LlItemBudgetBinding
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,4 +83,26 @@ fun HorizontalBarChart.setStackedHBCAdapter(barData: BarData) {
     // Courtesy of https://stackoverflow.com/a/35111662/7254995
     // Forces viewPortOffsets to take effect
     post { invalidate() }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * ll_item_budget_detail_legend
+ */
+////////////////////////////////////////////////////////////////////////////////
+@BindingAdapter("budgetCurrencyTV_typeface")
+fun TextView.setBudgetCurrencyTVTypeface(data: PieChartLegendLLData.BudgetDetailPCLLD) {
+    text = when (data.name) {
+        "Expenses" -> buildSpannedString { bold { append(data.currency) } }
+        else -> data.currency
+    }
+}
+
+@BindingAdapter("budgetAmountTV_typeface")
+fun TextView.setBudgetAmountTVTypeface(data: PieChartLegendLLData.BudgetDetailPCLLD) {
+    text = when (data.name) {
+        "Expenses" -> buildSpannedString { bold { append(data.amount) } }
+        else -> data.amount
+    }
 }

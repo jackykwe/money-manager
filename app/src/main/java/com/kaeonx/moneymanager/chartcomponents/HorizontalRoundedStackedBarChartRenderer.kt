@@ -2,7 +2,6 @@ package com.kaeonx.moneymanager.chartcomponents
 
 import android.graphics.Canvas
 import android.graphics.RectF
-import android.util.Log
 import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.interfaces.dataprovider.BarDataProvider
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
@@ -105,10 +104,11 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                 3 -> {  // Left most bar
                     val left = buffer.buffer[j - 3]
                     var right = buffer.buffer[j - 1]
-                    if (right - left < cornerDimens && right != left) {
-                        right += 2 * cornerDimens
-                    } else if (right == left || right >= buffer.buffer[10] - cornerDimens) {
+                    if (right == left || right >= buffer.buffer[10] - cornerDimens) {
                         Unit
+                    } else if (right - left <= cornerDimens) {
+//                        right += 2 * cornerDimens
+                        right = left + 2 * cornerDimens  // draws a circle
                     } else {
                         right += cornerDimens
                     }
@@ -123,19 +123,16 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                     )
                 }
                 7 -> {  // Middle Bar
-                    var left = buffer.buffer[j - 3]
+                    val left = buffer.buffer[j - 3]
                     var right = buffer.buffer[j - 1]
-                    if (right - left < cornerDimens && right != left) {
-                        left -= cornerDimens
-                        right += cornerDimens
-                    } else if (right == left || left <= buffer.buffer[0] + cornerDimens || right >= buffer.buffer[10] - cornerDimens) {
+                    if (right == left || left <= buffer.buffer[0] + cornerDimens || right >= buffer.buffer[10] - cornerDimens) {
                         Unit
                     } else {
-                        left -= cornerDimens
+//                        left -= cornerDimens
                         right += cornerDimens
                     }
                     c.drawRoundRect(
-                        left,
+                        buffer.buffer[0],  // draw from start of bar
                         buffer.buffer[j - 2],
                         right,
                         buffer.buffer[j],
@@ -145,19 +142,20 @@ internal class HorizontalRoundedStackedBarChartRenderer(
                     )
                 }
                 11 -> {
-                    var left = buffer.buffer[j - 3].also { Log.d("lobby", "left is $it") }
-                    val right = buffer.buffer[j - 1].also { Log.d("lobby", "right is $it") }
-                    if (right - left < cornerDimens && right != left) {
-                        left -= 2 * cornerDimens
-                    } else if (right == left || left <= buffer.buffer[0] + cornerDimens) {
-                        Unit
-                    } else {
-                        left -= cornerDimens
-                    }
+//                    var left = buffer.buffer[j - 3]
+//                    val right = buffer.buffer[j - 1]
+//                    if (right == left || left <= buffer.buffer[0] + cornerDimens) {
+//                        Unit
+//                    } else if (right - left <= cornerDimens) {
+////                        left -= 2 * cornerDimens
+//                        left = right - 3 * cornerDimens  // * 3 to prevent drawing a red circle
+//                    } else {
+//                        left -= cornerDimens
+//                    }
                     c.drawRoundRect(
-                        left,
+                        buffer.buffer[0],  // draw entire width of bar
                         buffer.buffer[j - 2],
-                        right,
+                        buffer.buffer[10],  // draw entire width of bar
                         buffer.buffer[j],
                         cornerDimens,
                         cornerDimens,

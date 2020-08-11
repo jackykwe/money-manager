@@ -10,12 +10,12 @@ data class DatabaseBudget(
     @PrimaryKey val category: String,
     @ColumnInfo(name = "original_currency") val originalCurrency: String,
     @ColumnInfo(name = "original_amount") val originalAmount: String
-)
-
-fun List<DatabaseBudget>.toDomain(): List<Budget> = map {
-    Budget(
-        category = it.category,
-        originalCurrency = it.originalCurrency,
-        originalAmount = it.originalAmount
+) {
+    fun toDomain(): Budget = Budget(
+        category = this.category,
+        originalCurrency = this.originalCurrency,
+        originalAmount = this.originalAmount
     )
 }
+
+fun List<DatabaseBudget>.toDomain(): List<Budget> = map { it.toDomain() }

@@ -13,6 +13,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.kaeonx.moneymanager.databinding.LlItemBudgetDetailLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -48,13 +49,26 @@ fun LinearLayout.setPieChartLegendLLData(list: List<PieChartLegendLLData>) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     for (typeLegendLLData in list) {
-        if (typeLegendLLData.noDataFlag) {
-            addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
-        } else {
-            val itemBinding = LlItemDetailTypeLegendBinding.inflate(layoutInflater, null, false)
-            itemBinding.typeLegendLLData = typeLegendLLData
-            itemBinding.executePendingBindings()
-            addView(itemBinding.root)
+        when (typeLegendLLData) {
+            is PieChartLegendLLData.DetailCategoryPCLLD -> {
+                if (typeLegendLLData.noDataFlag) {
+                    addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
+                } else {
+                    val itemBinding = LlItemDetailTypeLegendBinding.inflate(
+                        layoutInflater, null, false
+                    )
+                    itemBinding.typeLegendLLData = typeLegendLLData
+                    itemBinding.executePendingBindings()
+                    addView(itemBinding.root)
+                }
+            }
+            is PieChartLegendLLData.BudgetDetailPCLLD -> {
+                val itemBinding =
+                    LlItemBudgetDetailLegendBinding.inflate(layoutInflater, null, false)
+                itemBinding.budgetLegendLLData = typeLegendLLData
+                itemBinding.executePendingBindings()
+                addView(itemBinding.root)
+            }
         }
     }
 }

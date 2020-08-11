@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_ll_item_height"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:gravity="center"
         android:onClick="@{() -> onClickListener.onClick(budgetLLData.budget.category)}"
         android:padding="8dp">
@@ -53,7 +53,7 @@
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/budgetHBC"
-            app:layout_constraintEnd_toStartOf="@+id/barrier"
+            app:layout_constraintEnd_toStartOf="@+id/amountTVBarrier"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
             app:layout_constraintTop_toTopOf="parent"
@@ -71,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="@id/budgetSpentAmountTV"
             app:layout_constraintEnd_toStartOf="@+id/budgetSpentAmountTV"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/barrier"
+            app:layout_constraintStart_toEndOf="@+id/amountTVBarrier"
             app:layout_constraintTop_toTopOf="@id/budgetSpentAmountTV"
             tools:ignore="RtlSymmetry"
             tools:text="@string/placeholder_currency" />
@@ -143,7 +143,7 @@
             tools:text="@string/placeholder_amount" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
+            android:id="@+id/amountTVBarrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="left"

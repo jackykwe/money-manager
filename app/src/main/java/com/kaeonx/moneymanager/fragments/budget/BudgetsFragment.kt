@@ -18,6 +18,7 @@ import com.kaeonx.moneymanager.databinding.FragmentBudgetsBinding
 import com.kaeonx.moneymanager.fragments.transactions.MY_PICKER_RESULT
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
+import java.util.*
 
 private const val TAG = "bdgfm"
 
@@ -45,7 +46,8 @@ class BudgetsFragment : Fragment() {
                         if (currentDestination?.id == R.id.budgetsFragment) {
                             navigate(
                                 BudgetsFragmentDirections.actionBudgetsFragmentToBudgetDetailFragment(
-                                    it
+                                    it,
+                                    viewModel.displayCalendar.value!!.clone() as Calendar
                                 )
                             )
                         }

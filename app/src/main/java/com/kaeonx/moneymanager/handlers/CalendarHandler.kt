@@ -137,8 +137,12 @@ internal class CalendarHandler private constructor() {
         /**
          * @param displayMonthStartCalendar This Calendar's millis should be equal to the first
          * millisecond of the month. There is no need to clone it.
+         * @param scale - Default 2. Increase this to increase accuracy of calculations.
          */
-        internal fun getDayDivDays(displayMonthStartCalendar: Calendar): BigDecimal {
+        internal fun getDayDivDays(
+            displayMonthStartCalendar: Calendar,
+            scale: Int = 2
+        ): BigDecimal {
             val currentCal = Calendar.getInstance()
             val currentMonthStartMillis = getStartOfMonthMillis(currentCal.clone() as Calendar)
             val displayMonthStartMillis = displayMonthStartCalendar.timeInMillis
@@ -150,7 +154,7 @@ internal class CalendarHandler private constructor() {
                         displayMonthStartCalendar.getActualMaximum(
                             Calendar.DAY_OF_MONTH
                         ).toBigDecimal(),
-                        2,
+                        scale,
                         RoundingMode.HALF_UP
                     )
                 }

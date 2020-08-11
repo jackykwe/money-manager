@@ -9,7 +9,7 @@
 
         <variable
             name="typeLegendLLData"
-            type="com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData" />
+            type="com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData.DetailCategoryPCLLD" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +18,7 @@
         android:padding="2dp">
 
         <ImageView
-            android:id="@+id/formIV"
+            android:id="@+id/form1IV"
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:scaleType="fitXY"
@@ -42,11 +42,11 @@
             android:text="@{typeLegendLLData.categoryName}"
             android:textAppearance="@style/TextAppearance.MyApp.Body3"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="@id/formIV"
+            app:layout_constraintBottom_toBottomOf="@id/form1IV"
             app:layout_constraintEnd_toStartOf="@+id/namePercentTV"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/formIV"
-            app:layout_constraintTop_toTopOf="@id/formIV"
+            app:layout_constraintStart_toEndOf="@+id/form1IV"
+            app:layout_constraintTop_toTopOf="@id/form1IV"
             app:nameTV_typeface="@{typeLegendLLData.categoryName}"
             tools:layout_editor_absoluteY="0dp"
             tools:text="Category Name Category Name Category Name Category Name Ellipsise" />

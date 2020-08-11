@@ -188,6 +188,11 @@ class UserRepository private constructor() {
         }
     }
 
+    internal fun getBudget(category: String): LiveData<Budget> =
+        Transformations.map(database.userDatabaseDao.getBudget(category)) {
+            it.toDomain()
+        }
+
     internal fun getAllBudgets(): LiveData<List<Budget>> =
         Transformations.map(database.userDatabaseDao.getAllBudgets()) {
             it.toDomain()

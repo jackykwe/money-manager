@@ -116,7 +116,7 @@ class DetailTypeViewModel(
                 }
             }
 
-            val legendLLDataAL = arrayListOf<PieChartLegendLLData>()
+            val legendLLDataAL = arrayListOf<PieChartLegendLLData.DetailCategoryPCLLD>()
             val categoryLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
             val rangeAmount = categoryAmountsMap.values.asIterable().sumByBigDecimal { it }
@@ -145,7 +145,7 @@ class DetailTypeViewModel(
                         entries.add(PieEntry(percent.toFloat(), entry.key))
                         colourList.add(colourInt)
                         legendLLDataAL.add(
-                            PieChartLegendLLData(
+                            PieChartLegendLLData.DetailCategoryPCLLD(
                                 noDataFlag = false,
                                 colour = colourInt,
                                 categoryName = entry.key,
@@ -164,11 +164,11 @@ class DetailTypeViewModel(
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
-                            PieChartLegendLLData(
+                            PieChartLegendLLData.DetailCategoryPCLLD(
                                 noDataFlag = false,
                                 colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
                                 categoryName = "(multiple)",
-                                categoryPercent = "($accumulatorPercentDisplay Jesushelp%)"
+                                categoryPercent = "($accumulatorPercentDisplay%)"
                             )
                         )
                     } else {
@@ -226,7 +226,7 @@ class DetailTypeViewModel(
 
             if (legendLLDataAL.isEmpty()) {
                 legendLLDataAL.add(
-                    PieChartLegendLLData(
+                    PieChartLegendLLData.DetailCategoryPCLLD(
                         noDataFlag = true,
                         colour = ColourHandler.getColourObject("Grey,200"),
                         categoryName = "Nothing to show",

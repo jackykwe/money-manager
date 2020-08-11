@@ -106,6 +106,10 @@ interface UserDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertBudget(databaseBudget: DatabaseBudget)
 
+
+    @Query("SELECT * FROM budgets_table WHERE category = :category")
+    fun getBudget(category: String): LiveData<DatabaseBudget>
+
     @Query("SELECT * FROM budgets_table ORDER BY category")
     fun getAllBudgets(): LiveData<List<DatabaseBudget>>
 

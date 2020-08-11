@@ -27,7 +27,7 @@
                     style="@style/RVItemDetailXBodyRangeTV"
                     android:text="@{packet.transactionsRangeString}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/barrier"
+                    app:layout_constraintEnd_toStartOf="@id/amountTVBarrier"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="AUG 2020 AUG 2020 AUG 2020 AUG 2020 AUG 2020" />
@@ -39,7 +39,7 @@
                     android:visibility="@{packet.transactionsShowRangeCurrency ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/transactionsRangeAmountTV"
                     app:layout_constraintEnd_toStartOf="@id/transactionsRangeAmountTV"
-                    app:layout_constraintStart_toEndOf="@id/barrier"
+                    app:layout_constraintStart_toEndOf="@id/amountTVBarrier"
                     app:layout_constraintTop_toTopOf="@id/transactionsRangeAmountTV"
                     tools:text="@string/placeholder_currency" />
 
@@ -53,7 +53,7 @@
                     tools:text="@string/placeholder_amount" />
 
                 <androidx.constraintlayout.widget.Barrier
-                    android:id="@+id/barrier"
+                    android:id="@+id/amountTVBarrier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="left"
