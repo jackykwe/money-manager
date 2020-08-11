@@ -6,14 +6,21 @@ import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class DetailCategoryViewModelFactory(
+    private val yearModeEnabled: Boolean,
+    private val isYearMode: Boolean,
     private val type: String,
     private val category: String,
-    private val calendarStart: Calendar,
-    private val calendarEnd: Calendar
+    private val initCalendar: Calendar
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DetailCategoryViewModel::class.java)) {
-            return DetailCategoryViewModel(type, category, calendarStart, calendarEnd) as T
+            return DetailCategoryViewModel(
+                yearModeEnabled,
+                isYearMode,
+                type,
+                category,
+                initCalendar
+            ) as T
         }
         throw IllegalArgumentException("Unable to instantiate DetailCategoryViewModel: Unknown ViewModel class provided: ${modelClass.canonicalName}")
     }

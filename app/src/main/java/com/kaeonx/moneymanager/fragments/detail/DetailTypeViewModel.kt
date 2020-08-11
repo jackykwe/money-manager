@@ -29,10 +29,7 @@ private const val TAG = "dtvm"
 
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
-class DetailTypeViewModel(
-    initType: String,
-    initCalendar: Calendar
-) : ViewModel() {
+class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()
@@ -49,13 +46,16 @@ class DetailTypeViewModel(
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Calendar Manipulation
+     */
+    ////////////////////////////////////////////////////////////////////////////////
     private val _displayCalendarStart = MutableLiveData2(initCalendar)
     val displayCalendarStart: LiveData<Calendar>
         get() = _displayCalendarStart
     private val _displayCalendarEnd =
         MutableLiveData2(CalendarHandler.getEndOfMonthCalendar(initCalendar.clone() as Calendar))
-    val displayCalendarEnd: LiveData<Calendar>
-        get() = _displayCalendarEnd
 
     internal fun selectMonth(newMonth: Int, newYear: Int) {
         isYearMode = false
@@ -68,6 +68,33 @@ class DetailTypeViewModel(
         )
     }
 
+    internal var isYearMode = false
+        private set
+    private lateinit var archiveCalendarStart: Calendar
+    internal fun toggleView() {
+        if (!isYearMode) {
+            archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar
+            _displayCalendarStart.value = CalendarHandler.getStartOfYearCalendar(
+                _displayCalendarStart.value
+            )
+            _displayCalendarEnd.value = CalendarHandler.getEndOfYearCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = true
+        } else {
+            _displayCalendarStart.value = archiveCalendarStart
+            _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = false
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Data Handling
+     */
+    ////////////////////////////////////////////////////////////////////////////////
     private var _transactions: LiveData<List<Transaction>>? = null
     private fun updateTransactions() {
         if (_transactions != null) {
@@ -280,24 +307,4 @@ class DetailTypeViewModel(
         }
     }
 
-    private var isYearMode = false
-    private lateinit var archiveCalendarStart: Calendar
-    internal fun toggleView() {
-        if (!isYearMode) {
-            archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar
-            _displayCalendarStart.value = CalendarHandler.getStartOfYearCalendar(
-                _displayCalendarStart.value
-            )
-            _displayCalendarEnd.value = CalendarHandler.getEndOfYearCalendar(
-                _displayCalendarStart.value.clone() as Calendar
-            )
-            isYearMode = true
-        } else {
-            _displayCalendarStart.value = archiveCalendarStart
-            _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
-                _displayCalendarStart.value.clone() as Calendar
-            )
-            isYearMode = false
-        }
-    }
 }

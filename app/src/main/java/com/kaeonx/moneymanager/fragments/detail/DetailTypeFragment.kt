@@ -13,7 +13,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentDetailTypeBinding
-import com.kaeonx.moneymanager.fragments.transactions.MY_PICKER_RESULT
+import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
 
 class DetailTypeFragment : Fragment() {
 
@@ -27,8 +27,6 @@ class DetailTypeFragment : Fragment() {
         )
     }
     private val viewModel: DetailTypeViewModel by viewModels { viewModelFactory }
-
-    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.detailTypeFragment).savedStateHandle }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,10 +42,11 @@ class DetailTypeFragment : Fragment() {
                         if (currentDestination?.id == R.id.detailTypeFragment) {
                             navigate(
                                 DetailTypeFragmentDirections.actionDetailTypeFragmentToDetailCategoryFragment(
+                                    yearModeEnabled = true,
+                                    initIsYearMode = viewModel.isYearMode,
                                     type = type,
                                     category = category,
-                                    calendarStart = viewModel.displayCalendarStart.value!!,
-                                    calendarEnd = viewModel.displayCalendarEnd.value!!
+                                    initCalendar = viewModel.displayCalendarStart.value!!
                                 )
                             )
                         }
@@ -74,13 +73,6 @@ class DetailTypeFragment : Fragment() {
                 submitList2(it)
             }
         }
-
-        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                viewModel.selectMonth(it[0], it[1])
-                savedStateHandle.set(MY_PICKER_RESULT, null)
-            }
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -95,16 +87,13 @@ class DetailTypeFragment : Fragment() {
                         true
                     }
                     R.id.menu_select_month -> {
-                        findNavController().run {
-                            if (currentDestination?.id == R.id.detailTypeFragment) {
-                                navigate(
-                                    DetailTypeFragmentDirections.actionDetailTypeFragmentToMonthYearPickerDialogFragment(
-                                        R.id.detailTypeFragment,
-                                        viewModel.displayCalendarStart.value!!  // no need clone, since no edits will be made to it
-                                    )
-                                )
+                        MYPickerDialog.createDialog(
+                            context = requireContext(),
+                            initCalendar = viewModel.displayCalendarStart.value!!,
+                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                                viewModel.selectMonth(result[0], result[1])
                             }
-                        }
+                        ).show()
                         true
                     }
                     else -> super.onOptionsItemSelected(it)

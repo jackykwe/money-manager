@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +8,7 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
+import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
@@ -26,50 +26,117 @@ import java.util.*
 private const val TAG = "dcvm"
 
 class DetailCategoryViewModel(
+    private val yearModeEnabled: Boolean,
+    private val initIsYearMode: Boolean,
     private val type: String,
     private val category: String,
-    private val calendarStart: Calendar,
-    private val calendarEnd: Calendar
+    private val initCalendar: Calendar
 ) : ViewModel() {
-
-    init {
-        Log.d(
-            TAG,
-            "startMillis is ${calendarStart.timeInMillis} and endMillis is ${calendarEnd.timeInMillis}"
-        )
-    }
 
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()
 
-    private val _transactions = userRepository.getCategoryTransactionsBetween(
-        type,
-        category,
-        calendarStart.timeInMillis,  // no need clone, since no edits will be made to it
-        calendarEnd.timeInMillis  // no need clone, since no edits will be made to it
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Calendar Manipulation
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    private val _displayCalendarStart = MutableLiveData2(initCalendar)
+    val displayCalendarStart: LiveData<Calendar>
+        get() = _displayCalendarStart
+    private val _displayCalendarEnd = MutableLiveData2(
+        if (yearModeEnabled && initIsYearMode) {
+            (CalendarHandler.getEndOfYearCalendar(initCalendar.clone() as Calendar))
+        } else {
+            (CalendarHandler.getEndOfMonthCalendar(initCalendar.clone() as Calendar))
+        }
     )
 
+    internal fun selectMonth(newMonth: Int, newYear: Int) {
+        isYearMode = false
+        _displayCalendarStart.value = _displayCalendarStart.value.apply {
+            set(Calendar.MONTH, newMonth)
+            set(Calendar.YEAR, newYear)
+        }
+        _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
+            _displayCalendarStart.value.clone() as Calendar
+        )
+    }
+
+    private var isYearMode = initIsYearMode
+    private lateinit var archiveCalendarStart: Calendar
+    internal fun toggleView() {  // If this function runs, means yearModeEnabled is true.
+        if (!isYearMode) {
+            archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar
+            _displayCalendarStart.value = CalendarHandler.getStartOfYearCalendar(
+                _displayCalendarStart.value
+            )
+            _displayCalendarEnd.value = CalendarHandler.getEndOfYearCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = true
+        } else {
+            _displayCalendarStart.value = archiveCalendarStart
+            _displayCalendarEnd.value = CalendarHandler.getEndOfMonthCalendar(
+                _displayCalendarStart.value.clone() as Calendar
+            )
+            isYearMode = false
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Data Manipulation
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    private var _transactions: LiveData<List<Transaction>>? = null
+    private fun updateTransactions() {
+        if (_transactions != null) {
+            _categoryTypeRVPacket.removeSource(_transactions!!)
+        }
+        _transactions = userRepository.getTransactionsBetween(
+            _displayCalendarStart.value.timeInMillis,  // no need clone, since no edits will be made to it
+            _displayCalendarEnd.value.timeInMillis  // no need clone, since no edits will be made to it
+        )
+        _categoryTypeRVPacket.addSource(_transactions!!) { recalculateDetailCategoryRVPacket(it) }
+    }
+
     private val _categoryTypeRVPacket = MediatorLiveData<DetailCategoryRVPacket?>().apply {
-        addSource(_transactions) { recalculateTypeRVPacket(it) }
-        addSource(xeRepository.xeRows) { recalculateTypeRVPacket(_transactions.value) }
+        addSource(_displayCalendarEnd) { updateTransactions() }
+        addSource(xeRepository.xeRows) { recalculateDetailCategoryRVPacket(_transactions?.value) }
     }
     val categoryTypeRVPacket: LiveData<DetailCategoryRVPacket?>
         get() = _categoryTypeRVPacket
 
-    private val numberOfDays = CalendarHandler.calculateNumberOfDays(calendarStart, calendarEnd)
-    private val numberOfMonths = CalendarHandler.calculateNumberOfMonths(calendarStart, calendarEnd)
+    private fun getNumberOfDays() = CalendarHandler.calculateNumberOfDays(
+        _displayCalendarStart.value,
+        _displayCalendarEnd.value
+    )
 
-    private fun generateRangeString(): String = when (numberOfMonths) {
-        1 -> CalendarHandler.getFormattedString(calendarStart.clone() as Calendar, "MMM yyyy")
-            .toUpperCase(Locale.ROOT)
-        12 -> CalendarHandler.getFormattedString(calendarStart.clone() as Calendar, "yyyy")
-            .toUpperCase(Locale.ROOT)
+    private fun getNumberOfMonths() = CalendarHandler.calculateNumberOfMonths(
+        _displayCalendarStart.value,
+        _displayCalendarEnd.value
+    )
+
+    private fun generateRangeString(numberOfMonths: Int): String = when (numberOfMonths) {
+        1 -> CalendarHandler.getFormattedString(
+            _displayCalendarStart.value.clone() as Calendar,
+            "MMM yyyy"
+        ).toUpperCase(Locale.ROOT)
+        12 -> CalendarHandler.getFormattedString(
+            _displayCalendarStart.value.clone() as Calendar,
+            "yyyy"
+        ).toUpperCase(Locale.ROOT)
         else -> throw IllegalStateException("Variable ranges not yet implemented")
     }
 
-    private fun recalculateTypeRVPacket(list: List<Transaction>?) {
+    private fun recalculateDetailCategoryRVPacket(list: List<Transaction>?) {
         if (list == null) return
         viewModelScope.launch(Dispatchers.Default) {
+            val numberOfDays = getNumberOfDays()
+            val numberOfMonths = getNumberOfMonths()
+            val rangeString = generateRangeString(numberOfMonths)
+
             val homeCurrency = UserPDS.getString("ccc_home_currency")
             val colourInt = ColourHandler.getColourObject(
                 userRepository.categories.value!!
@@ -137,7 +204,7 @@ class DetailCategoryViewModel(
             val result = DetailCategoryRVPacket(
                 lineChartPacket = generateLineChartPacket(
                     list = list,
-                    calendarStart = calendarStart,
+                    calendarStart = _displayCalendarStart.value,
                     numberOfDays = numberOfDays,
                     numberOfMonths = numberOfMonths,
                     colourInt = colourInt,
@@ -145,7 +212,7 @@ class DetailCategoryViewModel(
                     showCurrency = showRangeCurrency,
                     homeCurrency = homeCurrency
                 ),
-                transactionsRangeString = generateRangeString(),
+                transactionsRangeString = rangeString,
                 transactionsShowRangeCurrency = showRangeCurrency,
                 transactionsRangeCurrency = homeCurrency,
                 transactionsRangeAmount = CurrencyHandler.displayAmount(rangeAmount),

@@ -12,18 +12,20 @@ import androidx.navigation.fragment.navArgs
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentDetailCategoryBinding
+import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
 
 class DetailCategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailCategoryBinding
 
-    private val args: DetailCategoryFragmentArgs by navArgs()
+    internal val args: DetailCategoryFragmentArgs by navArgs()
     private val viewModelFactory by lazy {
         DetailCategoryViewModelFactory(
+            args.yearModeEnabled,
+            args.initIsYearMode,
             args.type,
             args.category,
-            args.calendarStart,
-            args.calendarEnd
+            args.initCalendar
         )
     }
     private val viewModel: DetailCategoryViewModel by viewModels { viewModelFactory }
@@ -61,6 +63,34 @@ class DetailCategoryFragment : Fragment() {
             (binding.detailCategoryRV.adapter as DetailCategoryRVAdapter).apply {
 //                submitList(null)
                 submitList2(it)
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_toggle_view -> {
+                        // This menu button isn't visible if args.yearModeEnabled is false.
+                        viewModel.toggleView()
+                        true
+                    }
+                    R.id.menu_select_month -> {
+                        MYPickerDialog.createDialog(
+                            context = requireContext(),
+                            initCalendar = viewModel.displayCalendarStart.value!!,
+                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                                viewModel.selectMonth(result[0], result[1])
+                            }
+                        ).show()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
             }
         }
     }

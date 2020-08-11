@@ -23,14 +23,10 @@ import java.util.*
 
 private const val TAG = "transactionFrag"
 
-// TODO: navigate back to current day / month (when month selector is active)
-
 class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsViewModel by viewModels()
-
-    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.transactionsFragment).savedStateHandle }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +53,7 @@ class TransactionsFragment : Fragment() {
             adapter = TransactionsRVAdapter(
                 itemOnClickListener = TransactionOnClickListener { transaction ->
                     findNavController().run {
+                        // Courtesy of https://stackoverflow.com/a/53737537/7254995
                         if (currentDestination?.id == R.id.transactionsFragment) {
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
@@ -68,17 +65,13 @@ class TransactionsFragment : Fragment() {
                 },
                 headerLeftArrowClickListener = GenericOnClickListener { viewModel.monthMinusOne() },
                 headerMonthClickListener = GenericOnClickListener {
-                    // Courtesy of https://stackoverflow.com/a/53737537/7254995
-                    findNavController().run {
-                        if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(
-                                TransactionsFragmentDirections.actionTransactionsFragmentToMonthYearPickerDialogFragment(
-                                    R.id.transactionsFragment,
-                                    viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
-                                )
-                            )
+                    MYPickerDialog.createDialog(
+                        context = requireContext(),
+                        initCalendar = viewModel.displayCalendar.value!!,
+                        resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                            viewModel.updateMonthYear(result[0], result[1])
                         }
-                    }
+                    ).show()
                 },
                 headerRightArrowClickListener = GenericOnClickListener { viewModel.monthPlusOne() },
                 summaryBudgetClickListener = GenericOnClickListener {
@@ -134,13 +127,6 @@ class TransactionsFragment : Fragment() {
                         viewModel.getSummaryData(it)
                     )
                 }
-            }
-        }
-
-        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                viewModel.updateMonthYear(it[0], it[1])
-                savedStateHandle.set(MY_PICKER_RESULT, null)
             }
         }
     }

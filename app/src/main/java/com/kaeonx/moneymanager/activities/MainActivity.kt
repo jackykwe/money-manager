@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -21,6 +22,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
+import com.kaeonx.moneymanager.fragments.detail.DetailCategoryFragment
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
@@ -104,16 +106,28 @@ class MainActivity : AppCompatActivity() {
                 // (because the options need to be controlled from within the fragment)
                 when (destination.id) {
                     R.id.transactionsBSDF -> Unit  // Pair 1
-                    R.id.monthYearPickerDialogFragment -> Unit  // Pair 2, Pair 3, Pair 4, Pair 5, Pair 6
                     else -> menu.clear()
                 }
                 when (destination.id) {
                     R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 1
                     R.id.transactionsFragment -> inflateMenu(R.menu.fragment_transactions)  // Pair 2
                     R.id.detailTypeFragment -> inflateMenu(R.menu.fragment_detail_type)  // Pair 3
-//                    R.id.detailCategoryFragment -> inflateMenu(TODO()) // Pair 4
+                    R.id.detailCategoryFragment -> {  // Pair 4
+                        // Courtesy of https://stackoverflow.com/a/53396780/7254995
+                        supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.let {
+                            it.childFragmentManager.primaryNavigationFragment?.let { fragment ->
+                                (fragment as DetailCategoryFragment).args.yearModeEnabled.also { f ->
+                                    Log.d(
+                                        TAG,
+                                        "FROM MAIN ACTIVITY: $f"
+                                    )
+                                }
+                            }
+                        }
+                        inflateMenu(R.menu.fragment_xdetailx_month_switch)
+                    }
                     R.id.budgetsFragment -> inflateMenu(R.menu.fragment_budgets)  // Pair 5
-                    R.id.budgetDetailFragment -> inflateMenu(R.menu.fragment_budget_detail)  // Pair 6
+                    R.id.budgetDetailFragment -> inflateMenu(R.menu.fragment_xdetailx_month_switch)  // Pair 6
                     else -> Unit
                 }
 

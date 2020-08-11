@@ -9,13 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetsBinding
-import com.kaeonx.moneymanager.fragments.transactions.MY_PICKER_RESULT
+import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
 import java.util.*
@@ -29,8 +28,6 @@ class BudgetsFragment : Fragment() {
     private val args: BudgetsFragmentArgs by navArgs()
     private val viewModelFactory by lazy { BudgetsViewModelFactory(args.initCalendar) }
     private val viewModel: BudgetsViewModel by viewModels { viewModelFactory }
-
-    private val savedStateHandle by lazy { findNavController().getBackStackEntry(R.id.budgetsFragment).savedStateHandle }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,13 +60,6 @@ class BudgetsFragment : Fragment() {
             if (it == null) return@observe
             (binding.budgetRV.adapter as BudgetsRVAdapter).apply {
                 submitList2(it)
-            }
-        }
-
-        savedStateHandle.getLiveData<Array<Int>?>(MY_PICKER_RESULT).observe(viewLifecycleOwner) {
-            if (it != null && it.isNotEmpty()) {
-                viewModel.selectMonth(it[0], it[1])
-                savedStateHandle.set(MY_PICKER_RESULT, null)
             }
         }
     }
@@ -114,16 +104,14 @@ class BudgetsFragment : Fragment() {
                         }
                     }
                     R.id.menu_select_month -> {
-                        binding.root.findNavController().run {
-                            if (currentDestination?.id == R.id.budgetsFragment) {
-                                navigate(
-                                    BudgetsFragmentDirections.actionBudgetsFragmentToMonthYearPickerDialogFragment(
-                                        R.id.budgetsFragment,
-                                        viewModel.displayCalendar.value!!  // no need clone, since no edits will be made to it
-                                    )
-                                )
+                        MYPickerDialog.createDialog(
+                            context = requireContext(),
+                            initCalendar = viewModel.displayCalendar.value!!,
+                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                                viewModel.selectMonth(result[0], result[1])
                             }
-                        }
+
+                        ).show()
                         true
                     }
                     else -> super.onOptionsItemSelected(it)
