@@ -117,7 +117,7 @@ class TransactionsViewModel : ViewModel() {
 
     internal suspend fun getSummaryData(list: List<DayTransactions>): TransactionsSummaryData {
         val homeCurrency = UserPDS.getString("ccc_home_currency")
-        val budget = BigDecimal("1000")  // TODO: Grab budget
+        val budget = BigDecimal("0.01")  // TODO: Grab budget
         val income = list.sumByBigDecimal { BigDecimal(it.dayIncome ?: "0") }
         val expenses = list.sumByBigDecimal { BigDecimal(it.dayExpenses ?: "0") }
         val dayDivDays = CalendarHandler.getDayDivDays(_displayCalendar.value)

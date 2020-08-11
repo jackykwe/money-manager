@@ -60,6 +60,31 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_transactionsSearchFragment"
+            app:destination="@id/transactionsSearchFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionsSearchFragment"
+        android:name="com.kaeonx.moneymanager.fragments.transactions.TransactionsSearchFragment"
+        android:label=""
+        tools:layout="@layout/fragment_transactions_search">
+        <action
+            android:id="@+id/action_transactionsSearchFragment_to_transactionEditFragment"
+            app:destination="@id/transactionEditFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
+        <argument
+            android:name="initSearchQuery"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/transactionEditFragment"

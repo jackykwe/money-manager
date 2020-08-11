@@ -103,11 +103,13 @@ class MainActivity : AppCompatActivity() {
                 // Otherwise, inflation of menu is done set in each fragment
                 // (because the options need to be controlled from within the fragment)
                 when (destination.id) {
-                    R.id.transactionsBSDF -> Unit  // Pair 1
+                    R.id.transactionsBSDF -> Unit  // Pair 1, 2
+                    R.id.transactionsSearchFragment -> Unit
                     else -> menu.clear()
                 }
                 when (destination.id) {
-                    R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 1
+                    R.id.transactionsFragment -> inflateMenu(R.menu.fragment_transactions)  // Pair 1
+                    R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 2
                     else -> Unit
                 }
 

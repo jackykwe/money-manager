@@ -102,6 +102,11 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
+    internal fun searchTransactions(memoQuery: String): LiveData<List<Transaction>> =
+        Transformations.map(database.userDatabaseDao.searchTransactions(memoQuery)) {
+            it.toDomain()
+        }
+
     internal suspend fun upsertTransaction(transaction: Transaction) {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.upsertTransaction(transaction.toDatabase())

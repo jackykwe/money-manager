@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -33,20 +34,6 @@ class TransactionsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Setup of Toolbar
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.menu_sync -> {
-                        Snackbar.make(requireView(), "Fragment!", Snackbar.LENGTH_SHORT).show()
-//                        Toast.makeText(requireContext(), "Fragment!", Toast.LENGTH_LONG).show()
-                        true
-                    }
-                    else -> false
-                }
-            }
-        }
-
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
         binding.transactionsRV.apply {
             setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
@@ -135,10 +122,27 @@ class TransactionsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_transactions)
+            (menu.getItem(0).actionView as SearchView).setOnQueryTextListener(
+                object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(p0: String?): Boolean = true
+                    override fun onQueryTextChange(p0: String?): Boolean {
+                        p0?.let { query ->
+                            findNavController().run {
+                                if (currentDestination?.id == R.id.transactionsFragment) {
+                                    navigate(
+                                        TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsSearchFragment(
+                                            query
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        return true
+                    }
+                }
+            )
         }
 
-        // Setup of FAB
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
             findNavController().run {
                 if (currentDestination?.id == R.id.transactionsFragment) {
@@ -160,22 +164,4 @@ class TransactionsFragment : Fragment() {
             }
         }
     }
-
 }
-
-////            // Courtesy of https://medium.com/androiddevelopers/appcompat-v23-2-daynight-d10f90c83e94
-////            val newMode = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-////                Configuration.UI_MODE_NIGHT_NO -> {
-////                    // Night mode is not active, we're in day time
-////                    AppCompatDelegate.MODE_NIGHT_YES
-////                }
-////                Configuration.UI_MODE_NIGHT_YES -> {
-////                    // Night mode is active, we're at night!
-////                    AppCompatDelegate.MODE_NIGHT_NO
-////                }
-////                else -> {
-////                    throw Exception("OI")
-////                }
-////            }
-////            Toast.makeText(requireContext(), "Switching to mode $newMode", Toast.LENGTH_LONG).show()
-////            AppCompatDelegate.setDefaultNightMode(newMode)

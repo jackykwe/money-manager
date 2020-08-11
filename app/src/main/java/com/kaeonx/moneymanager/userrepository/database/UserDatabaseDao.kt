@@ -60,6 +60,9 @@ interface UserDatabaseDao {
         endMillis: Long
     ): LiveData<List<DatabaseTransaction>>
 
+    @Query("SELECT * FROM transactions_table WHERE memo LIKE '%' || :memoQuery || '%'")
+    fun searchTransactions(memoQuery: String): LiveData<List<DatabaseTransaction>>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="resultText"
+            type="String" />
+
+        <variable
+            name="searchQuery"
+            type="String" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/dayCV"
+        style="@style/RvItemTransactionsCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:contentPaddingBottom="8dp">
+
+        <LinearLayout
+            android:id="@+id/dayCardLL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/resultTV"
+                style="@style/RvItemTransactionsDayHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingHorizontal="8dp"
+                android:paddingBottom="4dp"
+                android:text="@{resultText}"
+                android:textAppearance="@style/TextAppearance.MyApp.Caption2"
+                tools:text="5 Transactions found containing" />
+
+            <TextView
+                android:id="@+id/searchStringTV"
+                style="@style/RvItemTransactionsDayHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="8dp"
+                android:text="@{searchQuery}"
+                android:textAppearance="@style/TextAppearance.MyApp.Body1"
+                tools:text="'Search Query Hello Search Query Hello Search Query Hello Search Query Hello'" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

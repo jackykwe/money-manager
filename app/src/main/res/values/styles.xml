@@ -1,8 +1,12 @@
 <resources>
     <!-- ActionBar required for SettingsActivity -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/grey_300</item>
+        <item name="colorControlNormal">@color/black</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyApp.Headline1</item>
@@ -43,27 +47,27 @@
     <!--    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
 
     <!-- Override Material Defaults -->
-    <style name="TextAppearance.MyApp.Headline1" parent="TextAppearance.MaterialComponents.Headline1"></style>
+    <style name="TextAppearance.MyApp.Headline1" parent="TextAppearance.MaterialComponents.Headline1" />
 
-    <style name="TextAppearance.MyApp.Headline2" parent="TextAppearance.MaterialComponents.Headline2"></style>
+    <style name="TextAppearance.MyApp.Headline2" parent="TextAppearance.MaterialComponents.Headline2" />
 
-    <style name="TextAppearance.MyApp.Headline3" parent="TextAppearance.MaterialComponents.Headline3"></style>
+    <style name="TextAppearance.MyApp.Headline3" parent="TextAppearance.MaterialComponents.Headline3" />
 
     <style name="TextAppearance.MyApp.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">?android:textColorPrimary</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Headline5" parent="TextAppearance.MaterialComponents.Headline5"></style>
+    <style name="TextAppearance.MyApp.Headline5" parent="TextAppearance.MaterialComponents.Headline5" />
 
     <style name="TextAppearance.MyApp.Headline5.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Headline6" parent="TextAppearance.MaterialComponents.Headline6"></style>
+    <style name="TextAppearance.MyApp.Headline6" parent="TextAppearance.MaterialComponents.Headline6" />
 
-    <style name="TextAppearance.MyApp.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1"></style>
+    <style name="TextAppearance.MyApp.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1" />
 
-    <style name="TextAppearance.MyApp.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2"></style>
+    <style name="TextAppearance.MyApp.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2" />
 
     <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:letterSpacing">0</item>
@@ -97,15 +101,15 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Caption3" parent="TextAppearance.MaterialComponents.Caption"></style>
+    <style name="TextAppearance.MyApp.Caption3" parent="TextAppearance.MaterialComponents.Caption" />
 
     <style name="TextAppearance.MyApp.Caption4" parent="TextAppearance.MyApp.Caption3">
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Button" parent="TextAppearance.MaterialComponents.Button"></style>
+    <style name="TextAppearance.MyApp.Button" parent="TextAppearance.MaterialComponents.Button" />
 
-    <style name="TextAppearance.MyApp.Overline" parent="TextAppearance.MaterialComponents.Overline"></style>
+    <style name="TextAppearance.MyApp.Overline" parent="TextAppearance.MaterialComponents.Overline" />
 
     <!-- tbsdf -->
     <style name="TBSDFButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
