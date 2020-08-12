@@ -17,9 +17,16 @@ class AccountsDisplayFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentAccountsDisplayBinding.inflate(inflater, container, false)
 
+        val accountOnClickListener: AccountOnClickListener =
+            when (val parent = requireParentFragment()) {
+                is AccountsFragment -> parent.accountOnClickListener
+                is AccountsDF -> parent.accountOnClickListener
+                else -> throw IllegalStateException("AccountsDisplayFragment has unexpected parent $parent")
+            }
+
         binding.root.adapter = AccountsDisplayRVAdapter(
             requireArguments().getBoolean(ACC_PICKER_EDITABLE),
-            requireArguments().getSerializable(ACC_PICKER_LISTENER) as AccountOnClickListener
+            accountOnClickListener
         )
         return binding.root
     }

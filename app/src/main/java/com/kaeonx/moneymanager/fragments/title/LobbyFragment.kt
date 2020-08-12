@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.XERepository
@@ -48,7 +49,11 @@ class LobbyFragment : Fragment() {
                 .setDuration(animDuration)
                 .setListener(null)
             delay(animDuration + 50)
-            findNavController().navigate(LobbyFragmentDirections.actionLobbyFragmentToTransactionsFragment())
+            findNavController().run {
+                if (currentDestination?.id == R.id.lobbyFragment) {
+                    navigate(LobbyFragmentDirections.actionLobbyFragmentToTransactionsFragment())
+                }
+            }
         }
     }
 }

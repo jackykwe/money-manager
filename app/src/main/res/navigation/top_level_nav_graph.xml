@@ -322,5 +322,10 @@
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
     </fragment>
+    <fragment
+        android:id="@+id/importExportFragment"
+        android:name="com.kaeonx.moneymanager.fragments.importexport.ImportExportFragment"
+        android:label="Import / Export"
+        tools:layout="@layout/fragment_import_export" />
 
 </navigation>

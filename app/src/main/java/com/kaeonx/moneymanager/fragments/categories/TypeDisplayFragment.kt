@@ -13,7 +13,9 @@ import com.kaeonx.moneymanager.databinding.FragmentTypeDisplayBinding
 private const val TAG = "tdfrag"
 
 // tabLayoutControllerFragment: where the TabLayout is controlled
-class TypeDisplayFragment : Fragment() {
+// retaining instance of fragmentStateAdapter to access the clickListener. A cheap solution that might not be the best. // TODO(FUTURE)
+class TypeDisplayFragment(private val fragmentStateAdapter: TypeDisplayFragmentStateAdapter) :
+    Fragment() {
 
     private val type by lazy {
         when (val catPickerState = requireArguments().getInt(CAT_PICKER_STATE)) {
@@ -30,7 +32,7 @@ class TypeDisplayFragment : Fragment() {
         binding.root.adapter = TypeDisplayRVAdapter(
             type,
             requireArguments().getBoolean(CAT_PICKER_EDITABLE),
-            requireArguments().getSerializable(CAT_PICKER_LISTENER) as CategoryOnClickListener
+            fragmentStateAdapter.itemOnClickListener
         )
         return binding.root
     }

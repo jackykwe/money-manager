@@ -1,6 +1,8 @@
 package com.kaeonx.moneymanager.fragments.budget
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetsBinding
 import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.importexport.IEFileHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +73,8 @@ class BudgetsFragment : Fragment() {
                 submitList2(it)
             }
         }
+
+        startActivityForResult(IEFileHandler.constructReadFileIntent(), 9999)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -125,5 +130,10 @@ class BudgetsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 9999) Log.d(TAG, "Got resultCode $resultCode")
     }
 }

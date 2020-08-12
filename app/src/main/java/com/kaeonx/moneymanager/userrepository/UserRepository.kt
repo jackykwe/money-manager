@@ -77,19 +77,22 @@ class UserRepository private constructor() {
         category: String,
         startMillis: Long,
         endMillis: Long
-    ): List<Transaction> = when (category) {
-        "Overall" -> database.userDatabaseDao.getTypeTransactionsBetweenSuspend(
-            type,
-            startMillis,
-            endMillis
-        ).toDomain()
-        else -> database.userDatabaseDao.getCategoryTransactionsBetweenSuspend(
-            type,
-            category,
-            startMillis,
-            endMillis
-        ).toDomain()
-    }
+    ): List<Transaction> =
+        withContext(Dispatchers.IO) {
+            when (category) {
+                "Overall" -> database.userDatabaseDao.getTypeTransactionsBetweenSuspend(
+                    type,
+                    startMillis,
+                    endMillis
+                ).toDomain()
+                else -> database.userDatabaseDao.getCategoryTransactionsBetweenSuspend(
+                    type,
+                    category,
+                    startMillis,
+                    endMillis
+                ).toDomain()
+            }
+        }
 
 
     internal fun getCategoryTransactionsBetween(
@@ -105,9 +108,7 @@ class UserRepository private constructor() {
                 startMillis,
                 endMillis
             )
-        ) {
-            it.toDomain()
-        }
+        ) { it.toDomain() }
 
     internal fun searchTransactions(memoQuery: String): LiveData<List<Transaction>> =
         Transformations.map(database.userDatabaseDao.searchTransactions(memoQuery)) {
@@ -227,6 +228,36 @@ class UserRepository private constructor() {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Backup
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    internal suspend fun exportTransactionsSuspend(): List<Transaction> =
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.exportTransactionsSuspend().toDomain()
+        }
+
+    internal suspend fun exportBudgetsSuspend(): List<Budget> =
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.exportBudgetsSuspend().toDomain()
+        }
+
+    internal suspend fun exportCategoriesSuspend(): List<Category> =
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.exportCategoriesSuspend().toDomain()
+        }
+
+    internal suspend fun exportAccountsSuspend(): List<Account> =
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.exportAccountsSuspend().toDomain()
+        }
+
+    internal suspend fun exportPreferencesSuspend(): List<Preference> =
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.exportPreferencesSuspend().toDomain()
+        }
+
     companion object {
 
         @Volatile
@@ -253,5 +284,4 @@ class UserRepository private constructor() {
             INSTANCE = null
         }
     }
-
 }

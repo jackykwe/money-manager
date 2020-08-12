@@ -35,7 +35,11 @@ class TitleFragment : Fragment() {
             .show()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTitleBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,12 +52,21 @@ class TitleFragment : Fragment() {
             } else {
                 if (newLogin) {
                     binding.titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
-                    Snackbar.make(requireView(), "Hello, ${it.displayName}!", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), "Hello, ${it.displayName}!", Snackbar.LENGTH_SHORT)
+                        .show()
                     Handler(Looper.getMainLooper()).postDelayed({
-                        findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
+                        findNavController().run {
+                            if (currentDestination?.id == R.id.titleFragment) {
+                                navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
+                            }
+                        }
                     }, 1200)
                 } else {
-                    findNavController().navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.titleFragment) {
+                            navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
+                        }
+                    }
                 }
             }
         }

@@ -70,6 +70,9 @@ interface UserDatabaseDao {
     @Query("SELECT * FROM transactions_table WHERE memo LIKE '%' || :memoQuery || '%'")
     fun searchTransactions(memoQuery: String): LiveData<List<DatabaseTransaction>>
 
+    @Query("SELECT * FROM transactions_table")
+    suspend fun exportTransactionsSuspend(): List<DatabaseTransaction>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts
@@ -88,6 +91,9 @@ interface UserDatabaseDao {
 
     @Query("SELECT * FROM accounts_table ORDER BY name COLLATE NOCASE")
     fun getAllAccounts(): LiveData<List<DatabaseAccount>>
+
+    @Query("SELECT * FROM accounts_table")
+    suspend fun exportAccountsSuspend(): List<DatabaseAccount>
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -108,6 +114,9 @@ interface UserDatabaseDao {
     @Query("SELECT * FROM categories_table ORDER BY name COLLATE NOCASE")
     fun getAllCategories(): LiveData<List<DatabaseCategory>>
 
+    @Query("SELECT * FROM categories_table")
+    suspend fun exportCategoriesSuspend(): List<DatabaseCategory>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Budget
@@ -125,6 +134,9 @@ interface UserDatabaseDao {
     @Delete
     suspend fun deleteBudget(databaseBudget: DatabaseBudget)
 
+    @Query("SELECT * FROM budgets_table")
+    suspend fun exportBudgetsSuspend(): List<DatabaseBudget>
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Preferences
@@ -135,4 +147,7 @@ interface UserDatabaseDao {
 
     @Query("SELECT * FROM preferences_table")
     fun getAllPreferences(): LiveData<List<DatabasePreference>>
+
+    @Query("SELECT * FROM preferences_table")
+    suspend fun exportPreferencesSuspend(): List<DatabasePreference>
 }

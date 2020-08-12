@@ -10,7 +10,6 @@ import com.kaeonx.moneymanager.databinding.RvItemTypeDisplayBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.*
-import java.io.Serializable
 
 private const val TAG = "tdrva"
 
@@ -82,6 +81,6 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     }
 }
 
-class CategoryOnClickListener(val clickListener: (category: Category) -> Unit) : Serializable {
+class CategoryOnClickListener(val clickListener: (category: Category) -> Unit) {
     fun onClick(category: Category) = clickListener(category)
 }

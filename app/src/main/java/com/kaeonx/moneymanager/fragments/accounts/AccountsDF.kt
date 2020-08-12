@@ -12,18 +12,28 @@ import com.kaeonx.moneymanager.R
 internal const val ACCOUNTS_DF_RESULT = "accounts_df_result"
 
 // Essentially the same code as AccountsFragment, except for the childFragment arguments.
-class AccountsDF: DialogFragment() {
+class AccountsDF : DialogFragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    internal val accountOnClickListener by lazy {
+        AccountOnClickListener { account ->
+            findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(
+                ACCOUNTS_DF_RESULT,
+                account
+            )
+            findNavController().navigateUp()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_accounts, container, false)
 
         val childFragment = AccountsDisplayFragment()
         childFragment.arguments = Bundle().apply {
             putBoolean(ACC_PICKER_EDITABLE, false)
-            putSerializable(ACC_PICKER_LISTENER, AccountOnClickListener { account ->
-                findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(ACCOUNTS_DF_RESULT, account)
-                findNavController().navigateUp()
-            })
         }
         childFragmentManager
             .beginTransaction()

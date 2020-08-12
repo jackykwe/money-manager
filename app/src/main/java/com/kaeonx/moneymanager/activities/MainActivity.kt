@@ -15,7 +15,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
@@ -59,14 +58,6 @@ class MainActivity : AppCompatActivity() {
             setNavigationItemSelectedListener {
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
-                    R.id.menuExport -> {
-                        Snackbar.make(
-                            binding.appBarMainInclude.mainActivityFAB,
-                            "Function not available yet",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                        false
-                    }
                     R.id.menuSettings -> {
 //                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
                         startActivity(Intent(this@MainActivity, SettingsActivity::class.java))

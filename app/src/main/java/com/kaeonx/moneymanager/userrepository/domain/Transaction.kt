@@ -6,6 +6,7 @@ import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.DatabaseTransaction
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Transaction(
     val transactionId: Int?,

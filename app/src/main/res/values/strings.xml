@@ -82,4 +82,9 @@
     <string name="spinner_hint_currency">Currency</string>
     <string name="hint_monthly_budget">Monthly Budget</string>
 
+    <!-- fragment_import_export -->
+    <string name="button_export_to_storage">Export To Storage</string>
+    <string name="button_import_from_storage">Import From Storage</string>
+    <string name="import_export_loading_text">Please wait</string>
+
 </resources>

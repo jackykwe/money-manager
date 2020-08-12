@@ -11,7 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.Serializable
 
 class AccountsDisplayRVAdapter(
     private val editable: Boolean,
@@ -65,6 +64,6 @@ class AccountDiffCallback : DiffUtil.ItemCallback<Account>() {
     }
 }
 
-class AccountOnClickListener(val clickListener: (account: Account) -> Unit) : Serializable {
+class AccountOnClickListener(val clickListener: (account: Account) -> Unit) {
     fun onClick(account: Account) = clickListener(account)
 }

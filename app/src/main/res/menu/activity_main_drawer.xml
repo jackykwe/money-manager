@@ -36,7 +36,7 @@
         android:id="@+id/menuGroupSettings"
         android:checkableBehavior="none">
         <item
-            android:id="@+id/menuExport"
+            android:id="@+id/importExportFragment"
             android:icon="@drawable/mdi_swap_vertical"
             android:title="@string/drawer_menu_export" />
         <item

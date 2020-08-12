@@ -10,10 +10,26 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
 internal const val ACC_PICKER_EDITABLE = "editable"
-internal const val ACC_PICKER_LISTENER = "listener"
 
 // Essentially the same code as AccountsDF, except for the childFragment arguments.
 class AccountsFragment : Fragment() {
+
+    internal val accountOnClickListener by lazy {
+        AccountOnClickListener { account ->
+            val cond1 = UserRepository.getInstance().accounts.value!!.size > 1
+            val cond2 = account.name != "Add..."
+            findNavController().run {
+                if (currentDestination?.id == R.id.accountsFragment) {
+                    navigate(
+                        AccountsFragmentDirections.actionAccountsFragmentToAccountEditFragment(
+                            account,
+                            cond1 && cond2
+                        )
+                    )
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,23 +41,6 @@ class AccountsFragment : Fragment() {
         val childFragment = AccountsDisplayFragment()
         childFragment.arguments = Bundle().apply {
             putBoolean(ACC_PICKER_EDITABLE, true)
-            putSerializable(
-                ACC_PICKER_LISTENER,
-                AccountOnClickListener { account ->
-                    val cond1 = UserRepository.getInstance().accounts.value!!.size > 1
-                    val cond2 = account.name != "Add..."
-                    findNavController().run {
-                        if (currentDestination?.id == R.id.accountsFragment) {
-                            navigate(
-                                AccountsFragmentDirections.actionAccountsFragmentToAccountEditFragment(
-                                    account,
-                                    cond1 && cond2
-                                )
-                            )
-                        }
-                    }
-                }
-            )
         }
         childFragmentManager
             .beginTransaction()
