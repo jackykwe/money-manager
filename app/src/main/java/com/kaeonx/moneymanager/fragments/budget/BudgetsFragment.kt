@@ -15,6 +15,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetsBinding
 import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,11 @@ class BudgetsFragment : Fragment() {
     private lateinit var binding: FragmentBudgetsBinding
 
     private val args: BudgetsFragmentArgs by navArgs()
-    private val viewModelFactory by lazy { BudgetsViewModelFactory(args.initCalendar) }
+    private val viewModelFactory by lazy {
+        BudgetsViewModelFactory(
+            args.initCalendar ?: CalendarHandler.getStartOfMonthCalendar(Calendar.getInstance())
+        )
+    }
     private val viewModel: BudgetsViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(

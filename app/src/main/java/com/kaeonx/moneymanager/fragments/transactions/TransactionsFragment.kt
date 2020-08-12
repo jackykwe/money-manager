@@ -7,19 +7,14 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
-import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 private const val TAG = "transactionFrag"
@@ -72,13 +67,24 @@ class TransactionsFragment : Fragment() {
                         }
                     }
                 },
-                summaryIncomeClickListener = GenericOnClickListener { Unit },
+                summaryIncomeClickListener = GenericOnClickListener {
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToDetailTypeFragment(
+                                    initType = "Income",
+                                    initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
+                                )
+                            )
+                        }
+                    }
+                },
                 summaryExpensesClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToDetailTypeFragment(
-                                    initType = "Expenses",  // todo: When there are more than one possible summary setting, peg to that.
+                                    initType = "Expenses",
                                     initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
                                 )
                             )
@@ -86,11 +92,16 @@ class TransactionsFragment : Fragment() {
                     }
                 },
                 summaryPieChartClickListener = GenericOnClickListener {
-                    Snackbar.make(
-                        binding.root,
-                        "Navigate to PieChartHelpFragment",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsFragment) {
+                            navigate(
+                                TransactionsFragmentDirections.actionTransactionsFragmentToBudgetDetailFragment(
+                                    initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar,
+                                    category = "Overall"
+                                )
+                            )
+                        }
+                    }
                 }
             )
         }
@@ -99,21 +110,11 @@ class TransactionsFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.sensitiveDayTransactions.observe(viewLifecycleOwner) {
+        viewModel.transactionsRVPacket.observe(viewLifecycleOwner) {
             if (it == null) return@observe  // prevents false firing when ViewModel is initialised
-            lifecycleScope.launch(Dispatchers.Default) {
-                (binding.transactionsRV.adapter as TransactionsRVAdapter).apply {
-                    submitList(null)
-                    submitListAndAddHeaders(
-                        it,
-                        CalendarHandler.getFormattedString(
-                            viewModel.displayCalendar.value!!.clone() as Calendar,
-                            "MMM yyyy"
-                        )
-                            .toUpperCase(Locale.ROOT),
-                        viewModel.getSummaryData(it)
-                    )
-                }
+            (binding.transactionsRV.adapter as TransactionsRVAdapter).apply {
+//                submitList(null)
+                submitList2(it)
             }
         }
     }
@@ -122,25 +123,28 @@ class TransactionsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            (menu.getItem(0).actionView as SearchView).setOnQueryTextListener(
-                object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(p0: String?): Boolean = true
-                    override fun onQueryTextChange(p0: String?): Boolean {
-                        p0?.let { query ->
-                            findNavController().run {
-                                if (currentDestination?.id == R.id.transactionsFragment) {
-                                    navigate(
-                                        TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsSearchFragment(
-                                            query
+            (menu.getItem(0).actionView as SearchView).apply {
+                queryHint = "Find in memo"
+                setOnQueryTextListener(
+                    object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(p0: String?): Boolean = true
+                        override fun onQueryTextChange(p0: String?): Boolean {
+                            p0?.let { query ->
+                                findNavController().run {
+                                    if (currentDestination?.id == R.id.transactionsFragment) {
+                                        navigate(
+                                            TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsSearchFragment(
+                                                query
+                                            )
                                         )
-                                    )
+                                    }
                                 }
                             }
+                            return true
                         }
-                        return true
                     }
-                }
-            )
+                )
+            }
         }
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {

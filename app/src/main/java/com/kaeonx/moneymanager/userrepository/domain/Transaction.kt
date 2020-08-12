@@ -23,7 +23,8 @@ data class Transaction(
     var account: String,
     var memo: String,
     var originalCurrency: String,
-    var originalAmount: String) : Parcelable {
+    var originalAmount: String
+) : Parcelable {
 
     @IgnoredOnParcel
     internal lateinit var homeAmount: BigDecimal
@@ -52,65 +53,44 @@ data class Transaction(
     }
 }
 
-
-// TODO: shift this to inside ViewModel.
-// This function assumes that all Transactions in the List are in the same month.
 internal suspend fun List<Transaction>.toDayTransactions(): List<DayTransactions> {
     // List<Transaction> is sorted in DESCENDING timestamp order.
+    if (isEmpty()) return listOf()
+    fun getYMDIdentifier(timestamp: Long): Int {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = timestamp
+        return cal.get(Calendar.YEAR) * 10000 + cal.get(Calendar.MONTH) * 100 + cal.get(Calendar.DAY_OF_MONTH)
+    }
     return withContext(Dispatchers.Default) {
-        val initCalendar =
-            Calendar.getInstance()  // so that calculations below won't shift when done at 23:59:59
-        if (this@toDayTransactions.isEmpty()) return@withContext listOf<DayTransactions>()
-        val daysInMonth =
-            CalendarHandler.getCalendar(this@toDayTransactions[0].timestamp)
-                .getActualMaximum(Calendar.DAY_OF_MONTH)
-
-        // Generates 1 DayTransaction per day
-        var result = ArrayList<DayTransactions>()
-        for (d in 1..daysInMonth) {
-            val c = initCalendar.clone() as Calendar
-            c.set(
-                Calendar.DAY_OF_MONTH,
-                d
-            )  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
-            result.add(
-                DayTransactions(
-                    dayOfMonth = d,
-                    ymdCalendar = c,
-                    dayIncome = null,
-                    dayExpenses = null,
-                    incomeAllHome = false,
-                    expensesAllHome = false,
-                    transactions = ArrayList()
-                )
-            )
+        val grouping = mutableMapOf<Int, DayTransactions>()
+        forEach {
+            val identifier = getYMDIdentifier(it.timestamp)
+            grouping[identifier] = (grouping[identifier] ?: DayTransactions(
+                ymdIdentifier = identifier,
+                ymdCalendar = CalendarHandler.getCalendar(it.timestamp),  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
+                dayIncome = null,
+                dayExpenses = null,
+                incomeAllHome = false,
+                expensesAllHome = false,
+                transactions = ArrayList()
+            )).apply {
+                transactions.add(it)
+            }
         }
-
-        //// Filters transactions within firstMillis <= transaction.timestamp <= lastMillis - NOT NECESSARY - SQL will handle this
-        // Puts transactions them into the relevant DayTransactions
-        this@toDayTransactions.forEach {
-            result[CalendarHandler.getCalendar(it.timestamp)
-                .get(Calendar.DAY_OF_MONTH) - 1].transactions.add(it)
-        }
-
-        // Removes DayTransactions without any transactions
-        result = result.filter { it.transactions.isNotEmpty() } as ArrayList<DayTransactions>
 
         // Calculates currency, dayIncome and dayExpenses.
-        result = result.map {
-            // Check if all transactions within each day have the same currency, then calculate new income & expense
-            it.incomeAllHome = it.transactions.typeAllHomeCurrency("Income")
-            it.expensesAllHome = it.transactions.typeAllHomeCurrency("Expenses")
+        return@withContext grouping.values.map {
+            it.apply {
+                // Check if all transactions within each day have the same currency, then calculate new income & expense
+                incomeAllHome = transactions.typeAllHomeCurrency("Income")
+                expensesAllHome = transactions.typeAllHomeCurrency("Expenses")
 
-            // Note: In all calculations, each individual transaction is converted to Home Currency first (if needed)
-            val (income, expenses) = it.transactions.calculateIncomeExpenses()
-            it.dayIncome = income
-            it.dayExpenses = expenses
-
-            it
-        } as ArrayList<DayTransactions>
-        result.reverse()
-        result
+                // Note: In all calculations, each individual transaction is converted to Home Currency first (if needed)
+                val (income, expenses) = transactions.calculateIncomeExpenses()
+                dayIncome = income
+                dayExpenses = expenses
+            }
+        }
     }
 }
 

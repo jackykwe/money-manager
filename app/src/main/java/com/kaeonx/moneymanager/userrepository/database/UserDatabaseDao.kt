@@ -44,8 +44,15 @@ interface UserDatabaseDao {
         endMillis: Long
     ): LiveData<List<DatabaseTransaction>>
 
+    @Query("SELECT * FROM transactions_table WHERE (timestamp BETWEEN :startMillis AND :endMillis) AND (type = :type) ORDER BY timestamp DESC")
+    suspend fun getTypeTransactionsBetweenSuspend(
+        type: String,
+        startMillis: Long,
+        endMillis: Long
+    ): List<DatabaseTransaction>
+
     @Query("SELECT * FROM transactions_table WHERE (timestamp BETWEEN :startMillis AND :endMillis) AND (category = :category) AND (type = :type) ORDER BY timestamp DESC")
-    suspend fun getTransactionsBetweenSuspend(
+    suspend fun getCategoryTransactionsBetweenSuspend(
         type: String,
         category: String,
         startMillis: Long,
@@ -109,9 +116,8 @@ interface UserDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertBudget(databaseBudget: DatabaseBudget)
 
-
     @Query("SELECT * FROM budgets_table WHERE category = :category")
-    fun getBudget(category: String): LiveData<DatabaseBudget>
+    fun getBudget(category: String): LiveData<DatabaseBudget?>
 
     @Query("SELECT * FROM budgets_table ORDER BY category")
     fun getAllBudgets(): LiveData<List<DatabaseBudget>>
@@ -124,7 +130,6 @@ interface UserDatabaseDao {
      * Preferences
      */
     ////////////////////////////////////////////////////////////////////////////////
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertPreference(databasePreference: DatabasePreference)
 

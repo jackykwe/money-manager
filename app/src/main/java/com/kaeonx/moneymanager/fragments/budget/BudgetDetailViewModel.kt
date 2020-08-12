@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.budget
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -83,7 +82,7 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
             // Calculations for pieData and barData
             val dayDivDays = CalendarHandler.getDayDivDays(
                 displayMonthStartCalendar = CalendarHandler.getStartOfMonthCalendar(
-                    _displayCalendar.value.clone() as Calendar
+                    _displayCalendar.value
                 ),
                 scale = 4
             )
@@ -128,9 +127,7 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                             showCurrency = budgetObj.originalCurrency != homeCurrency,
                             currency = budgetObj.originalCurrency,
                             amount = CurrencyHandler.displayAmount(
-                                dayDivDays.times(budgetAmount).minus(spentAmountIBC).also {
-                                    Log.d("lobby", "value is $it")
-                                }
+                                dayDivDays.times(budgetAmount).minus(spentAmountIBC)
                             )
                         ),
                         PieChartLegendLLData.BudgetDetailPCLLD(

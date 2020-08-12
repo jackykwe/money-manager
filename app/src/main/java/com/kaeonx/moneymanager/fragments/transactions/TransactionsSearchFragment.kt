@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsSearchBinding
 
@@ -23,7 +23,8 @@ class TransactionsSearchFragment : Fragment() {
     private lateinit var binding: FragmentTransactionsSearchBinding
 
     private val args: TransactionsSearchFragmentArgs by navArgs()
-    private val viewModel: TransactionsSearchViewModel by viewModels()
+    private val viewModelFactory by lazy { TransactionsSearchViewModelFactory(args.initSearchQuery) }
+    private val viewModel: TransactionsSearchViewModel by viewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +32,12 @@ class TransactionsSearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            if (menu.getItem(0).actionView !is SearchView) {
+                menu.clear()
+                inflateMenu(R.menu.fragment_transactions)
+            }
             (menu.getItem(0).actionView as SearchView).apply {
-                isIconifiedByDefault = false
+                isIconified = false
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(p0: String?): Boolean {
                         // Close the keyboard, if it's open
@@ -44,14 +49,11 @@ class TransactionsSearchFragment : Fragment() {
                     }
 
                     override fun onQueryTextChange(p0: String?): Boolean {
-                        if (p0 != null) viewModel.reSearch(p0)
+                        if (p0 != null) viewModel.reSearch(p0.trim())
                         return true
                     }
                 })
-                args.initSearchQuery.run {
-                    setQuery(this, false)
-                    viewModel.reSearch(this)
-                }
+                setQuery(viewModel.currentQuery, false)
                 queryHint = "Find in memo"
             }
         }
@@ -60,11 +62,19 @@ class TransactionsSearchFragment : Fragment() {
             setHasFixedSize(true)
             adapter = TransactionsSearchRVAdapter(
                 itemOnClickListener = TransactionOnClickListener { transaction ->
-                    Toast.makeText(
-                        requireContext(),
-                        "Oh? You want ${transaction.transactionId}?",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Close the keyboard, if it's open
+                    val imm =
+                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.transactionsSearchFragment) {
+                            navigate(
+                                TransactionsSearchFragmentDirections.actionTransactionsSearchFragmentToTransactionEditFragment(
+                                    transaction.transactionId!!
+                                )
+                            )
+                        }
+                    }
                 }
             )
         }

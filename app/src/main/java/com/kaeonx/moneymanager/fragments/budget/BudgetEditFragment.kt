@@ -100,6 +100,12 @@ class BudgetEditFragment : Fragment() {
                 findNavController().navigateUp()
             }
         }
+        viewModel.navigateUpTwoSteps.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.navigateUpHandled()
+                findNavController().popBackStack(R.id.budgetDetailFragment, true)
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

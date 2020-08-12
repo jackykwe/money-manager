@@ -13,9 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class TransactionsSearchViewModel : ViewModel() {
+class TransactionsSearchViewModel(initQuery: String) : ViewModel() {
 
-    private var currentQuery: String = ""
+    internal var currentQuery: String = initQuery
+        private set
 
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()
@@ -29,6 +30,10 @@ class TransactionsSearchViewModel : ViewModel() {
         }
     val transactionsSearchRVPacket: LiveData<TransactionsSearchRVPacket?>
         get() = _transactionsSearchRVPacket
+
+    init {
+        reSearch(initQuery)
+    }
 
     private fun recalculateDayTransactions() {
         val previousLiveData = previousLiveData
@@ -50,7 +55,6 @@ class TransactionsSearchViewModel : ViewModel() {
             }
         }
     }
-
 
     internal fun reSearch(newQuery: String) {
         if (previousLiveData != null) {

@@ -11,13 +11,15 @@ import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsHeaderBinding
 import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
+import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryWithoutBudgetBinding
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.*
 
 private const val HEADER = 0
-private const val SUMMARY = 1
-private const val DAY_TRANSACTIONS = 2
+private const val SUMMARY_BUDGET = 1
+private const val SUMMARY_NO_BUDGET = 2
+private const val DAY_TRANSACTIONS = 3
 private const val TAG = "trva"
 
 class TransactionsRVAdapter(
@@ -34,19 +36,15 @@ class TransactionsRVAdapter(
 
     private var initRun = true
 
-    fun submitListAndAddHeaders(
-        newList: List<DayTransactions>,
-        newHeaderData: String,
-        newTransactionsSummaryData: TransactionsSummaryData
-    ) {
+    fun submitList2(newPacket: TransactionsRVPacket) {
         CoroutineScope(Dispatchers.Default).launch {
             val addable = listOf(
-                TransactionsRVItem.TransactionsRVItemHeader(newHeaderData),
-                TransactionsRVItem.TransactionsRVItemSummary(newTransactionsSummaryData)
+                TransactionsRVItem.TransactionsRVItemHeader(newPacket.headerString),
+                TransactionsRVItem.TransactionsRVItemSummary(newPacket.summaryData)
             )
             val submittable = when {
-                newList.isEmpty() -> addable
-                else -> addable + newList.map {
+                newPacket.newList.isEmpty() -> addable
+                else -> addable + newPacket.newList.map {
                     TransactionsRVItem.TransactionsRVItemDayTransactions(
                         it
                     )
@@ -65,9 +63,11 @@ class TransactionsRVAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
+        return when (val item = getItem(position)) {
             is TransactionsRVItem.TransactionsRVItemHeader -> HEADER
-            is TransactionsRVItem.TransactionsRVItemSummary -> SUMMARY
+            is TransactionsRVItem.TransactionsRVItemSummary -> {
+                if (item.transactionsSummaryData.budget == null) SUMMARY_NO_BUDGET else SUMMARY_BUDGET
+            }
             is TransactionsRVItem.TransactionsRVItemDayTransactions -> DAY_TRANSACTIONS
         }
     }
@@ -75,7 +75,14 @@ class TransactionsRVAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             HEADER -> TransactionsHeaderViewHolder.inflateAndCreateViewHolderFrom(parent)
-            SUMMARY -> TransactionsSummaryViewHolder.inflateAndCreateViewHolderFrom(parent)
+            SUMMARY_BUDGET -> TransactionsSummaryViewHolder.inflateAndCreateViewHolderFrom(
+                parent,
+                SUMMARY_BUDGET
+            )
+            SUMMARY_NO_BUDGET -> TransactionsSummaryViewHolder.inflateAndCreateViewHolderFrom(
+                parent,
+                SUMMARY_NO_BUDGET
+            )
             DAY_TRANSACTIONS -> TransactionsDayViewHolder.inflateAndCreateViewHolderFrom(parent)
             else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
@@ -160,15 +167,37 @@ class TransactionsRVAdapter(
                         executePendingBindings()
                     }
                 }
-                else -> throw TODO("Not supported yet")
+                is RvItemTransactionsSummaryWithoutBudgetBinding -> {
+                    binding.apply {
+                        summaryData = newTransactionsSummaryData
+                        incomeListener = summaryIncomeClickListener
+                        expensesListener = summaryExpensesClickListener
+                        executePendingBindings()
+                    }
+                }
+                else -> throw IllegalArgumentException("Unknown binding passed: ${binding.javaClass}. How did you get here?")
             }
         }
 
         companion object {
-            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsSummaryViewHolder {
+            fun inflateAndCreateViewHolderFrom(
+                parent: ViewGroup,
+                switch: Int
+            ): TransactionsSummaryViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding =
-                    RvItemTransactionsSummaryBinding.inflate(layoutInflater, parent, false)
+                val binding = when (switch) {
+                    SUMMARY_BUDGET -> RvItemTransactionsSummaryBinding.inflate(
+                        layoutInflater,
+                        parent,
+                        false
+                    )
+                    SUMMARY_NO_BUDGET -> RvItemTransactionsSummaryWithoutBudgetBinding.inflate(
+                        layoutInflater,
+                        parent,
+                        false
+                    )
+                    else -> throw IllegalArgumentException("Unknown switch passed: $switch. Switch should be SUMMARY_BUDGET or SUMMARY_NO_BUDGET")
+                }
                 return TransactionsSummaryViewHolder(binding)
             }
         }
@@ -220,7 +249,7 @@ class TransactionOnClickListener(val clickListener: (transaction: Transaction) -
 sealed class TransactionsRVItem {
     data class TransactionsRVItemDayTransactions(val dayTransactions: DayTransactions) :
         TransactionsRVItem() {
-        override val rvItemId: Int = dayTransactions.dayOfMonth
+        override val rvItemId: Int = dayTransactions.ymdIdentifier
     }
 
     data class TransactionsRVItemHeader(val monthText: String) : TransactionsRVItem() {
@@ -235,13 +264,25 @@ sealed class TransactionsRVItem {
     abstract val rvItemId: Int
 }
 
+/**
+ * @param showHomeCurrencyMode1 affects expenses
+ * @param showHomeCurrencyMode2 affects income, expenses, balance
+ */
 data class TransactionsSummaryData(
+    val showBudgetCurrency: Boolean?,
+    val showHomeCurrencyMode1: Boolean?,
+    val showHomeCurrencyMode2: Boolean,
+    val budgetCurrency: String?,
+    val budget: String?,
     val homeCurrency: String,
-    val showCurrencyMode1: Boolean,  // affects budget, expenses
-    val showCurrencyMode2: Boolean,  // affects income, expenses, balance
-    val budget: String,
-    val monthIncome: String,
     val monthExpenses: String,
-    val monthBalance: String,
-    val pieData: PieData
+    val pieData: PieData?,
+    val monthIncome: String,
+    val monthBalance: String
+)
+
+data class TransactionsRVPacket(
+    val newList: List<DayTransactions>,
+    val headerString: String,
+    val summaryData: TransactionsSummaryData
 )

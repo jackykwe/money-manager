@@ -12,15 +12,11 @@
             type="com.kaeonx.moneymanager.fragments.transactions.TransactionsSummaryData" />
 
         <variable
-            name="budgetListener"
+            name="incomeListener"
             type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
 
         <variable
             name="expensesListener"
-            type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
-
-        <variable
-            name="pieChartListener"
             type="com.kaeonx.moneymanager.customclasses.GenericOnClickListener" />
     </data>
 
@@ -44,7 +40,7 @@
                 android:id="@+id/summaryLeftCL"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:onClick="@{() -> budgetListener.onClick()}"
+                android:onClick="@{() -> incomeListener.onClick()}"
                 android:padding="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/dividerLeft"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -53,7 +49,7 @@
                 <TextView
                     android:id="@+id/summaryBudgetAmountTV"
                     style="@style/RvItemtransactionsSummaryAmount"
-                    android:text="@{summaryData.budget}"
+                    android:text="@{summaryData.monthIncome}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{summaryData.homeCurrency}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-                    android:visibility="@{summaryData.showHomeCurrencyMode1 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{summaryData.showHomeCurrencyMode2 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@+id/summaryBudgetAmountTV"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:gravity="center"
-                    android:text="Budget"
+                    android:text="Income"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption2"
                     app:layout_constraintBottom_toTopOf="@+id/summaryBudgetCurrencyTV"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{summaryData.homeCurrency}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption3"
-                    android:visibility="@{summaryData.showHomeCurrencyMode1 ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{summaryData.showHomeCurrencyMode2 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@+id/summaryExpensesAmountTV"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -142,6 +138,7 @@
                     app:layout_constraintVertical_chainStyle="packed" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+
             <View
                 android:id="@+id/dividerLeft"
                 android:layout_width="1dp"
@@ -156,19 +153,60 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:background="?android:attr/listDivider"
-                app:layout_constraintEnd_toStartOf="@+id/budgetPC"
+                app:layout_constraintEnd_toStartOf="@+id/summaryRightCL"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/summaryCentreCL" />
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/budgetPC"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/summaryRightCL"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:onClick="@{() -> pieChartListener.onClick()}"
-                app:budgetPC_adapter="@{summaryData.pieData}"
+                android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/dividerRight" />
+                app:layout_constraintStart_toEndOf="@+id/dividerRight">
+
+                <TextView
+                    android:id="@+id/summaryBalanceAmountTV"
+                    style="@style/RvItemtransactionsSummaryAmount"
+                    android:text="@{summaryData.monthBalance}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/summaryBalanceCurrencyTV"
+                    tools:text="@string/placeholder_amount" />
+
+                <TextView
+                    android:id="@+id/summaryBalanceCurrencyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{summaryData.homeCurrency}"
+                    android:textAppearance="@style/TextAppearance.MyApp.Caption3"
+                    android:visibility="@{summaryData.showHomeCurrencyMode2 ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toTopOf="@+id/summaryBalanceAmountTV"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/summaryBalanceHintTV"
+                    tools:ignore="RtlSymmetry"
+                    tools:text="@string/placeholder_currency" />
+
+                <TextView
+                    android:id="@+id/summaryBalanceHintTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center"
+                    android:text="Balance"
+                    android:textAppearance="@style/TextAppearance.MyApp.Caption2"
+                    app:layout_constraintBottom_toTopOf="@+id/summaryBalanceCurrencyTV"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

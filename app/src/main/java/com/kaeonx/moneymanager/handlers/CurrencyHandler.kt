@@ -9,12 +9,12 @@ class CurrencyHandler private constructor() {
     companion object {
 
         private fun largeValueFormatter(bigDecimal: BigDecimal): String {
-            return if (bigDecimal >= BigDecimal("1E7")) {
-                DecimalFormat("0.00E0").apply {
+            return when {
+                bigDecimal >= BigDecimal("1E7") -> DecimalFormat("0.00E0").apply {
                     roundingMode = RoundingMode.HALF_UP
                 }.format(bigDecimal)
-            } else {
-                bigDecimal.toPlainString()
+                bigDecimal < BigDecimal.ZERO -> "- " + bigDecimal.toPlainString().substring(1)
+                else -> bigDecimal.toPlainString()
             }
         }
 

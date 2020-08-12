@@ -77,13 +77,20 @@ class UserRepository private constructor() {
         category: String,
         startMillis: Long,
         endMillis: Long
-    ): List<Transaction> =
-        database.userDatabaseDao.getTransactionsBetweenSuspend(
+    ): List<Transaction> = when (category) {
+        "Overall" -> database.userDatabaseDao.getTypeTransactionsBetweenSuspend(
+            type,
+            startMillis,
+            endMillis
+        ).toDomain()
+        else -> database.userDatabaseDao.getCategoryTransactionsBetweenSuspend(
             type,
             category,
             startMillis,
             endMillis
         ).toDomain()
+    }
+
 
     internal fun getCategoryTransactionsBetween(
         type: String,
@@ -193,9 +200,9 @@ class UserRepository private constructor() {
         }
     }
 
-    internal fun getBudget(category: String): LiveData<Budget> =
+    internal fun getBudget(category: String): LiveData<Budget?> =
         Transformations.map(database.userDatabaseDao.getBudget(category)) {
-            it.toDomain()
+            it?.toDomain()
         }
 
     internal fun getAllBudgets(): LiveData<List<Budget>> =

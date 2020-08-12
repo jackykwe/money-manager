@@ -188,7 +188,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
     internal fun deleteOldBudget() {
         viewModelScope.launch {
             userRepository.deleteBudget(oldBudget)
-            _navigateUp.value = true
+            _navigateUpTwoSteps.value = true
         }
     }
 
@@ -206,6 +206,14 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
 
     internal fun navigateUpHandled() {
         _navigateUp.value = false
+    }
+
+    private val _navigateUpTwoSteps = MutableLiveData2(false)
+    internal val navigateUpTwoSteps: LiveData<Boolean>
+        get() = _navigateUpTwoSteps
+
+    internal fun navigateUpTwoStepsHandled() {
+        _navigateUpTwoSteps.value = false
     }
 
 }

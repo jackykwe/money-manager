@@ -133,7 +133,7 @@ class TransactionsSummaryRVItemDiffCallback : DiffUtil.ItemCallback<Transactions
 sealed class TransactionsSummaryRVItem {
     data class TransactionsSummaryRVItemDayTransactions(val dayTransactions: DayTransactions) :
         TransactionsSummaryRVItem() {
-        override val rvItemId: Int = dayTransactions.dayOfMonth
+        override val rvItemId: Int = dayTransactions.ymdIdentifier
     }
 
     data class TransactionsSummaryRVItemSummary(val resultText: String, val searchQuery: String) :
