@@ -20,6 +20,7 @@ import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Budget
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -74,7 +75,10 @@ class BudgetsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             lifecycleScope.launch(Dispatchers.Main) {
-                while (viewModel.addOptions == null) delay(1L)
+                while (viewModel.addOptions == null) {
+                    ensureActive()
+                    delay(1L)
+                }
                 if (viewModel.addOptions!!.isEmpty()) {
                     inflateMenu(R.menu.fragment_general_select_month)
                 } else {

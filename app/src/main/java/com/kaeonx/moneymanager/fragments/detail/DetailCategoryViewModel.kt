@@ -141,8 +141,8 @@ class DetailCategoryViewModel(
             val homeCurrency = UserPDS.getString("ccc_home_currency")
             val colourInt = ColourHandler.getColourObject(
                 userRepository.categories.value!!
-                    .find { it.name == category && it.type == type }!!
-                    .colourString
+                    .find { it.name == category && it.type == type }
+                    ?.colourString ?: "Black"
             )
 
             val showRangeCurrency = list.any { it.originalCurrency != homeCurrency }

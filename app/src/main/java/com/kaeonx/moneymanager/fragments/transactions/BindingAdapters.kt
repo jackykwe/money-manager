@@ -25,10 +25,6 @@ import com.kaeonx.moneymanager.userrepository.domain.Transaction
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("budgetPC_adapter")
 fun PieChart.setBudgetPCAdapter(pieData: PieData) {
-    // Enable these lines if loading becomes slow and you see outdated graphs while loading
-//        data = null
-//        notifyDataSetChanged()
-//        invalidate()
     if (legend.isEnabled) {
         setTouchEnabled(false)
         setNoDataText("Please report this bug.")

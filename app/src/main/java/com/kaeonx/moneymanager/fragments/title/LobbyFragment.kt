@@ -14,6 +14,7 @@ import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 
 class LobbyFragment : Fragment() {
@@ -40,8 +41,9 @@ class LobbyFragment : Fragment() {
                 userRepository.preferences.value == null ||
                 xeRepository.xeRows.value == null
             ) {
+                ensureActive()
                 Log.d("Lobby", "still waiting sir")
-                delay(200L)
+                delay(1L)
             }
             val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
             binding.root.animate()

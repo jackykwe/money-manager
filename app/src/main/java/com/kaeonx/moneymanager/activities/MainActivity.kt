@@ -17,6 +17,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.github.mikephil.charting.utils.Utils
 import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
@@ -38,8 +39,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // This must be called before the onCreate. If not, onStart will run twice!
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+
+        // For MPAndroidChart to draw correctly the first time round
+        // Courtesy of https://stackoverflow.com/a/57349873/7254995
+        Utils.init(applicationContext)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -79,9 +86,8 @@ class MainActivity : AppCompatActivity() {
                     navController.currentDestination!!.id -> {
                         true
                     }  // Prevents reloading of the current destination
-                    else -> it.onNavDestinationSelected(navController) || super.onOptionsItemSelected(
-                        it
-                    )
+                    else -> it.onNavDestinationSelected(navController)
+                            || super.onOptionsItemSelected(it)
                 }
             }
         }
