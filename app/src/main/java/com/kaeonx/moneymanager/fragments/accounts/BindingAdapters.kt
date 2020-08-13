@@ -14,13 +14,13 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("horizontalBarIV_tint")
 fun ImageView.setHorizontalBarIVTint(colourString: String) {
-    drawable.setTintList(ColourHandler.getColorStateList(colourString))
+    drawable.setTintList(ColourHandler.getColorStateListOf(colourString))
 }
 
 @BindingAdapter("accountNameTV_textColor")
 fun TextView.setAccountNameTVTextColor(name: String) {
     setTextColor(
-        if (name == "Add…") ColourHandler.getColorStateList("Black") else ColourHandler.getColorStateList(
+        if (name == "Add…") ColourHandler.getColorStateListOf("Black") else ColourHandler.getColorStateListOf(
             "White"
         )
     )

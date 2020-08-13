@@ -22,7 +22,12 @@ class ColourFamilyPickerArrayAdapter(var colourFamilies: List<String>, var colou
 
         val colourFamily = getItem(position)!! // ?: "Black"
         binding.colourTV.text = colourFamily
-        binding.colourDisplayIV.drawable.setTintList(ColourHandler.getColorStateList(colourFamily, colourIntensity ?: "500"))
+        binding.colourDisplayIV.drawable.setTintList(
+            ColourHandler.getColorStateListOf(
+                colourFamily,
+                colourIntensity ?: "500"
+            )
+        )
 
         return binding.root
     }
@@ -47,7 +52,12 @@ class ColourIntensityPickerArrayAdapter(var colourFamily: String, var colourInte
 
         val colourIntensity = getItem(position)!! // ?: "WAIT WHAT TO PUT HERE" // TODO
         binding.colourTV.text = colourIntensity
-        binding.colourDisplayIV.drawable.setTintList(ColourHandler.getColorStateList(colourFamily, colourIntensity))
+        binding.colourDisplayIV.drawable.setTintList(
+            ColourHandler.getColorStateListOf(
+                colourFamily,
+                colourIntensity
+            )
+        )
 
         return binding.root
     }

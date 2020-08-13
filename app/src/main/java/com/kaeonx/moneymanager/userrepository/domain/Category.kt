@@ -77,7 +77,7 @@ data class Category(
         )
         try {
             if (colourString == "TRANSPARENT") throw Exception()
-            ColourHandler.getColourObject(colourString)
+            ColourHandler.getColourObjectOf(colourString)
         } catch (e: Exception) {
             throw IllegalStateException(
                 errorText(

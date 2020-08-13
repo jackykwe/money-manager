@@ -139,7 +139,7 @@ class DetailCategoryViewModel(
             val rangeString = generateRangeString(numberOfMonths)
 
             val homeCurrency = UserPDS.getString("ccc_home_currency")
-            val colourInt = ColourHandler.getColourObject(
+            val colourInt = ColourHandler.getColourObjectOf(
                 userRepository.categories.value!!
                     .find { it.name == category && it.type == type }
                     ?.colourString ?: "Black"

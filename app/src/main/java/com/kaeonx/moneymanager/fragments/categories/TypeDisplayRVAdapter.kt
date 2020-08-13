@@ -48,12 +48,12 @@ class TypeDisplayRVAdapter(
             binding.categoryIconInclude.iconTV.apply {
                 when (category.name) {
                     "Add…" -> binding.categoryIconInclude.iconTV.setTextColor(
-                        ColourHandler.getColorStateList(
+                        ColourHandler.getColorStateListOf(
                             "Black"
                         )
                     )
                     else -> binding.categoryIconInclude.iconTV.setTextColor(
-                        ColourHandler.getColorStateList(
+                        ColourHandler.getColorStateListOf(
                             "White"
                         )
                     )

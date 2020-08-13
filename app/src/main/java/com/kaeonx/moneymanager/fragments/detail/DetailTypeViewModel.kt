@@ -160,7 +160,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                     val categoryObject = repositoryCategories
                         .find { it.name == entry.key && it.type == _type.value }
                         ?: Category(null, _type.value, entry.key, "F02D6", "Black")
-                    val colourInt = ColourHandler.getColourObject(categoryObject.colourString)
+                    val colourInt = ColourHandler.getColourObjectOf(categoryObject.colourString)
 
                     val percent = entry.value.times(BigDecimal("100"))
                         .divide(rangeAmount, 3, RoundingMode.HALF_UP)
@@ -187,7 +187,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         val accumulatorPercentDisplay =
                             accumulatorPercent.setScale(1, RoundingMode.HALF_EVEN)
 
-                        val accumulatorColourInt = ColourHandler.getColourObject("Black")
+                        val accumulatorColourInt = ColourHandler.getColourObjectOf("Black")
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
@@ -244,7 +244,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                 }
             } else {
                 PieDataSet(listOf(PieEntry(1f, "noData")), null).apply {
-                    colors = listOf(ColourHandler.getColourObject("Grey,200"))
+                    colors = listOf(ColourHandler.getColourObjectOf("Grey,200"))
                     setDrawValues(false)
                     selectionShift = 0f  // removes padding
                     sliceSpace = 2f  // in dp (as float)
@@ -255,7 +255,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                 legendLLDataAL.add(
                     PieChartLegendLLData.DetailCategoryPCLLD(
                         noDataFlag = true,
-                        colour = ColourHandler.getColourObject("Grey,200"),
+                        colour = ColourHandler.getColourObjectOf("Grey,200"),
                         categoryName = "Nothing to show",
                         categoryPercent = ""
                     )
@@ -279,7 +279,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         _displayCalendarStart.value,
                         _displayCalendarEnd.value
                     ),
-                    colourInt = ColourHandler.getColourObject("Black"),
+                    colourInt = ColourHandler.getColourObjectOf("Black"),
                     rangeAmount = rangeAmount,
                     showCurrency = showRangeCurrency,
                     homeCurrency = homeCurrency

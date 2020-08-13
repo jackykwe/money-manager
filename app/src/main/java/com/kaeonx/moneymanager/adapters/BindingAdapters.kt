@@ -26,7 +26,7 @@ fun TextView.setIconTVText(iconHex: String) {
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("colour_string_tint")
 fun ImageView.setColourStringTint(colourString: String) {
-    imageTintList = ColourHandler.getColorStateList(colourString)
+    imageTintList = ColourHandler.getColorStateListOf(colourString)
 }
 
 @BindingAdapter("color_tint")
