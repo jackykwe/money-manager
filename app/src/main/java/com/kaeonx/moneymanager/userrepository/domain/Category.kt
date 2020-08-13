@@ -1,16 +1,22 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import android.os.Parcelable
+import com.kaeonx.moneymanager.handlers.ColourHandler
+import com.kaeonx.moneymanager.handlers.IconHandler
+import com.kaeonx.moneymanager.handlers.IconHandler.Companion.MAX_SUPPORTED_HEX
 import com.kaeonx.moneymanager.userrepository.database.DatabaseCategory
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Category(
-    val categoryId: Int?,
-    val type: String,
-    var name: String,
-    var iconHex: String,
-    var colourString: String
+    @Json(name = "i") val categoryId: Int?,
+    @Json(name = "y") val type: String,
+    @Json(name = "n") var name: String,
+    @Json(name = "h") var iconHex: String,
+    @Json(name = "c") var colourString: String
 ) : Parcelable {
 
     fun toIconDetail(): IconDetail = IconDetail(
@@ -25,5 +31,71 @@ data class Category(
         name = this.name,
         iconHex = this.iconHex,
         colourString = this.colourString
+    )
+
+    fun importEnsureValid() {
+        fun errorText(text: String, field: Any? = null, additionalHint: String? = null): String {
+            return when {
+                additionalHint == null && field == null -> "error at Category id: \"$categoryId\"\n$text"
+                additionalHint == null -> "error at Category id: \"$categoryId\"\n$text: \"$field\""
+                field == null -> "error at Category id: \"$categoryId\"\n$text\n$additionalHint"
+                else -> "error at Category id: \"$categoryId\"\n$text: \"$field\"\n$additionalHint"
+            }
+        }
+        if (categoryId == null) throw IllegalStateException("found Category with missing id")
+        if (categoryId <= 0) throw IllegalStateException(errorText("non-positive id", categoryId))
+        if (type !in listOf(
+                "Income",
+                "Expenses"
+            )
+        ) throw IllegalStateException(
+            errorText(
+                "invalid type",
+                type,
+                "Type should be either \"Income\" or \"Expenses\"."
+            )
+        )
+        if (name in listOf(
+                "Overall",
+                "Add…",
+                "(multiple)"
+            )
+        ) throw IllegalStateException(errorText("reserved name", name))
+        if (name.trim().isBlank()) throw IllegalStateException(errorText("blank name"))
+        if (name.trim() != name) throw IllegalStateException(
+            errorText(
+                "name has extra whitespace",
+                name
+            )
+        )
+        if (!IconHandler.iconHexIsValid(iconHex)) throw IllegalStateException(
+            errorText(
+                "invalid Icon ID",
+                iconHex,
+                "Valid hex values from F0001 to $MAX_SUPPORTED_HEX"
+            )
+        )
+        try {
+            if (colourString == "TRANSPARENT") throw Exception()
+            ColourHandler.getColourObject(colourString)
+        } catch (e: Exception) {
+            throw IllegalStateException(
+                errorText(
+                    "invalid colour string",
+                    colourString,
+                    "Refer to examples from exported data."
+                )
+            )
+        }
+    }
+}
+
+internal fun List<Category>.toDatabase(): List<DatabaseCategory> = map {
+    DatabaseCategory(
+        categoryId = it.categoryId!!,
+        type = it.type,
+        name = it.name,
+        iconHex = it.iconHex,
+        colourString = it.colourString
     )
 }

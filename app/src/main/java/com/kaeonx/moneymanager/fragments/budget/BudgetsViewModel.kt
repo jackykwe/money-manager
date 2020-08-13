@@ -82,7 +82,15 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                 _displayCalendar.value.clone() as Calendar
             )
 
-            val budgetLLData = _budgets.value!!.map { budget ->
+            val budgetsValue = ArrayList(_budgets.value!!)
+            // Courtesy of https://stackoverflow.com/a/47654383/7254995
+            // Brings "Overall" Budget to the top
+            budgetsValue.find { it.category == "Overall" }?.let {
+                (1..budgetsValue.indexOf(it)).forEach { index ->
+                    Collections.swap(budgetsValue, 0, index)
+                }
+            }
+            val budgetLLData = budgetsValue.map { budget ->
                 val spentAmountIBC: BigDecimal  // In Budget's Currency
                 userRepository.getTransactionsBetweenSuspend(
                     type = "Expenses",

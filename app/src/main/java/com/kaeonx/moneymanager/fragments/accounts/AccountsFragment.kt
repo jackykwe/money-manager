@@ -17,7 +17,7 @@ class AccountsFragment : Fragment() {
     internal val accountOnClickListener by lazy {
         AccountOnClickListener { account ->
             val cond1 = UserRepository.getInstance().accounts.value!!.size > 1
-            val cond2 = account.name != "Add..."
+            val cond2 = account.name != "Add…"
             findNavController().run {
                 if (currentDestination?.id == R.id.accountsFragment) {
                     navigate(

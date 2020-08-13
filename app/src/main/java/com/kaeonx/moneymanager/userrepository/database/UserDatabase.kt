@@ -22,6 +22,7 @@ private const val TAG = "dtb"
     version = 2
 )
 abstract class UserDatabase : RoomDatabase() {
+
     abstract val userDatabaseDao: UserDatabaseDao
 
     companion object {

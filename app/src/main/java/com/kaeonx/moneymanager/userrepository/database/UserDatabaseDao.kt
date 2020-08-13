@@ -11,16 +11,11 @@ interface UserDatabaseDao {
      * Transactions
      */
     ////////////////////////////////////////////////////////////////////////////////
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertTransaction(databaseTransaction: DatabaseTransaction)
 
     @Delete
     suspend fun deleteTransaction(databaseTransaction: DatabaseTransaction)
-
-    // TODO: WARN USER IF THEY WILL PERFORM THIS ACTION
-    @Query("DELETE FROM transactions_table")
-    suspend fun clearAllData()
 
     @Query("UPDATE transactions_table SET category = :newCategoryName WHERE category = :oldCategoryName AND type = :type")
     suspend fun updateTransactionsRenameCategory(
@@ -78,7 +73,6 @@ interface UserDatabaseDao {
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAccount(databaseAccount: DatabaseAccount)
 
@@ -100,7 +94,6 @@ interface UserDatabaseDao {
      * Categories
      */
     ////////////////////////////////////////////////////////////////////////////////
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCategory(databaseCategory: DatabaseCategory)
 
@@ -150,4 +143,59 @@ interface UserDatabaseDao {
 
     @Query("SELECT * FROM preferences_table")
     suspend fun exportPreferencesSuspend(): List<DatabasePreference>
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Backup
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    @Query("DELETE FROM transactions_table")
+    suspend fun deleteAllTransactions()
+
+    @Query("DELETE FROM categories_table")
+    suspend fun deleteAllCategories()
+
+    @Query("DELETE FROM accounts_table")
+    suspend fun deleteAllAccounts()
+
+    @Query("DELETE FROM budgets_table")
+    suspend fun deleteAllBudgets()
+
+    @Query("DELETE FROM preferences_table")
+    suspend fun deleteAllPreferences()
+
+    @Insert
+    suspend fun insertTransaction(databaseTransaction: DatabaseTransaction)
+
+    @Insert
+    suspend fun insertCategory(databaseCategory: DatabaseCategory)
+
+    @Insert
+    suspend fun insertAccount(databaseAccount: DatabaseAccount)
+
+    @Insert
+    suspend fun insertBudget(databaseBudget: DatabaseBudget)
+
+    @Insert
+    suspend fun insertPreference(databasePreference: DatabasePreference)
+
+    @Transaction
+    suspend fun overwriteDatabase(
+        transactionsList: List<DatabaseTransaction>,
+        categoriesList: List<DatabaseCategory>,
+        accountsList: List<DatabaseAccount>,
+        budgetsList: List<DatabaseBudget>,
+        preferencesList: List<DatabasePreference>
+    ) {
+        deleteAllTransactions()
+        transactionsList.forEach { insertTransaction(it) }
+        deleteAllCategories()
+        categoriesList.forEach { insertCategory(it) }
+        deleteAllAccounts()
+        accountsList.forEach { insertAccount(it) }
+        deleteAllBudgets()
+        budgetsList.forEach { insertBudget(it) }
+        deleteAllPreferences()
+        preferencesList.forEach { insertPreference(it) }
+    }
 }

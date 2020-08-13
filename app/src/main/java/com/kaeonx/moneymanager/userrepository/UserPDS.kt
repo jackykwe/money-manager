@@ -18,6 +18,8 @@ object UserPDS : PreferenceDataStore() {
     private val userRepository = UserRepository.getInstance()
     private val preferences = userRepository.preferences
 
+    internal fun getAllValidKeys() = defaultPreferences.keys
+
     private val defaultPreferences = mapOf(
         // Account
         "acc_account_name" to "NAMEHM",
@@ -40,7 +42,7 @@ object UserPDS : PreferenceDataStore() {
         "dsp_sign_position" to "after_currency",
 
         // Page Transactions
-        "tst_default_account" to "Cash",  // TODO handle when this account is deleted.
+        "tst_default_account" to "Cash",  // TODO handle when this account is deleted. (& handle budgets when category is deleted)
         "tst_default_type" to "Expenses"
 
         // Page Budget

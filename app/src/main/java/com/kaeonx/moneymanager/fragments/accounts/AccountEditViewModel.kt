@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
 
     init {
-        if (oldAccount.name == "Add...") {
+        if (oldAccount.name == "Add…") {
             oldAccount.apply {
                 name = ""
                 colourString = "Red,500"
@@ -140,7 +140,7 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         val trimmed = it.trim()
         when {
             trimmed.isBlank() -> "Account Name must not be empty"
-            trimmed == "Add..." -> "This Account Name is reserved"
+            trimmed == "Add…" -> "This Account Name is reserved"
             otherAccountNames.contains(trimmed) -> "This Account Name already exists"
             else -> {
                 _currentAccount.value = _currentAccount.value.copy(name = trimmed)

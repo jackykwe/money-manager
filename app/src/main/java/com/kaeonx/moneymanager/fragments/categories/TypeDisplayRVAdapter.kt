@@ -25,7 +25,7 @@ class TypeDisplayRVAdapter(
         } else {
             CoroutineScope(Dispatchers.Default).launch {
                 val submittable =
-                    list + listOf(Category(null, type, "Add...", "F065D", "TRANSPARENT"))
+                    list + listOf(Category(null, type, "Add…", "F065D", "TRANSPARENT"))
                 withContext(Dispatchers.Main) {
                     delay(150L)
                     submitList(submittable)
@@ -49,8 +49,16 @@ class TypeDisplayRVAdapter(
             binding.onClickListener = itemOnClickListener
             binding.categoryIconInclude.iconTV.apply {
                 when (category.name) {
-                    "Add..." -> binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("Black"))
-                    else -> binding.categoryIconInclude.iconTV.setTextColor(ColourHandler.getColorStateList("White"))
+                    "Add…" -> binding.categoryIconInclude.iconTV.setTextColor(
+                        ColourHandler.getColorStateList(
+                            "Black"
+                        )
+                    )
+                    else -> binding.categoryIconInclude.iconTV.setTextColor(
+                        ColourHandler.getColorStateList(
+                            "White"
+                        )
+                    )
                 }
             }
             binding.executePendingBindings()

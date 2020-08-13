@@ -127,12 +127,6 @@ class UserRepository private constructor() {
         }
     }
 
-    internal suspend fun clearAllData() {
-        withContext(Dispatchers.IO) {
-            database.userDatabaseDao.clearAllData()
-        }
-    }
-
     internal suspend fun updateTransactionsRenameCategory(
         type: String,
         oldCategoryName: String,
@@ -257,6 +251,22 @@ class UserRepository private constructor() {
         withContext(Dispatchers.IO) {
             database.userDatabaseDao.exportPreferencesSuspend().toDomain()
         }
+
+    internal suspend fun overwriteDatabase(
+        transactionsList: List<Transaction>,
+        categoriesList: List<Category>,
+        accountsList: List<Account>,
+        budgetsList: List<Budget>,
+        preferencesList: List<Preference>
+    ) = withContext(Dispatchers.IO) {
+        database.userDatabaseDao.overwriteDatabase(
+            transactionsList.toDatabase(),
+            categoriesList.toDatabase(),
+            accountsList.toDatabase(),
+            budgetsList.toDatabase(),
+            preferencesList.toDatabase()
+        )
+    }
 
     companion object {
 

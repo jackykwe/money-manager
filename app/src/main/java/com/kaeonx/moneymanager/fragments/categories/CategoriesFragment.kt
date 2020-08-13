@@ -33,7 +33,7 @@ class CategoriesFragment : Fragment() {
                         "Expenses" -> UserRepository.getInstance().categories.value!!.count { it.type == "Expenses" } > 1
                         else -> throw IllegalArgumentException("Unknown type $type")
                     }
-                    val cond2 = category.name != "Add..."
+                    val cond2 = category.name != "Add…"
                     findNavController().run {
                         if (currentDestination?.id == R.id.categoriesFragment) {
                             navigate(

@@ -20,7 +20,7 @@ class AccountsDisplayRVAdapter(
     fun submitListAndAddTailIfNecessary(list: List<Account>) {
         if (!editable) submitList(list) else {
             CoroutineScope(Dispatchers.Default).launch {
-                val submittable = list + listOf(Account(null, "Add...", "TRANSPARENT"))
+                val submittable = list + listOf(Account(null, "Add…", "TRANSPARENT"))
                 withContext(Dispatchers.Main) {
                     submitList(submittable)
                 }

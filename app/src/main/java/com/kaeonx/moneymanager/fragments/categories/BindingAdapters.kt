@@ -22,7 +22,7 @@ import java.math.BigDecimal
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("categoryNameTV_text")
 fun TextView.setCategoryNameTVText(name: String) {
-    text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
+    text = if (name == "Add…") buildSpannedString { italic { append(name) } } else name
 }
 
 ////////////////////////////////////////////////////////////////////////////////

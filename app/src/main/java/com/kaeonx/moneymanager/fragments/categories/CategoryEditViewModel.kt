@@ -13,7 +13,7 @@ private const val TAG = "cevm"
 class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
 
     init {
-        if (oldCategory.name == "Add...") {
+        if (oldCategory.name == "Add…") {
             oldCategory.apply {
                 name = ""
                 iconHex = "F02D6"
@@ -128,7 +128,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         val trimmed = it.trim()
         when {
             trimmed.isBlank() -> "Category Name must not be empty"
-            trimmed in listOf("Add...", "(multiple)", "Overall") -> "This Category Name is reserved"
+            trimmed in listOf("Add…", "(multiple)", "Overall") -> "This Category Name is reserved"
             otherCategoryNames.contains(trimmed) -> "This Category Name already exists"
             else -> {
                 _currentCategory.value = _currentCategory.value.copy(name = trimmed)
@@ -143,7 +143,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         val errorText = when {
             trimmed.isBlank() || !trimmed.startsWith("F") -> { "Icon ID must start with \"F\"" }
             trimmed == "F02D6" -> "This Icon ID is reserved"
-            !IconHandler.iconHexIsValid(it) && it != "F02D6" -> "This Icon ID is invalid"
+            !IconHandler.iconHexIsValid(trimmed) -> "This Icon ID is invalid"
             else -> null
         }
         _currentCategory.value = _currentCategory.value.copy(

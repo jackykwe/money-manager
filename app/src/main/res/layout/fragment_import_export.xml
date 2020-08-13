@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="16dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <Button
         android:id="@+id/importBT"
@@ -82,18 +82,17 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iconFL"
-        tools:text="Exporting Schema..." />
+        tools:text="Exporting Schema" />
 
     <TextView
         android:id="@+id/warningTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="12dp"
         android:alpha="0"
         android:ellipsize="end"
-        android:maxLines="1"
-        tools:text="lkasjfdlkjsadfjlsa jdlf jsafdlkas jlkfd jalksd jflas jfdlkasf as fdlka jslkfd jlksa jfdlk aslkd jflksa jdf"
+        android:gravity="center_horizontal"
+        android:lines="3"
         android:text="@string/import_export_loading_text"
         android:textAppearance="@style/TextAppearance.MyApp.Caption2"
         app:layout_constraintBottom_toTopOf="@+id/importBT"
@@ -101,6 +100,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressTV"
-        tools:alpha="1" />
+        tools:alpha="1"
+        tools:text="Please wait" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

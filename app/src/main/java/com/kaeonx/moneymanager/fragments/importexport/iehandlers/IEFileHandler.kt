@@ -1,8 +1,11 @@
-package com.kaeonx.moneymanager.importexport
+package com.kaeonx.moneymanager.fragments.importexport.iehandlers
 
 import android.content.ContentResolver
 import android.content.Intent
-import java.io.*
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 
 internal class IEFileHandler private constructor() {
 
@@ -24,15 +27,15 @@ internal class IEFileHandler private constructor() {
         internal fun constructReadFileIntent(): Intent =
             Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/json"
+                type = "*/*"
             }
 
         internal fun readJSONString(contentResolver: ContentResolver, data: Intent?): String {
             // Template from https://developer.android.com/training/data-storage/shared/documents-files#open
             // Choice of and usage of BufferedReader and InputStreamReader derived from
             // official Android documentation.
-            if (data == null) throw IOException("data (Intent) is null")
-            if (data.data == null) throw IOException("data.data (Intent.data) is null")
+            if (data == null) throw IllegalStateException("data (Intent) is null")
+            if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
             val stringBuilder = StringBuilder()
             contentResolver.openInputStream(data.data!!).use { inputStream ->
                 BufferedReader(InputStreamReader(inputStream)).use { reader ->
@@ -54,12 +57,24 @@ internal class IEFileHandler private constructor() {
             // Template from https://developer.android.com/training/data-storage/shared/documents-files#edit
             // Choice of and usage of BufferedWriter and OutputStreamWriter derived from
             // official Android documentation.
-            if (data == null) throw IOException("data (Intent) is null")
-            if (data.data == null) throw IOException("data.data (Intent.data) is null")
+            if (data == null) throw IllegalStateException("data (Intent) is null")
+            if (data.data == null) IllegalStateException("data.data (Intent.data) is null")
             contentResolver.openOutputStream(data.data!!)?.use { outputStream ->
                 BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
                     writer.write(contentToWrite)
                 }
+            }
+        }
+
+        internal fun parseJsonDataException(message: String?): String? {
+            return message?.let { message ->
+                val element = message.substringAfter("JSON name ").takeIf { it != message }
+                    ?.substringBefore(")").takeIf { it != message }
+                    ?.replace("'", "\"")
+                val index = message.substringAfter("$[").takeIf { it != message }
+                    ?.substringBefore("]").takeIf { it != message }
+                if (element == null || index == null) "unknown reason\nPlease report this bug."
+                else "attribute $element missing at index $index"
             }
         }
     }

@@ -11,10 +11,7 @@ import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 private const val TAG = "xeRepository"
 
@@ -78,7 +75,7 @@ class XERepository private constructor() {
                         UserPDS.getString("ccv_online_update_ttl").toLong()
                         )
             ) {
-                Log.d(TAG, " checkAndUpdateIfNecessary(): updating...")
+                Log.d(TAG, " checkAndUpdateIfNecessary(): updating")
                 withContext(Dispatchers.IO) {
                     refreshRatesTable(baseCurrency)
                 }
@@ -118,6 +115,7 @@ class XERepository private constructor() {
                 val networkXEContainer =
                     XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
                 Log.d("ntwksvc", "WARNING: NETWORK CALL DONE")
+                ensureActive()
                 Log.d("ntwksvc", "WARNING: UPSERT CALL HAPPENING RIGHT NOW")
                 database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase(System.currentTimeMillis()))
                 Log.d("ntwksvc", "WARNING: UPSERT DONE")

@@ -6,7 +6,8 @@ class IconHandler private constructor() {
     companion object {
 
         // Number of reported icons on cheat-sheet minus one (5.4.55)
-        private const val MAX_SUPPORTED_HEX = 5455
+        private const val MAX_SUPPORTED_HEX_IN_DECIMAL = 5455
+        internal const val MAX_SUPPORTED_HEX = "F154F"
 
         fun getDisplayHex(iconHex: String): String {
             // iconHex looks like Fxxxx
@@ -14,13 +15,13 @@ class IconHandler private constructor() {
             return Html.fromHtml("&#x$internalId;", Html.FROM_HTML_MODE_LEGACY).toString()
         }
 
-        fun iconHexToInt(iconHex: String): Int {
+        private fun iconHexToInt(iconHex: String): Int {
             // id looks like Fxxxx
             return iconHex.substring(1 until 5).toInt(16)
         }
 
         fun iconHexIsValid(iconHex: String): Boolean {
-            return iconHex.contains(Regex("^F[A-F0-9]{4}$")) && iconHexToInt(iconHex) in 1..MAX_SUPPORTED_HEX
+            return iconHex.contains(Regex("^F[A-F0-9]{4}$")) && iconHexToInt(iconHex) in 1..MAX_SUPPORTED_HEX_IN_DECIMAL
         }
     }
 }

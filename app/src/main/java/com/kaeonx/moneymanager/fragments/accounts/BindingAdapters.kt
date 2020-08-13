@@ -20,7 +20,7 @@ fun ImageView.setHorizontalBarIVTint(colourString: String) {
 @BindingAdapter("accountNameTV_textColor")
 fun TextView.setAccountNameTVTextColor(name: String) {
     setTextColor(
-        if (name == "Add...") ColourHandler.getColorStateList("Black") else ColourHandler.getColorStateList(
+        if (name == "Add…") ColourHandler.getColorStateList("Black") else ColourHandler.getColorStateList(
             "White"
         )
     )
@@ -28,5 +28,5 @@ fun TextView.setAccountNameTVTextColor(name: String) {
 
 @BindingAdapter("accountNameTV_text")
 fun TextView.setAccountNameTVText(name: String) {
-    text = if (name == "Add...") buildSpannedString { italic { append(name) } } else name
+    text = if (name == "Add…") buildSpannedString { italic { append(name) } } else name
 }
