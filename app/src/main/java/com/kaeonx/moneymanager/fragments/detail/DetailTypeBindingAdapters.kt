@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
 import androidx.databinding.BindingAdapter
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemDetailTypeBinding
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,11 +33,15 @@ fun LinearLayout.setCategoriesLLAdapter(
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
-    for (typeCategoryLLData in list) {
-        val itemBinding = RvLlItemDetailTypeBinding.inflate(layoutInflater, null, false)
-        itemBinding.typeCategoryLLData = typeCategoryLLData
-        itemBinding.onClickListener = itemOnClickListener
-        itemBinding.executePendingBindings()
-        addView(itemBinding.root)
+    if (list.isEmpty()) {
+        addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
+    } else {
+        for (typeCategoryLLData in list) {
+            val itemBinding = RvLlItemDetailTypeBinding.inflate(layoutInflater, null, false)
+            itemBinding.typeCategoryLLData = typeCategoryLLData
+            itemBinding.onClickListener = itemOnClickListener
+            itemBinding.executePendingBindings()
+            addView(itemBinding.root)
+        }
     }
 }

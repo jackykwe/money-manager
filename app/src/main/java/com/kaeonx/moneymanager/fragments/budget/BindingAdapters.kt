@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.BarData
 import com.kaeonx.moneymanager.chartcomponents.HorizontalRoundedStackedBarChartRenderer
 import com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData
 import com.kaeonx.moneymanager.databinding.LlItemBudgetBinding
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -26,7 +27,7 @@ fun LinearLayout.setBudgetsLLAdapter(
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
     if (list.isEmpty()) {
-        addView(LlItemBudgetBinding.inflate(layoutInflater, null, false).root)
+        addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
     } else {
         for (budgetLLData in list) {
             val itemBinding = LlItemBudgetBinding.inflate(layoutInflater, null, false)

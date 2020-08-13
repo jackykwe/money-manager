@@ -23,11 +23,10 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-private const val TAG = "dcvm"
-
 class DetailCategoryViewModel(
     yearModeEnabled: Boolean,
     initIsYearMode: Boolean,
+    initArchiveCalendarStart: Calendar,
     private val type: String,
     private val category: String,
     initCalendar: Calendar
@@ -64,7 +63,7 @@ class DetailCategoryViewModel(
     }
 
     private var isYearMode = initIsYearMode
-    private lateinit var archiveCalendarStart: Calendar
+    private var archiveCalendarStart = initArchiveCalendarStart
     internal fun toggleView() {  // If this function runs, means yearModeEnabled is true.
         if (!isYearMode) {
             archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar

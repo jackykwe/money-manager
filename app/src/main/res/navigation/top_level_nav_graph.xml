@@ -305,14 +305,14 @@
             android:name="initIsYearMode"
             app:argType="boolean" />
         <argument
+            android:name="initCalendar"
+            app:argType="java.util.Calendar" />
+        <argument
             android:name="type"
             app:argType="string" />
         <argument
             android:name="category"
             app:argType="string" />
-        <argument
-            android:name="initCalendar"
-            app:argType="java.util.Calendar" />
         <action
             android:id="@+id/action_detailCategoryFragment_to_transactionEditFragment"
             app:destination="@id/transactionEditFragment"
@@ -321,6 +321,9 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
+        <argument
+            android:name="initArchiveCalendarStart"
+            app:argType="java.util.Calendar" />
     </fragment>
     <fragment
         android:id="@+id/importExportFragment"

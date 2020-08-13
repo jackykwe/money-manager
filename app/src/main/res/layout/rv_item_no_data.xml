@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/RVItemDetailXBodyCard"
+    app:contentPaddingTop="0dp">
+
+    <include layout="@layout/ll_item_detail_type_no_data" />
+
+</com.google.android.material.card.MaterialCardView>

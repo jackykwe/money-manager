@@ -8,8 +8,6 @@ import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.databinding.DropdownItemColourSpinnerBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 
-private const val TAG = "CPAA"
-
 // Inspiration from https://www.youtube.com/watch?v=GeO5F0nnzAw and https://www.youtube.com/watch?v=ocM1Yw_ktqM
 
 class ColourFamilyPickerArrayAdapter(var colourFamilies: List<String>, var colourIntensity: String?)

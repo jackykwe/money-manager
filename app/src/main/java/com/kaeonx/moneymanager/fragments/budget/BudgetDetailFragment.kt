@@ -46,6 +46,7 @@ class BudgetDetailFragment : Fragment() {
                                 BudgetDetailFragmentDirections.actionBudgetDetailFragmentToDetailCategoryFragment(
                                     yearModeEnabled = false,
                                     initIsYearMode = false,
+                                    initArchiveCalendarStart = viewModel.displayCalendar.value!!.clone() as Calendar,  // will not be used, but just passing it in.
                                     type = "Expenses",
                                     category = args.category,
                                     initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar

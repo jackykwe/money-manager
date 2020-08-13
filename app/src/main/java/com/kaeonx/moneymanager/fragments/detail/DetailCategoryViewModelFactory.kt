@@ -8,6 +8,7 @@ import java.util.*
 class DetailCategoryViewModelFactory(
     private val yearModeEnabled: Boolean,
     private val isYearMode: Boolean,
+    private val initArchiveCalendarStart: Calendar,
     private val type: String,
     private val category: String,
     private val initCalendar: Calendar
@@ -17,6 +18,7 @@ class DetailCategoryViewModelFactory(
             return DetailCategoryViewModel(
                 yearModeEnabled,
                 isYearMode,
+                initArchiveCalendarStart,
                 type,
                 category,
                 initCalendar

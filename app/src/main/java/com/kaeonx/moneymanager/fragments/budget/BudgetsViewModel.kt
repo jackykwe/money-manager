@@ -24,8 +24,6 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "budgetvm"
-
 class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
 
     private val userRepository = UserRepository.getInstance()

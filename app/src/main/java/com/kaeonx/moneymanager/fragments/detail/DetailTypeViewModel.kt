@@ -25,8 +25,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-private const val TAG = "dtvm"
-
 private const val LEGEND_ITEM_MAX_COUNT = 6
 
 class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel() {
@@ -70,7 +68,9 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
 
     internal var isYearMode = false
         private set
-    private lateinit var archiveCalendarStart: Calendar
+    internal var archiveCalendarStart: Calendar = _displayCalendarStart.value.clone() as Calendar
+        private set
+
     internal fun toggleView() {
         if (!isYearMode) {
             archiveCalendarStart = _displayCalendarStart.value.clone() as Calendar

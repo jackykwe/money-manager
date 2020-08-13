@@ -11,8 +11,6 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.*
 
-private const val TAG = "tdrva"
-
 class TypeDisplayRVAdapter(
     private val type: String,
     private val editable: Boolean,

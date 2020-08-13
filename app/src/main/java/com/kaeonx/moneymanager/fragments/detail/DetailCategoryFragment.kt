@@ -23,6 +23,7 @@ class DetailCategoryFragment : Fragment() {
         DetailCategoryViewModelFactory(
             args.yearModeEnabled,
             args.initIsYearMode,
+            args.initArchiveCalendarStart,
             args.type,
             args.category,
             args.initCalendar

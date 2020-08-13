@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.fragments.detail
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
+import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemDetailCategoryBinding
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -17,11 +18,15 @@ fun LinearLayout.setTransactionsLLAdapter(
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
-    for (categoryTransactionLLData in list) {
-        val itemBinding = RvLlItemDetailCategoryBinding.inflate(layoutInflater, null, false)
-        itemBinding.categoryTransactionLLData = categoryTransactionLLData
-        itemBinding.onClickListener = itemOnClickListener
-        itemBinding.executePendingBindings()
-        addView(itemBinding.root)
+    if (list.isEmpty()) {
+        addView(LlItemDetailTypeNoDataBinding.inflate(layoutInflater, null, false).root)
+    } else {
+        for (categoryTransactionLLData in list) {
+            val itemBinding = RvLlItemDetailCategoryBinding.inflate(layoutInflater, null, false)
+            itemBinding.categoryTransactionLLData = categoryTransactionLLData
+            itemBinding.onClickListener = itemOnClickListener
+            itemBinding.executePendingBindings()
+            addView(itemBinding.root)
+        }
     }
 }

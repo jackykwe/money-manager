@@ -23,8 +23,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
-private const val TAG = "bdgfm"
-
 class BudgetsFragment : Fragment() {
 
     private lateinit var binding: FragmentBudgetsBinding

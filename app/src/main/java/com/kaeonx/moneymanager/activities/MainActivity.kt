@@ -26,8 +26,6 @@ import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
 
-private const val TAG = "matvt"
-
 class MainActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()

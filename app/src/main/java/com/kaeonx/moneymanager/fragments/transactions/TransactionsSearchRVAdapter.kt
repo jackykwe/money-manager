@@ -12,7 +12,6 @@ import kotlinx.coroutines.*
 
 private const val SUMMARY = 0
 private const val DAY_TRANSACTIONS = 1
-private const val TAG = "trva"
 
 class TransactionsSearchRVAdapter(private val itemOnClickListener: TransactionOnClickListener) :
     ListAdapter<TransactionsSummaryRVItem, RecyclerView.ViewHolder>(

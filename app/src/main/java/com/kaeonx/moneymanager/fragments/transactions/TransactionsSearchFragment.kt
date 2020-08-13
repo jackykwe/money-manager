@@ -16,8 +16,6 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsSearchBinding
 
-private const val TAG = "tsfrag"
-
 class TransactionsSearchFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsSearchBinding

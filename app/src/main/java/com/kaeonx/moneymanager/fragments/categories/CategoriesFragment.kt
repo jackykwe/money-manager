@@ -11,8 +11,6 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
-private const val TAG = "catFrag"
-
 // Essentially the same code as CategoriesDF, except for the adapter.
 class CategoriesFragment : Fragment() {
 

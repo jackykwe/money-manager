@@ -8,8 +8,6 @@ import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.launch
 
-private const val TAG = "cevm"
-
 class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
 
     init {

@@ -17,8 +17,6 @@ import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import java.util.*
 
-private const val TAG = "transactionFrag"
-
 class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding

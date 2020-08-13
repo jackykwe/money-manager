@@ -14,8 +14,6 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionEditBinding
 
-private const val TAG = "transactionEditFrag"
-
 class TransactionEditFragment : Fragment() {
     // TODO: NOT OPTIMISED YET FOR SMOOTHNESS - INTRODUCE SOME DELAYS?
 

@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.categories
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import com.kaeonx.moneymanager.databinding.FragmentTypeDisplayBinding
-
-private const val TAG = "tdfrag"
 
 // tabLayoutControllerFragment: where the TabLayout is controlled
 // retaining instance of fragmentStateAdapter to access the clickListener. A cheap solution that might not be the best. // TODO(FUTURE)
@@ -41,7 +38,6 @@ class TypeDisplayFragment(private val fragmentStateAdapter: TypeDisplayFragmentS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.categories.observe(viewLifecycleOwner) { list ->
             if (list == null) return@observe
-            Log.d(TAG, "observer called")
             (binding.root.adapter as TypeDisplayRVAdapter).submitListAndAddTailIfNecessary(
                 list.filter { it.type == type }
             )

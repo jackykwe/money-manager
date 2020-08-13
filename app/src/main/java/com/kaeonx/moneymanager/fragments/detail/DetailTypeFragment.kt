@@ -14,6 +14,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentDetailTypeBinding
 import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
+import java.util.*
 
 class DetailTypeFragment : Fragment() {
 
@@ -44,6 +45,7 @@ class DetailTypeFragment : Fragment() {
                                 DetailTypeFragmentDirections.actionDetailTypeFragmentToDetailCategoryFragment(
                                     yearModeEnabled = true,
                                     initIsYearMode = viewModel.isYearMode,
+                                    initArchiveCalendarStart = viewModel.archiveCalendarStart.clone() as Calendar,
                                     type = type,
                                     category = category,
                                     initCalendar = viewModel.displayCalendarStart.value!!

@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
-import com.kaeonx.moneymanager.databinding.RvItemTransactionsDayBinding
-import com.kaeonx.moneymanager.databinding.RvItemTransactionsHeaderBinding
-import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryBinding
-import com.kaeonx.moneymanager.databinding.RvItemTransactionsSummaryWithoutBudgetBinding
+import com.kaeonx.moneymanager.databinding.*
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.*
@@ -20,7 +17,7 @@ private const val HEADER = 0
 private const val SUMMARY_BUDGET = 1
 private const val SUMMARY_NO_BUDGET = 2
 private const val DAY_TRANSACTIONS = 3
-private const val TAG = "trva"
+private const val DAY_TRANSACTIONS_NO_DATA = 4
 
 class TransactionsRVAdapter(
     private val itemOnClickListener: TransactionOnClickListener,
@@ -30,7 +27,7 @@ class TransactionsRVAdapter(
     private val summaryBudgetClickListener: GenericOnClickListener,
     private val summaryIncomeClickListener: GenericOnClickListener,
     private val summaryExpensesClickListener: GenericOnClickListener,
-    private val summaryPieChartClickListener: GenericOnClickListener // show help fragment?
+    private val summaryPieChartClickListener: GenericOnClickListener
 ) :
     ListAdapter<TransactionsRVItem, RecyclerView.ViewHolder>(TransactionsRVItemDiffCallback()) {
 
@@ -42,12 +39,11 @@ class TransactionsRVAdapter(
                 TransactionsRVItem.TransactionsRVItemHeader(newPacket.headerString),
                 TransactionsRVItem.TransactionsRVItemSummary(newPacket.summaryData)
             )
+            val noDataAppendable by lazy { listOf(TransactionsRVItem.TransactionsRVItemDayTransactionsNoData()) }
             val submittable = when {
-                newPacket.newList.isEmpty() -> addable
+                newPacket.newList.isEmpty() -> addable + noDataAppendable
                 else -> addable + newPacket.newList.map {
-                    TransactionsRVItem.TransactionsRVItemDayTransactions(
-                        it
-                    )
+                    TransactionsRVItem.TransactionsRVItemDayTransactions(it)
                 }
             }
             // For a smooth experience (for expanding AppBar on first launch / hamburger animation on navigateUp)
@@ -69,6 +65,7 @@ class TransactionsRVAdapter(
                 if (item.transactionsSummaryData.budget == null) SUMMARY_NO_BUDGET else SUMMARY_BUDGET
             }
             is TransactionsRVItem.TransactionsRVItemDayTransactions -> DAY_TRANSACTIONS
+            is TransactionsRVItem.TransactionsRVItemDayTransactionsNoData -> DAY_TRANSACTIONS_NO_DATA
         }
     }
 
@@ -84,6 +81,9 @@ class TransactionsRVAdapter(
                 SUMMARY_NO_BUDGET
             )
             DAY_TRANSACTIONS -> TransactionsDayViewHolder.inflateAndCreateViewHolderFrom(parent)
+            DAY_TRANSACTIONS_NO_DATA -> TransactionsDayNoDataViewHolder.inflateAndCreateViewHolderFrom(
+                parent
+            )
             else -> throw IllegalArgumentException("Illegal viewType: $viewType")
         }
     }
@@ -224,6 +224,18 @@ class TransactionsRVAdapter(
             }
         }
     }
+
+    class TransactionsDayNoDataViewHolder private constructor(binding: RvItemNoDataBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun inflateAndCreateViewHolderFrom(parent: ViewGroup): TransactionsDayNoDataViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = RvItemNoDataBinding.inflate(layoutInflater, parent, false)
+                return TransactionsDayNoDataViewHolder(binding)
+            }
+        }
+    }
 }
 
 class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>() {
@@ -247,6 +259,10 @@ class TransactionOnClickListener(val clickListener: (transaction: Transaction) -
 }
 
 sealed class TransactionsRVItem {
+    class TransactionsRVItemDayTransactionsNoData : TransactionsRVItem() {
+        override val rvItemId: Int = Int.MIN_VALUE + 2
+    }
+
     data class TransactionsRVItemDayTransactions(val dayTransactions: DayTransactions) :
         TransactionsRVItem() {
         override val rvItemId: Int = dayTransactions.ymdIdentifier

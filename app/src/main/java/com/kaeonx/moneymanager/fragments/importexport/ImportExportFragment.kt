@@ -380,7 +380,6 @@ class ImportExportFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Log.d(TAG, "received requestCode $requestCode, resultCode $resultCode")
         if (requestCode == OUTPUT_TO_FILE && resultCode == Activity.RESULT_OK) {
             exportData(data)
         } else if (requestCode == READ_FROM_FILE && resultCode == Activity.RESULT_OK) {

@@ -13,8 +13,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-private const val TAG = "BDVM"
-
 class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewModel() {
 
     // Not initialised unless necessary

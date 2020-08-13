@@ -22,8 +22,6 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentBudgetEditBinding
 import kotlinx.coroutines.launch
 
-private const val TAG = "befrag"
-
 class BudgetEditFragment : Fragment() {
 
     private lateinit var binding: FragmentBudgetEditBinding

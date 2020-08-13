@@ -1,19 +1,12 @@
 package com.kaeonx.moneymanager.userrepository
 
-import android.util.Log
 import androidx.preference.PreferenceDataStore
 import com.kaeonx.moneymanager.userrepository.domain.Preference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-private const val TAG = "pds"
-
 object UserPDS : PreferenceDataStore() {
-
-    init {
-        Log.d(TAG, "UserPDS instantiated")
-    }
 
     private val userRepository = UserRepository.getInstance()
     private val preferences = userRepository.preferences
