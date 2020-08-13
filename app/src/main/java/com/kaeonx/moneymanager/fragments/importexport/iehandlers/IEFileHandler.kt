@@ -20,8 +20,8 @@ internal class IEFileHandler private constructor() {
         internal fun constructWriteFileIntent(fileName: String): Intent =
             Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/json"
-                putExtra(Intent.EXTRA_TITLE, "$fileName.json")
+                type = "*/*"
+                putExtra(Intent.EXTRA_TITLE, fileName)
             }
 
         internal fun constructReadFileIntent(): Intent =

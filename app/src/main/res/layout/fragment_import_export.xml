@@ -56,18 +56,16 @@
             android:src="@drawable/mdi_check_circle_green"
             tools:alpha="1" />
 
-        <com.google.android.material.progressindicator.ProgressIndicator
+        <ProgressBar
             android:id="@+id/progressPI"
-            style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Determinate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:alpha="0"
+            android:indeterminate="false"
             android:progress="0"
-            app:circularRadius="36dp"
-            app:growMode="bidirectional"
-            app:indicatorColor="@color/colorAccent"
-            app:indicatorCornerRadius="3dp"
-            app:indicatorWidth="6dp" />
+            tools:alpha="1" />
 
     </FrameLayout>
 
@@ -76,13 +74,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:text="@string/import_export_no_active_tasks"
         android:textAppearance="@style/TextAppearance.MyApp.Body1"
         app:layout_constraintBottom_toTopOf="@+id/warningTV"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconFL"
-        tools:text="Exporting Schema" />
+        app:layout_constraintTop_toBottomOf="@+id/iconFL" />
 
     <TextView
         android:id="@+id/warningTV"

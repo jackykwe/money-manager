@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kaeonx.moneymanager.R
@@ -14,6 +15,7 @@ import com.kaeonx.moneymanager.databinding.FragmentImportExportBinding
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.OUTPUT_TO_FILE
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.READ_FROM_FILE
+import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import kotlinx.coroutines.Dispatchers
@@ -36,8 +38,6 @@ class ImportExportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentImportExportBinding.inflate(inflater, container, false)
-        binding.progressTV.text = "No active tasks"
-        binding.progressPI.hide()
         binding.importBT.setOnClickListener {
             startActivityForResult(
                 IEFileHandler.constructReadFileIntent(),
@@ -45,8 +45,10 @@ class ImportExportFragment : Fragment() {
             )
         }
         binding.exportBT.setOnClickListener {
+            val yMdHMs =
+                CalendarHandler.getFormattedString(System.currentTimeMillis(), "yyMMdd_HHmmss")
             startActivityForResult(
-                IEFileHandler.constructWriteFileIntent("output"),
+                IEFileHandler.constructWriteFileIntent("${yMdHMs}_backup.json"),
                 OUTPUT_TO_FILE
             )
         }
@@ -65,7 +67,10 @@ class ImportExportFragment : Fragment() {
             .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
             .setListener(null)
         binding.progressPI.progress = 0
-        binding.progressPI.show()
+        binding.progressPI.animate()
+            .alpha(1f)
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .setListener(null)
 
         // TVs
         binding.warningTV.text = getString(R.string.import_export_loading_text)
@@ -98,18 +103,15 @@ class ImportExportFragment : Fragment() {
         binding.exportBT.isEnabled = true
 
         // resultIV and progressPI
-        binding.progressPI.hide()
+        binding.progressPI.animate()
+            .alpha(0f)
+            .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+            .setListener(null)
         binding.resultIV.setImageDrawable(
             if (error) {
-                resources.getDrawable(
-                    R.drawable.mdi_alert_circle_amber,
-                    requireActivity().theme
-                )
+                ContextCompat.getDrawable(requireContext(), R.drawable.mdi_alert_circle_amber)
             } else {
-                resources.getDrawable(
-                    R.drawable.mdi_check_circle_green,
-                    requireActivity().theme
-                )
+                ContextCompat.getDrawable(requireContext(), R.drawable.mdi_check_circle_green)
             }
         )
         binding.resultIV.animate()
@@ -359,7 +361,7 @@ class ImportExportFragment : Fragment() {
                     IEFileHandler.writeJSONString(
                         contentResolver = requireContext().contentResolver,
                         data = data,
-                        contentToWrite = output.toString(4)
+                        contentToWrite = output.toString(2)  // balance between readability and space
                     )
                 }
 
