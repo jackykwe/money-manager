@@ -351,7 +351,7 @@ class ColourHandler private constructor() {
                 "Grey" -> getSpecificColourObjectOf("Grey,500")  // NEW
                 "Black" -> getSpecificColourObjectOf("Black")
                 "White" -> getSpecificColourObjectOf("White")
-                "TRANSPARENT" -> getSpecificColourObjectOf("TRANSPARENT")  // TODO SEE THIS BEING USED
+                "TRANSPARENT" -> getSpecificColourObjectOf("TRANSPARENT")
                 else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
             }
 

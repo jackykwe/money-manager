@@ -140,7 +140,7 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                         colourList = listOf(
                             ColourHandler.getSpecificColourObjectOf("Green,500"),
                             ColourHandler.getSpecificColourObjectOf("Grey,200"),
-                            ColourHandler.getSpecificColourObjectOf("White")
+                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
                         )
                     } else {
                         entries = listOf(
@@ -155,7 +155,7 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                         colourList = listOf(
                             ColourHandler.getSpecificColourObjectOf("Green,500"),
                             ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                            ColourHandler.getSpecificColourObjectOf("White")
+                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
                         )
                     }
                 } else {

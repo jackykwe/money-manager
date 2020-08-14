@@ -9,8 +9,9 @@
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
 
-    <color name="stroke_color">@color/colorPrimaryDark
-    </color>  <!-- for RV_item_transactions_day -->
+    <!-- for RV_item_transactions_day -->
+    <color name="stroke_color">@color/colorPrimaryDark</color>
+
     <!--
     Google Material Design Color Palette for Android http://www.google.com/design/spec/style/color.html#color-ui-color-palette
     Spreadsheet used to create this reosurce - http://bit.ly/mdcolor_spreadsheet

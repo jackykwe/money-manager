@@ -100,7 +100,7 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                     colourList = listOf(
                         ColourHandler.getSpecificColourObjectOf("Green,500"),
                         ColourHandler.getSpecificColourObjectOf("Grey,200"),
-                        ColourHandler.getSpecificColourObjectOf("White")
+                        ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
                     )
                     pieEntries = listOf(
                         PieEntry(float1, "ex"),
@@ -159,7 +159,7 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                     colourList = listOf(
                         ColourHandler.getSpecificColourObjectOf("Green,500"),
                         ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                        ColourHandler.getSpecificColourObjectOf("White")
+                        ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
                     )
                     pieEntries = listOf(
                         PieEntry(float1, "target ex"),
