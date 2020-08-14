@@ -10,8 +10,8 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 
 // Inspiration from https://www.youtube.com/watch?v=GeO5F0nnzAw and https://www.youtube.com/watch?v=ocM1Yw_ktqM
 
-class ColourFamilyPickerArrayAdapter(var colourFamilies: List<String>, var colourIntensity: String?)
-    : ArrayAdapter<String>(App.context, 0, colourFamilies) {
+class ColourFamilyPickerArrayAdapter :
+    ArrayAdapter<String>(App.context, 0, ColourHandler.getColourFamilies()) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding = if (convertView == null) {
@@ -20,52 +20,13 @@ class ColourFamilyPickerArrayAdapter(var colourFamilies: List<String>, var colou
             DropdownItemColourSpinnerBinding.bind(convertView)
         }
 
-        val colourFamily = getItem(position)!! // ?: "Black"
+        val colourFamily =
+            getItem(position) ?: throw IllegalStateException("getItem(position) returned null")
         binding.colourTV.text = colourFamily
         binding.colourDisplayIV.drawable.setTintList(
-            ColourHandler.getColorStateListOf(
-                colourFamily,
-                colourIntensity ?: "500"
-            )
+            ColourHandler.getColorStateListOf(colourFamily)
         )
 
         return binding.root
-    }
-
-    fun updateData(newColourFamilies: List<String>, newColourIntensity: String?) {
-        clear()
-        addAll(newColourFamilies)
-        colourIntensity = newColourIntensity
-        notifyDataSetChanged()
-    }
-}
-
-class ColourIntensityPickerArrayAdapter(var colourFamily: String, var colourIntensities: List<String>)
-    : ArrayAdapter<String>(App.context, 0, colourIntensities) {
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val binding = if (convertView == null) {
-            DropdownItemColourSpinnerBinding.inflate(LayoutInflater.from(context), parent, false)
-        } else {
-            DropdownItemColourSpinnerBinding.bind(convertView)
-        }
-
-        val colourIntensity = getItem(position)!! // ?: "WAIT WHAT TO PUT HERE" // TODO
-        binding.colourTV.text = colourIntensity
-        binding.colourDisplayIV.drawable.setTintList(
-            ColourHandler.getColorStateListOf(
-                colourFamily,
-                colourIntensity
-            )
-        )
-
-        return binding.root
-    }
-
-    fun updateData(newColourFamily: String, newColourIntensities: List<String>) {
-        clear()
-        addAll(newColourIntensities)
-        colourFamily = newColourFamily
-        notifyDataSetChanged()
     }
 }

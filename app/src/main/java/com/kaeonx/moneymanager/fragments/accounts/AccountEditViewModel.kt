@@ -14,7 +14,7 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         if (oldAccount.name == "Add…") {
             oldAccount.apply {
                 name = ""
-                colourString = "Red,500"
+                colourString = "Red"
             }
         }
     }
@@ -40,92 +40,16 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    var colourFamilies = MutableLiveData2(ColourHandler.getColourFamiliesFull())
-    var colourIntensities = MutableLiveData2(ColourHandler.getColourIntensitiesFull())
-
-    val colourFamilySpinnerText =
-        MutableLiveData<String>(ColourHandler.readColourFamily(_currentAccount.value.colourString))
+    val colourFamilySpinnerText = MutableLiveData<String>(_currentAccount.value.colourString)
     val colourFamilySpinnerError: LiveData<String?> = Transformations.map(colourFamilySpinnerText) {
-        when (it) {
-            "Black", "White" -> {
-                colourIntensitySpinnerText.value = null
-                updateColours()
-                null
-            }
-            "Blue Grey", "Brown", "Grey" -> {
-                if (colourIntensitySpinnerText.value == null) {
-                    colourIntensitySpinnerText.value = "500"
-                }
-                colourIntensities.value = ColourHandler.getColourIntensitiesPartial()
-                updateColours()
-                null
-            }
-            "Red", "Deep Purple", "Light Blue", "Green", "Yellow",
-            "Deep Orange", "Pink", "Indigo", "Cyan", "Light Green",
-            "Amber", "Purple", "Blue", "Teal", "Lime",
-            "Orange" -> {
-                if (colourIntensitySpinnerText.value == null) {
-                    colourIntensitySpinnerText.value = "500"
-                }
-                colourIntensities.value = ColourHandler.getColourIntensitiesFull()
-                updateColours()
-                null
-            }
-            else -> {
-                colourIntensities.value = ColourHandler.getColourIntensitiesFull()
-                "Invalid Colour. Please select from the dropdown menu."
-            }
-        }
-    }
-
-    var colourIntensitySpinnerText =
-        MutableLiveData(ColourHandler.readColourIntensity(_currentAccount.value.colourString))
-    val colourIntensitySpinnerError = Transformations.map(colourIntensitySpinnerText) {
-        when (it) {
-            "A100", "A200", "A400", "A700" -> {
-                colourFamilies.value = ColourHandler.getColourFamiliesPartial()
-                if (colourFamilySpinnerText.value.toString() in listOf(
-                        "Blue Grey",
-                        "Brown",
-                        "Grey"
-                    )
-                ) {
-                    "BUG! Please screenshot and report this bug. [A]"
-                } else {
-                    updateColours()
-                    null
-                }
-            }
-            null -> {
-                colourFamilies.value = ColourHandler.getColourFamiliesFull()
-                updateColours()
-                null
-            }
-            "50", "100", "200", "300", "400",
-            "500", "600", "700", "800", "900" -> {
-                colourFamilies.value = ColourHandler.getColourFamiliesFull()
-                if (colourFamilySpinnerText.value.toString() in listOf("Black", "White")) {
-                    "BUG! Please screenshot and report this bug. [B]"
-                } else {
-                    updateColours()
-                    null
-                }
-            }
-            else -> {
-                colourFamilies.value = ColourHandler.getColourFamiliesPartial()
-                "Invalid Colour Intensity. Please select from the dropdown menu."
-            }
-        }
-    }
-
-    // Instead of hooking up a complicated set of LiveDatas, I'm just going to do this
-    private fun updateColours() {
-        _currentAccount.value = _currentAccount.value.copy(
-            colourString = ColourHandler.saveColourString(
-                colourFamilySpinnerText.value!!,
-                colourIntensitySpinnerText.value
+        if (it in ColourHandler.getColourFamilies()) {
+            _currentAccount.value = _currentAccount.value.copy(
+                colourString = colourFamilySpinnerText.value!!
             )
-        )
+            null
+        } else {
+            "ERROR. Please report this bug."
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +58,8 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    val accountNameETText =
-        MutableLiveData<String>(_currentAccount.value.name)  // Two-way binding; cannot use MutableLiveData2
+    // Two-way binding; cannot use MutableLiveData2
+    val accountNameETText = MutableLiveData<String>(_currentAccount.value.name)
     val accountNameETError = Transformations.map(accountNameETText) {
         val trimmed = it.trim()
         when {
@@ -153,8 +77,6 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         when {
             accountNameETError.value != null -> _showSnackBarText.value = "Invalid Account Name"
             colourFamilySpinnerError.value != null -> _showSnackBarText.value = "Invalid Colour"
-            colourIntensitySpinnerError.value != null -> _showSnackBarText.value =
-                "Invalid Colour Intensity"
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {

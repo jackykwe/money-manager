@@ -36,6 +36,7 @@ fun PieChart.setPieChartAdapter(pieData: PieData) {
         //    setUsePercentValues(true)
         holeRadius = 75f
         transparentCircleRadius = 80f
+        setHoleColor(android.R.color.transparent)
 
         legend.isEnabled = false
     }

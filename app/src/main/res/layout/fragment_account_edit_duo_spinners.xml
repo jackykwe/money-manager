@@ -83,9 +83,36 @@
                 android:layout_height="wrap_content"
                 android:dropDownAnchor="@id/accountIconFL"
                 android:tag="colour family spinner"
-                app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}" />
+                app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}"
+                app:colourFamilySpinner_colourFamiliesAL="@{viewModel.colourFamilies}"
+                app:colourFamilySpinner_colourIntensity="@{viewModel.colourIntensitySpinnerText}" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/colourIntensityContainer"
+            style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@{viewModel.colourIntensitySpinnerText == null ? `Colour Intensity (NA)` : `Colour Intensity`}"
+            app:error_text="@{viewModel.colourIntensitySpinnerError}"
+            app:layout_constraintTop_toBottomOf="@+id/colourFamilyContainer">
+
+            <AutoCompleteTextView
+                android:id="@+id/colourIntensitySpinner"
+                style="@style/FullWidthMaterialEditText.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownAnchor="@id/accountIconFL"
+                android:dropDownHeight="@{viewModel.colourIntensitySpinnerText != null ? LP.WRAP_CONTENT : 0}"
+                android:enabled="@{viewModel.colourIntensitySpinnerText != null}"
+                android:tag="colour intensity spinner"
+                app:autoCompleteTextView_text="@={viewModel.colourIntensitySpinnerText}"
+                app:colourIntensitySpinner_colourFamily="@{viewModel.colourFamilySpinnerText}"
+                app:colourIntensitySpinner_colourIntensitiesAL="@{viewModel.colourIntensities}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -18,7 +18,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.adapters.ColourFamilyPickerArrayAdapter
-import com.kaeonx.moneymanager.adapters.ColourIntensityPickerArrayAdapter
 import com.kaeonx.moneymanager.databinding.FragmentCategoryEditBinding
 
 class CategoryEditFragment : Fragment() {
@@ -38,13 +37,9 @@ class CategoryEditFragment : Fragment() {
         // Disables typing
         binding.colourFamilySpinner.apply {
             inputType = InputType.TYPE_NULL
-            setAdapter(ColourFamilyPickerArrayAdapter(arrayListOf(), null))  // Actual updating of adapter is done via data binding
+            setAdapter(ColourFamilyPickerArrayAdapter())
         }
 
-        binding.colourIntensitySpinner.apply {
-            inputType = InputType.TYPE_NULL
-            setAdapter(ColourIntensityPickerArrayAdapter("Red", arrayListOf()))  // Actual updating of adapter is done via data binding
-        }
 
         return binding.root
     }

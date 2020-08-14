@@ -35,6 +35,8 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
         //    setUsePercentValues(true)
         holeRadius = 75f
         transparentCircleRadius = 80f
+        setHoleColor(android.R.color.transparent)
+
         legend.isEnabled = false
     }
     data = pieData

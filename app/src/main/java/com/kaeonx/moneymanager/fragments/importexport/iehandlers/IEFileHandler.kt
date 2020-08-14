@@ -67,12 +67,12 @@ internal class IEFileHandler private constructor() {
         }
 
         internal fun parseJsonDataException(message: String?): String? {
-            return message?.let { message ->
-                val element = message.substringAfter("JSON name ").takeIf { it != message }
-                    ?.substringBefore(")").takeIf { it != message }
+            return message?.let { msg ->
+                val element = msg.substringAfter("JSON name ").takeIf { it != msg }
+                    ?.substringBefore(")").takeIf { it != msg }
                     ?.replace("'", "\"")
-                val index = message.substringAfter("$[").takeIf { it != message }
-                    ?.substringBefore("]").takeIf { it != message }
+                val index = msg.substringAfter("$[").takeIf { it != msg }
+                    ?.substringBefore("]").takeIf { it != msg }
                 if (element == null || index == null) "unknown reason\nPlease report this bug."
                 else "attribute $element missing at index $index"
             }

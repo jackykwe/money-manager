@@ -37,75 +37,8 @@ class ColourHandler private constructor() {
             "Black",
             "White"
         )
-        private val allColourIntensities = listOf(
-            "50",
-            "100",
-            "200",
-            "300",
-            "400",
-            "500",
-            "600",
-            "700",
-            "800",
-            "900",
-            "A100",
-            "A200",
-            "A400",
-            "A700"
-        )
 
-        internal fun getColourFamiliesFull(): List<String> {
-            return allColourFamilies.toList()
-        }
-
-        internal fun getColourFamiliesPartial(): List<String> {
-            return ArrayList(allColourFamilies).apply {
-                this.remove("Blue Grey")
-                this.remove("Brown")
-                this.remove("Grey")
-            }.toList()
-        }
-
-        internal fun getColourIntensitiesFull(): List<String> {
-            return allColourIntensities.toList()
-        }
-
-        internal fun getColourIntensitiesPartial(): List<String> {
-            return ArrayList(allColourIntensities).apply {
-                this.remove("A100")
-                this.remove("A200")
-                this.remove("A400")
-                this.remove("A700")
-            }.toList()
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////
-        /**
-         * Parsing Colour Strings
-         */
-        ////////////////////////////////////////////////////////////////////////////////
-
-        internal fun saveColourString(colourFamily: String, colourIntensity: String?): String {
-            return if (colourIntensity == null) {
-                colourFamily
-            } else {
-                "$colourFamily,$colourIntensity"
-            }
-        }
-
-        internal fun readColourFamily(colourString: String): String {
-            return when (colourString) {
-                "Black", "White" -> colourString
-                else -> colourString.split(",")[0]
-            }
-        }
-
-        internal fun readColourIntensity(colourString: String): String? {
-            return when (colourString) {
-                "Black", "White" -> null
-                else -> colourString.split(",")[1]
-            }
-        }
+        internal fun getColourFamilies(): List<String> = allColourFamilies
 
         ////////////////////////////////////////////////////////////////////////////////
         /**
@@ -113,10 +46,9 @@ class ColourHandler private constructor() {
          */
         ////////////////////////////////////////////////////////////////////////////////
 
-        private fun getObj(resourceId: Int): Int =
-            App.context.resources.getColor(resourceId, null)
+        private fun getObj(resourceId: Int): Int = App.context.resources.getColor(resourceId, null)
 
-        internal fun getColourObjectOf(colourString: String): Int = when (colourString) {
+        private fun getSpecificColourObjectOf(colourString: String): Int = when (colourString) {
             "Red,50" -> getObj(R.color.red_50)
             "Red,100" -> getObj(R.color.red_100)
             "Red,200" -> getObj(R.color.red_200)
@@ -392,289 +324,37 @@ class ColourHandler private constructor() {
 
             "Black" -> getObj(R.color.black)
             "White" -> getObj(R.color.white)
-            "TRANSPARENT" -> getObj(R.color.black)
+//            "TRANSPARENT" -> getObj(R.color.black)
+            "TRANSPARENT" -> getObj(android.R.color.transparent)
             else -> throw IllegalArgumentException("Unknown colourString $colourString.")
         }
 
-        private fun getColourObjectOn(colourString: String): Int = when (colourString) {
-            "Red,50" -> getObj(R.color.black)
-            "Red,100" -> getObj(R.color.black)
-            "Red,200" -> getObj(R.color.black)
-            "Red,300" -> getObj(R.color.black)
-            "Red,400" -> getObj(R.color.black)
-            "Red,500" -> getObj(R.color.black)
-            "Red,600" -> getObj(R.color.black)
-            "Red,700" -> getObj(R.color.white)
-            "Red,800" -> getObj(R.color.white)
-            "Red,900" -> getObj(R.color.white)
-            "Red,A100" -> getObj(R.color.black)
-            "Red,A200" -> getObj(R.color.black)
-            "Red,A400" -> getObj(R.color.black)
-            "Red,A700" -> getObj(R.color.white)
-
-            "Deep Purple,50" -> getObj(R.color.black)
-            "Deep Purple,100" -> getObj(R.color.black)
-            "Deep Purple,200" -> getObj(R.color.black)
-            "Deep Purple,300" -> getObj(R.color.black)
-            "Deep Purple,400" -> getObj(R.color.white)
-            "Deep Purple,500" -> getObj(R.color.white)
-            "Deep Purple,600" -> getObj(R.color.white)
-            "Deep Purple,700" -> getObj(R.color.white)
-            "Deep Purple,800" -> getObj(R.color.white)
-            "Deep Purple,900" -> getObj(R.color.white)
-            "Deep Purple,A100" -> getObj(R.color.black)
-            "Deep Purple,A200" -> getObj(R.color.white)
-            "Deep Purple,A400" -> getObj(R.color.white)
-            "Deep Purple,A700" -> getObj(R.color.white)
-
-            "Light Blue,50" -> getObj(R.color.black)
-            "Light Blue,100" -> getObj(R.color.black)
-            "Light Blue,200" -> getObj(R.color.black)
-            "Light Blue,300" -> getObj(R.color.black)
-            "Light Blue,400" -> getObj(R.color.black)
-            "Light Blue,500" -> getObj(R.color.black)
-            "Light Blue,600" -> getObj(R.color.black)
-            "Light Blue,700" -> getObj(R.color.black)
-            "Light Blue,800" -> getObj(R.color.white)
-            "Light Blue,900" -> getObj(R.color.white)
-            "Light Blue,A100" -> getObj(R.color.black)
-            "Light Blue,A200" -> getObj(R.color.black)
-            "Light Blue,A400" -> getObj(R.color.black)
-            "Light Blue,A700" -> getObj(R.color.black)
-
-            "Green,50" -> getObj(R.color.black)
-            "Green,100" -> getObj(R.color.black)
-            "Green,200" -> getObj(R.color.black)
-            "Green,300" -> getObj(R.color.black)
-            "Green,400" -> getObj(R.color.black)
-            "Green,500" -> getObj(R.color.black)
-            "Green,600" -> getObj(R.color.black)
-            "Green,700" -> getObj(R.color.black)
-            "Green,800" -> getObj(R.color.white)
-            "Green,900" -> getObj(R.color.white)
-            "Green,A100" -> getObj(R.color.black)
-            "Green,A200" -> getObj(R.color.black)
-            "Green,A400" -> getObj(R.color.black)
-            "Green,A700" -> getObj(R.color.black)
-
-            "Yellow,50" -> getObj(R.color.black)
-            "Yellow,100" -> getObj(R.color.black)
-            "Yellow,200" -> getObj(R.color.black)
-            "Yellow,300" -> getObj(R.color.black)
-            "Yellow,400" -> getObj(R.color.black)
-            "Yellow,500" -> getObj(R.color.black)
-            "Yellow,600" -> getObj(R.color.black)
-            "Yellow,700" -> getObj(R.color.black)
-            "Yellow,800" -> getObj(R.color.black)
-            "Yellow,900" -> getObj(R.color.black)
-            "Yellow,A100" -> getObj(R.color.black)
-            "Yellow,A200" -> getObj(R.color.black)
-            "Yellow,A400" -> getObj(R.color.black)
-            "Yellow,A700" -> getObj(R.color.black)
-
-            "Deep Orange,50" -> getObj(R.color.black)
-            "Deep Orange,100" -> getObj(R.color.black)
-            "Deep Orange,200" -> getObj(R.color.black)
-            "Deep Orange,300" -> getObj(R.color.black)
-            "Deep Orange,400" -> getObj(R.color.black)
-            "Deep Orange,500" -> getObj(R.color.black)
-            "Deep Orange,600" -> getObj(R.color.black)
-            "Deep Orange,700" -> getObj(R.color.black)
-            "Deep Orange,800" -> getObj(R.color.black)
-            "Deep Orange,900" -> getObj(R.color.white)
-            "Deep Orange,A100" -> getObj(R.color.black)
-            "Deep Orange,A200" -> getObj(R.color.black)
-            "Deep Orange,A400" -> getObj(R.color.black)
-            "Deep Orange,A700" -> getObj(R.color.white)
-
-            "Blue Grey,50" -> getObj(R.color.black)
-            "Blue Grey,100" -> getObj(R.color.black)
-            "Blue Grey,200" -> getObj(R.color.black)
-            "Blue Grey,300" -> getObj(R.color.black)
-            "Blue Grey,400" -> getObj(R.color.black)
-            "Blue Grey,500" -> getObj(R.color.black)
-            "Blue Grey,600" -> getObj(R.color.white)
-            "Blue Grey,700" -> getObj(R.color.white)
-            "Blue Grey,800" -> getObj(R.color.white)
-            "Blue Grey,900" -> getObj(R.color.white)
-
-            "Pink,50" -> getObj(R.color.black)
-            "Pink,100" -> getObj(R.color.black)
-            "Pink,200" -> getObj(R.color.black)
-            "Pink,300" -> getObj(R.color.black)
-            "Pink,400" -> getObj(R.color.black)
-            "Pink,500" -> getObj(R.color.black)
-            "Pink,600" -> getObj(R.color.white)
-            "Pink,700" -> getObj(R.color.white)
-            "Pink,800" -> getObj(R.color.white)
-            "Pink,900" -> getObj(R.color.white)
-            "Pink,A100" -> getObj(R.color.black)
-            "Pink,A200" -> getObj(R.color.black)
-            "Pink,A400" -> getObj(R.color.black)
-            "Pink,A700" -> getObj(R.color.white)
-
-            "Indigo,50" -> getObj(R.color.black)
-            "Indigo,100" -> getObj(R.color.black)
-            "Indigo,200" -> getObj(R.color.black)
-            "Indigo,300" -> getObj(R.color.black)
-            "Indigo,400" -> getObj(R.color.white)
-            "Indigo,500" -> getObj(R.color.white)
-            "Indigo,600" -> getObj(R.color.white)
-            "Indigo,700" -> getObj(R.color.white)
-            "Indigo,800" -> getObj(R.color.white)
-            "Indigo,900" -> getObj(R.color.white)
-            "Indigo,A100" -> getObj(R.color.black)
-            "Indigo,A200" -> getObj(R.color.black)
-            "Indigo,A400" -> getObj(R.color.white)
-            "Indigo,A700" -> getObj(R.color.white)
-
-            "Cyan,50" -> getObj(R.color.black)
-            "Cyan,100" -> getObj(R.color.black)
-            "Cyan,200" -> getObj(R.color.black)
-            "Cyan,300" -> getObj(R.color.black)
-            "Cyan,400" -> getObj(R.color.black)
-            "Cyan,500" -> getObj(R.color.black)
-            "Cyan,600" -> getObj(R.color.black)
-            "Cyan,700" -> getObj(R.color.black)
-            "Cyan,800" -> getObj(R.color.white)
-            "Cyan,900" -> getObj(R.color.white)
-            "Cyan,A100" -> getObj(R.color.black)
-            "Cyan,A200" -> getObj(R.color.black)
-            "Cyan,A400" -> getObj(R.color.black)
-            "Cyan,A700" -> getObj(R.color.black)
-
-            "Light Green,50" -> getObj(R.color.black)
-            "Light Green,100" -> getObj(R.color.black)
-            "Light Green,200" -> getObj(R.color.black)
-            "Light Green,300" -> getObj(R.color.black)
-            "Light Green,400" -> getObj(R.color.black)
-            "Light Green,500" -> getObj(R.color.black)
-            "Light Green,600" -> getObj(R.color.black)
-            "Light Green,700" -> getObj(R.color.black)
-            "Light Green,800" -> getObj(R.color.black)
-            "Light Green,900" -> getObj(R.color.white)
-            "Light Green,A100" -> getObj(R.color.black)
-            "Light Green,A200" -> getObj(R.color.black)
-            "Light Green,A400" -> getObj(R.color.black)
-            "Light Green,A700" -> getObj(R.color.black)
-
-            "Amber,50" -> getObj(R.color.black)
-            "Amber,100" -> getObj(R.color.black)
-            "Amber,200" -> getObj(R.color.black)
-            "Amber,300" -> getObj(R.color.black)
-            "Amber,400" -> getObj(R.color.black)
-            "Amber,500" -> getObj(R.color.black)
-            "Amber,600" -> getObj(R.color.black)
-            "Amber,700" -> getObj(R.color.black)
-            "Amber,800" -> getObj(R.color.black)
-            "Amber,900" -> getObj(R.color.black)
-            "Amber,A100" -> getObj(R.color.black)
-            "Amber,A200" -> getObj(R.color.black)
-            "Amber,A400" -> getObj(R.color.black)
-            "Amber,A700" -> getObj(R.color.black)
-
-            "Brown,50" -> getObj(R.color.black)
-            "Brown,100" -> getObj(R.color.black)
-            "Brown,200" -> getObj(R.color.black)
-            "Brown,300" -> getObj(R.color.black)
-            "Brown,400" -> getObj(R.color.white)
-            "Brown,500" -> getObj(R.color.white)
-            "Brown,600" -> getObj(R.color.white)
-            "Brown,700" -> getObj(R.color.white)
-            "Brown,800" -> getObj(R.color.white)
-            "Brown,900" -> getObj(R.color.white)
-
-            "Purple,50" -> getObj(R.color.black)
-            "Purple,100" -> getObj(R.color.black)
-            "Purple,200" -> getObj(R.color.black)
-            "Purple,300" -> getObj(R.color.black)
-            "Purple,400" -> getObj(R.color.white)
-            "Purple,500" -> getObj(R.color.white)
-            "Purple,600" -> getObj(R.color.white)
-            "Purple,700" -> getObj(R.color.white)
-            "Purple,800" -> getObj(R.color.white)
-            "Purple,900" -> getObj(R.color.white)
-            "Purple,A100" -> getObj(R.color.black)
-            "Purple,A200" -> getObj(R.color.black)
-            "Purple,A400" -> getObj(R.color.black)
-            "Purple,A700" -> getObj(R.color.white)
-
-            "Blue,50" -> getObj(R.color.black)
-            "Blue,100" -> getObj(R.color.black)
-            "Blue,200" -> getObj(R.color.black)
-            "Blue,300" -> getObj(R.color.black)
-            "Blue,400" -> getObj(R.color.black)
-            "Blue,500" -> getObj(R.color.black)
-            "Blue,600" -> getObj(R.color.black)
-            "Blue,700" -> getObj(R.color.white)
-            "Blue,800" -> getObj(R.color.white)
-            "Blue,900" -> getObj(R.color.white)
-            "Blue,A100" -> getObj(R.color.black)
-            "Blue,A200" -> getObj(R.color.black)
-            "Blue,A400" -> getObj(R.color.black)
-            "Blue,A700" -> getObj(R.color.white)
-
-            "Teal,50" -> getObj(R.color.black)
-            "Teal,100" -> getObj(R.color.black)
-            "Teal,200" -> getObj(R.color.black)
-            "Teal,300" -> getObj(R.color.black)
-            "Teal,400" -> getObj(R.color.black)
-            "Teal,500" -> getObj(R.color.black)
-            "Teal,600" -> getObj(R.color.black)
-            "Teal,700" -> getObj(R.color.white)
-            "Teal,800" -> getObj(R.color.white)
-            "Teal,900" -> getObj(R.color.white)
-            "Teal,A100" -> getObj(R.color.black)
-            "Teal,A200" -> getObj(R.color.black)
-            "Teal,A400" -> getObj(R.color.black)
-            "Teal,A700" -> getObj(R.color.black)
-
-            "Lime,50" -> getObj(R.color.black)
-            "Lime,100" -> getObj(R.color.black)
-            "Lime,200" -> getObj(R.color.black)
-            "Lime,300" -> getObj(R.color.black)
-            "Lime,400" -> getObj(R.color.black)
-            "Lime,500" -> getObj(R.color.black)
-            "Lime,600" -> getObj(R.color.black)
-            "Lime,700" -> getObj(R.color.black)
-            "Lime,800" -> getObj(R.color.black)
-            "Lime,900" -> getObj(R.color.white)
-            "Lime,A100" -> getObj(R.color.black)
-            "Lime,A200" -> getObj(R.color.black)
-            "Lime,A400" -> getObj(R.color.black)
-            "Lime,A700" -> getObj(R.color.black)
-
-            "Orange,50" -> getObj(R.color.black)
-            "Orange,100" -> getObj(R.color.black)
-            "Orange,200" -> getObj(R.color.black)
-            "Orange,300" -> getObj(R.color.black)
-            "Orange,400" -> getObj(R.color.black)
-            "Orange,500" -> getObj(R.color.black)
-            "Orange,600" -> getObj(R.color.black)
-            "Orange,700" -> getObj(R.color.black)
-            "Orange,800" -> getObj(R.color.black)
-            "Orange,900" -> getObj(R.color.black)
-            "Orange,A100" -> getObj(R.color.black)
-            "Orange,A200" -> getObj(R.color.black)
-            "Orange,A400" -> getObj(R.color.black)
-            "Orange,A700" -> getObj(R.color.black)
-
-            "Grey,50" -> getObj(R.color.black)
-            "Grey,100" -> getObj(R.color.black)
-            "Grey,200" -> getObj(R.color.black)
-            "Grey,300" -> getObj(R.color.black)
-            "Grey,400" -> getObj(R.color.black)
-            "Grey,500" -> getObj(R.color.black)
-            "Grey,600" -> getObj(R.color.white)
-            "Grey,700" -> getObj(R.color.white)
-            "Grey,800" -> getObj(R.color.white)
-            "Grey,900" -> getObj(R.color.white)
-
-            "Black" -> getObj(R.color.white)
-            "White" -> getObj(R.color.black)
-            "TRANSPARENT" -> getObj(R.color.white)
-            else -> throw IllegalArgumentException("Unknown colourString $colourString.")
-        }
+        internal fun getColourObjectOf(colourFamily: String): Int =
+            when (colourFamily) {
+                "Red" -> getSpecificColourObjectOf("Red,400")
+                "Deep Purple" -> getSpecificColourObjectOf("Deep Purple,400")
+                "Light Blue" -> getSpecificColourObjectOf("Light Blue,400")  // NEW
+                "Green" -> getSpecificColourObjectOf("Green,600")
+                "Yellow" -> getSpecificColourObjectOf("Yellow,500")  // NEW
+                "Deep Orange" -> getSpecificColourObjectOf("Deep Orange,400")
+                "Blue Grey" -> getSpecificColourObjectOf("Blue Grey,400")
+                "Pink" -> getSpecificColourObjectOf("Pink,300")
+                "Indigo" -> getSpecificColourObjectOf("Indigo,400")
+                "Cyan" -> getSpecificColourObjectOf("Cyan,500")  // NEW
+                "Light Green" -> getSpecificColourObjectOf("Light Green,500")  // NEW
+                "Amber" -> getSpecificColourObjectOf("Amber,500")  // NEW
+                "Brown" -> getSpecificColourObjectOf("Brown,400")
+                "Purple" -> getSpecificColourObjectOf("Purple,300")
+                "Blue" -> getSpecificColourObjectOf("Blue,600")
+                "Teal" -> getSpecificColourObjectOf("Teal,400")
+                "Lime" -> getSpecificColourObjectOf("Lime,500")  // NEW
+                "Orange" -> getSpecificColourObjectOf("Orange,500")
+                "Grey" -> getSpecificColourObjectOf("Grey,500")  // NEW
+                "Black" -> getSpecificColourObjectOf("Black")
+                "White" -> getSpecificColourObjectOf("White")
+                "TRANSPARENT" -> getSpecificColourObjectOf("TRANSPARENT")  // TODO SEE THIS BEING USED
+                else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
+            }
 
         ////////////////////////////////////////////////////////////////////////////////
         /**
@@ -682,29 +362,34 @@ class ColourHandler private constructor() {
          */
         ////////////////////////////////////////////////////////////////////////////////
 
-        private fun getCSL(resourceId: Int): ColorStateList =
-            ColorStateList.valueOf(getObj(resourceId))
+        private fun getSpecificColorStateListOf(colourString: String): ColorStateList =
+            ColorStateList.valueOf(getSpecificColourObjectOf(colourString))
 
-        internal fun getColorStateListOf(colourString: String): ColorStateList =
-            ColorStateList.valueOf(getColourObjectOf(colourString))
-
-        internal fun getColorStateListOf(
-            colourFamily: String,
-            colourIntensity: String?
-        ): ColorStateList =
-            ColorStateList.valueOf(
-                getColourObjectOf(saveColourString(colourFamily, colourIntensity))
-            )
-
-        internal fun getColorStateListOn(colourString: String): ColorStateList =
-            ColorStateList.valueOf(getColourObjectOn(colourString))
-
-        internal fun getColorStateListOn(
-            colourFamily: String,
-            colourIntensity: String?
-        ): ColorStateList =
-            ColorStateList.valueOf(
-                getColourObjectOn(saveColourString(colourFamily, colourIntensity))
-            )
+        internal fun getColorStateListOf(colourFamily: String): ColorStateList =
+            when (colourFamily) {
+                "Red" -> getSpecificColorStateListOf("Red,400")
+                "Deep Purple" -> getSpecificColorStateListOf("Deep Purple,400")
+                "Light Blue" -> getSpecificColorStateListOf("Light Blue,400")  // NEW
+                "Green" -> getSpecificColorStateListOf("Green,600")
+                "Yellow" -> getSpecificColorStateListOf("Yellow,500")  // NEW
+                "Deep Orange" -> getSpecificColorStateListOf("Deep Orange,400")
+                "Blue Grey" -> getSpecificColorStateListOf("Blue Grey,400")
+                "Pink" -> getSpecificColorStateListOf("Pink,300")
+                "Indigo" -> getSpecificColorStateListOf("Indigo,400")
+                "Cyan" -> getSpecificColorStateListOf("Cyan,500")  // NEW
+                "Light Green" -> getSpecificColorStateListOf("Light Green,500")  // NEW
+                "Amber" -> getSpecificColorStateListOf("Amber,500")  // NEW
+                "Brown" -> getSpecificColorStateListOf("Brown,400")
+                "Purple" -> getSpecificColorStateListOf("Purple,300")
+                "Blue" -> getSpecificColorStateListOf("Blue,600")
+                "Teal" -> getSpecificColorStateListOf("Teal,400")
+                "Lime" -> getSpecificColorStateListOf("Lime,500")  // NEW
+                "Orange" -> getSpecificColorStateListOf("Orange,500")
+                "Grey" -> getSpecificColorStateListOf("Grey,500")  // NEW
+                "Black" -> getSpecificColorStateListOf("Black")
+                "White" -> getSpecificColorStateListOf("White")
+                "TRANSPARENT" -> getSpecificColorStateListOf("TRANSPARENT")  // TODO SEE THIS BEING USED
+                else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
+            }
     }
 }

@@ -48,6 +48,7 @@
             android:scaleY="0.6"
             android:textColor="@color/white"
             app:iconTV_text="@{iconDetail.iconHex}"
+            app:textOnSurfaceColour="@{iconDetail}"
             tools:text="@string/html_legacy_mdi_help" />
         <!-- TODO: Text color to change depending ...? -->
 

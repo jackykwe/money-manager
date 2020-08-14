@@ -52,7 +52,7 @@
                     android:onClick="@{() -> pieCentreClickListener.onClick()}"
                     android:scaleType="fitXY"
                     android:src="@drawable/basic_circle"
-                    android:tint="@android:color/transparent"
+                    app:tint="@android:color/transparent"
                     android:tintMode="src_in"
                     android:visibility="@{pieCentreClickListener == null ? View.GONE : View.VISIBLE}" />
 

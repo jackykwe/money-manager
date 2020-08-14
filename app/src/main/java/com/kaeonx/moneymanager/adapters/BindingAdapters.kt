@@ -7,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
+import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -37,4 +38,10 @@ fun ImageView.setColorTint(color: Int) {
 @BindingAdapter("error_text")
 fun TextInputLayout.setErrorText(errorString: String?) {
     error = errorString
+}
+
+@BindingAdapter("textOnSurfaceColour")
+fun TextView.setTextOnSurfaceColour(iconDetail: IconDetail) {
+//    setTextColor(ColourHandler.getColourObjectMaterialOn(iconDetail.iconBGColourString))
+//    setTextColor(ColourHandler.getColourObjectOf("White"))
 }

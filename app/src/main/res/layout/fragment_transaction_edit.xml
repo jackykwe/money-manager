@@ -194,7 +194,7 @@
                             android:paddingStart="4dp"
                             android:text="@string/placeholder_amount"
                             android:visibility="gone"
-                            app:convertedAmountTV_textVisiibility="@{viewModel.transaction}"
+                            app:convertedAmountTV_textVisibility="@{viewModel.transaction}"
                             app:layout_constraintEnd_toEndOf="@+id/originalAmountTV"
                             app:layout_constraintStart_toEndOf="@+id/convertedCurrencyTV"
                             app:layout_constraintTop_toTopOf="@+id/convertedCurrencyTV"
@@ -207,7 +207,7 @@
                             android:layout_width="wrap_content"
                             android:text="@string/placeholder_currency"
                             android:visibility="gone"
-                            app:convertedCurrencyTV_textVisiibility="@{viewModel.transaction}"
+                            app:convertedCurrencyTV_textVisibility="@{viewModel.transaction}"
                             app:layout_constraintStart_toStartOf="@+id/originalCurrencyTV"
                             app:layout_constraintTop_toTopOf="@+id/typeConvertedAmountColonTV"
                             tools:visibility="visible" />
