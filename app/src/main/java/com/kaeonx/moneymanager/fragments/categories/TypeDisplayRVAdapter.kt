@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.databinding.RvItemTypeDisplayBinding
-import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.*
 
@@ -45,20 +44,16 @@ class TypeDisplayRVAdapter(
         fun rebind(category: Category, itemOnClickListener: CategoryOnClickListener) {
             binding.category = category
             binding.onClickListener = itemOnClickListener
-            binding.categoryIconInclude.iconTV.apply {
-                when (category.name) {
-                    "Add…" -> binding.categoryIconInclude.iconTV.setTextColor(
-                        ColourHandler.getColorStateListOf(
-                            "Black"
-                        )
-                    )
-                    else -> binding.categoryIconInclude.iconTV.setTextColor(
-                        ColourHandler.getColorStateListOf(
-                            "White"
-                        )
-                    )
-                }
-            }
+//            binding.categoryIconInclude.iconTV.apply {
+//                when (category.name) {
+//                    "Add…" -> binding.categoryIconInclude.iconTV.setTextColor(
+//                        ColourHandler.getColorStateListOf("Black")
+//                    )
+//                    else -> binding.categoryIconInclude.iconTV.setTextColor(
+//                        ColourHandler.getColorStateListOf("White")
+//                    )
+//                }
+//            }
             binding.executePendingBindings()
         }
 

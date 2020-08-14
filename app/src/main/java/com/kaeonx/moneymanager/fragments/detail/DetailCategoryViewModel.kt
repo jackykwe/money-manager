@@ -142,7 +142,7 @@ class DetailCategoryViewModel(
             val colourInt = ColourHandler.getColourObjectOf(
                 userRepository.categories.value!!
                     .find { it.name == category && it.type == type }
-                    ?.colourString ?: "Black"
+                    ?.colourFamily ?: "Black"
             )
 
             val showRangeCurrency = list.any { it.originalCurrency != homeCurrency }

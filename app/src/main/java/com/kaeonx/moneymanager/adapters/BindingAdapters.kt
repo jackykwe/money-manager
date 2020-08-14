@@ -7,17 +7,24 @@ import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
-import com.kaeonx.moneymanager.userrepository.domain.IconDetail
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * For icon_transaction.xml
- *
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("iconTV_text")
 fun TextView.setIconTVText(iconHex: String) {
     text = IconHandler.getDisplayHex(iconHex)
+}
+
+@BindingAdapter("iconTV_textColour")
+fun TextView.setIconTVTextColour(colourFamily: String) {
+    when (colourFamily) {
+        "White" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Black"))
+        "TRANSPARENT" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Red,500"))
+        else -> setTextColor(ColourHandler.getSpecificColourObjectOf("White"))
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,8 +33,8 @@ fun TextView.setIconTVText(iconHex: String) {
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("colour_string_tint")
-fun ImageView.setColourStringTint(colourString: String) {
-    imageTintList = ColourHandler.getColorStateListOf(colourString)
+fun ImageView.setColourStringTint(colourFamily: String) {
+    imageTintList = ColourHandler.getColorStateListOf(colourFamily)
 }
 
 @BindingAdapter("color_tint")
@@ -38,10 +45,4 @@ fun ImageView.setColorTint(color: Int) {
 @BindingAdapter("error_text")
 fun TextInputLayout.setErrorText(errorString: String?) {
     error = errorString
-}
-
-@BindingAdapter("textOnSurfaceColour")
-fun TextView.setTextOnSurfaceColour(iconDetail: IconDetail) {
-//    setTextColor(ColourHandler.getColourObjectMaterialOn(iconDetail.iconBGColourString))
-//    setTextColor(ColourHandler.getColourObjectOf("White"))
 }

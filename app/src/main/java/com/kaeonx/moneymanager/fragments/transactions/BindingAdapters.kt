@@ -121,13 +121,13 @@ fun TextView.setTransactionSignTV2TextVisibility(type: String) {
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("tbsdHorizontalBarIVTop_tint")
-fun ImageView.setTbsdHorizontalBarIVTopTint(colourString: String) {
-    drawable.setTintList(ColourHandler.getColorStateListOf(colourString))
+fun ImageView.setTbsdHorizontalBarIVTopTint(colourFamily: String) {
+    drawable.setTintList(ColourHandler.getColorStateListOf(colourFamily))
 }
 
 @BindingAdapter("tbsdHorizontalBarIVBottom_tint")
-fun ImageView.setTbsdHorizontalBarIVBottomTint(colourString: String) {
-    drawable.setTintList(ColourHandler.getColorStateListOf(colourString))
+fun ImageView.setTbsdHorizontalBarIVBottomTint(colourFamily: String) {
+    drawable.setTintList(ColourHandler.getColorStateListOf(colourFamily))
 }
 
 @BindingAdapter("tbsdTypeTV_text")

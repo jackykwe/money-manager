@@ -6,6 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class IconDetail(
     val iconHex: String,
-    val iconBGColourString: String,
-    val iconRingColourString: String
+    val iconBGColourFamily: String,
+    val iconRingColourFamily: String
 ) : Parcelable

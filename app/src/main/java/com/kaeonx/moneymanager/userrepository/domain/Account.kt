@@ -12,19 +12,19 @@ import kotlinx.android.parcel.Parcelize
 data class Account(
     @Json(name = "i") val accountId: Int?,
     @Json(name = "n") var name: String,
-    @Json(name = "c") var colourString: String
+    @Json(name = "c") var colourFamily: String
 ) : Parcelable {
 
     fun toIconDetail(): IconDetail = IconDetail(
         iconHex = "F02D6",
-        iconBGColourString = "TRANSPARENT",
-        iconRingColourString = this.colourString
+        iconBGColourFamily = "TRANSPARENT",
+        iconRingColourFamily = this.colourFamily
     )
 
     fun toDatabase(): DatabaseAccount = DatabaseAccount(
         accountId = this.accountId ?: 0,
         name = this.name,
-        colourString = this.colourString
+        colourString = this.colourFamily
     )
 
     fun importEnsureValid() {
@@ -47,13 +47,13 @@ data class Account(
             )
         )
         try {
-            if (colourString == "TRANSPARENT") throw Exception()
-            ColourHandler.getColourObjectOf(colourString)
+            if (colourFamily == "TRANSPARENT") throw Exception()
+            ColourHandler.getColourObjectOf(colourFamily)
         } catch (e: Exception) {
             throw IllegalStateException(
                 errorText(
                     "invalid colour string",
-                    colourString,
+                    colourFamily,
                     "Refer to examples from exported data."
                 )
             )
@@ -65,6 +65,6 @@ internal fun List<Account>.toDatabase(): List<DatabaseAccount> = map {
     DatabaseAccount(
         accountId = it.accountId!!,
         name = it.name,
-        colourString = it.colourString
+        colourString = it.colourFamily
     )
 }

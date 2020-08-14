@@ -153,9 +153,9 @@ class TransactionsViewModel : ViewModel() {
                             PieEntry(BigDecimal.ONE.minus(dayDivDays).toFloat(), "remainder")
                         )
                         colourList = listOf(
-                            ColourHandler.getColourObjectOf("Green,500"),
-                            ColourHandler.getColourObjectOf("Grey,200"),
-                            ColourHandler.getColourObjectOf("White")
+                            ColourHandler.getSpecificColourObjectOf("Green,500"),
+                            ColourHandler.getSpecificColourObjectOf("Grey,200"),
+                            ColourHandler.getSpecificColourObjectOf("White")
                         )
                     } else {
                         entries = listOf(
@@ -164,9 +164,9 @@ class TransactionsViewModel : ViewModel() {
                             PieEntry(BigDecimal.ONE.minus(exDivBud).toFloat(), "remainder")
                         )
                         colourList = listOf(
-                            ColourHandler.getColourObjectOf("Green,500"),
-                            ColourHandler.getColourObjectOf("Amber,500"),
-                            ColourHandler.getColourObjectOf("White")
+                            ColourHandler.getSpecificColourObjectOf("Green,500"),
+                            ColourHandler.getSpecificColourObjectOf("Amber,500"),
+                            ColourHandler.getSpecificColourObjectOf("White")
                         )
                     }
                 } else {
@@ -178,9 +178,9 @@ class TransactionsViewModel : ViewModel() {
                         PieEntry(BigDecimal.ONE.minus(budDivEx).toFloat(), "over ex")
                     )
                     colourList = listOf(
-                        ColourHandler.getColourObjectOf("Green,500"),
-                        ColourHandler.getColourObjectOf("Amber,500"),
-                        ColourHandler.getColourObjectOf("Red,500")
+                        ColourHandler.getSpecificColourObjectOf("Green,500"),
+                        ColourHandler.getSpecificColourObjectOf("Amber,500"),
+                        ColourHandler.getSpecificColourObjectOf("Red,500")
                     )
                 }
 

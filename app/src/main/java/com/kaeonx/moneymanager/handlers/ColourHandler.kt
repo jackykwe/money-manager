@@ -48,7 +48,7 @@ class ColourHandler private constructor() {
 
         private fun getObj(resourceId: Int): Int = App.context.resources.getColor(resourceId, null)
 
-        private fun getSpecificColourObjectOf(colourString: String): Int = when (colourString) {
+        internal fun getSpecificColourObjectOf(colourString: String): Int = when (colourString) {
             "Red,50" -> getObj(R.color.red_50)
             "Red,100" -> getObj(R.color.red_100)
             "Red,200" -> getObj(R.color.red_200)
@@ -324,7 +324,6 @@ class ColourHandler private constructor() {
 
             "Black" -> getObj(R.color.black)
             "White" -> getObj(R.color.white)
-//            "TRANSPARENT" -> getObj(R.color.black)
             "TRANSPARENT" -> getObj(android.R.color.transparent)
             else -> throw IllegalArgumentException("Unknown colourString $colourString.")
         }

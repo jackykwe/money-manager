@@ -30,10 +30,10 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:scaleType="fitXY"
-            android:tint="@color/grey_500"
-            android:visibility="@{account.colourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            app:horizontalBarIV_tint="@{account.colourString}"
-            app:srcCompat="@drawable/basic_rectangle" />
+            android:visibility="@{account.colourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+            app:horizontalBarIV_tint="@{account.colourFamily}"
+            app:srcCompat="@drawable/basic_rectangle"
+            tools:tint="@color/grey_500" />
 
         <!-- TODO SET TEXT COLOUR BASED ON BG COLOUR-->
         <TextView
@@ -45,7 +45,7 @@
             android:paddingHorizontal="12dp"
             android:textColor="@color/white"
             app:accountNameTV_text="@{account.name}"
-            app:accountNameTV_textColor="@{account.name}"
+            app:accountNameTV_textColor="@{account.colourFamily}"
             tools:text="Cash" />
 
     </FrameLayout>

@@ -344,10 +344,10 @@
                 android:layout_gravity="top"
                 android:layout_marginTop="12dp"
                 android:scaleType="fitXY"
-                android:tint="@color/grey_500"
-                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconRingColourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
                 app:srcCompat="@drawable/basic_rectangle"
-                app:tbsdHorizontalBarIVTop_tint="@{viewModel.currentTransaction.toIconDetail().iconRingColourString}" />
+                app:tbsdHorizontalBarIVTop_tint="@{viewModel.currentTransaction.toIconDetail().iconRingColourFamily}"
+                tools:tint="@color/grey_500" />
 
             <ImageView
                 android:id="@+id/tbsdHorizontalBarIVBottom"
@@ -356,10 +356,10 @@
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="12dp"
                 android:scaleType="fitXY"
-                android:tint="@color/grey_500"
-                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{viewModel.currentTransaction.toIconDetail().iconBGColourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
                 app:srcCompat="@drawable/basic_rectangle"
-                app:tbsdHorizontalBarIVBottom_tint="@{viewModel.currentTransaction.toIconDetail().iconBGColourString}" />
+                app:tbsdHorizontalBarIVBottom_tint="@{viewModel.currentTransaction.toIconDetail().iconBGColourFamily}"
+                tools:tint="@color/grey_500" />
 
             <FrameLayout
                 android:id="@+id/tbsdIconFL"
@@ -383,7 +383,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{viewModel.currentTransaction.account}"
-                android:textColor="@color/white" />
+                app:accountNameTV_textColor="@{viewModel.currentTransaction.toIconDetail().iconRingColourFamily}" />
 
             <TextView
                 android:id="@+id/tbsdCategoryTV"
@@ -396,7 +396,8 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@{viewModel.currentTransaction.category}"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                app:iconTV_textColour="@{viewModel.currentTransaction.toIconDetail().iconBGColourFamily}" />
 
             <TextView
                 android:id="@+id/tbsdTypeTV"

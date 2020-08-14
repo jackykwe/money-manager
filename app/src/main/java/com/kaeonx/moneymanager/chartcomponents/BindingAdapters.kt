@@ -136,7 +136,7 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 labelPosition = if (lineChartPacket.upperLimitLineValue != null)
                     LimitLine.LimitLabelPosition.RIGHT_BOTTOM
                 else LimitLine.LimitLabelPosition.RIGHT_TOP
-                ColourHandler.getColourObjectOf("Red,500").let {
+                ColourHandler.getSpecificColourObjectOf("Red,500").let {
                     lineColor = it
                     textColor = it
                 }
@@ -149,7 +149,7 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
             ).apply {
                 lineWidth = 1f
                 labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
-                ColourHandler.getColourObjectOf("Red,500").let {
+                ColourHandler.getSpecificColourObjectOf("Red,500").let {
                     lineColor = it
                     textColor = it
                 }

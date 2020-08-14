@@ -27,8 +27,8 @@ data class Budget(
             ?: Category(null, "Expenses", category, "F02D6", "Black")
         return IconDetail(
             iconHex = categoryObj.iconHex,
-            iconBGColourString = categoryObj.colourString,
-            iconRingColourString = "TRANSPARENT"
+            iconBGColourFamily = categoryObj.colourFamily,
+            iconRingColourFamily = "TRANSPARENT"
         )
     }
 

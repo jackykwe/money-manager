@@ -56,7 +56,7 @@ data class Transaction(
                 ?: Category(null, type, category, "F02D6", "Black")
         val accountObj = repository.accounts.value!!.find { it.name == this.account }
             ?: Account(null, account, "TRANSPARENT")
-        return IconDetail(categoryObj.iconHex, categoryObj.colourString, accountObj.colourString)
+        return IconDetail(categoryObj.iconHex, categoryObj.colourFamily, accountObj.colourFamily)
     }
 
     fun importEnsureValid() {

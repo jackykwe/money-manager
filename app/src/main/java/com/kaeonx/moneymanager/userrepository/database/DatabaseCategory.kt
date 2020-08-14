@@ -20,6 +20,6 @@ fun List<DatabaseCategory>.toDomain(): List<Category> = map {
         type = it.type,
         name = it.name,
         iconHex = it.iconHex,
-        colourString = it.colourString
+        colourFamily = it.colourString
     )
 }

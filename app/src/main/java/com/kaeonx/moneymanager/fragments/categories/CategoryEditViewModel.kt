@@ -15,7 +15,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
             oldCategory.apply {
                 name = ""
                 iconHex = "F02D6"
-                colourString = "Red,500"
+                colourFamily = "Red"
             }
         }
     }
@@ -38,11 +38,11 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    val colourFamilySpinnerText = MutableLiveData<String>(_currentCategory.value.colourString)
+    val colourFamilySpinnerText = MutableLiveData<String>(_currentCategory.value.colourFamily)
     val colourFamilySpinnerError: LiveData<String?> = Transformations.map(colourFamilySpinnerText) {
         if (it in ColourHandler.getColourFamilies()) {
             _currentCategory.value = _currentCategory.value.copy(
-                colourString = colourFamilySpinnerText.value!!
+                colourFamily = colourFamilySpinnerText.value!!
             )
             null
         } else {

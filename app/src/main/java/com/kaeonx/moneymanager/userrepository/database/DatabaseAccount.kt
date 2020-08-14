@@ -16,6 +16,6 @@ fun List<DatabaseAccount>.toDomain(): List<Account> = map {
     Account(
         accountId = it.accountId,
         name = it.name,
-        colourString = it.colourString
+        colourFamily = it.colourString
     )
 }

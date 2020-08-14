@@ -21,8 +21,8 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:src="@drawable/basic_ring"
-            android:visibility="@{iconDetail.iconRingColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            app:colour_string_tint="@{iconDetail.iconRingColourString}" />
+            android:visibility="@{iconDetail.iconRingColourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+            app:colour_string_tint="@{iconDetail.iconRingColourFamily}" />
 
         <ImageView
             android:id="@+id/iconBG"
@@ -33,8 +33,8 @@
             android:scaleX="0.8"
             android:scaleY="0.8"
             android:src="@drawable/basic_circle"
-            android:visibility="@{iconDetail.iconBGColourString == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
-            app:colour_string_tint="@{iconDetail.iconBGColourString}"
+            android:visibility="@{iconDetail.iconBGColourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
+            app:colour_string_tint="@{iconDetail.iconBGColourFamily}"
             tools:tint="@color/colorPrimary" />
 
         <TextView
@@ -46,9 +46,8 @@
             android:gravity="center"
             android:scaleX="0.6"
             android:scaleY="0.6"
-            android:textColor="@color/white"
             app:iconTV_text="@{iconDetail.iconHex}"
-            app:textOnSurfaceColour="@{iconDetail}"
+            app:iconTV_textColour="@{iconDetail.iconBGColourFamily}"
             tools:text="@string/html_legacy_mdi_help" />
         <!-- TODO: Text color to change depending ...? -->
 

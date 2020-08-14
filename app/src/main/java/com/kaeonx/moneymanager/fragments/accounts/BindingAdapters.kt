@@ -13,17 +13,17 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
  */
 ////////////////////////////////////////////////////////////////////////////////
 @BindingAdapter("horizontalBarIV_tint")
-fun ImageView.setHorizontalBarIVTint(colourString: String) {
-    drawable.setTintList(ColourHandler.getColorStateListOf(colourString))
+fun ImageView.setHorizontalBarIVTint(colourFamily: String) {
+    drawable.setTintList(ColourHandler.getColorStateListOf(colourFamily))
 }
 
 @BindingAdapter("accountNameTV_textColor")
-fun TextView.setAccountNameTVTextColor(name: String) {
-    setTextColor(
-        if (name == "Add…") ColourHandler.getColorStateListOf("Black") else ColourHandler.getColorStateListOf(
-            "White"
-        )
-    )
+fun TextView.setAccountNameTVTextColor(colourFamily: String) {
+    when (colourFamily) {
+        "White" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Black"))
+        "TRANSPARENT" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Red,500"))
+        else -> setTextColor(ColourHandler.getSpecificColourObjectOf("White"))
+    }
 }
 
 @BindingAdapter("accountNameTV_text")

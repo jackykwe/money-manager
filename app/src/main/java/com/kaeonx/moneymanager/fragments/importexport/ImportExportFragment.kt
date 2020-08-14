@@ -158,11 +158,11 @@ class ImportExportFragment : Fragment() {
             try {
                 val progressIterator = generatePercentIterator(8)
                 updateUI("Reading from JSON…", progressIterator.next())
-                val data = withContext(Dispatchers.IO) {
+                val readData = withContext(Dispatchers.IO) {
                     IEFileHandler.readJSONString(requireContext().contentResolver, data)
                 }
                 ensureActive()
-                val jsonObject = JSONObject(data)
+                val jsonObject = JSONObject(readData)
 
 
                 // Transactions

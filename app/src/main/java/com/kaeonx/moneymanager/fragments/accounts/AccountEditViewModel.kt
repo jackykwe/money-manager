@@ -14,7 +14,7 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
         if (oldAccount.name == "Add…") {
             oldAccount.apply {
                 name = ""
-                colourString = "Red"
+                colourFamily = "Red"
             }
         }
     }
@@ -40,11 +40,11 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    val colourFamilySpinnerText = MutableLiveData<String>(_currentAccount.value.colourString)
+    val colourFamilySpinnerText = MutableLiveData<String>(_currentAccount.value.colourFamily)
     val colourFamilySpinnerError: LiveData<String?> = Transformations.map(colourFamilySpinnerText) {
         if (it in ColourHandler.getColourFamilies()) {
             _currentAccount.value = _currentAccount.value.copy(
-                colourString = colourFamilySpinnerText.value!!
+                colourFamily = colourFamilySpinnerText.value!!
             )
             null
         } else {

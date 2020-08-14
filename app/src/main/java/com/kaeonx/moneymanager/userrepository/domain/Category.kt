@@ -16,13 +16,13 @@ data class Category(
     @Json(name = "y") val type: String,
     @Json(name = "n") var name: String,
     @Json(name = "h") var iconHex: String,
-    @Json(name = "c") var colourString: String
+    @Json(name = "c") var colourFamily: String
 ) : Parcelable {
 
     fun toIconDetail(): IconDetail = IconDetail(
         iconHex = this.iconHex,
-        iconBGColourString = this.colourString,
-        iconRingColourString = "TRANSPARENT"
+        iconBGColourFamily = this.colourFamily,
+        iconRingColourFamily = "TRANSPARENT"
     )
 
     fun toDatabase(): DatabaseCategory = DatabaseCategory(
@@ -30,7 +30,7 @@ data class Category(
         type = this.type,
         name = this.name,
         iconHex = this.iconHex,
-        colourString = this.colourString
+        colourString = this.colourFamily
     )
 
     fun importEnsureValid() {
@@ -76,13 +76,13 @@ data class Category(
             )
         )
         try {
-            if (colourString == "TRANSPARENT") throw Exception()
-            ColourHandler.getColourObjectOf(colourString)
+            if (colourFamily == "TRANSPARENT") throw Exception()
+            ColourHandler.getColourObjectOf(colourFamily)
         } catch (e: Exception) {
             throw IllegalStateException(
                 errorText(
                     "invalid colour string",
-                    colourString,
+                    colourFamily,
                     "Refer to examples from exported data."
                 )
             )
@@ -96,6 +96,6 @@ internal fun List<Category>.toDatabase(): List<DatabaseCategory> = map {
         type = it.type,
         name = it.name,
         iconHex = it.iconHex,
-        colourString = it.colourString
+        colourString = it.colourFamily
     )
 }
