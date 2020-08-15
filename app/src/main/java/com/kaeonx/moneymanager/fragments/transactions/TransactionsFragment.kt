@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
@@ -121,16 +120,6 @@ class TransactionsFragment : Fragment() {
                 submitList2(it)
             }
         }
-        binding.transactionsRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.apply {
-                    when (newState) {
-                        RecyclerView.SCROLL_STATE_IDLE -> show()
-                        else -> hide()
-                    }
-                }
-            }
-        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -182,10 +171,5 @@ class TransactionsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        binding.transactionsRV.clearOnScrollListeners()
-        super.onDestroy()
     }
 }

@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.userrepository.domain
 
 import android.os.Parcelable
+import android.util.Log
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.handlers.CalendarHandler
@@ -50,6 +51,7 @@ data class Transaction(
     }
 
     fun toIconDetail(): IconDetail {
+        Log.d("matvt", "toIconDetail() called for $this")
         val repository = UserRepository.getInstance()
         val categoryObj =
             repository.categories.value!!.find { it.name == this.category && it.type == this.type }
