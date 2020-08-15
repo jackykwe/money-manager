@@ -128,6 +128,7 @@ class TransactionsFragment : Fragment() {
                         override fun onQueryTextSubmit(p0: String?): Boolean = true
                         override fun onQueryTextChange(p0: String?): Boolean {
                             p0?.let { query ->
+                                if (query.isEmpty()) return@let
                                 findNavController().run {
                                     if (currentDestination?.id == R.id.transactionsFragment) {
                                         navigate(

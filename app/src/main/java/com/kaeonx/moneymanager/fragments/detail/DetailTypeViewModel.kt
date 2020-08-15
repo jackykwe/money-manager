@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.*
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData
 import com.kaeonx.moneymanager.chartcomponents.PieChartWLPacket
 import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
@@ -279,7 +280,12 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         _displayCalendarStart.value,
                         _displayCalendarEnd.value
                     ),
-                    colourInt = ColourHandler.getSpecificColourObjectOf("Black"),
+                    colourInt = ColourHandler.getSpecificColourObjectOf(
+                        when (MainActivity.isNight) {
+                            true -> "Grey,200"
+                            false -> "Black"
+                        }
+                    ),
                     rangeAmount = rangeAmount,
                     showCurrency = showRangeCurrency,
                     homeCurrency = homeCurrency

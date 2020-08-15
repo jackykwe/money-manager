@@ -296,4 +296,6 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
+    <color name="dark_surface">#121212</color>
+
 </resources>

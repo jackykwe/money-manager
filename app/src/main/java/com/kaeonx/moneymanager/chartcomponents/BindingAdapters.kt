@@ -13,6 +13,9 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.App
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.LlItemBudgetDetailLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
@@ -37,6 +40,12 @@ fun PieChart.setPieChartAdapter(pieData: PieData) {
         holeRadius = 75f
         transparentCircleRadius = 80f
         setHoleColor(android.R.color.transparent)
+        setTransparentCircleColor(
+            when (MainActivity.isNight) {
+                true -> App.context.resources.getColor(R.color.dark_surface, null)
+                false -> App.context.resources.getColor(R.color.white, null)
+            }
+        )
 
         legend.isEnabled = false
     }
@@ -93,12 +102,20 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
             spaceMax = 1f  // 1 extra day at the end
             setDrawGridLines(true)
             setDrawLabels(true)
+            textColor = when (MainActivity.isNight) {
+                true -> App.context.resources.getColor(R.color.grey_200, null)
+                false -> App.context.resources.getColor(R.color.black, null)
+            }
         }
         axisLeft.apply {
             axisMinimum = 0f
             setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
             setDrawLimitLinesBehindData(true)
             setDrawAxisLine(false)
+            textColor = when (MainActivity.isNight) {
+                true -> App.context.resources.getColor(R.color.grey_200, null)
+                false -> App.context.resources.getColor(R.color.black, null)
+            }
 
             valueFormatter = LargeValueFormatter()
             // to prevent rendering of decimals (for values <1) which shows weird values like 500E3 (for 0.5) and 400.3 (for 0.4)
@@ -136,7 +153,16 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 labelPosition = if (lineChartPacket.upperLimitLineValue != null)
                     LimitLine.LimitLabelPosition.RIGHT_BOTTOM
                 else LimitLine.LimitLabelPosition.RIGHT_TOP
-                ColourHandler.getSpecificColourObjectOf("Red,500").let {
+                when (MainActivity.isNight) {
+                    true -> App.context.resources.getColor(R.color.dark_surface, null)
+                    false -> App.context.resources.getColor(R.color.white, null)
+                }
+                ColourHandler.getSpecificColourObjectOf(
+                    when (MainActivity.isNight) {
+                        true -> "Red,300"
+                        false -> "Red,500"
+                    }
+                ).let {
                     lineColor = it
                     textColor = it
                 }
@@ -149,7 +175,12 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
             ).apply {
                 lineWidth = 1f
                 labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
-                ColourHandler.getSpecificColourObjectOf("Red,500").let {
+                ColourHandler.getSpecificColourObjectOf(
+                    when (MainActivity.isNight) {
+                        true -> "Red,300"
+                        false -> "Red,500"
+                    }
+                ).let {
                     lineColor = it
                     textColor = it
                 }

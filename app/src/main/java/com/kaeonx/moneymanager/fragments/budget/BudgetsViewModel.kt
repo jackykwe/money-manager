@@ -138,9 +138,9 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                             )
                         )
                         colourList = listOf(
-                            ColourHandler.getSpecificColourObjectOf("Green,500"),
-                            ColourHandler.getSpecificColourObjectOf("Grey,200"),
-                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                            ColourHandler.getColourObjectThemedOf("Green"),
+                            ColourHandler.getColourObjectThemedOf("Grey"),
+                            ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                         )
                     } else {
                         entries = listOf(
@@ -153,9 +153,9 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                             )
                         )
                         colourList = listOf(
-                            ColourHandler.getSpecificColourObjectOf("Green,500"),
-                            ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                            ColourHandler.getColourObjectThemedOf("Green"),
+                            ColourHandler.getColourObjectThemedOf("Amber"),
+                            ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                         )
                     }
                 } else {
@@ -171,9 +171,9 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                         )
                     )
                     colourList = listOf(
-                        ColourHandler.getSpecificColourObjectOf("Green,500"),
-                        ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                        ColourHandler.getSpecificColourObjectOf("Red,500")
+                        ColourHandler.getColourObjectThemedOf("Green"),
+                        ColourHandler.getColourObjectThemedOf("Amber"),
+                        ColourHandler.getColourObjectThemedOf("Red")
                     )
                 }
                 val barData = BarData(

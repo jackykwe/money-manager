@@ -23,13 +23,11 @@
 
     <string-array name="dsp_theme_entries">
         <item>Light</item>
-        <item>Coloured</item>
         <item>Dark</item>
     </string-array>
 
     <string-array name="dsp_theme_values">
         <item>light</item>
-        <item>coloured</item>
         <item>dark</item>
     </string-array>
 

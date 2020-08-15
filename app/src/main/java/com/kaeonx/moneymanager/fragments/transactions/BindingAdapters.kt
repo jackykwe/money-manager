@@ -10,6 +10,9 @@ import androidx.core.text.buildSpannedString
 import androidx.databinding.BindingAdapter
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
+import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.App
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -36,6 +39,12 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
         holeRadius = 75f
         transparentCircleRadius = 80f
         setHoleColor(android.R.color.transparent)
+        setTransparentCircleColor(
+            when (MainActivity.isNight) {
+                true -> App.context.resources.getColor(R.color.dark_surface, null)
+                false -> App.context.resources.getColor(R.color.white, null)
+            }
+        )
 
         legend.isEnabled = false
     }

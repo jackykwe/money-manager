@@ -34,6 +34,8 @@ class TransactionsSearchFragment : Fragment() {
                 menu.clear()
                 inflateMenu(R.menu.fragment_transactions)
             }
+            MainActivity.styleMenuIcons(menu)
+
             (menu.getItem(0).actionView as SearchView).apply {
                 isIconified = false
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {

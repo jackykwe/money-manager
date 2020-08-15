@@ -29,7 +29,7 @@ object UserPDS : PreferenceDataStore() {
         "dap_backup_freq" to "24",
 
         // Display
-        "dsp_theme" to "coloured",
+        "dsp_theme" to "light",
         "dsp_date_format" to "ddMMyy",
         "dsp_time_format" to "HHmm",
         "dsp_sign_position" to "after_currency",
@@ -75,10 +75,10 @@ object UserPDS : PreferenceDataStore() {
     override fun getString(key: String, defValue: String?): String =
         preferences.value!![key] as String? ?: defaultPreferences[key] as String
 
-    fun getString(key: String): String =
+    internal fun getString(key: String): String =
         preferences.value!![key] as String? ?: defaultPreferences[key] as String
 
-    fun getDefaultString(key: String): String = defaultPreferences[key] as String
+    internal fun getDefaultString(key: String): String = defaultPreferences[key] as String
 
     override fun putString(key: String, value: String?) {
         if (value == null) throw IllegalArgumentException("putString: value cannot be null")

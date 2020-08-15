@@ -82,6 +82,8 @@ class DetailTypeFragment : Fragment() {
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             inflateMenu(R.menu.fragment_general_select_month_with_toggle_view)
+            MainActivity.styleMenuIcons(menu)
+
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_toggle_view -> {

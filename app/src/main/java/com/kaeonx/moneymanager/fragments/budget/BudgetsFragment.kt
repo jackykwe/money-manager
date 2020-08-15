@@ -84,6 +84,7 @@ class BudgetsFragment : Fragment() {
                 } else {
                     inflateMenu(R.menu.fragment_budgets)
                 }
+                MainActivity.styleMenuIcons(menu)
             }
 
             setOnMenuItemClickListener {

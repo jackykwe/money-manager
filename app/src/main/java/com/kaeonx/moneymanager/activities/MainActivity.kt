@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.iterator
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.observe
 import androidx.navigation.NavController
@@ -17,17 +20,42 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.github.mikephil.charting.utils.Utils
 import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
+import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
+import kotlin.properties.Delegates
+
+private const val TAG = "matvt"
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+
+        internal var isNight by Delegates.notNull<Boolean>()
+            private set
+
+        internal fun styleMenuIcons(menu: Menu) {
+            // Courtesy of https://medium.com/androiddevelopers/appcompat-v23-2-daynight-d10f90c83e94
+            val colorControlNormal = when (isNight) {
+                false -> "Black"
+                true -> "Grey,200"
+            }
+            for (menuItem in menu.iterator()) {
+                menuItem.icon.setTintList(
+                    ColourHandler.getSpecificColorStateListOf(colorControlNormal)
+                )
+            }
+        }
+
+    }
 
     private val authViewModel: AuthViewModel by viewModels()
 
@@ -35,11 +63,27 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private fun updateNightMode(newIsNight: Boolean) {
+        isNight = newIsNight
+        when (newIsNight) {
+            true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "MAIN ACTIVITY RECREATED")
         // This must be called before the onCreate. If not, onStart will run twice!
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        val themeMode = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString("dsp_theme", "light")
+        when (themeMode) {
+            "light" -> updateNightMode(false)
+            "dark" -> updateNightMode(true)
+            else -> throw IllegalArgumentException("Unknown dsp_theme $themeMode")
+        }
 
+        // Must be called before setContentView()
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
@@ -61,6 +105,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.mainActivityNV.apply {
+            if (themeMode == "light") ColourHandler.getSpecificColorStateListOf("Black").let {
+                itemBackground!!.setTintList(it)
+                itemIconTintList = it
+                itemTextColor = it
+            }
             setupWithNavController(navController) // Connects navigation drawer to navController
             setNavigationItemSelectedListener {
                 binding.rootDL.closeDrawers()
@@ -93,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-//            Log.d(TAG, "MOVING TO: ${destination.displayName}")
+            Log.d(TAG, "MOVING TO: ${destination.displayName}")
             // Close the keyboard, if it's open
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
@@ -112,6 +161,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 2
                     else -> Unit
                 }
+                styleMenuIcons(menu)
 
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
                 setupWithNavController(navController, appBarConfiguration)

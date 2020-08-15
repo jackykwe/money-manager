@@ -5,16 +5,20 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
+import androidx.preference.*
+import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.XERepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "statvt"
 private const val TITLE_TAG = "settingsActivityTitle"
@@ -31,6 +35,15 @@ class SettingsActivity : AppCompatActivity(),
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // This must be called before the onCreate. If not, onStart will run twice!
+        PreferenceManager.getDefaultSharedPreferences(this).run {
+            when (val value = getString("dsp_theme", "light")) {
+                "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                else -> throw IllegalArgumentException("Unknown dsp_theme $value")
+            }
+        }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
         if (savedInstanceState == null) {
@@ -178,6 +191,25 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.display_preferences, rootKey)
+
+            findPreference<ListPreference>("dsp_theme")!!.apply {
+                setOnPreferenceChangeListener { _, newValue ->
+                    PreferenceManager.getDefaultSharedPreferences(requireContext()).run {
+                        edit {
+                            putString("dsp_theme", newValue as String)
+                        }
+                    }
+                    if (newValue != value) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            Snackbar.make(requireView(), "Applying theme...", Snackbar.LENGTH_SHORT)
+                                .show()
+                            delay(1000L)
+                            requireActivity().recreate()
+                        }
+                    }
+                    true
+                }
+            }
         }
     }
 

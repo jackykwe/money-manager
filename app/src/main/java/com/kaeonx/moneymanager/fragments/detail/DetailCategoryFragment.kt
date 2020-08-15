@@ -77,6 +77,8 @@ class DetailCategoryFragment : Fragment() {
             } else {
                 inflateMenu(R.menu.fragment_general_select_month)
             }
+            MainActivity.styleMenuIcons(menu)
+
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_toggle_view -> {

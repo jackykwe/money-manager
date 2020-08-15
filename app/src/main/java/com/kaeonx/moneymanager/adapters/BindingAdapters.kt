@@ -22,7 +22,7 @@ fun TextView.setIconTVText(iconHex: String) {
 fun TextView.setIconTVTextColour(colourFamily: String) {
     when (colourFamily) {
         "White" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Black"))
-        "TRANSPARENT" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Red,500"))
+        "TRANSPARENT" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Red,500")) // TODO: USE NORMAL COLOUR
         else -> setTextColor(ColourHandler.getSpecificColourObjectOf("White"))
     }
 }

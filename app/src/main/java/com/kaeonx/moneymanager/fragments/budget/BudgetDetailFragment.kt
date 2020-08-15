@@ -84,6 +84,8 @@ class BudgetDetailFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             inflateMenu(R.menu.fragment_general_select_month)
+            MainActivity.styleMenuIcons(menu)
+
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_select_month -> {

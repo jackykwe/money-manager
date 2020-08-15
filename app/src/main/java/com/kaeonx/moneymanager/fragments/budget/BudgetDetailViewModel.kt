@@ -98,9 +98,9 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                     val float2 = dayDivDays.minus(exDivBud).toFloat()
                     val float3 = BigDecimal.ONE.minus(dayDivDays).toFloat()
                     colourList = listOf(
-                        ColourHandler.getSpecificColourObjectOf("Green,500"),
-                        ColourHandler.getSpecificColourObjectOf("Grey,200"),
-                        ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                        ColourHandler.getColourObjectThemedOf("Green"),
+                        ColourHandler.getColourObjectThemedOf("Grey"),
+                        ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                     )
                     pieEntries = listOf(
                         PieEntry(float1, "ex"),
@@ -157,9 +157,9 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                     val float2 = exDivBud.minus(dayDivDays).toFloat()
                     val float3 = BigDecimal.ONE.minus(exDivBud).toFloat()
                     colourList = listOf(
-                        ColourHandler.getSpecificColourObjectOf("Green,500"),
-                        ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                        ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                        ColourHandler.getColourObjectThemedOf("Green"),
+                        ColourHandler.getColourObjectThemedOf("Amber"),
+                        ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                     )
                     pieEntries = listOf(
                         PieEntry(float1, "target ex"),
@@ -219,9 +219,9 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                 val float2 = budDivEx.minus(dayDivDaysTimesBudDivEx).toFloat()  // bud
                 val float3 = BigDecimal.ONE.minus(budDivEx).toFloat()  // over ex
                 colourList = listOf(
-                    ColourHandler.getSpecificColourObjectOf("Green,500"),
-                    ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                    ColourHandler.getSpecificColourObjectOf("Red,500")
+                    ColourHandler.getColourObjectThemedOf("Green"),
+                    ColourHandler.getColourObjectThemedOf("Amber"),
+                    ColourHandler.getColourObjectThemedOf("Red")
                 )
                 pieEntries = listOf(
                     PieEntry(float1, "target ex"),

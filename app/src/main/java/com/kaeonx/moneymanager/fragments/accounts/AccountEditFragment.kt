@@ -71,6 +71,7 @@ class AccountEditFragment : Fragment() {
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             inflateMenu(R.menu.fragment_general_edit_default)
             if (args.deletable) inflateMenu(R.menu.fragment_general_edit_deleteable)
+            MainActivity.styleMenuIcons(menu)
 
             setOnMenuItemClickListener {
                 // Close the keyboard, if it's open

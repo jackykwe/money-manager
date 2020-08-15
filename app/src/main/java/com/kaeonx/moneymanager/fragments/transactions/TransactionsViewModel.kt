@@ -153,9 +153,9 @@ class TransactionsViewModel : ViewModel() {
                             PieEntry(BigDecimal.ONE.minus(dayDivDays).toFloat(), "remainder")
                         )
                         colourList = listOf(
-                            ColourHandler.getSpecificColourObjectOf("Green,500"),
-                            ColourHandler.getSpecificColourObjectOf("Grey,200"),
-                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                            ColourHandler.getColourObjectThemedOf("Green"),
+                            ColourHandler.getColourObjectThemedOf("Grey"),
+                            ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                         )
                     } else {
                         entries = listOf(
@@ -164,9 +164,9 @@ class TransactionsViewModel : ViewModel() {
                             PieEntry(BigDecimal.ONE.minus(exDivBud).toFloat(), "remainder")
                         )
                         colourList = listOf(
-                            ColourHandler.getSpecificColourObjectOf("Green,500"),
-                            ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                            ColourHandler.getSpecificColourObjectOf("TRANSPARENT")
+                            ColourHandler.getColourObjectThemedOf("Green"),
+                            ColourHandler.getColourObjectThemedOf("Amber"),
+                            ColourHandler.getColourObjectThemedOf("TRANSPARENT")
                         )
                     }
                 } else {
@@ -178,9 +178,9 @@ class TransactionsViewModel : ViewModel() {
                         PieEntry(BigDecimal.ONE.minus(budDivEx).toFloat(), "over ex")
                     )
                     colourList = listOf(
-                        ColourHandler.getSpecificColourObjectOf("Green,500"),
-                        ColourHandler.getSpecificColourObjectOf("Amber,500"),
-                        ColourHandler.getSpecificColourObjectOf("Red,500")
+                        ColourHandler.getColourObjectThemedOf("Green"),
+                        ColourHandler.getColourObjectThemedOf("Amber"),
+                        ColourHandler.getColourObjectThemedOf("Red")
                     )
                 }
 
