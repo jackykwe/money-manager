@@ -40,8 +40,8 @@ class TransactionsSearchFragment : Fragment() {
                 setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(p0: String?): Boolean {
                         // Close the keyboard, if it's open
-                        val imm =
-                            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                                as InputMethodManager
                         imm.hideSoftInputFromWindow(requireView().windowToken, 0)
                         (menu.getItem(0).actionView as SearchView).clearFocus()
                         return true
@@ -62,8 +62,8 @@ class TransactionsSearchFragment : Fragment() {
             adapter = TransactionsSearchRVAdapter(
                 itemOnClickListener = TransactionOnClickListener { transaction ->
                     // Close the keyboard, if it's open
-                    val imm =
-                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                            as InputMethodManager
                     imm.hideSoftInputFromWindow(requireView().windowToken, 0)
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsSearchFragment) {
@@ -94,8 +94,8 @@ class TransactionsSearchFragment : Fragment() {
         // UP button behaviour
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.setNavigationOnClickListener {
             // Close the keyboard, if it's open
-            val imm =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
             imm.hideSoftInputFromWindow(requireView().windowToken, 0)
             findNavController().navigateUp()
         }

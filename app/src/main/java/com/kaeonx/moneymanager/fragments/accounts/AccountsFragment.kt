@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
 internal const val ACC_PICKER_EDITABLE = "editable"
@@ -36,6 +37,8 @@ class AccountsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
+
         val view = inflater.inflate(R.layout.fragment_accounts, container, false)
 
         val childFragment = AccountsDisplayFragment()

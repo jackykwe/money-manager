@@ -1,12 +1,10 @@
 package com.kaeonx.moneymanager.activities
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -128,9 +126,6 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(TAG, "MOVING TO: ${destination.displayName}")
-            // Close the keyboard, if it's open
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)

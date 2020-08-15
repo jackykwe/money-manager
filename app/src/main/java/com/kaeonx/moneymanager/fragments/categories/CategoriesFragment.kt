@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentCategoriesBinding
 import com.kaeonx.moneymanager.userrepository.UserRepository
 
@@ -21,10 +22,13 @@ class CategoriesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
+
         binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
         binding.catPickerVP.adapter =
-            TypeDisplayFragmentStateAdapter(this, true,
+            TypeDisplayFragmentStateAdapter(
+                this, true,
                 CategoryOnClickListener { category ->
                     val cond1 = when (val type = category.type) {
                         "Income" -> UserRepository.getInstance().categories.value!!.count { it.type == "Income" } > 1

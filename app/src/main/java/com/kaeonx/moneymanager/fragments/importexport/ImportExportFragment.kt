@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentImportExportBinding
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.OUTPUT_TO_FILE
@@ -37,6 +38,8 @@ class ImportExportFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
+
         binding = FragmentImportExportBinding.inflate(inflater, container, false)
         binding.importBT.setOnClickListener {
             startActivityForResult(

@@ -17,6 +17,7 @@ import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.AuthViewModel
+import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentTitleBinding
 
@@ -40,6 +41,8 @@ class TitleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
+
         binding = FragmentTitleBinding.inflate(inflater, container, false)
         return binding.root
     }

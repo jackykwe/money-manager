@@ -40,8 +40,8 @@ class AccountEditFragment : Fragment() {
 
             setOnMenuItemClickListener {
                 // Close the keyboard, if it's open
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                        as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
                 when (it.itemId) {
@@ -84,8 +84,8 @@ class AccountEditFragment : Fragment() {
         binding.focusClearer.setOnFocusChangeListener { _, focused ->
             if (focused) {
                 // Close the keyboard, if it's open
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                        as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
             }
         }
@@ -109,6 +109,12 @@ class AccountEditFragment : Fragment() {
         // This callback will only be called when this fragment is at least Started.
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             isEnabled = true
+
+            // Close the keyboard, if it's open
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+
             if (viewModel.changesWereMade()) {
                 AlertDialog.Builder(requireContext())
                     .setMessage("Abandon unsaved changes?")

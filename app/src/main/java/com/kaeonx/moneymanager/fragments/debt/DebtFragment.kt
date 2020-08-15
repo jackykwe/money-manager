@@ -6,10 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.MainActivity
 
 class DebtFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
         return inflater.inflate(R.layout.fragment_debt, container, false)
     }
 
