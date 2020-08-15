@@ -160,6 +160,9 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
+        <action
+            android:id="@+id/action_budgetDetailFragment_to_detailTypeFragment"
+            app:destination="@id/detailTypeFragment" />
 
     </fragment>
     <fragment
@@ -299,11 +302,11 @@
         android:name="com.kaeonx.moneymanager.fragments.detail.DetailCategoryFragment"
         tools:layout="@layout/fragment_detail_category">
         <argument
-            android:name="yearModeEnabled"
-            app:argType="boolean" />
-        <argument
             android:name="initIsYearMode"
             app:argType="boolean" />
+        <argument
+            android:name="initArchiveCalendarStart"
+            app:argType="java.util.Calendar" />
         <argument
             android:name="initCalendar"
             app:argType="java.util.Calendar" />
@@ -321,9 +324,6 @@
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit"
             tools:ignore="PrivateResource" />
-        <argument
-            android:name="initArchiveCalendarStart"
-            app:argType="java.util.Calendar" />
     </fragment>
     <fragment
         android:id="@+id/importExportFragment"

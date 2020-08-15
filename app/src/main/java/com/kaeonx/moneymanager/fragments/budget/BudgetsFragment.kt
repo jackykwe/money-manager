@@ -41,50 +41,18 @@ class BudgetsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentBudgetsBinding.inflate(inflater, container, false)
-        binding.budgetRV.apply {
-            setHasFixedSize(true)
-            adapter = BudgetsRVAdapter(
-                BudgetOnClickListener {
-                    findNavController().run {
-                        if (currentDestination?.id == R.id.budgetsFragment) {
-                            navigate(
-                                BudgetsFragmentDirections.actionBudgetsFragmentToBudgetDetailFragment(
-                                    it,
-                                    viewModel.displayCalendar.value!!.clone() as Calendar
-                                )
-                            )
-                        }
-                    }
-                }
-            )
-        }
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel.budgetsRVPacket.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
-            (binding.budgetRV.adapter as BudgetsRVAdapter).apply {
-                submitList2(it)
-            }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            menu.clear()
+            inflateMenu(R.menu.fragment_general_select_month)
             lifecycleScope.launch(Dispatchers.Main) {
                 while (viewModel.addOptions == null) {
                     ensureActive()
                     delay(1L)
                 }
-                if (viewModel.addOptions!!.isEmpty()) {
-                    inflateMenu(R.menu.fragment_general_select_month)
-                } else {
+                if (viewModel.addOptions!!.isNotEmpty()) {
+                    menu.clear()
                     inflateMenu(R.menu.fragment_budgets)
                 }
-                MainActivity.styleMenuIcons(menu)
             }
 
             setOnMenuItemClickListener {
@@ -128,5 +96,35 @@ class BudgetsFragment : Fragment() {
                 }
             }
         }
+
+        binding = FragmentBudgetsBinding.inflate(inflater, container, false)
+        binding.budgetRV.apply {
+            setHasFixedSize(true)
+            adapter = BudgetsRVAdapter(
+                BudgetOnClickListener {
+                    findNavController().run {
+                        if (currentDestination?.id == R.id.budgetsFragment) {
+                            navigate(
+                                BudgetsFragmentDirections.actionBudgetsFragmentToBudgetDetailFragment(
+                                    it,
+                                    viewModel.displayCalendar.value!!.clone() as Calendar
+                                )
+                            )
+                        }
+                    }
+                }
+            )
+        }
+        return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.budgetsRVPacket.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            (binding.budgetRV.adapter as BudgetsRVAdapter).apply {
+                submitList2(it)
+            }
+        }
+    }
+
 }

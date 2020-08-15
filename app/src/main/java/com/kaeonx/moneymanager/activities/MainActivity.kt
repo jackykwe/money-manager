@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.iterator
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.observe
 import androidx.navigation.NavController
@@ -41,19 +39,6 @@ class MainActivity : AppCompatActivity() {
 
         internal var isNight by Delegates.notNull<Boolean>()
             private set
-
-        internal fun styleMenuIcons(menu: Menu) {
-            // Courtesy of https://medium.com/androiddevelopers/appcompat-v23-2-daynight-d10f90c83e94
-            val colorControlNormal = when (isNight) {
-                false -> "Black"
-                true -> "Grey,200"
-            }
-            for (menuItem in menu.iterator()) {
-                menuItem.icon.setTintList(
-                    ColourHandler.getSpecificColorStateListOf(colorControlNormal)
-                )
-            }
-        }
 
     }
 
@@ -148,23 +133,9 @@ class MainActivity : AppCompatActivity() {
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
-                // Inflation of menu is done here for these special pairs (interacting with DFs via NavUI).
-                // Otherwise, inflation of menu is done set in each fragment
-                // (because the options need to be controlled from within the fragment)
-                when (destination.id) {
-                    R.id.transactionsBSDF -> Unit  // Pair 1, 2
-                    R.id.transactionsSearchFragment -> Unit
-                    else -> menu.clear()
-                }
-                when (destination.id) {
-                    R.id.transactionsFragment -> inflateMenu(R.menu.fragment_transactions)  // Pair 1
-                    R.id.transactionEditFragment -> inflateMenu(R.menu.fragment_general_edit_deleteable)  // Pair 2
-                    else -> Unit
-                }
-                styleMenuIcons(menu)
-
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
                 setupWithNavController(navController, appBarConfiguration)
+
                 // Visibility
                 visibility = when (destination.id) {
                     R.id.titleFragment, R.id.lobbyFragment -> View.GONE

@@ -22,60 +22,26 @@ import com.kaeonx.moneymanager.databinding.FragmentAccountEditBinding
 
 class AccountEditFragment : Fragment() {
     // TODO: NOT OPTIMISED YET FOR SMOOTHNESS - INTRODUCE SOME DELAYS?
-    private lateinit var binding : FragmentAccountEditBinding
+    private lateinit var binding: FragmentAccountEditBinding
 
     private val args: AccountEditFragmentArgs by navArgs()
     private val viewModelFactory by lazy { AccountEditViewModelFactory(args.oldAccount) }
     private val viewModel: AccountEditViewModel by viewModels { viewModelFactory }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentAccountEditBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-
-        // Courtesy of https://stackoverflow.com/a/48185496/7254995
-        // Disables typing
-        binding.colourFamilySpinner.apply {
-            inputType = InputType.TYPE_NULL
-            setAdapter(ColourFamilyPickerArrayAdapter())
-        }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.focusClearer.setOnFocusChangeListener { _, focused ->
-            if (focused) {
-                // Close the keyboard, if it's open
-                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-            }
-        }
-
-        viewModel.showSnackBarText.observe(viewLifecycleOwner) {
-            if (it == null) return@observe
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-            viewModel.snackBarShown()
-        }
-        viewModel.navigateUp.observe(viewLifecycleOwner) {
-            if (it) {
-                viewModel.navigateUpHandled()
-                findNavController().navigateUp()
-            }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            menu.clear()
             inflateMenu(R.menu.fragment_general_edit_default)
             if (args.deletable) inflateMenu(R.menu.fragment_general_edit_deleteable)
-            MainActivity.styleMenuIcons(menu)
 
             setOnMenuItemClickListener {
                 // Close the keyboard, if it's open
-                val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
                 when (it.itemId) {
@@ -100,13 +66,53 @@ class AccountEditFragment : Fragment() {
             }
         }
 
+        binding = FragmentAccountEditBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
+        // Courtesy of https://stackoverflow.com/a/48185496/7254995
+        // Disables typing
+        binding.colourFamilySpinner.apply {
+            inputType = InputType.TYPE_NULL
+            setAdapter(ColourFamilyPickerArrayAdapter())
+        }
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.focusClearer.setOnFocusChangeListener { _, focused ->
+            if (focused) {
+                // Close the keyboard, if it's open
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+            }
+        }
+
+        viewModel.showSnackBarText.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
+            viewModel.snackBarShown()
+        }
+        viewModel.navigateUp.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.navigateUpHandled()
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
         // This callback will only be called when this fragment is at least Started.
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             isEnabled = true
             if (viewModel.changesWereMade()) {
                 AlertDialog.Builder(requireContext())
                     .setMessage("Abandon unsaved changes?")
-                    .setPositiveButton(R.string.ok) { _, _ ->  findNavController().navigateUp() }
+                    .setPositiveButton(R.string.ok) { _, _ -> findNavController().navigateUp() }
                     .setNegativeButton(R.string.cancel) { _, _ -> }
                     .create()
                     .show()

@@ -28,6 +28,29 @@ class TransactionEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            menu.clear()
+            inflateMenu(R.menu.fragment_general_edit_deleteable)
+
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.app_bar_delete -> {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Delete this transaction?")
+                            .setMessage("This action cannot be undone.")
+                            .setPositiveButton(R.string.ok) { _, _ ->
+                                viewModel.deleteTransaction()
+                            }
+                            .setNegativeButton(R.string.cancel) { _, _ -> }
+                            .create()
+                            .show()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
+
         binding = FragmentTransactionEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -61,27 +84,4 @@ class TransactionEditFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.app_bar_delete -> {
-                        AlertDialog.Builder(requireContext())
-                            .setTitle("Delete this transaction?")
-                            .setMessage("This action cannot be undone.")
-                            .setPositiveButton(R.string.ok) { _, _ ->
-                                viewModel.deleteTransaction()
-                            }
-                            .setNegativeButton(R.string.cancel) { _, _ -> }
-                            .create()
-                            .show()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
-            }
-        }
-    }
 }

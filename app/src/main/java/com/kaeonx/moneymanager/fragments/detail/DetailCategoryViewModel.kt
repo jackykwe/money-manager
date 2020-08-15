@@ -24,7 +24,6 @@ import java.math.RoundingMode
 import java.util.*
 
 class DetailCategoryViewModel(
-    yearModeEnabled: Boolean,
     initIsYearMode: Boolean,
     initArchiveCalendarStart: Calendar,
     private val type: String,
@@ -44,7 +43,7 @@ class DetailCategoryViewModel(
     val displayCalendarStart: LiveData<Calendar>
         get() = _displayCalendarStart
     private val _displayCalendarEnd = MutableLiveData2(
-        if (yearModeEnabled && initIsYearMode) {
+        if (initIsYearMode) {
             (CalendarHandler.getEndOfYearCalendar(initCalendar.clone() as Calendar))
         } else {
             (CalendarHandler.getEndOfMonthCalendar(initCalendar.clone() as Calendar))

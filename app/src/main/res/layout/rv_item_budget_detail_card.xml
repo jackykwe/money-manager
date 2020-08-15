@@ -20,258 +20,244 @@
             type="com.kaeonx.moneymanager.fragments.budget.BudgetDetailOnClickListener" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         tools:context=".fragments.transactions.TransactionEditFragment">
 
-        <ScrollView
-            android:id="@+id/mainSV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mainCV"
+            style="@style/RVItemDetailXBodyCard"
+            android:layout_margin="8dp">
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mainCL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mainCV"
-                    style="@style/RVItemDetailXBodyCard"
-                    android:layout_margin="8dp">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/budgetTextCL"
+                    style="@style/RVItemDetailXBodyLLCL"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/mainCL"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/budgetTextTV"
+                        style="@style/RVItemDetailXBodyRangeTV"
+                        android:text="@{packet.budgetText}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="AUG 2020" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/budgetTextCL"
-                            style="@style/RVItemDetailXBodyLLCL"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <TextView
-                                android:id="@+id/budgetTextTV"
-                                style="@style/RVItemDetailXBodyRangeTV"
-                                android:text="@{packet.budgetText}"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="AUG 2020" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <View
-                            android:id="@+id/divider"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="8dp"
-                            android:background="?android:attr/listDivider"
-                            app:layout_constraintTop_toBottomOf="@id/budgetTextCL" />
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/budgetCL"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/card_ll_item_height"
-                            android:clickable="false"
-                            android:gravity="center"
-                            android:padding="8dp"
-                            app:layout_constraintTop_toBottomOf="@id/divider">
-
-                            <FrameLayout
-                                android:id="@+id/categoryIconFL"
-                                android:layout_width="@dimen/category_icon_FL_size"
-                                android:layout_height="@dimen/category_icon_FL_size"
-                                app:layout_constraintBottom_toBottomOf="@id/budgetHBC"
-                                app:layout_constraintEnd_toStartOf="@+id/budgetCategoryTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintHorizontal_chainStyle="packed"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="@id/budgetCategoryTV">
-
-                                <include
-                                    android:id="@+id/categoryIconInclude"
-                                    layout="@layout/icon_transaction"
-                                    app:iconDetail="@{packet.budgetLLData.budget.toIconDetail()}" />
-                            </FrameLayout>
-
-                            <TextView
-                                android:id="@+id/budgetCategoryTV"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:paddingStart="8dp"
-                                android:paddingEnd="2dp"
-                                android:singleLine="true"
-                                android:text="@{packet.budgetLLData.budget.category}"
-                                android:textAppearance="@style/TextAppearance.MyApp.Body3"
-                                app:layout_constrainedWidth="true"
-                                app:layout_constraintBottom_toTopOf="@+id/budgetHBC"
-                                app:layout_constraintEnd_toStartOf="@+id/amountTVBarrier"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_chainStyle="packed"
-                                tools:text="Category Name Category NameName Category Name Category NameName Category Name " />
-
-                            <TextView
-                                android:id="@+id/budgetCurrencyTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingEnd="4dp"
-                                android:text="@{packet.budgetLLData.budget.originalCurrency}"
-                                android:textAppearance="@style/TextAppearance.MyApp.Caption4"
-                                android:visibility="@{packet.budgetLLData.showCurrency ? View.VISIBLE : View.GONE}"
-                                app:layout_constraintBottom_toBottomOf="@id/budgetSpentAmountTV"
-                                app:layout_constraintEnd_toStartOf="@+id/budgetSpentAmountTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/amountTVBarrier"
-                                app:layout_constraintTop_toTopOf="@id/budgetSpentAmountTV"
-                                tools:ignore="RtlSymmetry"
-                                tools:text="@string/placeholder_currency" />
-                            <!--    android:visibility="@{typeCategoryLLData.showCurrency ? View.VISIBLE : View.GONE}"-->
-
-                            <TextView
-                                android:id="@+id/budgetSpentAmountTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="@{packet.budgetLLData.spentAmount}"
-                                android:textAppearance="@style/TextAppearance.MyApp.Body3"
-                                app:layout_constrainedWidth="true"
-                                app:layout_constraintBottom_toBottomOf="@+id/budgetSpentPercentTV"
-                                app:layout_constraintEnd_toStartOf="@+id/budgetSpentPercentTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/budgetCurrencyTV"
-                                app:layout_constraintTop_toTopOf="@+id/budgetSpentPercentTV"
-                                app:layout_constraintWidth_max="72dp"
-                                tools:text="@string/placeholder_amount" />
-
-                            <TextView
-                                android:id="@+id/budgetSpentPercentTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="middle"
-                                android:paddingHorizontal="2dp"
-                                android:singleLine="true"
-                                android:text="@{packet.budgetLLData.spentPercent}"
-                                android:textAppearance="@style/TextAppearance.MyApp.Caption4"
-                                app:layout_constrainedWidth="true"
-                                app:layout_constraintBottom_toBottomOf="@+id/slashTV"
-                                app:layout_constraintEnd_toStartOf="@+id/slashTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/budgetSpentAmountTV"
-                                app:layout_constraintTop_toTopOf="@+id/slashTV"
-                                app:layout_constraintWidth_max="72dp"
-                                tools:text="@string/placeholder_percent" />
-
-                            <TextView
-                                android:id="@+id/slashTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingHorizontal="2dp"
-                                android:singleLine="true"
-                                android:text="/"
-                                android:textAppearance="@style/TextAppearance.MyApp.Body1"
-                                app:layout_constraintBottom_toBottomOf="@+id/budgetAmountTV"
-                                app:layout_constraintEnd_toStartOf="@+id/budgetAmountTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/budgetSpentPercentTV"
-                                app:layout_constraintTop_toTopOf="@+id/budgetAmountTV" />
-
-                            <TextView
-                                android:id="@+id/budgetAmountTV"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:text="@{packet.budgetLLData.budget.originalAmount}"
-                                android:textAppearance="@style/TextAppearance.MyApp.Body3"
-                                app:layout_constrainedWidth="true"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="1"
-                                app:layout_constraintStart_toEndOf="@+id/budgetSpentPercentTV"
-                                app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
-                                app:layout_constraintWidth_max="72dp"
-                                tools:text="@string/placeholder_amount" />
-
-                            <androidx.constraintlayout.widget.Barrier
-                                android:id="@+id/amountTVBarrier"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:barrierDirection="left"
-                                app:constraint_referenced_ids="budgetAmountTV,budgetSpentPercentTV,budgetSpentAmountTV,budgetCurrencyTV"
-                                app:layout_constraintEnd_toStartOf="@+id/budgetCurrencyTV"
-                                app:layout_constraintHorizontal_bias="0.5"
-                                app:layout_constraintStart_toEndOf="@+id/budgetCategoryTV"
-                                tools:layout_editor_absoluteY="8dp" />
-
-                            <com.github.mikephil.charting.charts.HorizontalBarChart
-                                android:id="@+id/budgetHBC"
-                                android:layout_width="0dp"
-                                android:layout_height="6dp"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginTop="2dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
-                                app:layout_constraintTop_toBottomOf="@+id/budgetCategoryTV"
-                                app:stackedHBC_adapter="@{packet.budgetLLData.barData}" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <View
-                            android:id="@+id/view"
-                            android:layout_width="match_parent"
-                            android:layout_height="28dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/budgetCL" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
+                    android:id="@+id/divider"
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:layout_below="@id/mainCV" />
+                    android:layout_height="1dp"
+                    android:layout_marginTop="8dp"
+                    android:background="?android:attr/listDivider"
+                    app:layout_constraintTop_toBottomOf="@id/budgetTextCL" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/expensesFAB"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignEnd="@+id/editFAB"
-                    android:layout_alignBottom="@+id/mainCV"
-                    android:onClick="@{() -> expensesOnClickListener.onClick(packet.budgetLLData.budget)}"
-                    android:layout_alignParentEnd="false"
-                    android:layout_marginEnd="72dp"
-                    android:layout_marginBottom="-28dp"
-                    android:clickable="true"
-                    android:src="@drawable/mdi_text_box"
-                    tools:ignore="RelativeOverlap" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/budgetCL"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/card_ll_item_height"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/editFAB"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_alignBottom="@+id/mainCV"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="24dp"
-                    android:onClick="@{() -> editOnClickListener.onClick(packet.budgetLLData.budget)}"
-                    android:layout_marginBottom="-28dp"
-                    android:clickable="true"
-                    android:src="@drawable/mdi_pencil"
-                    tools:ignore="RelativeOverlap" />
+                    <FrameLayout
+                        android:id="@+id/categoryIconFL"
+                        android:layout_width="@dimen/category_icon_FL_size"
+                        android:layout_height="@dimen/category_icon_FL_size"
+                        app:layout_constraintBottom_toBottomOf="@id/budgetHBC"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetCategoryTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/budgetCategoryTV">
 
-            </RelativeLayout>
+                        <include
+                            android:id="@+id/categoryIconInclude"
+                            layout="@layout/icon_transaction"
+                            app:iconDetail="@{packet.budgetLLData.budget.toIconDetail()}" />
+                    </FrameLayout>
 
-        </ScrollView>
+                    <TextView
+                        android:id="@+id/budgetCategoryTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="2dp"
+                        android:singleLine="true"
+                        android:text="@{packet.budgetLLData.budget.category}"
+                        android:textAppearance="@style/TextAppearance.MyApp.Body3"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toTopOf="@+id/budgetHBC"
+                        app:layout_constraintEnd_toStartOf="@+id/amountTVBarrier"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="Category Name Category NameName Category Name Category NameName Category Name " />
 
+                    <TextView
+                        android:id="@+id/budgetCurrencyTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="4dp"
+                        android:text="@{packet.budgetLLData.budget.originalCurrency}"
+                        android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+                        android:visibility="@{packet.budgetLLData.showCurrency ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="@id/budgetSpentAmountTV"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetSpentAmountTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/amountTVBarrier"
+                        app:layout_constraintTop_toTopOf="@id/budgetSpentAmountTV"
+                        tools:ignore="RtlSymmetry"
+                        tools:text="@string/placeholder_currency" />
+                    <!--    android:visibility="@{typeCategoryLLData.showCurrency ? View.VISIBLE : View.GONE}"-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/budgetSpentAmountTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{packet.budgetLLData.spentAmount}"
+                        android:textAppearance="@style/TextAppearance.MyApp.Body3"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/budgetSpentPercentTV"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetSpentPercentTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/budgetCurrencyTV"
+                        app:layout_constraintTop_toTopOf="@+id/budgetSpentPercentTV"
+                        app:layout_constraintWidth_max="72dp"
+                        tools:text="@string/placeholder_amount" />
+
+                    <TextView
+                        android:id="@+id/budgetSpentPercentTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="middle"
+                        android:paddingHorizontal="2dp"
+                        android:singleLine="true"
+                        android:text="@{packet.budgetLLData.spentPercent}"
+                        android:textAppearance="@style/TextAppearance.MyApp.Caption4"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/slashTV"
+                        app:layout_constraintEnd_toStartOf="@+id/slashTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/budgetSpentAmountTV"
+                        app:layout_constraintTop_toTopOf="@+id/slashTV"
+                        app:layout_constraintWidth_max="72dp"
+                        tools:text="@string/placeholder_percent" />
+
+                    <TextView
+                        android:id="@+id/slashTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="2dp"
+                        android:singleLine="true"
+                        android:text="/"
+                        android:textAppearance="@style/TextAppearance.MyApp.Body1"
+                        app:layout_constraintBottom_toBottomOf="@+id/budgetAmountTV"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetAmountTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/budgetSpentPercentTV"
+                        app:layout_constraintTop_toTopOf="@+id/budgetAmountTV" />
+
+                    <TextView
+                        android:id="@+id/budgetAmountTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@{packet.budgetLLData.budget.originalAmount}"
+                        android:textAppearance="@style/TextAppearance.MyApp.Body3"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1"
+                        app:layout_constraintStart_toEndOf="@+id/budgetSpentPercentTV"
+                        app:layout_constraintTop_toTopOf="@+id/budgetCategoryTV"
+                        app:layout_constraintWidth_max="72dp"
+                        tools:text="@string/placeholder_amount" />
+
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/amountTVBarrier"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="left"
+                        app:constraint_referenced_ids="budgetAmountTV,budgetSpentPercentTV,budgetSpentAmountTV,budgetCurrencyTV"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetCurrencyTV"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/budgetCategoryTV"
+                        tools:layout_editor_absoluteY="8dp" />
+
+                    <com.github.mikephil.charting.charts.HorizontalBarChart
+                        android:id="@+id/budgetHBC"
+                        android:layout_width="0dp"
+                        android:layout_height="6dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="2dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/categoryIconFL"
+                        app:layout_constraintTop_toBottomOf="@+id/budgetCategoryTV"
+                        app:stackedHBC_adapter="@{packet.budgetLLData.barData}" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/budgetCL" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_below="@id/mainCV" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/expensesFAB"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignEnd="@+id/editFAB"
+            android:layout_alignBottom="@+id/mainCV"
+            android:layout_alignParentEnd="false"
+            android:layout_marginEnd="72dp"
+            android:layout_marginBottom="-28dp"
+            android:clickable="true"
+            android:onClick="@{() -> expensesOnClickListener.onClick(packet.budgetLLData.budget)}"
+            android:src="@drawable/mdi_text_box"
+            tools:ignore="RelativeOverlap" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editFAB"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignBottom="@+id/mainCV"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="-28dp"
+            android:clickable="true"
+            android:onClick="@{() -> editOnClickListener.onClick(packet.budgetLLData.budget)}"
+            android:src="@drawable/mdi_pencil"
+            tools:ignore="RelativeOverlap" />
+
+    </RelativeLayout>
+
 </layout>

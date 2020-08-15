@@ -6,7 +6,6 @@ import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class DetailCategoryViewModelFactory(
-    private val yearModeEnabled: Boolean,
     private val isYearMode: Boolean,
     private val initArchiveCalendarStart: Calendar,
     private val type: String,
@@ -16,7 +15,6 @@ class DetailCategoryViewModelFactory(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DetailCategoryViewModel::class.java)) {
             return DetailCategoryViewModel(
-                yearModeEnabled,
                 isYearMode,
                 initArchiveCalendarStart,
                 type,

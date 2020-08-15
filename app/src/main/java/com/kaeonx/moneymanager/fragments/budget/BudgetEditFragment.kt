@@ -35,6 +35,38 @@ class BudgetEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            menu.clear()
+            inflateMenu(R.menu.fragment_general_edit_default)
+            if (args.oldBudget.originalAmount != "") inflateMenu(R.menu.fragment_general_edit_deleteable)
+
+            setOnMenuItemClickListener {
+                // Close the keyboard, if it's open
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+
+                when (it.itemId) {
+                    R.id.app_bar_delete -> {
+                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Delete this budget?")
+                            .setPositiveButton(R.string.ok) { _, _ ->
+                                viewModel.deleteOldBudget()
+                            }
+                            .setNegativeButton(R.string.cancel) { _, _ -> }
+                            .create()
+                            .show()
+                        true
+                    }
+                    R.id.app_bar_save -> {
+                        viewModel.saveBTClicked()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
+
         binding = FragmentBudgetEditBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -108,38 +140,6 @@ class BudgetEditFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_general_edit_default)
-            if (args.oldBudget.originalAmount != "") inflateMenu(R.menu.fragment_general_edit_deleteable)
-            MainActivity.styleMenuIcons(menu)
-
-            setOnMenuItemClickListener {
-                // Close the keyboard, if it's open
-                val imm =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(requireView().windowToken, 0)
-
-                when (it.itemId) {
-                    R.id.app_bar_delete -> {
-                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                            .setTitle("Delete this budget?")
-                            .setPositiveButton(R.string.ok) { _, _ ->
-                                viewModel.deleteOldBudget()
-                            }
-                            .setNegativeButton(R.string.cancel) { _, _ -> }
-                            .create()
-                            .show()
-                        true
-                    }
-                    R.id.app_bar_save -> {
-                        viewModel.saveBTClicked()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
-            }
-        }
 
         // This callback will only be called when this fragment is at least Started.
         requireActivity().onBackPressedDispatcher.addCallback(this) {

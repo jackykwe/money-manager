@@ -27,6 +27,11 @@ class TransactionsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            menu.clear()
+            inflateMenu(R.menu.fragment_transactions)
+        }
+
         binding = FragmentTransactionsBinding.inflate(inflater, container, false)
         binding.transactionsRV.apply {
             setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995

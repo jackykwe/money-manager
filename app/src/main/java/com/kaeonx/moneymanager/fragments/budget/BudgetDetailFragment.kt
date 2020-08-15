@@ -33,8 +33,27 @@ class BudgetDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
-            "Budget: ${args.category}"
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            title = "Budget: ${args.category}"
+            menu.clear()
+            inflateMenu(R.menu.fragment_general_select_month)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_select_month -> {
+                        MYPickerDialog.createDialog(
+                            context = requireContext(),
+                            initCalendar = viewModel.displayCalendar.value!!,
+                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                                viewModel.selectMonth(result[0], result[1])
+                            }
+                        ).show()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
+
         binding = FragmentBudgetDetailBinding.inflate(inflater, container, false)
         binding.budgetDetailRV.apply {
             setHasFixedSize(true)
@@ -42,16 +61,24 @@ class BudgetDetailFragment : Fragment() {
                 expensesOnClickListener = BudgetDetailOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.budgetDetailFragment) {
-                            navigate(
-                                BudgetDetailFragmentDirections.actionBudgetDetailFragmentToDetailCategoryFragment(
-                                    yearModeEnabled = false,
-                                    initIsYearMode = false,
-                                    initArchiveCalendarStart = viewModel.displayCalendar.value!!.clone() as Calendar,  // will not be used, but just passing it in.
-                                    type = "Expenses",
-                                    category = args.category,
-                                    initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
+                            if (args.category != "Overall") {
+                                navigate(
+                                    BudgetDetailFragmentDirections.actionBudgetDetailFragmentToDetailCategoryFragment(
+                                        initIsYearMode = false,
+                                        initArchiveCalendarStart = viewModel.displayCalendar.value!!.clone() as Calendar,  // will not be used, but just passing it in.
+                                        initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar,
+                                        type = "Expenses",
+                                        category = args.category
+                                    )
                                 )
-                            )
+                            } else {
+                                navigate(
+                                    BudgetDetailFragmentDirections.actionBudgetDetailFragmentToDetailTypeFragment(
+                                        initType = "Expenses",
+                                        initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
+                                    )
+                                )
+                            }
                         }
                     }
                 },
@@ -76,30 +103,6 @@ class BudgetDetailFragment : Fragment() {
             if (it == null) return@observe
             (binding.budgetDetailRV.adapter as BudgetDetailRVAdapter).apply {
                 submitList2(it)
-            }
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            inflateMenu(R.menu.fragment_general_select_month)
-            MainActivity.styleMenuIcons(menu)
-
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.menu_select_month -> {
-                        MYPickerDialog.createDialog(
-                            context = requireContext(),
-                            initCalendar = viewModel.displayCalendar.value!!,
-                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
-                                viewModel.selectMonth(result[0], result[1])
-                            }
-                        ).show()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
             }
         }
     }

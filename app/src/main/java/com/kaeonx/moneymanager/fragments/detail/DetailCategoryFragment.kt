@@ -21,7 +21,6 @@ class DetailCategoryFragment : Fragment() {
     internal val args: DetailCategoryFragmentArgs by navArgs()
     private val viewModelFactory by lazy {
         DetailCategoryViewModelFactory(
-            args.yearModeEnabled,
             args.initIsYearMode,
             args.initArchiveCalendarStart,
             args.type,
@@ -36,8 +35,32 @@ class DetailCategoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.title =
-            "${args.type}: ${args.category}"
+        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
+            title = "${args.type}: ${args.category}"
+            menu.clear()
+            inflateMenu(R.menu.fragment_general_select_month_with_toggle_view)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.menu_toggle_view -> {
+                        // This menu button isn't visible if args.yearModeEnabled is false.
+                        viewModel.toggleView()
+                        true
+                    }
+                    R.id.menu_select_month -> {
+                        MYPickerDialog.createDialog(
+                            context = requireContext(),
+                            initCalendar = viewModel.displayCalendarStart.value!!,
+                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
+                                viewModel.selectMonth(result[0], result[1])
+                            }
+                        ).show()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
+
         binding = FragmentDetailCategoryBinding.inflate(inflater, container, false)
         binding.detailCategoryRV.apply {
             setHasFixedSize(true)
@@ -68,37 +91,4 @@ class DetailCategoryFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
-            if (args.yearModeEnabled) {
-                inflateMenu(R.menu.fragment_general_select_month_with_toggle_view)
-            } else {
-                inflateMenu(R.menu.fragment_general_select_month)
-            }
-            MainActivity.styleMenuIcons(menu)
-
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.menu_toggle_view -> {
-                        // This menu button isn't visible if args.yearModeEnabled is false.
-                        viewModel.toggleView()
-                        true
-                    }
-                    R.id.menu_select_month -> {
-                        MYPickerDialog.createDialog(
-                            context = requireContext(),
-                            initCalendar = viewModel.displayCalendarStart.value!!,
-                            resultListener = MYPickerDialog.MYPickerDialogListener { result ->
-                                viewModel.selectMonth(result[0], result[1])
-                            }
-                        ).show()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
-            }
-        }
-    }
 }
