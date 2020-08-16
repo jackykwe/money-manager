@@ -1,10 +1,25 @@
 <resources>
 
     <!-- Overrides only -->
+    <style name="ThemeOverlay.App.TextInputEditText.OutlinedBox" parent="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="colorPrimary">@color/grey_200</item>
+        <item name="colorOnSurface">@color/grey_200</item>
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+    <style name="ThemeOverlay.App.AutoCompleteTextView.OutlinedBox" parent="@style/ThemeOverlay.MaterialComponents.AutoCompleteTextView.OutlinedBox">
+        <item name="colorPrimary">@color/grey_200</item>
+        <item name="colorOnSurface">@color/grey_200</item>
+        <item name="autoCompleteTextViewStyle">
+            @style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox
+        </item>
+    </style>
+
     <style name="ThemeOverlay.App.FloatingActionButton" parent="">
         <item name="colorSecondary">@color/grey_700</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSecondary">@color/grey_200</item>
+        <item name="colorOnSurface">@color/grey_200</item>
     </style>
 
     <style name="ThemeOverlay.App.FloatingActionButton.Main" parent="">
@@ -15,6 +30,7 @@
 
     <!-- ActionBar required for SettingsActivity -->
     <style name="AppTheme" parent="Theme.MaterialComponents">
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>

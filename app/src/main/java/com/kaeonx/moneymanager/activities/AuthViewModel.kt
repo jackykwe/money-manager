@@ -8,6 +8,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
@@ -76,4 +77,15 @@ class AuthViewModel : ViewModel() {
 //    private val context = getApplication<Application>().applicationContext
 
     private val storage = Firebase.storage
+    private val storageRef = storage.reference.child("user_data")
+
+    // Create a child reference
+// imagesRef now points to "images"
+    var imagesRef: StorageReference? = storageRef.child("images")
+
+    // Child references can also take paths
+// spaceRef now points to "images/space.jpg
+// imagesRef still points to "images"
+    var spaceRef = storageRef.child("images/space.jpg")
+
 }

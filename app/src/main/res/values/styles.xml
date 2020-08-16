@@ -1,5 +1,40 @@
 <resources>
 
+    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TabLayout" parent="">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+    </style>
+
+    <style name="Widget.App.TextInputLayout.OutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputEditText.OutlinedBox" parent="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+    </style>
+
+    <style name="Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.AutoCompleteTextView.OutlinedBox
+        </item>
+        <item name="endIconMode">dropdown_menu</item>
+    </style>
+
+    <style name="ThemeOverlay.App.AutoCompleteTextView.OutlinedBox" parent="@style/ThemeOverlay.MaterialComponents.AutoCompleteTextView.OutlinedBox">
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="autoCompleteTextViewStyle">
+            @style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox
+        </item>
+    </style>
+
     <style name="Widget.App.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
     </style>
@@ -48,6 +83,8 @@
 
     <!-- ActionBar required for SettingsActivity -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+        <item name="tabStyle">@style/Widget.App.TabLayout</item>
+        <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
@@ -211,7 +248,7 @@
     </style>
 
     <!-- fragment_account_category_edit -->
-    <style name="FullWidthMaterialEditTextContainer" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="FullWidthMaterialEditTextContainer">
         <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
         <item name="android:layout_marginTop">8dp</item>
@@ -220,7 +257,7 @@
         <item name="android:layout_marginBottom">8dp</item>
     </style>
 
-    <style name="FullWidthMaterialEditTextContainer.ExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+    <style name="FullWidthMaterialEditTextContainer.ExposedDropdownMenu" parent="Widget.App.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="hintAnimationEnabled">false</item>
         <item name="errorEnabled">true</item>
         <item name="android:layout_marginTop">8dp</item>

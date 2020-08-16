@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.activities
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -147,25 +148,27 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.currency_converter_preferences, rootKey)
-            val homeCurrency = UserPDS.getString("ccc_home_currency")
-            val dateFormat = UserPDS.getString("dsp_date_format")
-            val timeFormat = UserPDS.getString("dsp_time_format")
+        }
 
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             XERepository.getInstance().xeRows.observe(viewLifecycleOwner) {
                 val timestamp = it.getOrNull(0)?.updateMillis
                 if (timestamp == null) {
                     findPreference<Preference>("ccv_active_table_stats")!!.summary =
                         "No active table. Please enable internet connection for the app to retrieve one from the internet."
                 } else {
-                    val lastUpdated =
-                        CalendarHandler.getFormattedString(
-                            timestamp,
-                            "$timeFormat 'on' $dateFormat"
-                        )
+                    val homeCurrency = UserPDS.getString("ccc_home_currency")
+                    val dateFormat = UserPDS.getString("dsp_date_format")
+                    val timeFormat = UserPDS.getString("dsp_time_format")
+                    val lastUpdated = CalendarHandler.getFormattedString(
+                        timestamp,
+                        "$timeFormat 'on' $dateFormat"
+                    )
                     findPreference<Preference>("ccv_active_table_stats")!!.summary =
                         "Base currency: $homeCurrency\nLast updated: $lastUpdated"
                 }
             }
+            super.onViewCreated(view, savedInstanceState)
         }
     }
 

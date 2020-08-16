@@ -22,6 +22,32 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
 
     internal fun changesWereMade(): Boolean = _currentBudget.value != oldBudget
 
+    private val exitingCategoryNames = listOf("Overall") + userRepository.categories.value!!
+        .filter { it.type == "Expenses" }
+        .map { it.name }  // TODO: ASYNC
+
+    // Two-way binding; cannot use MutableLiveData2
+    val categoryNameETText = MutableLiveData<String>(oldBudget.category)
+    val categoryNameETHelper = Transformations.map(categoryNameETText) {
+        val trimmed = it.trim()
+        when {
+            !exitingCategoryNames.contains(trimmed) -> "Note: This Category does not exist"
+            else -> null
+        }
+    }
+    val categoryNameETError = Transformations.map(categoryNameETText) {
+        val trimmed = it.trim()
+        when {
+            trimmed.isBlank() -> "Category Name must not be empty"
+            trimmed in listOf("Add…", "(multiple)") -> "This Category Name is reserved"
+            else -> {
+                _currentBudget.value = _currentBudget.value.copy(category = trimmed)
+                null
+            }
+        }
+    }
+
+
     private val entryArray = App.context.resources.getStringArray(R.array.ccc_currencies_entries)
     private val valueArray = App.context.resources.getStringArray(R.array.ccc_currencies_values)
     private fun valueToEntry(value: String): String = entryArray[valueArray.indexOf(value)]
@@ -169,6 +195,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
 
     internal fun saveBTClicked() {
         when {
+            categoryNameETError.value != null -> _showSnackBarText.value = "Invalid Category Name"
             currencySpinnerError.value != null -> _showSnackBarText.value =
                 "Please report this bug."
             amountETError.value != null -> _showSnackBarText.value = "Invalid Monthly Budget"
