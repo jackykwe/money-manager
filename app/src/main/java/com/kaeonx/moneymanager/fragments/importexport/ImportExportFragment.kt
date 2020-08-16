@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
+import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentImportExportBinding
@@ -19,10 +22,7 @@ import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.C
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -262,7 +262,10 @@ class ImportExportFragment : Fragment() {
                         throw IllegalStateException("Setting with two values: \"${it.key}\"")
                 }
 
-                updateUI("Overwriting Transactions…", progressIterator.next())
+                updateUI("Overwriting Data…", progressIterator.next())
+                UserPDS.getString("dsp_theme").also { Log.d(TAG, "userTheme is $it") }
+                PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    .getString("dsp_theme", "light").also { Log.d(TAG, "sharedPrefTheme is $it") }
                 val userRepository = UserRepository.getInstance()
                 userRepository.overwriteDatabaseTransactionSuspend(
                     transactionsList = transactions,
@@ -271,9 +274,34 @@ class ImportExportFragment : Fragment() {
                     budgetsList = budgets,
                     preferencesList = preferences
                 )
+                delay(1000L)  // To allow UserPDS to update.
 
                 updateUI("…", progressIterator.next())
-                withContext(Dispatchers.Main) { doneUI(false, READ_FROM_FILE, null) }
+                withContext(Dispatchers.Main) {
+                    doneUI(false, READ_FROM_FILE, null)
+
+                    // Ensure theme is correct
+                    val userTheme = UserPDS.getString("dsp_theme")
+                    val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    val sharedPrefTheme = sharedPref.getString("dsp_theme", "light")
+                    if (sharedPrefTheme != userTheme) {
+                        requireActivity().run {
+                            lifecycleScope.launch {
+                                sharedPref.edit {
+                                    putString("dsp_theme", UserPDS.getString("dsp_theme"))
+                                }
+                                Snackbar.make(
+                                    requireView(),
+                                    "Applying theme…",
+                                    Snackbar.LENGTH_LONG
+                                )
+                                    .show()
+                                delay(3000L)
+                                recreate()
+                            }
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 Log.e(TAG, e.stackTrace.joinToString("\n"))
                 withContext(Dispatchers.Main) {

@@ -65,7 +65,7 @@ class LobbyFragment : Fragment() {
                 sharedPref.edit {
                     putString("dsp_theme", UserPDS.getString("dsp_theme"))
                 }
-                Snackbar.make(requireView(), "Applying theme...", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), "Applying theme…", Snackbar.LENGTH_SHORT).show()
                 delay(1000L)
                 requireActivity().recreate()
             }
