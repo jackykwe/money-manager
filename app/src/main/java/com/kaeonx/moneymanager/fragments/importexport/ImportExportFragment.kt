@@ -184,6 +184,26 @@ class ImportExportFragment : Fragment() {
                     throw IllegalStateException("duplicate ids found among Transactions")
 
 
+                // Budget
+                updateUI("Validating JSON Budgets…", progressIterator.next())
+                val budgets = IEBudgetsHandler.jsonArrayToList(
+                    jsonObject.optJSONArray("budgets")
+                        ?: throw IllegalStateException("JSON missing \"budgets\"")
+                ).map {
+                    ensureActive()
+                    it.importEnsureValid()
+                    it
+                }
+                ensureActive()
+                // Primary key check
+                if (budgets.map { it.category }.toSet().size != budgets.size)
+                    throw IllegalStateException("duplicate categories found among Budgets")
+
+
+                // Debts (TODO)
+                updateUI("Validating JSON Debts…", progressIterator.next())
+
+
                 // Categories
                 updateUI("Validating JSON Categories…", progressIterator.next())
                 val categories = IECategoriesHandler.jsonArrayToList(
@@ -205,31 +225,6 @@ class ImportExportFragment : Fragment() {
                 val uniqueCategories = categories.map { it.name }.toSet()
                 if (uniqueCategories.size != categories.size)
                     throw IllegalStateException("duplicate names found among Categories")
-
-
-                // Budget
-                updateUI("Validating JSON Budgets…", progressIterator.next())
-                val budgets = IEBudgetsHandler.jsonArrayToList(
-                    jsonObject.optJSONArray("budgets")
-                        ?: throw IllegalStateException("JSON missing \"budgets\"")
-                ).map {
-                    ensureActive()
-                    it.importEnsureValid()
-                    it
-                }
-                ensureActive()
-                // Primary key check
-                if (budgets.map { it.category }.toSet().size != budgets.size)
-                    throw IllegalStateException("duplicate categories found among Budgets")
-                val permittedCategories = uniqueCategories + listOf("Overall")
-                budgets.forEach {
-                    ensureActive()
-                    if (it.category !in permittedCategories)
-                        throw IllegalStateException("Budget defined for non-existent Category: \"${it.category}\"")
-                }
-
-                // Debts (TODO)
-                updateUI("Validating JSON Debts…", progressIterator.next())
 
 
                 // Accounts
@@ -269,7 +264,7 @@ class ImportExportFragment : Fragment() {
 
                 updateUI("Overwriting Transactions…", progressIterator.next())
                 val userRepository = UserRepository.getInstance()
-                userRepository.overwriteDatabase(
+                userRepository.overwriteDatabaseTransactionSuspend(
                     transactionsList = transactions,
                     categoriesList = categories,
                     accountsList = accounts,

@@ -33,7 +33,7 @@ class TransactionEditViewModel(private val transactionId: Int): ViewModel() {
 
     fun deleteTransaction() {
         viewModelScope.launch {
-            userRepository.deleteTransaction(transaction.value!!)
+            userRepository.deleteTransactionSuspend(transaction.value!!)
             _navigateUp.value = true
         }
     }

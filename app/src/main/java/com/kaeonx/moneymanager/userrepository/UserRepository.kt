@@ -115,38 +115,15 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
-    internal suspend fun upsertTransaction(transaction: Transaction) {
+    internal suspend fun upsertTransactionSuspend(transaction: Transaction) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.upsertTransaction(transaction.toDatabase())
+            database.userDatabaseDao.upsertTransactionSuspend(transaction.toDatabase())
         }
     }
 
-    internal suspend fun deleteTransaction(transaction: Transaction) {
+    internal suspend fun deleteTransactionSuspend(transaction: Transaction) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.deleteTransaction(transaction.toDatabase())
-        }
-    }
-
-    internal suspend fun updateTransactionsRenameCategory(
-        type: String,
-        oldCategoryName: String,
-        newCategoryName: String
-    ) {
-        withContext(Dispatchers.IO) {
-            database.userDatabaseDao.updateTransactionsRenameCategory(
-                type,
-                oldCategoryName,
-                newCategoryName
-            )
-        }
-    }
-
-    internal suspend fun updateTransactionsRenameAccount(
-        oldAccountName: String,
-        newAccountName: String
-    ) {
-        withContext(Dispatchers.IO) {
-            database.userDatabaseDao.updateTransactionsRenameAccount(oldAccountName, newAccountName)
+            database.userDatabaseDao.deleteTransactionSuspend(transaction.toDatabase())
         }
     }
 
@@ -155,15 +132,40 @@ class UserRepository private constructor() {
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
-    internal suspend fun upsertAccount(account: Account) {
+    /**
+     * Upserts the Account, and updates all Transactions (if applicable) bearing
+     * the same name as oldAccountName. Also updates Preference tst_default_account
+     * (if applicable). This is done in an SQL transaction.
+     */
+    internal suspend fun upsertAccountTransactionSuspend(
+        newAccount: Account,
+        oldAccountName: String,
+        updateTstDefaultAccount: Boolean
+    ) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.upsertAccount(account.toDatabase())
+            database.userDatabaseDao.upsertAccountTransactionSuspend(
+                databaseAccount = newAccount.toDatabase(),
+                oldAccountName = oldAccountName,
+                updateTstDefaultAccount = updateTstDefaultAccount
+            )
         }
     }
 
-    internal suspend fun deleteAccount(account: Account) {
+    /**
+     * Deletes the Account. Also updates Preference tst_default_account (if
+     * applicable). This is done in an SQL transaction.
+     */
+    internal suspend fun deleteAccountTransactionSuspend(
+        account: Account,
+        updateTstDefaultAccount: Boolean,
+        newTstDefaultAccount: String
+    ) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.deleteAccount(account.toDatabase())
+            database.userDatabaseDao.deleteAccountTransactionSuspend(
+                databaseAccount = account.toDatabase(),
+                updateTstDefaultAccount = updateTstDefaultAccount,
+                newTstDefaultAccount = newTstDefaultAccount
+            )
         }
     }
 
@@ -172,15 +174,26 @@ class UserRepository private constructor() {
      * Categories
      */
     ////////////////////////////////////////////////////////////////////////////////
-    internal suspend fun upsertCategory(category: Category) {
+    /**
+     * Upserts the Category, and updates all Transactions (if applicable) bearing
+     * the same name as oldCategoryName. Also updates the Budget bearing the same
+     * name (if applicable). This is done in an SQL transaction.
+     */
+    internal suspend fun upsertCategoryTransactionSuspend(
+        newCategory: Category,
+        oldCategoryName: String
+    ) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.upsertCategory(category.toDatabase())
+            database.userDatabaseDao.upsertCategoryTransactionSuspend(
+                databaseCategory = newCategory.toDatabase(),
+                oldCategoryName = oldCategoryName
+            )
         }
     }
 
-    internal suspend fun deleteCategory(category: Category) {
+    internal suspend fun deleteCategorySuspend(category: Category) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.deleteCategory(category.toDatabase())
+            database.userDatabaseDao.deleteCategorySuspend(category.toDatabase())
         }
     }
 
@@ -189,9 +202,9 @@ class UserRepository private constructor() {
      * Budget
      */
     ////////////////////////////////////////////////////////////////////////////////
-    internal suspend fun upsertBudget(budget: Budget) {
+    internal suspend fun upsertBudgetSuspend(budget: Budget) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.upsertBudget(budget.toDatabase())
+            database.userDatabaseDao.upsertBudgetSuspend(budget.toDatabase())
         }
     }
 
@@ -205,9 +218,9 @@ class UserRepository private constructor() {
             it.toDomain()
         }
 
-    internal suspend fun deleteBudget(budget: Budget) {
+    internal suspend fun deleteBudgetSuspend(budget: Budget) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.deleteBudget(budget.toDatabase())
+            database.userDatabaseDao.deleteBudgetSuspend(budget.toDatabase())
         }
     }
 
@@ -216,9 +229,9 @@ class UserRepository private constructor() {
      * Preferences
      */
     ////////////////////////////////////////////////////////////////////////////////
-    internal suspend fun upsertPreference(preference: Preference) {
+    internal suspend fun upsertPreferenceSuspend(preference: Preference) {
         withContext(Dispatchers.IO) {
-            database.userDatabaseDao.upsertPreference(preference.toDatabase())
+            database.userDatabaseDao.upsertPreferenceSuspend(preference.toDatabase())
         }
     }
 
@@ -252,14 +265,14 @@ class UserRepository private constructor() {
             database.userDatabaseDao.exportPreferencesSuspend().toDomain()
         }
 
-    internal suspend fun overwriteDatabase(
+    internal suspend fun overwriteDatabaseTransactionSuspend(
         transactionsList: List<Transaction>,
         categoriesList: List<Category>,
         accountsList: List<Account>,
         budgetsList: List<Budget>,
         preferencesList: List<Preference>
     ) = withContext(Dispatchers.IO) {
-        database.userDatabaseDao.overwriteDatabase(
+        database.userDatabaseDao.overwriteDatabaseTransactionSuspend(
             transactionsList.toDatabase(),
             categoriesList.toDatabase(),
             accountsList.toDatabase(),

@@ -175,7 +175,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {
-                        userRepository.upsertBudget(_currentBudget.value)
+                        userRepository.upsertBudgetSuspend(_currentBudget.value)
                         _navigateUp.value = true
                     }
                 } else {
@@ -187,7 +187,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
 
     internal fun deleteOldBudget() {
         viewModelScope.launch {
-            userRepository.deleteBudget(oldBudget)
+            userRepository.deleteBudgetSuspend(oldBudget)
             _navigateUpTwoSteps.value = true
         }
     }

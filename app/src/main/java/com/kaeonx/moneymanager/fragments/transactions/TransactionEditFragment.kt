@@ -36,8 +36,7 @@ class TransactionEditFragment : Fragment() {
                 when (it.itemId) {
                     R.id.app_bar_delete -> {
                         AlertDialog.Builder(requireContext())
-                            .setTitle("Delete this transaction?")
-                            .setMessage("This action cannot be undone.")
+                            .setMessage("Delete this transaction?")
                             .setPositiveButton(R.string.ok) { _, _ ->
                                 viewModel.deleteTransaction()
                             }

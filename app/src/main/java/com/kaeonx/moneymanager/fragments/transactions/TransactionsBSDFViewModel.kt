@@ -299,7 +299,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
             SubmitReadyState.NOT_READY_MEMO_EMPTY -> _showToastText.value = "Please enter a memo."
             SubmitReadyState.READY -> {
                 viewModelScope.launch {
-                    UserRepository.getInstance().upsertTransaction(
+                    UserRepository.getInstance().upsertTransactionSuspend(
                         _currentTransaction.value.copy(
                             originalAmount = CurrencyHandler.displayAmount(
                                 BigDecimal(

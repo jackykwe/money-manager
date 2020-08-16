@@ -12,20 +12,10 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertTransaction(databaseTransaction: DatabaseTransaction)
+    suspend fun upsertTransactionSuspend(databaseTransaction: DatabaseTransaction)
 
     @Delete
-    suspend fun deleteTransaction(databaseTransaction: DatabaseTransaction)
-
-    @Query("UPDATE transactions_table SET category = :newCategoryName WHERE category = :oldCategoryName AND type = :type")
-    suspend fun updateTransactionsRenameCategory(
-        type: String,
-        oldCategoryName: String,
-        newCategoryName: String
-    )
-
-    @Query("UPDATE transactions_table SET account = :newAccountName WHERE account = :oldAccountName")
-    suspend fun updateTransactionsRenameAccount(oldAccountName: String, newAccountName: String)
+    suspend fun deleteTransactionSuspend(databaseTransaction: DatabaseTransaction)
 
 //    @Query("SELECT * FROM transactions_table ORDER BY timestamp DESC")
 //    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
@@ -65,29 +55,65 @@ interface UserDatabaseDao {
     @Query("SELECT * FROM transactions_table WHERE memo LIKE '%' || :memoQuery || '%'")
     fun searchTransactions(memoQuery: String): LiveData<List<DatabaseTransaction>>
 
-    @Query("SELECT * FROM transactions_table")
-    suspend fun exportTransactionsSuspend(): List<DatabaseTransaction>
-
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAccount(databaseAccount: DatabaseAccount)
+    suspend fun upsertAccountSuspend(databaseAccount: DatabaseAccount)
+
+    @Query("UPDATE transactions_table SET account = :newAccountName WHERE account = :oldAccountName")
+    suspend fun updateTransactionsRenameAccountSuspend(
+        oldAccountName: String,
+        newAccountName: String
+    )
+
+    @Transaction
+    suspend fun upsertAccountTransactionSuspend(
+        databaseAccount: DatabaseAccount,
+        oldAccountName: String,
+        updateTstDefaultAccount: Boolean
+    ) {
+        upsertAccountSuspend(databaseAccount)
+        updateTransactionsRenameAccountSuspend(
+            oldAccountName = oldAccountName,
+            newAccountName = databaseAccount.name
+        )
+        if (updateTstDefaultAccount) {
+            upsertPreferenceSuspend(
+                DatabasePreference(
+                    key = "tst_default_account",
+                    valueInteger = null,
+                    valueText = databaseAccount.name
+                )
+            )
+        }
+    }
 
     @Delete
-    suspend fun deleteAccount(databaseAccount: DatabaseAccount)
+    suspend fun deleteAccountSuspend(databaseAccount: DatabaseAccount)
 
-    // TODO: RESET ACCOUNTS TO PRESET: Delete and overwrite in a database Transaction
-//    @Query("DELETE FROM transactions_table")
-//    suspend fun clearAllData()
+    @Transaction
+    suspend fun deleteAccountTransactionSuspend(
+        databaseAccount: DatabaseAccount,
+        updateTstDefaultAccount: Boolean,
+        newTstDefaultAccount: String
+    ) {
+        deleteAccountSuspend(databaseAccount)
+        if (updateTstDefaultAccount) {
+            upsertPreferenceSuspend(
+                DatabasePreference(
+                    key = "tst_default_account",
+                    valueInteger = null,
+                    valueText = newTstDefaultAccount
+                )
+            )
+        }
+    }
 
     @Query("SELECT * FROM accounts_table ORDER BY name COLLATE NOCASE")
     fun getAllAccounts(): LiveData<List<DatabaseAccount>>
-
-    @Query("SELECT * FROM accounts_table")
-    suspend fun exportAccountsSuspend(): List<DatabaseAccount>
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -95,20 +121,43 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertCategory(databaseCategory: DatabaseCategory)
+    suspend fun upsertCategorySuspend(databaseCategory: DatabaseCategory)
+
+    @Query("UPDATE transactions_table SET category = :newCategoryName WHERE category = :oldCategoryName AND type = :type")
+    suspend fun updateTransactionsRenameCategorySuspend(
+        type: String,
+        oldCategoryName: String,
+        newCategoryName: String
+    )
+
+    @Query("UPDATE budgets_table SET category = :newCategoryName WHERE category = :oldCategoryName")
+    suspend fun updateBudgetRenameCategorySuspend(
+        oldCategoryName: String,
+        newCategoryName: String
+    )
+
+    @Transaction
+    suspend fun upsertCategoryTransactionSuspend(
+        databaseCategory: DatabaseCategory,
+        oldCategoryName: String
+    ) {
+        upsertCategorySuspend(databaseCategory)
+        updateTransactionsRenameCategorySuspend(
+            type = databaseCategory.type,
+            oldCategoryName = oldCategoryName,
+            newCategoryName = databaseCategory.name
+        )
+        updateBudgetRenameCategorySuspend(
+            oldCategoryName = oldCategoryName,
+            newCategoryName = databaseCategory.name
+        )
+    }
 
     @Delete
-    suspend fun deleteCategory(databaseCategory: DatabaseCategory)
-
-    // TODO: RESET ACCOUNTS TO PRESET: Delete and overwrite in a database Transaction
-//    @Query("DELETE FROM transactions_table")
-//    suspend fun clearAllData()
+    suspend fun deleteCategorySuspend(databaseCategory: DatabaseCategory)
 
     @Query("SELECT * FROM categories_table ORDER BY name COLLATE NOCASE")
     fun getAllCategories(): LiveData<List<DatabaseCategory>>
-
-    @Query("SELECT * FROM categories_table")
-    suspend fun exportCategoriesSuspend(): List<DatabaseCategory>
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -116,7 +165,7 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertBudget(databaseBudget: DatabaseBudget)
+    suspend fun upsertBudgetSuspend(databaseBudget: DatabaseBudget)
 
     @Query("SELECT * FROM budgets_table WHERE category = :category")
     fun getBudget(category: String): LiveData<DatabaseBudget?>
@@ -125,10 +174,7 @@ interface UserDatabaseDao {
     fun getAllBudgets(): LiveData<List<DatabaseBudget>>
 
     @Delete
-    suspend fun deleteBudget(databaseBudget: DatabaseBudget)
-
-    @Query("SELECT * FROM budgets_table")
-    suspend fun exportBudgetsSuspend(): List<DatabaseBudget>
+    suspend fun deleteBudgetSuspend(databaseBudget: DatabaseBudget)
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
@@ -136,66 +182,79 @@ interface UserDatabaseDao {
      */
     ////////////////////////////////////////////////////////////////////////////////
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertPreference(databasePreference: DatabasePreference)
+    suspend fun upsertPreferenceSuspend(databasePreference: DatabasePreference)
 
     @Query("SELECT * FROM preferences_table")
     fun getAllPreferences(): LiveData<List<DatabasePreference>>
-
-    @Query("SELECT * FROM preferences_table")
-    suspend fun exportPreferencesSuspend(): List<DatabasePreference>
 
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Backup
      */
     ////////////////////////////////////////////////////////////////////////////////
+
+    @Query("SELECT * FROM transactions_table")
+    suspend fun exportTransactionsSuspend(): List<DatabaseTransaction>
+
+    @Query("SELECT * FROM accounts_table")
+    suspend fun exportAccountsSuspend(): List<DatabaseAccount>
+
+    @Query("SELECT * FROM categories_table")
+    suspend fun exportCategoriesSuspend(): List<DatabaseCategory>
+
+    @Query("SELECT * FROM budgets_table")
+    suspend fun exportBudgetsSuspend(): List<DatabaseBudget>
+
+    @Query("SELECT * FROM preferences_table")
+    suspend fun exportPreferencesSuspend(): List<DatabasePreference>
+
     @Query("DELETE FROM transactions_table")
-    suspend fun deleteAllTransactions()
+    suspend fun deleteAllTransactionsSuspend()
 
     @Query("DELETE FROM categories_table")
-    suspend fun deleteAllCategories()
+    suspend fun deleteAllCategoriesSuspend()
 
     @Query("DELETE FROM accounts_table")
-    suspend fun deleteAllAccounts()
+    suspend fun deleteAllAccountsSuspend()
 
     @Query("DELETE FROM budgets_table")
-    suspend fun deleteAllBudgets()
+    suspend fun deleteAllBudgetsSuspend()
 
     @Query("DELETE FROM preferences_table")
-    suspend fun deleteAllPreferences()
+    suspend fun deleteAllPreferencesSuspend()
 
     @Insert
-    suspend fun insertTransaction(databaseTransaction: DatabaseTransaction)
+    suspend fun insertTransactionSuspend(databaseTransaction: DatabaseTransaction)
 
     @Insert
-    suspend fun insertCategory(databaseCategory: DatabaseCategory)
+    suspend fun insertCategorySuspend(databaseCategory: DatabaseCategory)
 
     @Insert
-    suspend fun insertAccount(databaseAccount: DatabaseAccount)
+    suspend fun insertAccountSuspend(databaseAccount: DatabaseAccount)
 
     @Insert
-    suspend fun insertBudget(databaseBudget: DatabaseBudget)
+    suspend fun insertBudgetSuspend(databaseBudget: DatabaseBudget)
 
     @Insert
-    suspend fun insertPreference(databasePreference: DatabasePreference)
+    suspend fun insertPreferenceSuspend(databasePreference: DatabasePreference)
 
     @Transaction
-    suspend fun overwriteDatabase(
+    suspend fun overwriteDatabaseTransactionSuspend(
         transactionsList: List<DatabaseTransaction>,
         categoriesList: List<DatabaseCategory>,
         accountsList: List<DatabaseAccount>,
         budgetsList: List<DatabaseBudget>,
         preferencesList: List<DatabasePreference>
     ) {
-        deleteAllTransactions()
-        transactionsList.forEach { insertTransaction(it) }
-        deleteAllCategories()
-        categoriesList.forEach { insertCategory(it) }
-        deleteAllAccounts()
-        accountsList.forEach { insertAccount(it) }
-        deleteAllBudgets()
-        budgetsList.forEach { insertBudget(it) }
-        deleteAllPreferences()
-        preferencesList.forEach { insertPreference(it) }
+        deleteAllTransactionsSuspend()
+        transactionsList.forEach { insertTransactionSuspend(it) }
+        deleteAllCategoriesSuspend()
+        categoriesList.forEach { insertCategorySuspend(it) }
+        deleteAllAccountsSuspend()
+        accountsList.forEach { insertAccountSuspend(it) }
+        deleteAllBudgetsSuspend()
+        budgetsList.forEach { insertBudgetSuspend(it) }
+        deleteAllPreferencesSuspend()
+        preferencesList.forEach { insertPreferenceSuspend(it) }
     }
 }

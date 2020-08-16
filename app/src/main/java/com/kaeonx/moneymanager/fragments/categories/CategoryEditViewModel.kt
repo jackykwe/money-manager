@@ -94,11 +94,9 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {
-                        userRepository.upsertCategory(_currentCategory.value)
-                        userRepository.updateTransactionsRenameCategory(
-                            type = _currentCategory.value.type,
-                            oldCategoryName = oldCategory.name,
-                            newCategoryName = _currentCategory.value.name
+                        userRepository.upsertCategoryTransactionSuspend(
+                            newCategory = _currentCategory.value,
+                            oldCategoryName = oldCategory.name
                         )
                         _navigateUp.value = true
                     }
@@ -111,7 +109,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
 
     fun deleteOldCategory() {
         viewModelScope.launch {
-            userRepository.deleteCategory(oldCategory)
+            userRepository.deleteCategorySuspend(oldCategory)
             _navigateUp.value = true
         }
     }

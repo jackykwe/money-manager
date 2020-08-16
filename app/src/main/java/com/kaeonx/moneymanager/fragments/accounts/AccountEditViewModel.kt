@@ -80,17 +80,11 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
             else -> {
                 if (changesWereMade()) {
                     viewModelScope.launch {
-                        // TODO: MAKE THESE INTO A TRANSACTION. EITHER ALL PASS OR ALL FAIL. NO HALFWAY.
-                        // TODO ^ might become buggy if this continues (though you can always rerun it
-                        // TODO: and it'll correct itself)
-                        userRepository.upsertAccount(_currentAccount.value)
-                        userRepository.updateTransactionsRenameAccount(
+                        userRepository.upsertAccountTransactionSuspend(
+                            newAccount = _currentAccount.value,
                             oldAccountName = oldAccount.name,
-                            newAccountName = _currentAccount.value.name
+                            updateTstDefaultAccount = oldAccount.name == UserPDS.getString("tst_default_account")
                         )
-                        if (UserPDS.getString("tst_default_account") == oldAccount.name) {
-                            UserPDS.putString("tst_default_account", _currentAccount.value.name)
-                        }
                         _navigateUp.value = true
                     }
                 } else {
@@ -102,14 +96,11 @@ class AccountEditViewModel(private val oldAccount: Account) : ViewModel() {
 
     fun deleteOldAccount() {
         viewModelScope.launch {
-            userRepository.deleteAccount(oldAccount)
-            if (UserPDS.getString("tst_default_account") == oldAccount.name) {
-                UserPDS.putString(
-                    "tst_default_account",
-                    userRepository.accounts.value!!.find { it.name != oldAccount.name }!!.name
-                    // The .find check is there in case the LiveData hasn't been updated yet.
-                )
-            }
+            userRepository.deleteAccountTransactionSuspend(
+                account = oldAccount,
+                updateTstDefaultAccount = oldAccount.name == UserPDS.getString("tst_default_account"),
+                newTstDefaultAccount = userRepository.accounts.value!!.find { it.name != oldAccount.name }!!.name
+            )
             _navigateUp.value = true
         }
     }

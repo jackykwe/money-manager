@@ -62,7 +62,7 @@ object UserPDS : PreferenceDataStore() {
 
     override fun putBoolean(key: String, value: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            userRepository.upsertPreference(
+            userRepository.upsertPreferenceSuspend(
                 Preference(
                     key = key,
                     valueInteger = if (value) 1 else 0,
@@ -83,7 +83,7 @@ object UserPDS : PreferenceDataStore() {
     override fun putString(key: String, value: String?) {
         if (value == null) throw IllegalArgumentException("putString: value cannot be null")
         CoroutineScope(Dispatchers.IO).launch {
-            userRepository.upsertPreference(
+            userRepository.upsertPreferenceSuspend(
                 Preference(
                     key = key,
                     valueInteger = null,
