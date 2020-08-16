@@ -10,7 +10,6 @@ import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.preference.*
-import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -200,11 +199,11 @@ class SettingsActivity : AppCompatActivity(),
                         }
                     }
                     if (newValue != value) {
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            Snackbar.make(requireView(), "Applying theme...", Snackbar.LENGTH_SHORT)
-                                .show()
-                            delay(1000L)
-                            requireActivity().recreate()
+                        requireActivity().run {
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                delay(300L)
+                                recreate()
+                            }
                         }
                     }
                     true

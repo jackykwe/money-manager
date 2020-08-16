@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsSearchBinding
@@ -87,6 +88,16 @@ class TransactionsSearchFragment : Fragment() {
                 submitList2(it)
             }
         }
+        binding.transactionsRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    // Close the keyboard, if it's open
+                    val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
+                            as InputMethodManager
+                    imm.hideSoftInputFromWindow(requireView().windowToken, 0)
+                }
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

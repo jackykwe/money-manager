@@ -24,9 +24,7 @@ import com.kaeonx.moneymanager.TopLevelNavGraphDirections
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
-import com.kaeonx.moneymanager.userrepository.UserRepository
-import com.kaeonx.moneymanager.userrepository.database.UserDatabase
-import com.kaeonx.moneymanager.xerepository.XERepository
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import kotlin.properties.Delegates
 
 private const val TAG = "matvt"
@@ -46,6 +44,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+    private lateinit var previousLoadedTheme: String
     private fun updateNightMode(newIsNight: Boolean) {
         isNight = newIsNight
         when (newIsNight) {
@@ -58,12 +57,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "MAIN ACTIVITY RECREATED")
         // This must be called before the onCreate. If not, onStart will run twice!
-        val themeMode = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("dsp_theme", "light")
-        when (themeMode) {
+        previousLoadedTheme = PreferenceManager.getDefaultSharedPreferences(this)
+            .getString("dsp_theme", "light")!!
+        when (previousLoadedTheme) {
             "light" -> updateNightMode(false)
             "dark" -> updateNightMode(true)
-            else -> throw IllegalArgumentException("Unknown dsp_theme $themeMode")
+            else -> throw IllegalArgumentException("Unknown dsp_theme $previousLoadedTheme")
         }
 
         // Must be called before setContentView()
@@ -88,19 +87,25 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.mainActivityNV.apply {
-            if (themeMode == "light") ColourHandler.getSpecificColorStateListOf("Black").let {
-                itemBackground!!.setTintList(it)
-                itemIconTintList = it
-                itemTextColor = it
-            }
+            if (previousLoadedTheme == "light") ColourHandler.getSpecificColorStateListOf("Black")
+                .let {
+                    itemBackground!!.setTintList(it)
+                    itemIconTintList = it
+                    itemTextColor = it
+                }
             setupWithNavController(navController) // Connects navigation drawer to navController
             setNavigationItemSelectedListener {
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
                     R.id.menuSettings -> {
 //                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
-                        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-//                    startActivityForResult(Intent(this, SettingsActivity::class.java), 0)
+//                        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+                        startActivityForResult(
+                            Intent(
+                                this@MainActivity,
+                                SettingsActivity::class.java
+                            ), 0
+                        )
                         false
                     }
                     R.id.menuLogout -> {
@@ -164,13 +169,24 @@ class MainActivity : AppCompatActivity() {
         headerBinding.lifecycleOwner = this
         headerBinding.authViewModel = authViewModel
         authViewModel.currentUser.observe(this) {
-            if (it == null) {
+            if (it == null &&
+                navController.currentDestination?.id !in listOf(
+                    R.id.titleFragment,
+                    R.id.lobbyFragment,
+                    R.id.exitLobbyFragment
+                )
+            ) {
                 // Logout logic. Login logic is controlled from within RootTitleFragment.
-                navController.navigate(TopLevelNavGraphDirections.actionGlobalTitleFragment())
-                UserRepository.dropInstance()
-                UserDatabase.dropInstance()
-                XERepository.dropInstance()
+                navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "hello there onActivityResult with resultCode $resultCode")
+        if (requestCode == 0) {
+            if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
         }
     }
 }

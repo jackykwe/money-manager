@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/titleFragment"
         android:name="com.kaeonx.moneymanager.fragments.title.TitleFragment"
-        android:label="Title Screen"
+        android:label=""
         tools:layout="@layout/fragment_title">
         <action
             android:id="@+id/action_titleFragment_to_lobbyFragment"
@@ -21,9 +21,26 @@
             app:popUpToInclusive="true"
             tools:ignore="PrivateResource" />
     </fragment>
+    <fragment
+        android:id="@+id/exitLobbyFragment"
+        android:name="com.kaeonx.moneymanager.fragments.title.ExitLobbyFragment"
+        android:label=""
+        tools:layout="@layout/fragment_lobby">
+        <action
+            android:id="@+id/action_exitLobbyFragment_to_titleFragment"
+            app:destination="@id/titleFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            app:popUpTo="@id/exitLobbyFragment"
+            app:popUpToInclusive="true"
+            tools:ignore="PrivateResource" />
+    </fragment>
     <action
-        android:id="@+id/action_global_titleFragment"
-        app:destination="@id/titleFragment"
+        android:id="@+id/action_global_exitLobbyFragment"
+        app:destination="@id/exitLobbyFragment"
         app:launchSingleTop="true"
         app:popUpTo="@id/top_level_nav_graph"
         app:popUpToInclusive="true" />

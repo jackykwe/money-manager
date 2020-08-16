@@ -74,7 +74,7 @@ class AccountEditFragment : Fragment() {
         // Disables typing
         binding.colourFamilySpinner.apply {
             inputType = InputType.TYPE_NULL
-            setAdapter(ColourFamilyPickerArrayAdapter())
+            setAdapter(ColourFamilyPickerArrayAdapter(requireContext()))
         }
 
         return binding.root

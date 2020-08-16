@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 
 private const val TAG = "authVM"
@@ -53,7 +54,8 @@ class AuthViewModel : ViewModel() {
         return AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(providers)
-//            .setLogo(R.drawable.baseline_account_circle_24) // Set logo drawable
+            .setLogo(R.drawable.firebase_auth_light) // Set logo drawable
+            .setTheme(R.style.AppTheme)
             .build()
     }
 
