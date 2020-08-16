@@ -54,6 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords"
+                android:nextFocusDown="@id/iconHexET"
                 android:text="@={viewModel.categoryNameETText}" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,7 +63,7 @@
             style="@style/FullWidthMaterialEditTextContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Icon ID"
+            android:hint="@string/hint_icon_id"
             app:error_text="@{viewModel.iconHexETError}"
             app:helperText="Refer to Cheatsheet on materialdesignicons.com"
             app:layout_constraintTop_toBottomOf="@+id/categoryNameETContainer"
@@ -75,16 +76,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="textCapCharacters"
                 android:maxLength="5"
-                android:nextFocusDown="@id/focusClearer"
+                android:nextFocusDown="@id/categoryIconFL"
                 android:text="@={viewModel.iconHexETText}" />
-
-            <View
-                android:id="@+id/focusClearer"
-                android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                app:layout_constraintTop_toBottomOf="@+id/iconHexET" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,7 +86,7 @@
             style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Colour"
+            android:hint="@string/hint_colour"
             app:error_text="@{viewModel.colourFamilySpinnerError}"
             app:layout_constraintTop_toBottomOf="@+id/iconHexETContainer">
 
@@ -103,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:dropDownAnchor="@id/categoryIconFL"
+                android:hint="@string/hint_colour"
                 android:tag="colour family spinner"
                 app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}" />
 

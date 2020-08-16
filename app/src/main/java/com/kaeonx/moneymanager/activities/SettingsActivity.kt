@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +8,10 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
-import androidx.preference.*
+import androidx.preference.ListPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -138,24 +140,6 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.currency_preferences, rootKey)
-
-            findPreference<ListPreference>("ccc_home_currency")!!.apply {
-//                value = PreferenceDS.getString2(key)
-                setOnPreferenceChangeListener { preference, newValue ->
-                    Log.d(TAG, "I got changed lol")
-//                    requireActivity().setResult(Activity.RESULT_OK)
-                    true
-                }
-            }
-
-            findPreference<SwitchPreference>("ccc_hide_matching_currency")!!.apply {
-//                isChecked = PreferenceDS.getBoolean2(key)
-                setOnPreferenceChangeListener { preference, newValue ->
-                    Log.d(TAG, "I got changed lol2")
-//                    requireActivity().setResult(Activity.RESULT_OK)
-                    true
-                }
-            }
         }
     }
 
@@ -166,15 +150,21 @@ class SettingsActivity : AppCompatActivity(),
             val homeCurrency = UserPDS.getString("ccc_home_currency")
             val dateFormat = UserPDS.getString("dsp_date_format")
             val timeFormat = UserPDS.getString("dsp_time_format")
-            val timestamp = XERepository.getInstance().xeRows.value!!.getOrNull(0)?.updateMillis
-            if (timestamp == null) {
-                findPreference<Preference>("ccv_active_table_stats")!!.summary =
-                    "No active table. Please enable internet connection for the app to retrieve one from the internet."
-            } else {
-                val lastUpdated =
-                    CalendarHandler.getFormattedString(timestamp, "$timeFormat 'on' $dateFormat")
-                findPreference<Preference>("ccv_active_table_stats")!!.summary =
-                    "Base currency: $homeCurrency\nLast updated: $lastUpdated"
+
+            XERepository.getInstance().xeRows.observe(viewLifecycleOwner) {
+                val timestamp = it.getOrNull(0)?.updateMillis
+                if (timestamp == null) {
+                    findPreference<Preference>("ccv_active_table_stats")!!.summary =
+                        "No active table. Please enable internet connection for the app to retrieve one from the internet."
+                } else {
+                    val lastUpdated =
+                        CalendarHandler.getFormattedString(
+                            timestamp,
+                            "$timeFormat 'on' $dateFormat"
+                        )
+                    findPreference<Preference>("ccv_active_table_stats")!!.summary =
+                        "Base currency: $homeCurrency\nLast updated: $lastUpdated"
+                }
             }
         }
     }

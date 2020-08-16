@@ -72,8 +72,11 @@
     <string name="hint_memo">Memo</string>
     <string name="hint_colon">:</string>
 
-    <!-- fragment_category_edit -->
+    <!-- fragment_category_edit / fragment_account_edit -->
     <string name="hint_category_name">Category Name</string>
+    <string name="hint_icon_id">Icon ID</string>
+    <string name="hint_colour">Colour</string>
+    <string name="hint_account_name">Account Name</string>
 
     <!-- ll_item_detail_type_no_data -->
     <string name="nothing_to_show">Nothing to show</string>
@@ -87,6 +90,5 @@
     <string name="import_export_loading_text">Please wait</string>
     <string name="button_export_to_storage">Export To Storage</string>
     <string name="button_import_from_storage">Import From Storage</string>
-
 
 </resources>

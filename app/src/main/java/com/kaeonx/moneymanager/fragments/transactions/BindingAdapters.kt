@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.databinding.BindingAdapter
+import androidx.preference.PreferenceManager
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.RvLlItemTransactionBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.ColourHandler
@@ -40,9 +40,11 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
         transparentCircleRadius = 80f
         setHoleColor(android.R.color.transparent)
         setTransparentCircleColor(
-            when (MainActivity.isNight) {
-                true -> App.context.resources.getColor(R.color.dark_surface, null)
-                false -> App.context.resources.getColor(R.color.white, null)
+            when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                .getString("dsp_theme", "light")) {
+                "dark" -> App.context.resources.getColor(R.color.dark_surface, null)
+                "light" -> App.context.resources.getColor(R.color.white, null)
+                else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
             }
         )
 

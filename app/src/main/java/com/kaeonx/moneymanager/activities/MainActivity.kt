@@ -25,18 +25,10 @@ import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
-import kotlin.properties.Delegates
 
 private const val TAG = "matvt"
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-
-        internal var isNight by Delegates.notNull<Boolean>()
-            private set
-
-    }
 
     private val authViewModel: AuthViewModel by viewModels()
 
@@ -45,13 +37,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var previousLoadedTheme: String
-    private fun updateNightMode(newIsNight: Boolean) {
-        isNight = newIsNight
-        when (newIsNight) {
-            true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
-    }
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         previousLoadedTheme = PreferenceManager.getDefaultSharedPreferences(this)
             .getString("dsp_theme", "light")!!
         when (previousLoadedTheme) {
-            "light" -> updateNightMode(false)
-            "dark" -> updateNightMode(true)
+            "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> throw IllegalArgumentException("Unknown dsp_theme $previousLoadedTheme")
         }
 

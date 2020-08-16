@@ -43,12 +43,14 @@
         <Preference
             app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesPageBudgetFragment"
             app:icon="@drawable/mdi_file_excel"
+            app:isPreferenceVisible="false"
             app:key="prefhome_bdg"
             app:title="Budget" />
 
         <Preference
             app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PreferencesPageDebtsFragment"
             app:icon="@drawable/mdi_file_excel"
+            app:isPreferenceVisible="false"
             app:key="prefhome_dbt"
             app:title="Debts" />
     </PreferenceCategory>

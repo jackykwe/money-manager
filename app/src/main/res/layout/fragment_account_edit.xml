@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Account Name"
+            android:hint="@string/hint_account_name"
             app:error_text="@{viewModel.accountNameETError}"
             app:layout_constraintTop_toBottomOf="@+id/accountIconFL"
             tools:layout_editor_absoluteX="8dp">
@@ -55,16 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords"
-                android:nextFocusDown="@id/focusClearer"
+                android:nextFocusDown="@id/accountIconFL"
                 android:text="@={viewModel.accountNameETText}" />
 
-            <View
-                android:id="@+id/focusClearer"
-                android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                app:layout_constraintTop_toBottomOf="@+id/accountNameET" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,7 +65,7 @@
             style="@style/FullWidthMaterialEditTextContainer.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Colour"
+            android:hint="@string/hint_colour"
             app:error_text="@{viewModel.colourFamilySpinnerError}"
             app:layout_constraintTop_toBottomOf="@+id/accountNameETContainer">
 
@@ -82,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:dropDownAnchor="@id/accountIconFL"
+                android:hint="@string/hint_colour"
                 android:tag="colour family spinner"
                 app:autoCompleteTextView_text="@={viewModel.colourFamilySpinnerText}" />
 

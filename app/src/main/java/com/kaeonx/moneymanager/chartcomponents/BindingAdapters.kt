@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.chartcomponents
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
+import androidx.preference.PreferenceManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -15,7 +16,6 @@ import com.github.mikephil.charting.formatter.LargeValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.LlItemBudgetDetailLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeLegendBinding
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
@@ -41,9 +41,11 @@ fun PieChart.setPieChartAdapter(pieData: PieData) {
         transparentCircleRadius = 80f
         setHoleColor(android.R.color.transparent)
         setTransparentCircleColor(
-            when (MainActivity.isNight) {
-                true -> App.context.resources.getColor(R.color.dark_surface, null)
-                false -> App.context.resources.getColor(R.color.white, null)
+            when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                .getString("dsp_theme", "light")) {
+                "dark" -> App.context.resources.getColor(R.color.dark_surface, null)
+                "light" -> App.context.resources.getColor(R.color.white, null)
+                else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
             }
         )
 
@@ -102,9 +104,11 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
             spaceMax = 1f  // 1 extra day at the end
             setDrawGridLines(true)
             setDrawLabels(true)
-            textColor = when (MainActivity.isNight) {
-                true -> App.context.resources.getColor(R.color.grey_200, null)
-                false -> App.context.resources.getColor(R.color.black, null)
+            textColor = when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                .getString("dsp_theme", "light")) {
+                "dark" -> App.context.resources.getColor(R.color.grey_200, null)
+                "light" -> App.context.resources.getColor(R.color.black, null)
+                else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
             }
         }
         axisLeft.apply {
@@ -112,9 +116,11 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
             setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
             setDrawLimitLinesBehindData(true)
             setDrawAxisLine(false)
-            textColor = when (MainActivity.isNight) {
-                true -> App.context.resources.getColor(R.color.grey_200, null)
-                false -> App.context.resources.getColor(R.color.black, null)
+            textColor = when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                .getString("dsp_theme", "light")) {
+                "dark" -> App.context.resources.getColor(R.color.grey_200, null)
+                "light" -> App.context.resources.getColor(R.color.black, null)
+                else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
             }
 
             valueFormatter = LargeValueFormatter()
@@ -153,14 +159,18 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 labelPosition = if (lineChartPacket.upperLimitLineValue != null)
                     LimitLine.LimitLabelPosition.RIGHT_BOTTOM
                 else LimitLine.LimitLabelPosition.RIGHT_TOP
-                when (MainActivity.isNight) {
-                    true -> App.context.resources.getColor(R.color.dark_surface, null)
-                    false -> App.context.resources.getColor(R.color.white, null)
+                when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                    .getString("dsp_theme", "light")) {
+                    "dark" -> App.context.resources.getColor(R.color.dark_surface, null)
+                    "light" -> App.context.resources.getColor(R.color.white, null)
+                    else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
                 }
                 ColourHandler.getSpecificColourObjectOf(
-                    when (MainActivity.isNight) {
-                        true -> "Red,300"
-                        false -> "Red,500"
+                    when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                        .getString("dsp_theme", "light")) {
+                        "dark" -> "Red,300"
+                        "light" -> "Red,500"
+                        else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
                     }
                 ).let {
                     lineColor = it
@@ -176,9 +186,11 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 lineWidth = 1f
                 labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
                 ColourHandler.getSpecificColourObjectOf(
-                    when (MainActivity.isNight) {
-                        true -> "Red,300"
-                        false -> "Red,500"
+                    when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
+                        .getString("dsp_theme", "light")) {
+                        "dark" -> "Red,300"
+                        "light" -> "Red,500"
+                        else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
                     }
                 ).let {
                     lineColor = it

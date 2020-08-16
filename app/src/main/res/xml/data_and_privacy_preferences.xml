@@ -2,21 +2,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="Privacy">
+    <PreferenceCategory
+        android:title="Privacy"
+        app:isPreferenceVisible="false">
+
         <Preference
             app:fragment="com.kaeonx.moneymanager.activities.SettingsActivity$PrivcyFragment"
             app:icon="@drawable/mdi_shield_account"
             app:key="dap_privacy"
             app:title="Configure password lock" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Backup">
 
         <Preference
             android:key="dap_desc1"
-            android:selectable="false"
             android:persistent="false"
-            android:summary="All your app data and settings are backed up to the cloud based on the frequency set below, and can be recovered as long as you log in with the same email account."/>
+            android:selectable="false"
+            android:summary="All your app data and settings are backed up to the cloud based on the frequency set below, and can be recovered as long as you log in with the same email account." />
 
         <ListPreference
             android:entries="@array/dap_backup_freq_entries"

@@ -82,7 +82,7 @@ class CategoryEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.focusClearer.setOnFocusChangeListener { _, focused ->
+        binding.categoryIconFL.setOnFocusChangeListener { _, focused ->
             if (focused) {
                 // Close the keyboard, if it's open
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
