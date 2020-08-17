@@ -245,6 +245,7 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
 
     val memoText = MutableLiveData<String>(oldTransaction.memo)  // Exception where MutableLiveData2 fails - two-way data binding
     private val memoIsNullOrBlank = Transformations.map(memoText) {
+        if (it.trim().length > 255) throw IllegalStateException("Memo string exceeded 255 character limit")
         _currentTransaction.value = _currentTransaction.value.copy(
             memo = it.trim()
         )

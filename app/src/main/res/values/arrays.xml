@@ -1,12 +1,12 @@
 <resources>
-        <string-array name="dap_backup_freq_entries">
-        <item>On every change</item>
+    <string-array name="dap_auto_backup_freq_entries">
         <item>Once a day</item>
+        <item>Once a week</item>
     </string-array>
 
-    <string-array name="dap_backup_freq_values">
-        <item>0</item>
-        <item>24</item>
+    <string-array name="dap_auto_backup_freq_values">
+        <item>1</item>
+        <item>7</item>
     </string-array>
 
     <string-array name="ccv_online_update_ttl_entries">
@@ -153,12 +153,12 @@
         <item>ZAR</item>
     </string-array>
 
-    <string-array name="dsp_amount_sign_position_entries">
+    <string-array name="dsp_sign_position_entries">
         <item>+ SGD 10</item>
         <item>SGD + 10</item>
     </string-array>
 
-    <string-array name="dsp_amount_sign_position_values">
+    <string-array name="dsp_sign_position_values">
         <item>before_currency</item>
         <item>after_currency</item>
     </string-array>

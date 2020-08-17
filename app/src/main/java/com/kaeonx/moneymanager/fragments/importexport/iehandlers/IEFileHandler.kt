@@ -2,10 +2,10 @@ package com.kaeonx.moneymanager.fragments.importexport.iehandlers
 
 import android.content.ContentResolver
 import android.content.Intent
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
+import com.kaeonx.moneymanager.activities.App
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.*
 
 internal class IEFileHandler private constructor() {
 
@@ -13,6 +13,9 @@ internal class IEFileHandler private constructor() {
 
         internal const val OUTPUT_TO_FILE = 1
         internal const val READ_FROM_FILE = 2
+        internal const val UPLOAD_DATA = 2
+        internal const val DELETE_DATA = 3
+
 
         /**
          * @param fileName Without .json
@@ -77,5 +80,33 @@ internal class IEFileHandler private constructor() {
                 else "attribute $element missing at index $index"
             }
         }
+
+        /**
+         * Saves a JSON String into a .json file specified by [filePath]. Internally checks
+         * if the [filePath]'s parent directory exists. If not, the directories are created.
+         * @param filePath A full path including the destination JSON file name with extension
+         * @param jsonString A JSON string obtained from `JSONObject.toString()`.
+         * @return `true` if the write was successful, else `false`.
+         */
+        internal suspend fun saveRootToFile(filePath: String, jsonString: String): Boolean {
+            return withContext(Dispatchers.IO) {
+                val file = File(filePath)
+                try {
+                    val parentDir = File(file.parent!!)
+                    if (!parentDir.exists()) parentDir.mkdirs()
+                    BufferedWriter(FileWriter(file)).use { it.write(jsonString) }
+                    true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                }
+            }
+        }
+
+        internal fun buildUserFilePath(uid: String): String {
+            return App.context.filesDir.path + "/uploadable_$uid.json"
+        }
+
+
     }
 }

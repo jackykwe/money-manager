@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/uploadBT"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="@string/button_upload_data_to_cloud"
+        app:icon="@drawable/mdi_cloud_upload"
+        app:layout_constraintBottom_toTopOf="@+id/deleteDataBT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/warningTV" />
+
+    <Button
+        android:id="@+id/deleteDataBT"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:backgroundTint="@color/red_300"
+        android:text="@string/button_delete_cloud_data"
+        app:icon="@drawable/mdi_cloud_off_outline"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploadBT" />
+
+    <FrameLayout
+        android:id="@+id/iconFL"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/lastUploadedTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/resultIV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:scaleType="fitXY"
+            android:src="@drawable/mdi_cloud_check_green"
+            tools:alpha="1" />
+
+        <ProgressBar
+            android:id="@+id/progressPI"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:alpha="0"
+            android:indeterminate="false"
+            android:progress="0"
+            tools:alpha="1" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/lastUploadedTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:textAppearance="@style/TextAppearance.MyApp.Caption1"
+        app:layout_constraintBottom_toTopOf="@+id/progressTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iconFL"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Last Uploaded: TIME FORMAT DATE FORMAT (First fetch from online, then update sharedPreferences)" />
+
+    <TextView
+        android:id="@+id/progressTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/import_export_no_active_tasks"
+        android:textAppearance="@style/TextAppearance.MyApp.Body1"
+        app:layout_constraintBottom_toTopOf="@+id/warningTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastUploadedTV" />
+
+    <TextView
+        android:id="@+id/warningTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:lines="3"
+        android:text="@string/import_export_loading_text"
+        android:textAppearance="@style/TextAppearance.MyApp.Caption2"
+        app:layout_constraintBottom_toTopOf="@+id/uploadBT"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressTV"
+        tools:alpha="1"
+        tools:text="Please wait" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

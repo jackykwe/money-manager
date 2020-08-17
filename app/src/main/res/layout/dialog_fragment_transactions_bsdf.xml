@@ -242,6 +242,7 @@
             android:hint="@string/tbsdf_memo_hint"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences"
+            android:maxLength="255"
             android:nextFocusDown="@id/tbsdAmountTV"
             android:paddingVertical="4dp"
             android:paddingStart="8dp"

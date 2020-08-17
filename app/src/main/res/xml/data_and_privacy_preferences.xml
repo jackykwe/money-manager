@@ -14,21 +14,25 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Backup">
+    <PreferenceCategory android:title="Automatic Backup">
 
         <Preference
             android:key="dap_desc1"
             android:persistent="false"
             android:selectable="false"
-            android:summary="All your app data and settings are backed up to the cloud based on the frequency set below, and can be recovered as long as you log in with the same email account." />
+            android:summary="If enabled, all your app data and settings are backed up to the cloud based on the frequency set below, and can be recovered as long as you log in with the same email account." />
+
+        <SwitchPreference
+            android:key="dap_auto_backup_enabled"
+            android:title="Enable automatic backup" />
 
         <ListPreference
-            android:entries="@array/dap_backup_freq_entries"
-            android:entryValues="@array/dap_backup_freq_values"
-            android:key="dap_backup_freq"
-            android:title="Cloud backup frequency"
+            android:dependency="dap_auto_backup_enabled"
+            android:entries="@array/dap_auto_backup_freq_entries"
+            android:entryValues="@array/dap_auto_backup_freq_values"
+            android:key="dap_auto_backup_freq"
+            android:title="Backup frequency"
             app:useSimpleSummaryProvider="true" />
-
 
     </PreferenceCategory>
 

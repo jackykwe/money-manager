@@ -39,7 +39,10 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: UserDatabase? = null
 
-        fun getInstance(): UserDatabase {
+        @Volatile
+        private var INSTANCE_USER_ID: String? = null
+
+        fun getInstance(localUserId: String? = userId): UserDatabase {
             synchronized(this) {
                 if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
@@ -49,12 +52,15 @@ abstract class UserDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         App.context,
                         UserDatabase::class.java,
-                        "user_database_$userId"
+                        "user_database_$localUserId"
                     )
                         .addMigrations(MIGRATION_1_2)
                         .createFromAsset("database/preload.db")
                         .build()
                     INSTANCE = instance
+                    INSTANCE_USER_ID = localUserId
+                } else if (localUserId != INSTANCE_USER_ID) {
+                    throw IllegalStateException("UserDatabase.getInstance() called with different userId")
                 }
                 return instance
             }
@@ -63,7 +69,11 @@ abstract class UserDatabase : RoomDatabase() {
         // Used when logging out
         fun dropInstance() {
             Log.d(TAG, "WARN: DATABASE INSTANCE DROPPED")
+            INSTANCE?.let {
+                if (it.isOpen) it.close()
+            }
             INSTANCE = null
+            INSTANCE_USER_ID = null
         }
 
     }

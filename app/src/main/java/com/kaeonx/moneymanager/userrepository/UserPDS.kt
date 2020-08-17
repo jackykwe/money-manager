@@ -26,7 +26,8 @@ object UserPDS : PreferenceDataStore() {
         "ccv_online_update_ttl" to "86400000",
 
         // Data and Privacy
-        "dap_backup_freq" to "24",
+        "dap_auto_backup_enabled" to true,
+        "dap_auto_backup_freq" to "1",
 
         // Display
         "dsp_theme" to "light",

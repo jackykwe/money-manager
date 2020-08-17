@@ -347,5 +347,10 @@
         android:name="com.kaeonx.moneymanager.fragments.importexport.ImportExportFragment"
         android:label="Import / Export"
         tools:layout="@layout/fragment_import_export" />
+    <fragment
+        android:id="@+id/cloudFragment"
+        android:name="com.kaeonx.moneymanager.fragments.importexport.CloudFragment"
+        tools:layout="@layout/fragment_cloud"
+        android:label="Cloud Backup" />
 
 </navigation>

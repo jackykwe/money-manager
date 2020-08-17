@@ -36,6 +36,10 @@
         android:id="@+id/menuGroupSettings"
         android:checkableBehavior="none">
         <item
+            android:id="@+id/cloudFragment"
+            android:icon="@drawable/mdi_cloud_upload"
+            android:title="@string/drawer_menu_cloud_backup" />
+        <item
             android:id="@+id/importExportFragment"
             android:icon="@drawable/mdi_swap_vertical"
             android:title="@string/drawer_menu_export" />

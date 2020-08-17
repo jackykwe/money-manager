@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.mainActivityNV.apply {
+            getChildAt(0).isVerticalScrollBarEnabled = false
             if (previousLoadedTheme == "light") ColourHandler.getSpecificColorStateListOf("Black")
                 .let {
                     itemBackground!!.setTintList(it)
@@ -165,7 +166,52 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
             }
         }
+
+//        setupRecurringWork()
     }
+
+//    private fun setupRecurringWork() = lifecycleScope.launch {
+//        val constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.NOT_ROAMING)
+//            .setRequiresBatteryNotLow(true)
+//            .setRequiresDeviceIdle(false)
+//            .build()
+//
+//        val repeatingRequest = PeriodicWorkRequestBuilder<UploadDataWorker>(1, TimeUnit.DAYS)
+//            .setInitialDelay(1, TimeUnit.DAYS)
+//            .setConstraints(constraints)
+//            .setBackoffCriteria(
+//                BackoffPolicy.EXPONENTIAL,
+//                PeriodicWorkRequest.MIN_BACKOFF_MILLIS,
+//                TimeUnit.MILLISECONDS
+//            )
+//            .build()
+//
+//        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+//            UploadDataWorker.WORK_NAME,
+//            ExistingPeriodicWorkPolicy.KEEP,
+//            repeatingRequest
+//        )
+//
+//        WorkManager.getInstance(applicationContext).cancelUniqueWork(UploadDataWorker.WORK_NAME)
+//
+//        val asdf = WorkManager.getInstance(applicationContext)
+//            .getWorkInfosForUniqueWorkLiveData(UploadDataWorker.WORK_NAME)
+//        asdf.observe(this@MainActivity) {
+//            it.forEach { workInfo: WorkInfo? ->
+//                if (workInfo?.state == WorkInfo.State.ENQUEUED) {
+//                    val lastSuccessTime = workInfo.outputData.getLong(UploadDataWorker.LAST_SUCCESS_MILLIS, -1L)
+//
+//                    // only 3 tates : running, enqueued and cancelled
+////                    Snackbar.make(requireView(),
+////                        R.string.work_completed, Snackbar.LENGTH_SHORT)
+////                        .show()
+//                }
+//
+//            }
+//        }
+//
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -174,4 +220,5 @@ class MainActivity : AppCompatActivity() {
             if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
         }
     }
+
 }
