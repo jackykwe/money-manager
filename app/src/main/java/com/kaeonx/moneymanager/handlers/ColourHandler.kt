@@ -1,9 +1,9 @@
 package com.kaeonx.moneymanager.handlers
 
 import android.content.res.ColorStateList
-import androidx.preference.PreferenceManager
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
+import com.kaeonx.moneymanager.userrepository.UserPDS
 
 class ColourHandler private constructor() {
 
@@ -51,9 +51,7 @@ class ColourHandler private constructor() {
 
         internal fun getColourObjectThemedOf(colourFamily: String): Int {
             if (colourFamily == "TRANSPARENT") return getSpecificColourObjectOf(colourFamily)
-            val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
-                .getString("dsp_theme", "light")!!
-            return when (theme) {
+            return when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
                 "light" -> {
                     when (colourFamily) {
                         "Red" -> getSpecificColourObjectOf("Red,500")

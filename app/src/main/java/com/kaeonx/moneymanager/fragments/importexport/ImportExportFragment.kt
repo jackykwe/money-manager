@@ -8,10 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
@@ -264,8 +262,8 @@ class ImportExportFragment : Fragment() {
 
                 updateUI("Overwriting Data…", progressIterator.next())
                 UserPDS.getString("dsp_theme").also { Log.d(TAG, "userTheme is $it") }
-                PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    .getString("dsp_theme", "light").also { Log.d(TAG, "sharedPrefTheme is $it") }
+                UserPDS.getDSPString("dsp_theme", "light")
+                    .also { Log.d(TAG, "sharedPrefTheme is $it") }
                 val userRepository = UserRepository.getInstance()
                 userRepository.overwriteDatabaseTransactionSuspend(
                     transactionsList = transactions,
@@ -282,14 +280,11 @@ class ImportExportFragment : Fragment() {
 
                     // Ensure theme is correct
                     val userTheme = UserPDS.getString("dsp_theme")
-                    val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    val sharedPrefTheme = sharedPref.getString("dsp_theme", "light")
+                    val sharedPrefTheme = UserPDS.getDSPString("dsp_theme", "light")
                     if (sharedPrefTheme != userTheme) {
                         requireActivity().run {
                             lifecycleScope.launch {
-                                sharedPref.edit {
-                                    putString("dsp_theme", UserPDS.getString("dsp_theme"))
-                                }
+                                UserPDS.putDSPString("dsp_theme", UserPDS.getString("dsp_theme"))
                                 Snackbar.make(
                                     requireView(),
                                     "Applying theme…",

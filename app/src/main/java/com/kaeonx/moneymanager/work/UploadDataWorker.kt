@@ -69,7 +69,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                 setCustomMetadata("uploadStartMillis", System.currentTimeMillis().toString())
             })
             uploadTask.addOnFailureListener { exception ->
-                Log.d(
+                Log.e(
                     TAG,
                     "uploadTask: failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${exception.stackTrace.joinToString(
                         "\n"

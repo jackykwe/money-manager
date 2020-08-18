@@ -4,7 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.userrepository.database.toDomain
 import com.kaeonx.moneymanager.userrepository.database.toMap
@@ -288,10 +289,13 @@ class UserRepository private constructor() {
 
         fun getInstance(): UserRepository {
             synchronized(this) {
-                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
+                if (Firebase.auth.currentUser!!.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(TAG, "WARN: OPENING INSTANCE TO REPOSITORY")
+                    Log.d(
+                        TAG,
+                        "WARN: OPENING INSTANCE TO REPOSITORY FOR ${Firebase.auth.currentUser!!.uid}"
+                    )
                     // Opening a connection to a database is expensive!
                     instance = UserRepository()
                     INSTANCE = instance

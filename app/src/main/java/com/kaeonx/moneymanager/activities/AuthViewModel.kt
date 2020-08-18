@@ -3,12 +3,12 @@ package com.kaeonx.moneymanager.activities
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageException
 import com.google.firebase.storage.StorageReference
@@ -25,9 +25,6 @@ class AuthViewModel : ViewModel() {
 
     companion object {
 
-        internal var userId: String? = null
-            private set
-
         ////////////////////////////////////////////////////////////////////////////////
         /**
          * Storage Related
@@ -39,6 +36,8 @@ class AuthViewModel : ViewModel() {
         private val storage by lazy {
             Firebase.storage.apply {
                 maxUploadRetryTimeMillis = 3000L
+                maxDownloadRetryTimeMillis = 3000L
+                maxOperationRetryTimeMillis = 3000L
             }
         }
         private val storageRef by lazy { storage.reference.child("user_data") }
@@ -91,43 +90,34 @@ class AuthViewModel : ViewModel() {
                 )
             }
         }
-
-
     }
 
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
     /**
      *  Authentication Related
      */
-////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
 
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val _currentUser = MutableLiveData2<FirebaseUser?>(null)
-    val currentUser = Transformations.map(_currentUser) {
-        userId = _currentUser.value?.uid
-        Log.d(TAG, "Transformation: userId is $userId")
-        it
-    }
-
-    init {
-        Log.d(TAG, "Init: userId is $userId")
-        refreshAuthMLD()
-    }
+    private val _currentUser = MutableLiveData2(Firebase.auth.currentUser)
+    val currentUser: LiveData<FirebaseUser?>
+        get() = _currentUser
 
     internal fun refreshAuthMLD() {
-        _currentUser.value = auth.currentUser
+        _currentUser.value = Firebase.auth.currentUser
     }
 
     internal fun loginIntent(): Intent {
         // Choose authentication providers
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build()
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+            AuthUI.IdpConfig.AnonymousBuilder().build()
         )
         // Create and launch sign-in intent}
         return AuthUI.getInstance()
             .createSignInIntentBuilder()
             .setAvailableProviders(providers)
+            .enableAnonymousUsersAutoUpgrade()
             .setLogo(R.drawable.firebase_auth_light) // Set logo drawable
             .setTheme(R.style.AppTheme)
             .build()

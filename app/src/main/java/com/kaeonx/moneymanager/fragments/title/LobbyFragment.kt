@@ -5,12 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
@@ -41,30 +41,28 @@ class LobbyFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume called")
         lifecycleScope.launch(Dispatchers.Main) {
-            Log.d(TAG, "launch launched")
-            val userRepository = UserRepository.getInstance()
-            delay(200L)
             val xeRepository = XERepository.getInstance()
-            while (userRepository.accounts.value == null ||
+            val userRepository = UserRepository.getInstance()
+            while (
+                userRepository.accounts.value == null ||
                 userRepository.categories.value == null ||
                 userRepository.preferences.value == null ||
                 xeRepository.xeRows.value == null
             ) {
                 ensureActive()
-                Log.d("Lobby", "still waiting sir")
+//                Log.d("Lobby", "still waiting sir")
                 delay(1L)
             }
 
+            UserPDS.putDSPString("logged_in_uid", Firebase.auth.currentUser!!.uid)
+
             // Ensure theme is correct
-            val userTheme = UserPDS.getString("dsp_theme")
-            val sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            val sharedPrefTheme = sharedPref.getString("dsp_theme", "light")
+            val userTheme = UserPDS.getString("dsp_theme").also { Log.d(TAG, "userTheme is $it") }
+            val sharedPrefTheme = UserPDS.getDSPString("dsp_theme", "light")
+                .also { Log.d(TAG, "sharedPrefTheme is $it") }
             if (sharedPrefTheme != userTheme) {
-                sharedPref.edit {
-                    putString("dsp_theme", UserPDS.getString("dsp_theme"))
-                }
+                UserPDS.putDSPString("dsp_theme", UserPDS.getString("dsp_theme"))
                 Snackbar.make(requireView(), "Applying theme…", Snackbar.LENGTH_SHORT).show()
                 delay(1000L)
                 requireActivity().recreate()

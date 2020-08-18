@@ -3,23 +3,23 @@ package com.kaeonx.moneymanager.fragments.title
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentTitleBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "titleFrag"
 
@@ -57,13 +57,14 @@ class TitleFragment : Fragment() {
                     binding.titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
                     Snackbar.make(requireView(), "Hello, ${it.displayName}!", Snackbar.LENGTH_SHORT)
                         .show()
-                    Handler(Looper.getMainLooper()).postDelayed({
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        delay(1200L)
                         findNavController().run {
                             if (currentDestination?.id == R.id.titleFragment) {
                                 navigate(TitleFragmentDirections.actionTitleFragmentToLobbyFragment())
                             }
                         }
-                    }, 1200)
+                    }
                 } else {
                     findNavController().run {
                         if (currentDestination?.id == R.id.titleFragment) {
@@ -78,7 +79,6 @@ class TitleFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 0) {
-            val response = IdpResponse.fromResultIntent(data)
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
                 newLogin = true
@@ -88,7 +88,8 @@ class TitleFragment : Fragment() {
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
                 // ...
-                Log.e(TAG, "Login error with ${response?.error?.errorCode}")
+//                val response = IdpResponse.fromResultIntent(data)
+//                Log.e(TAG, "Login error with ${response?.error?.errorCode}")
                 displayLogInSnackbar()
             }
         }

@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageException
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.AuthViewModel
-import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentCloudBinding
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
@@ -42,11 +41,17 @@ class CloudFragment : Fragment() {
 
         binding = FragmentCloudBinding.inflate(inflater, container, false)
 
-        when (val lastUploadTime =
-            PreferenceManager.getDefaultSharedPreferences(requireContext())
-                .getLong("${userId}_last_upload_time", -1L)
-            ) {
-            -1L -> binding.lastUploadedTV.text = getString(R.string.no_cloud_data_found)
+        val lastUploadTime = UserPDS.getDSPLong(
+            "${Firebase.auth.currentUser!!.uid}_last_upload_time",
+            -1L
+        )
+        when (lastUploadTime) {
+            -1L -> binding.lastUploadedTV.text =
+                if (Firebase.auth.currentUser!!.isAnonymous) {
+                    "Cloud Backup unavailable for Guests"
+                } else {
+                    getString(R.string.no_cloud_data_found)
+                }
             else -> {
                 val dateFormat = UserPDS.getString("dsp_date_format")
                 val timeFormat = UserPDS.getString("dsp_time_format")
@@ -58,9 +63,20 @@ class CloudFragment : Fragment() {
             }
         }
 
-
-        binding.uploadBT.setOnClickListener { uploadData() }
-        binding.deleteDataBT.setOnClickListener { deleteData() }
+        binding.uploadBT.apply {
+            if (Firebase.auth.currentUser!!.isAnonymous) {
+                isEnabled = false
+            } else {
+                setOnClickListener { uploadData() }
+            }
+        }
+        binding.deleteDataBT.apply {
+            if (Firebase.auth.currentUser!!.isAnonymous) {
+                isEnabled = false
+            } else {
+                setOnClickListener { deleteData() }
+            }
+        }
         return binding.root
     }
 
@@ -238,20 +254,18 @@ class CloudFragment : Fragment() {
 
                 updateUI("Writing to JSON…", progressIterator.next())
                 IEFileHandler.saveRootToFile(
-                    IEFileHandler.buildUserFilePath(userId!!),
+                    IEFileHandler.buildUserFilePath(Firebase.auth.currentUser!!.uid),
                     output.toString()
                 )
 
                 updateUI("Uploading…", progressIterator.next())
-                val uploadTask = AuthViewModel.uploadJSON(userId!!)
+                val uploadTask = AuthViewModel.uploadJSON(Firebase.auth.currentUser!!.uid)
                 uploadTask
                     .addOnSuccessListener { taskSnapshot ->
-                        PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
-                            putLong(
-                                "${userId}_last_upload_time",
-                                taskSnapshot.metadata!!.updatedTimeMillis
-                            )
-                        }
+                        UserPDS.putDSPLong(
+                            "${Firebase.auth.currentUser!!.uid}_last_upload_time",
+                            taskSnapshot.metadata!!.updatedTimeMillis
+                        )
                         lifecycleScope.launch {
                             val dateFormat = UserPDS.getString("dsp_date_format")
                             val timeFormat = UserPDS.getString("dsp_time_format")
@@ -309,11 +323,9 @@ class CloudFragment : Fragment() {
             try {
                 val progressIterator = generatePercentIterator(1)
                 updateUI("Deleting cloud data…", progressIterator.next())
-                AuthViewModel.deleteJSON(userId!!)
+                AuthViewModel.deleteJSON(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener {
-                        PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
-                            remove("${userId}_last_upload_time")
-                        }
+                        UserPDS.removeDSPKey("${Firebase.auth.currentUser!!.uid}_last_upload_time")
                         binding.lastUploadedTV.text = getString(R.string.no_cloud_data_found)
                         doneUI(false, DELETE_DATA, null)
                     }

@@ -6,13 +6,11 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -38,12 +36,10 @@ class SettingsActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // This must be called before the onCreate. If not, onStart will run twice!
-        PreferenceManager.getDefaultSharedPreferences(this).run {
-            when (val value = getString("dsp_theme", "light")) {
-                "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                else -> throw IllegalArgumentException("Unknown dsp_theme $value")
-            }
+        when (val value = UserPDS.getDSPString("dsp_theme", "light")) {
+            "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            else -> throw IllegalArgumentException("Unknown dsp_theme $value")
         }
 
         super.onCreate(savedInstanceState)
@@ -62,13 +58,6 @@ class SettingsActivity : AppCompatActivity(),
             }
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        authViewModel.currentUser.observe(this) {
-            if (it == null) {
-                // Logout logic. Login logic is controlled from within RootTitleFragment.
-                finish()
-            }
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -186,11 +175,7 @@ class SettingsActivity : AppCompatActivity(),
 
             findPreference<ListPreference>("dsp_theme")!!.apply {
                 setOnPreferenceChangeListener { _, newValue ->
-                    PreferenceManager.getDefaultSharedPreferences(requireContext()).run {
-                        edit {
-                            putString("dsp_theme", newValue as String)
-                        }
-                    }
+                    UserPDS.putDSPString("dsp_theme", newValue as String)
                     if (newValue != value) {
                         requireActivity().run {
                             lifecycleScope.launch(Dispatchers.Main) {

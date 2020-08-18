@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.github.mikephil.charting.data.*
-import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.chartcomponents.PieChartLegendLLData
 import com.kaeonx.moneymanager.chartcomponents.PieChartWLPacket
 import com.kaeonx.moneymanager.chartcomponents.generateLineChartPacket
@@ -282,8 +280,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         _displayCalendarEnd.value
                     ),
                     colourInt = ColourHandler.getSpecificColourObjectOf(
-                        when (val theme = PreferenceManager.getDefaultSharedPreferences(App.context)
-                            .getString("dsp_theme", "light")) {
+                        when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
                             "dark" -> "Grey,200"
                             "light" -> "Black"
                             else -> throw IllegalArgumentException("Unknown dsp_theme $theme")

@@ -1,17 +1,17 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
@@ -25,7 +25,6 @@ class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsViewModel by viewModels()
-    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -129,6 +128,12 @@ class TransactionsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        Log.d(TAG, "currentUser is ${FirebaseAuth.getInstance().currentUser}")
+        Log.d(
+            TAG,
+            "currentUser is anonymous ${FirebaseAuth.getInstance().currentUser?.isAnonymous}"
+        )
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             (menu.getItem(0).actionView as SearchView).apply {

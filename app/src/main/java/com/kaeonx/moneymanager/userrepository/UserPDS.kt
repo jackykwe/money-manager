@@ -1,15 +1,15 @@
 package com.kaeonx.moneymanager.userrepository
 
+import android.content.SharedPreferences
 import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceManager
+import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.userrepository.domain.Preference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-object UserPDS : PreferenceDataStore() {
-
-    private val userRepository = UserRepository.getInstance()
-    private val preferences = userRepository.preferences
+internal object UserPDS : PreferenceDataStore() {
 
     internal fun getAllValidKeys() = defaultPreferences.keys
 
@@ -47,10 +47,12 @@ object UserPDS : PreferenceDataStore() {
     )
 
     override fun getBoolean(key: String, defValue: Boolean): Boolean =
-        (preferences.value!![key] as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+        (UserRepository.getInstance().preferences.value!![key] as Int?).toBooleanNullable()
+            ?: defaultPreferences[key] as Boolean
 
     fun getBoolean(key: String): Boolean =
-        (preferences.value!![key] as Int?).toBooleanNullable() ?: defaultPreferences[key] as Boolean
+        (UserRepository.getInstance().preferences.value!![key] as Int?).toBooleanNullable()
+            ?: defaultPreferences[key] as Boolean
 
     fun getDefaultBoolean(key: String): Boolean = defaultPreferences[key] as Boolean
 
@@ -63,7 +65,7 @@ object UserPDS : PreferenceDataStore() {
 
     override fun putBoolean(key: String, value: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            userRepository.upsertPreferenceSuspend(
+            UserRepository.getInstance().upsertPreferenceSuspend(
                 Preference(
                     key = key,
                     valueInteger = if (value) 1 else 0,
@@ -74,17 +76,19 @@ object UserPDS : PreferenceDataStore() {
     }
 
     override fun getString(key: String, defValue: String?): String =
-        preferences.value!![key] as String? ?: defaultPreferences[key] as String
+        UserRepository.getInstance().preferences.value!![key] as String?
+            ?: defaultPreferences[key] as String
 
     internal fun getString(key: String): String =
-        preferences.value!![key] as String? ?: defaultPreferences[key] as String
+        UserRepository.getInstance().preferences.value!![key] as String?
+            ?: defaultPreferences[key] as String
 
     internal fun getDefaultString(key: String): String = defaultPreferences[key] as String
 
     override fun putString(key: String, value: String?) {
         if (value == null) throw IllegalArgumentException("putString: value cannot be null")
         CoroutineScope(Dispatchers.IO).launch {
-            userRepository.upsertPreferenceSuspend(
+            UserRepository.getInstance().upsertPreferenceSuspend(
                 Preference(
                     key = key,
                     valueInteger = null,
@@ -93,4 +97,32 @@ object UserPDS : PreferenceDataStore() {
             )
         }
     }
+
+    internal fun getDSP(): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+
+    internal fun getDSPString(key: String, defaultValue: String): String =
+        PreferenceManager.getDefaultSharedPreferences(App.context).getString(key, defaultValue)!!
+
+    internal fun putDSPString(key: String, value: String): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+            .edit()
+            .putString(key, value)
+            .commit()
+
+    internal fun getDSPLong(key: String, defaultValue: Long) =
+        PreferenceManager.getDefaultSharedPreferences(App.context).getLong(key, defaultValue)
+
+    internal fun putDSPLong(key: String, value: Long): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+            .edit()
+            .putLong(key, value)
+            .commit()
+
+    internal fun removeDSPKey(key: String): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+            .edit()
+            .remove(key)
+            .commit()
+
 }

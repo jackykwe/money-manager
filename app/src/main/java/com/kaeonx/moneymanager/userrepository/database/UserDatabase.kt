@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
 
 private const val TAG = "dtb"
 
@@ -42,12 +43,12 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE_USER_ID: String? = null
 
-        fun getInstance(localUserId: String? = userId): UserDatabase {
+        fun getInstance(localUserId: String? = Firebase.auth.currentUser!!.uid): UserDatabase {
             synchronized(this) {
-                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
+                if (localUserId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE")
+                    Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE FOR $localUserId")
                     // Opening a connection to a database is expensive!
                     instance = Room.databaseBuilder(
                         App.context,

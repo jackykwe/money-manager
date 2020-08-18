@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.kaeonx.moneymanager.activities.AuthViewModel.Companion.userId
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
@@ -30,7 +31,7 @@ private const val TAG = "tfvm"
 
 class TransactionsViewModel : ViewModel() {
     init {
-        Log.d(TAG, "TFVM started, with userId $userId")
+        Log.d(TAG, "TFVM started, with userId ${Firebase.auth.currentUser!!.uid}")
     }
 
     private val userRepository = UserRepository.getInstance()

@@ -37,6 +37,16 @@
             app:popUpTo="@id/exitLobbyFragment"
             app:popUpToInclusive="true"
             tools:ignore="PrivateResource" />
+        <action
+            android:id="@+id/action_exitLobbyFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            app:popUpTo="@id/exitLobbyFragment"
+            app:popUpToInclusive="true"
+            tools:ignore="PrivateResource" />
     </fragment>
     <action
         android:id="@+id/action_global_exitLobbyFragment"
@@ -350,7 +360,7 @@
     <fragment
         android:id="@+id/cloudFragment"
         android:name="com.kaeonx.moneymanager.fragments.importexport.CloudFragment"
-        tools:layout="@layout/fragment_cloud"
-        android:label="Cloud Backup" />
+        android:label="Cloud Backup"
+        tools:layout="@layout/fragment_cloud" />
 
 </navigation>

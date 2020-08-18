@@ -16,17 +16,20 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import androidx.preference.PreferenceManager
 import com.github.mikephil.charting.utils.Utils
+import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
+import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 
 private const val TAG = "matvt"
+private const val START_SETTING_ACTIVITY = 0
+private const val START_CLAIM_LOGIN_INTENT = 1
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,8 +45,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "MAIN ACTIVITY RECREATED")
         // This must be called before the onCreate. If not, onStart will run twice!
-        previousLoadedTheme = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString("dsp_theme", "light")!!
+        previousLoadedTheme = UserPDS.getDSPString("dsp_theme", "light")
+            .also { Log.d(TAG, "previousLoadedTheme is now $it") }
         when (previousLoadedTheme) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -90,12 +93,28 @@ class MainActivity : AppCompatActivity() {
                             Intent(
                                 this@MainActivity,
                                 SettingsActivity::class.java
-                            ), 0
+                            ), START_SETTING_ACTIVITY
                         )
                         false
                     }
                     R.id.menuLogout -> {
-                        authViewModel.logout()
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Logout and delete guest account?")
+                            .setMessage("If you do not claim this account or export your data, all data associated with this guest accout will be lost forever on successful logout.")
+                            .setPositiveButton(R.string.ok) { _, _ ->
+                                if (navController.currentDestination?.id !in listOf(
+                                        R.id.titleFragment,
+                                        R.id.lobbyFragment,
+                                        R.id.exitLobbyFragment
+                                    )
+                                ) {
+                                    // Logout logic. Login logic is controlled from within RootTitleFragment.
+                                    navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
+                                }
+                            }
+                            .setNegativeButton(R.string.cancel) { _, _ -> }
+                            .create()
+                            .show()
                         false
                     }
                     R.id.menuAbout -> {
@@ -152,22 +171,41 @@ class MainActivity : AppCompatActivity() {
         }
 
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
-        headerBinding.lifecycleOwner = this
-        headerBinding.authViewModel = authViewModel
+//        headerBinding.lifecycleOwner = this
+//        headerBinding.authViewModel = authViewModel
+        headerBinding.root.setOnClickListener {
+            startActivityForResult(authViewModel.loginIntent(), START_CLAIM_LOGIN_INTENT)
+        }
         authViewModel.currentUser.observe(this) {
-            if (it == null &&
-                navController.currentDestination?.id !in listOf(
-                    R.id.titleFragment,
-                    R.id.lobbyFragment,
-                    R.id.exitLobbyFragment
-                )
-            ) {
-                // Logout logic. Login logic is controlled from within RootTitleFragment.
-                navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
+            if (it != null) {
+                if (it.isAnonymous) {
+                    headerBinding.navHeaderDisplayNameTV.text = "Guest Account"
+                    headerBinding.navHeaderEmailTV.text = "Click here to claim account"
+                } else {
+                    headerBinding.navHeaderDisplayNameTV.text = it.displayName
+                    headerBinding.navHeaderEmailTV.text = it.email
+                }
+            } else {
+//                if (navController.currentDestination?.id !in listOf(
+//                        R.id.titleFragment,
+//                        R.id.lobbyFragment,
+//                        R.id.exitLobbyFragment
+//                    )
+//                ) {
+//                    // Logout logic. Login logic is controlled from within RootTitleFragment.
+//                    navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
+//                }
             }
         }
-
-//        setupRecurringWork()
+        Snackbar.make(
+            binding.root,
+            "Cloud Backup is disabled as you've logged in on another device.",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setBehavior(NoSwipeBehaviour())
+            .setAction("OK") { Unit }
+            .show()
+        //        setupRecurringWork()
     }
 
 //    private fun setupRecurringWork() = lifecycleScope.launch {
@@ -215,9 +253,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "hello there onActivityResult with resultCode $resultCode")
-        if (requestCode == 0) {
-            if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
+        when (requestCode) {
+            START_SETTING_ACTIVITY -> if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
+            START_CLAIM_LOGIN_INTENT -> {
+                Snackbar.make(
+                    binding.root,
+                    "Successfully claimed this account!",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

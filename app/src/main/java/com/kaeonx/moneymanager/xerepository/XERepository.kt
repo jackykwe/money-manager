@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.database.XEDatabase
@@ -137,7 +139,10 @@ class XERepository private constructor() {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(TAG, "WARN: OPENING INSTANCE TO XE REPOSITORY")
+                    Log.d(
+                        TAG,
+                        "WARN: OPENING INSTANCE TO XE REPOSITORY FOR ${Firebase.auth.currentUser!!.uid}"
+                    )
                     // Opening a connection to a database is expensive!
                     instance = XERepository()
                     INSTANCE = instance
