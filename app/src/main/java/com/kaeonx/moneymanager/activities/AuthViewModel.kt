@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -35,9 +37,10 @@ class AuthViewModel : ViewModel() {
 
         private val storage by lazy {
             Firebase.storage.apply {
-                maxUploadRetryTimeMillis = 3000L
-                maxDownloadRetryTimeMillis = 3000L
-                maxOperationRetryTimeMillis = 3000L
+                // To force errors to propagate immediately
+                maxUploadRetryTimeMillis = 0L
+                maxDownloadRetryTimeMillis = 0L
+                maxOperationRetryTimeMillis = 0L
             }
         }
         private val storageRef by lazy { storage.reference.child("user_data") }
@@ -123,12 +126,111 @@ class AuthViewModel : ViewModel() {
             .build()
     }
 
+    internal fun loginIntentNoAnonymous(): Intent {
+        // Choose authentication providers
+        val providers = arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
+        // Create and launch sign-in intent}
+        return AuthUI.getInstance()
+            .createSignInIntentBuilder()
+            .setAvailableProviders(providers)
+            .enableAnonymousUsersAutoUpgrade()
+            .setLogo(R.drawable.firebase_auth_light) // Set logo drawable
+            .setTheme(R.style.AppTheme)
+            .build()
+    }
+
     internal fun logout() {
+        Log.d(
+            TAG,
+            "logout() called in VM: Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+        )
         AuthUI.getInstance()
             .signOut(App.context)
-            .addOnCompleteListener {
+            .addOnSuccessListener {
+                Log.d(
+                    TAG,
+                    "logout() succeeded in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+                )
                 refreshAuthMLD()
             }
+            .addOnCompleteListener {
+                Log.d(
+                    TAG,
+                    "logout() completed in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+                )
+                refreshAuthMLD()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(
+                    TAG,
+                    "logout() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
+                        exception.stackTrace.joinToString(
+                            "\n"
+                        )
+                    }"
+                )
+            }
+    }
+
+    internal fun delete(): Task<Void> {
+        Log.d(
+            TAG,
+            "delete() called in VM: Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+        )
+        return AuthUI.getInstance()
+            .delete(App.context)
+            .addOnSuccessListener {
+                Log.d(
+                    TAG,
+                    "delete() succeeded in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+                )
+                refreshAuthMLD()
+            }
+            .addOnCompleteListener {
+                Log.d(
+                    TAG,
+                    "delete() completed in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
+                )
+                refreshAuthMLD()
+            }
+            .addOnFailureListener { exception ->
+                when (exception) {
+                    is FirebaseAuthException -> {
+                        Log.e(
+                            TAG,
+                            "delete() failed, with exception $exception, code is ${exception.errorCode}, message ${exception.message}, cause ${exception.cause}, stacktrace ${
+                                exception.stackTrace.joinToString(
+                                    "\n"
+                                )
+                            }"
+                        )
+                    }
+                    is FirebaseNetworkException -> {
+                        Log.e(
+                            TAG,
+                            "delete() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
+                                exception.stackTrace.joinToString(
+                                    "\n"
+                                )
+                            }"
+                        )
+                    }
+                    else -> {
+                        Log.e(
+                            TAG,
+                            "delete() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
+                                exception.stackTrace.joinToString(
+                                    "\n"
+                                )
+                            }"
+                        )
+                    }
+                }
+            }
+
     }
 
 }

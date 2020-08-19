@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
@@ -22,7 +23,7 @@ import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -49,85 +50,116 @@ class ExitLobbyFragment : Fragment() {
     }
 
     override fun onResume() {
+
+        suspend fun exit() = coroutineScope {
+            val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            binding.root.animate()
+                .alpha(0f)
+                .setDuration(animDuration)
+                .setListener(null)
+            delay(animDuration)
+            (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.visibility =
+                View.GONE
+            delay(animDuration)
+            findNavController().run {
+                if (currentDestination?.id == R.id.exitLobbyFragment) {
+                    navigate(ExitLobbyFragmentDirections.actionExitLobbyFragmentToTitleFragment())
+                }
+            }
+        }
+
+        fun deleteLocalDatabase() {
+            val file = App.context.getDatabasePath(
+                "user_database_${UserPDS.getDSPString("logged_in_uid", "")}"
+            )
+            if (file.exists()) file.delete()
+        }
+
+        fun deleteDSPDspThemeIfExistsAndExit() = lifecycleScope.launch {
+            if (UserPDS.getDSPString("dsp_theme", "light") != "light") {
+                // Currently in dark mode
+                UserPDS.removeDSPKeyIfExists("dsp_theme")
+                delay(1000L)
+                requireActivity().recreate()
+            } else {
+                // Currently in light mode already
+                UserPDS.removeDSPKeyIfExists("dsp_theme")
+                exit()
+            }
+        }
+
         super.onResume()
-        lifecycleScope.launch(Dispatchers.Main) {
-            Snackbar.make(binding.root, "Logging out…", Snackbar.LENGTH_INDEFINITE)
-                .setBehavior(NoSwipeBehaviour())
-                .show()
-            UserRepository.dropInstance()
-            UserDatabase.dropInstance()
-            XERepository.dropInstance()
+//        lifecycleScope.launch {
+//            authViewModel.delete()
+//            delay(5000L)
+//            authViewModel.delete()
+//        }
 
-            Log.d(TAG, "Bef await")
-            Firebase.auth.currentUser!!.delete()
-                .addOnSuccessListener {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        Log.d(TAG, "Aft await")
+        Snackbar.make(binding.root, "Logging out…", Snackbar.LENGTH_INDEFINITE)
+            .setBehavior(NoSwipeBehaviour())
+            .show()
+        UserRepository.dropInstance()
+        UserDatabase.dropInstance()
+        XERepository.dropInstance()
 
-                        // By now, Firebase.auth.currentUser is already null, so this is needed
-                        val deletingUid = UserPDS.getDSPString("logged_in_uid", "")
-                        val file = App.context.getDatabasePath("user_database_${deletingUid}")
-                        if (file.exists()) file.delete()
-
-                        authViewModel.logout()
-                        while (authViewModel.currentUser.value != null) delay(1L)  // ensure currentUser is null too
-
-                        if (UserPDS.getDSPString("logged_in_uid", "nothing") != "nothing") {
-                            UserPDS.removeDSPKey("logged_in_uid")
+        when {
+            Firebase.auth.currentUser == null -> {
+                // You may get here only if the activity is recreated after logout / delete.
+                Log.d(TAG, "WARN: YOU'RE IN SPECIAL BRANCH")
+                lifecycleScope.launch { exit() }
+            }
+            Firebase.auth.currentUser!!.isAnonymous -> {
+                authViewModel.delete()  // fails immediately if offline
+                    .addOnSuccessListener {
+                        // NB: By now, Firebase.auth.currentUser is already null
+                        deleteLocalDatabase()
+                        UserPDS.removeDSPKeyIfExists("logged_in_uid")
+                        deleteDSPDspThemeIfExistsAndExit()
+                    }
+                    .addOnFailureListener { exception ->
+                        when (exception) {
+                            is FirebaseNetworkException -> {
+                                Snackbar.make(
+                                    binding.root,
+                                    "Unable to logout.\nPlease check your internet connection.",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            else -> {
+                                Snackbar.make(
+                                    binding.root,
+                                    "Unable to logout.\nPlease try again later.",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
                         }
-                        if (UserPDS.getDSPString("dsp_theme", "nothing") != "nothing") {
-                            UserPDS.removeDSPKey("dsp_theme")
-                            delay(1000L)
-                            requireActivity().recreate()
-                        }
-
-                        val animDuration =
-                            resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-                        binding.root.animate()
-                            .alpha(0f)
-                            .setDuration(animDuration)
-                            .setListener(null)
-                        delay(animDuration)
-                        (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.visibility =
-                            View.GONE
-                        delay(animDuration)
-                        findNavController().run {
-                            if (currentDestination?.id == R.id.exitLobbyFragment) {
-                                navigate(ExitLobbyFragmentDirections.actionExitLobbyFragmentToTitleFragment())
+                        lifecycleScope.launch {
+                            delay(2000L)
+                            val animDuration = resources
+                                .getInteger(android.R.integer.config_shortAnimTime)
+                                .toLong()
+                            binding.root.animate()
+                                .alpha(0f)
+                                .setDuration(animDuration)
+                                .setListener(null)
+                            delay(animDuration + 50)
+                            findNavController().run {
+                                if (currentDestination?.id == R.id.exitLobbyFragment) {
+                                    navigate(ExitLobbyFragmentDirections.actionExitLobbyFragmentToTransactionsFragment())
+                                }
                             }
                         }
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Log.d(
-                        TAG,
-                        "uploadTask: failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${exception.stackTrace.joinToString(
-                            "\n"
-                        )}"
-                    )
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        Snackbar.make(
-                            binding.root,
-                            "Unable to logout.\nPlease check your internet connection.",
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setBehavior(NoSwipeBehaviour())
-                            .show()
-                        delay(2500L)
-                        val animDuration =
-                            resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
-                        binding.root.animate()
-                            .alpha(0f)
-                            .setDuration(animDuration)
-                            .setListener(null)
-                        delay(animDuration + 50)
-                        findNavController().run {
-                            if (currentDestination?.id == R.id.exitLobbyFragment) {
-                                navigate(ExitLobbyFragmentDirections.actionExitLobbyFragmentToTransactionsFragment())
-                            }
-                        }
-                    }
-                }
+            }
+            else -> {
+                authViewModel.logout()  // confirm success, even if offline
+                deleteLocalDatabase()
+                UserPDS.removeDSPKeyIfExists(
+                    "${UserPDS.getDSPString("logged_in_uid", "")}_last_upload_time"
+                )
+                UserPDS.removeDSPKeyIfExists("logged_in_uid")
+                deleteDSPDspThemeIfExistsAndExit()
+            }
         }
     }
 }

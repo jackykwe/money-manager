@@ -325,7 +325,7 @@ class CloudFragment : Fragment() {
                 updateUI("Deleting cloud data…", progressIterator.next())
                 AuthViewModel.deleteJSON(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener {
-                        UserPDS.removeDSPKey("${Firebase.auth.currentUser!!.uid}_last_upload_time")
+                        UserPDS.removeDSPKeyIfExists("${Firebase.auth.currentUser!!.uid}_last_upload_time")
                         binding.lastUploadedTV.text = getString(R.string.no_cloud_data_found)
                         doneUI(false, DELETE_DATA, null)
                     }

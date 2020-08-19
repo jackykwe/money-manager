@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +17,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.firebase.ui.auth.ErrorCodes
+import com.firebase.ui.auth.IdpResponse
 import com.github.mikephil.charting.utils.Utils
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.TopLevelNavGraphDirections
@@ -171,30 +176,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
-//        headerBinding.lifecycleOwner = this
-//        headerBinding.authViewModel = authViewModel
-        headerBinding.root.setOnClickListener {
-            startActivityForResult(authViewModel.loginIntent(), START_CLAIM_LOGIN_INTENT)
-        }
         authViewModel.currentUser.observe(this) {
-            if (it != null) {
-                if (it.isAnonymous) {
-                    headerBinding.navHeaderDisplayNameTV.text = "Guest Account"
-                    headerBinding.navHeaderEmailTV.text = "Click here to claim account"
-                } else {
-                    headerBinding.navHeaderDisplayNameTV.text = it.displayName
-                    headerBinding.navHeaderEmailTV.text = it.email
+            if (it == null) return@observe
+            if (it.isAnonymous) {
+                headerBinding.root.setOnClickListener {
+                    startActivityForResult(
+                        authViewModel.loginIntentNoAnonymous(),
+                        START_CLAIM_LOGIN_INTENT
+                    )
                 }
+                headerBinding.navHeaderDisplayNameTV.text = "Guest Account"
+                headerBinding.navHeaderEmailTV.text = "Click here to claim account"
             } else {
-//                if (navController.currentDestination?.id !in listOf(
-//                        R.id.titleFragment,
-//                        R.id.lobbyFragment,
-//                        R.id.exitLobbyFragment
-//                    )
-//                ) {
-//                    // Logout logic. Login logic is controlled from within RootTitleFragment.
-//                    navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
-//                }
+                headerBinding.navHeaderDisplayNameTV.text = it.displayName
+                headerBinding.navHeaderEmailTV.text = it.email
             }
         }
         Snackbar.make(
@@ -256,11 +251,69 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             START_SETTING_ACTIVITY -> if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
             START_CLAIM_LOGIN_INTENT -> {
-                Snackbar.make(
-                    binding.root,
-                    "Successfully claimed this account!",
-                    Snackbar.LENGTH_LONG
-                ).show()
+                if (resultCode == Activity.RESULT_OK) {
+                    Snackbar.make(
+                        binding.root,
+                        "Successfully claimed this account!",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    authViewModel.refreshAuthMLD()
+                    //TODO : SYNC WITH REALTIME DATABASE
+                } else {
+                    val response = IdpResponse.fromResultIntent(data)
+                    when (val code = response?.error?.errorCode) {
+                        ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Claim failed. This email address was used for another account.",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        ErrorCodes.NO_NETWORK -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Check your network connection.",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
+                        ErrorCodes.DEVELOPER_ERROR -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Developer error: Please report this bug.",
+                                Snackbar.LENGTH_INDEFINITE
+                            ).show()
+                        }
+                        ErrorCodes.UNKNOWN_ERROR -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Unknown error: Please report this bug.",
+                                Snackbar.LENGTH_INDEFINITE
+                            )
+                                .setBehavior(NoSwipeBehaviour())
+                                .show()
+                        }
+                        null -> {
+                            Unit
+                        }
+                        else -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Unspecified error [$code]: Please report this bug.",
+                                Snackbar.LENGTH_INDEFINITE
+                            )
+                                .setBehavior(NoSwipeBehaviour())
+                                .show()
+                        }
+                    }
+                }
+
+                Firebase.auth.currentUser?.let {
+                    Log.d(
+                        TAG,
+                        "uid is now ${it.uid} and last login is ${it.metadata?.lastSignInTimestamp}"
+                    )
+                }
+
             }
         }
     }

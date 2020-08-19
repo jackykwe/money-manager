@@ -119,7 +119,7 @@ internal object UserPDS : PreferenceDataStore() {
             .putLong(key, value)
             .commit()
 
-    internal fun removeDSPKey(key: String): Boolean =
+    internal fun removeDSPKeyIfExists(key: String): Boolean =
         PreferenceManager.getDefaultSharedPreferences(App.context)
             .edit()
             .remove(key)

@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
@@ -129,10 +130,14 @@ class TransactionsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Log.d(TAG, "currentUser is ${FirebaseAuth.getInstance().currentUser}")
+        Log.d(TAG, "currentUser is ${Firebase.auth.currentUser}")
         Log.d(
             TAG,
-            "currentUser is anonymous ${FirebaseAuth.getInstance().currentUser?.isAnonymous}"
+            "currentUser is last login ${Firebase.auth.currentUser?.metadata?.lastSignInTimestamp}"
+        )
+        Log.d(
+            TAG,
+            "currentUser is anonymous ${Firebase.auth.currentUser?.isAnonymous}"
         )
 
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
