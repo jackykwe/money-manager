@@ -1,40 +1,56 @@
 package com.kaeonx.moneymanager.fragments.importexport
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageException
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentCloudBinding
-import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
-import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.DELETE_DATA
-import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.UPLOAD_DATA
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
-import com.kaeonx.moneymanager.userrepository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
-private const val TAG = "cloudfrag"
-
-// TODO MOVE ALL THESE CODE INTO VIEWMODEL
+// TODO: add database version to JSON, for future migration
 
 class CloudFragment : Fragment() {
 
     private lateinit var binding: FragmentCloudBinding
+    private val viewModel: CloudFragmentViewModel by viewModels()
+
+    private fun refreshLastUploadedTV() {
+        binding.lastUploadedTV.text =
+            if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+                "Please re-login to enable Cloud Backup."
+            } else {
+                val lastUploadTime = UserPDS.getDSPLong(
+                    "${Firebase.auth.currentUser!!.uid}_last_upload_time",
+                    -1L
+                )
+                when (lastUploadTime) {
+                    -1L ->
+                        if (Firebase.auth.currentUser!!.isAnonymous) {
+                            "Cloud Backup unavailable for Guests"
+                        } else {
+                            getString(R.string.no_cloud_data_found)
+                        }
+                    else -> {
+                        binding.resultIV.alpha = 0.5f
+                        val dateFormat = UserPDS.getString("dsp_date_format")
+                        val timeFormat = UserPDS.getString("dsp_time_format")
+                        CalendarHandler.getFormattedString(
+                            lastUploadTime,
+                            "'Last uploaded:' $timeFormat 'on' $dateFormat"
+                        )
+                    }
+                }
+            }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,48 +60,24 @@ class CloudFragment : Fragment() {
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.menu.clear()
 
         binding = FragmentCloudBinding.inflate(inflater, container, false)
-
-        val lastUploadTime = UserPDS.getDSPLong(
-            "${Firebase.auth.currentUser!!.uid}_last_upload_time",
-            -1L
-        )
-        when (lastUploadTime) {
-            -1L -> binding.lastUploadedTV.text =
-                if (Firebase.auth.currentUser!!.isAnonymous) {
-                    "Cloud Backup unavailable for Guests"
-                } else {
-                    getString(R.string.no_cloud_data_found)
-                }
-            else -> {
-                val dateFormat = UserPDS.getString("dsp_date_format")
-                val timeFormat = UserPDS.getString("dsp_time_format")
-                binding.lastUploadedTV.text = CalendarHandler.getFormattedString(
-                    lastUploadTime,
-                    "'Last uploaded:' $timeFormat 'on' $dateFormat"
-                )
-                binding.resultIV.alpha = 1f
-            }
-        }
-
         binding.uploadBT.apply {
             if (Firebase.auth.currentUser!!.isAnonymous) {
                 isEnabled = false
             } else {
-                setOnClickListener { uploadData() }
+                setOnClickListener { viewModel.uploadData() }
             }
         }
         binding.deleteDataBT.apply {
             if (Firebase.auth.currentUser!!.isAnonymous) {
                 isEnabled = false
             } else {
-                setOnClickListener { deleteData() }
+                setOnClickListener { viewModel.deleteData() }
             }
         }
         return binding.root
     }
 
     private fun startUI() {
-        // TODO: LOCK UP/BACK
         // BTs
         binding.uploadBT.isEnabled = false
         binding.deleteDataBT.isEnabled = false
@@ -111,32 +103,13 @@ class CloudFragment : Fragment() {
             .setListener(null)
     }
 
-    private var previousNewProgressText: String? = null
-
-    private suspend fun updateUI(newProgressText: String, newProgress: Int) {
+    private fun updateUI(newProgressText: String, newProgress: Int) {
         if (newProgressText.takeLast(1) != "…") throw IllegalArgumentException("newProgressText must end with …")
-        previousNewProgressText = newProgressText
-        withContext(Dispatchers.Main) {
-            binding.progressPI.setProgress(newProgress, true)
-            binding.progressTV.text = newProgressText
-        }
+        binding.progressPI.setProgress(newProgress, true)
+        binding.progressTV.text = newProgressText
     }
 
-    private fun doneUI(error: Boolean, mode: Int, exceptionText: String?) {
-        val modeString by lazy {
-            when (mode) {
-                UPLOAD_DATA -> "upload"
-                DELETE_DATA -> "delete"
-                else -> throw IllegalArgumentException("Unknown doneUI mode: $mode")
-            }
-        }
-        val modeStringPast by lazy {
-            when (mode) {
-                UPLOAD_DATA -> "uploaded"
-                DELETE_DATA -> "deleted"
-                else -> throw IllegalArgumentException("Unknown doneUI mode: $mode")
-            }
-        }
+    private fun doneUI(resultIVDrawableId: Int, progressTVText: String, exceptionText: String?) {
         binding.uploadBT.isEnabled = true
         binding.deleteDataBT.isEnabled = true
 
@@ -146,251 +119,57 @@ class CloudFragment : Fragment() {
             .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
             .setListener(null)
         binding.resultIV.setImageDrawable(
-            if (error) {
-                ContextCompat.getDrawable(requireContext(), R.drawable.mdi_cloud_alert_amber)
-            } else {
-                when (mode) {
-                    UPLOAD_DATA -> ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.mdi_cloud_check_green
-                    )
-                    DELETE_DATA -> ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.mdi_cloud_off_outline_green
-                    )
-                    else -> throw IllegalArgumentException("Unknown doneUI mode: $mode")
-                }
-            }
+            ContextCompat.getDrawable(
+                requireContext(),
+                resultIVDrawableId
+            )
         )
+
         binding.resultIV.animate()
             .alpha(1f)
             .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
             .setListener(null)
 
         // TVs
-        binding.progressTV.text = if (!error) {
-            "Successfully $modeStringPast data"
-        } else {
-            if (previousNewProgressText == null) {
-                "Unable to $modeString data"
-            } else {
-                "${previousNewProgressText!!.take(previousNewProgressText!!.length - 1)} failed"
-            }
-        }
-        if (error) {
-            binding.warningTV.text = exceptionText.toString()
-        } else {
+        binding.progressTV.text = progressTVText
+        if (exceptionText == null) {
             binding.warningTV.animate()
                 .alpha(0f)
                 .setDuration(
                     resources.getInteger(android.R.integer.config_longAnimTime).toLong()
                 )
                 .setListener(null)
+        } else {
+            binding.warningTV.text = exceptionText
         }
     }
 
-    /**
-     * Number of yielded values is `intervalCount + 1`.
-     * @param intervalCount The number of times this.next() is called -1.
-     */
-    private fun generatePercentIterator(intervalCount: Int): Iterator<Int> = sequence {
-        var iteration = 0f
-        while (iteration <= intervalCount) {
-            yield((iteration++ / intervalCount * 100).toInt())
-        }
-    }.iterator()
-
-    private var uploadTask: StorageTask<UploadTask.TaskSnapshot>? = null
-
-    private fun uploadData() {
-        startUI()
-        lifecycleScope.launch(Dispatchers.Default) {
-            try {
-                val output = JSONObject()
-                val repository = UserRepository.getInstance()
-                val progressIterator = generatePercentIterator(8)
-
-                // Transactions
-                updateUI("Exporting Transactions…", progressIterator.next())
-                output.put(
-                    "transactions",
-                    IETransactionsHandler.listToJsonArray(
-                        repository.exportTransactionsSuspend()
-                    )
-                )
-
-                // Budget
-                updateUI("Exporting Budgets…", progressIterator.next())
-                output.put(
-                    "budgets",
-                    IEBudgetsHandler.listToJsonArray(
-                        repository.exportBudgetsSuspend()
-                    )
-                )
-
-                // Debts (TODO)
-                updateUI("Exporting Debts…", progressIterator.next())
-
-                // Categories
-                updateUI("Exporting Categories…", progressIterator.next())
-                output.put(
-                    "categories",
-                    IECategoriesHandler.listToJsonArray(
-                        repository.exportCategoriesSuspend()
-                    )
-                )
-
-                // Accounts
-                updateUI("Exporting Accounts…", progressIterator.next())
-                output.put(
-                    "accounts",
-                    IEAccountsHandler.listToJsonArray(
-                        repository.exportAccountsSuspend()
-                    )
-                )
-
-                // Settings
-                updateUI("Exporting Settings…", progressIterator.next())
-                output.put(
-                    "settings",
-                    IEPreferencesHandler.listToJsonArray(
-                        repository.exportPreferencesSuspend()
-                    )
-                )
-
-                updateUI("Writing to JSON…", progressIterator.next())
-                IEFileHandler.saveRootToFile(
-                    AuthViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
-                    output.toString()
-                )
-
-                updateUI("Uploading…", progressIterator.next())
-                if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
-                    withContext(Dispatchers.Main) {
-                        doneUI(
-                            true,
-                            UPLOAD_DATA,
-                            "uploading from outdated login is not allowed"
-                        )
-                    }
-                    return@launch
-                }
-                uploadTask = AuthViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
-                    .addOnSuccessListener { taskSnapshot ->
-                        UserPDS.putDSPLong(
-                            "${Firebase.auth.currentUser!!.uid}_last_upload_time",
-                            taskSnapshot.metadata!!.updatedTimeMillis
-                        )
-                        lifecycleScope.launch {
-                            val dateFormat = UserPDS.getString("dsp_date_format")
-                            val timeFormat = UserPDS.getString("dsp_time_format")
-                            updateUI("…", progressIterator.next())
-                            withContext(Dispatchers.Main) {
-                                binding.lastUploadedTV.text =
-                                    CalendarHandler.getFormattedString(
-                                        taskSnapshot.metadata!!.updatedTimeMillis,
-                                        "'Last uploaded:' $timeFormat 'on' $dateFormat"
-                                    )
-                                doneUI(false, UPLOAD_DATA, null)
-                            }
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e(
-                            TAG,
-                            "uploadTask: failed, " +
-                                    "with exception $exception, " +
-                                    "errorCode ${(exception as StorageException).errorCode}, " +
-                                    "cause ${exception.cause}, " +
-                                    "message ${exception.message}, " +
-                                    "stacktrace ${exception.stackTrace.joinToString("\n")}"
-                        )
-                        doneUI(
-                            true,
-                            UPLOAD_DATA,
-                            "upload failed [${exception.errorCode}]\nCheck your internet connection."
-                        )
-                    }
-                    .addOnCanceledListener {
-                        Log.e(TAG, "uploadTask: cancelled")
-                    }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    doneUI(
-                        true,
-                        UPLOAD_DATA,
-                        "Unknown ${e.javaClass.toString().substring(6)}"
-                    )
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.refreshLastUploadedTV.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.refreshLastUploadedTVHandled()
+                refreshLastUploadedTV()
             }
         }
-    }
 
-    private fun deleteData() {
-        startUI()
-        lifecycleScope.launch(Dispatchers.Default) {
-            try {
-                val progressIterator = generatePercentIterator(1)
-                updateUI("Deleting cloud data…", progressIterator.next())
-                if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
-                    withContext(Dispatchers.Main) {
-                        doneUI(
-                            true,
-                            UPLOAD_DATA,
-                            "deleting from outdated login is not allowed"
-                        )
-                    }
-                    return@launch
-                }
-                AuthViewModel.deleteDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
-                    .addOnSuccessListener {
-                        UserPDS.removeDSPKeyIfExists("${Firebase.auth.currentUser!!.uid}_last_upload_time")
-                        binding.lastUploadedTV.text = getString(R.string.no_cloud_data_found)
-                        doneUI(false, DELETE_DATA, null)
-                    }
-                    .addOnFailureListener { exception ->
-                        when ((exception as StorageException).errorCode) {
-                            StorageException.ERROR_OBJECT_NOT_FOUND -> {
-                                doneUI(true, DELETE_DATA, "Nothing to delete")
-                            }
-                            StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> {
-                                doneUI(
-                                    true,
-                                    DELETE_DATA,
-                                    "delete failed\nCheck your internet connection."
-                                )
-                            }
-                            else -> {
-                                Log.e(
-                                    TAG,
-                                    "uploadTask: failed, " +
-                                            "with exception $exception, " +
-                                            "errorCode ${exception.errorCode}, " +
-                                            "cause ${exception.cause}, " +
-                                            "message ${exception.message}, " +
-                                            "stacktrace ${exception.stackTrace.joinToString("\n")}"
-                                )
-                                doneUI(
-                                    true,
-                                    DELETE_DATA,
-                                    "delete failed [${exception.errorCode}]\nPlease report this bug."
-                                )
-                            }
-                        }
-                    }
-            } catch (e: Exception) {
-                doneUI(
-                    true,
-                    DELETE_DATA,
-                    "Unknown ${e.javaClass.toString().substring(6)}"
-                )
+        viewModel.startUI.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.startUIHandled()
+                startUI()
             }
         }
-    }
 
-    override fun onDestroy() {
-        uploadTask?.cancel().also { Log.d(TAG, "upload task cancelled") }
-        super.onDestroy()
+        viewModel.updateUI.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            viewModel.updateUIHandled()
+            updateUI(it.first, it.second)
+        }
+
+        viewModel.doneUI.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            viewModel.doneUIHandled()
+            doneUI(it.resultIVDrawableId, it.progressTVText, it.exceptionText)
+        }
+
     }
 }

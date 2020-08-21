@@ -113,7 +113,6 @@ class LobbyFragment : Fragment() {
                 xeRepository.xeRows.value == null
             ) {
                 ensureActive()
-//                Log.d("Lobby", "still waiting sir")
                 delay(1L)
             }
 
