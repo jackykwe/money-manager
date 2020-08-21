@@ -17,6 +17,7 @@ import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -59,6 +60,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 UserPDS.putDSPBoolean("non_guest_outdated_login", true)
             }
 
+            ensureActive()
             "Uploading…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -126,6 +128,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             val progressIterator = generatePercentIterator(9)
 
             // Transactions
+            ensureActive()
             "Exporting Transactions…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -140,6 +143,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             )
 
             // Budget
+            ensureActive()
             "Exporting Budgets…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -154,6 +158,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             )
 
             // Debts (TODO)
+            ensureActive()
             "Exporting Debts…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -162,6 +167,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             }
 
             // Categories
+            ensureActive()
             "Exporting Categories…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -176,6 +182,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             )
 
             // Accounts
+            ensureActive()
             "Exporting Accounts…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -190,6 +197,7 @@ internal class CloudFragmentViewModel : ViewModel() {
             )
 
             // Settings
+            ensureActive()
             "Exporting Settings…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -203,6 +211,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 )
             )
 
+            ensureActive()
             "Writing to JSON…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
@@ -214,13 +223,16 @@ internal class CloudFragmentViewModel : ViewModel() {
                 output.toString()
             )
 
+            ensureActive()
             "Uploading…".let {
                 withContext(Dispatchers.Main) {
                     _updateUI.value = Pair(it, progressIterator.next())
                 }
                 previousNewProgressText = it
             }
+
             // Check that the current login is still the most recent login
+            ensureActive()
             ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot, progressIterator)

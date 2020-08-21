@@ -54,7 +54,7 @@ internal class IEFileHandler private constructor() {
             // Choice of and usage of BufferedWriter and OutputStreamWriter derived from
             // official Android documentation.
             if (data == null) throw IllegalStateException("data (Intent) is null")
-            if (data.data == null) IllegalStateException("data.data (Intent.data) is null")
+            if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
             contentResolver.openOutputStream(data.data!!)?.use { outputStream ->
                 BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
                     writer.write(contentToWrite)

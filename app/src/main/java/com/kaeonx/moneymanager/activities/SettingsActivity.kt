@@ -176,10 +176,10 @@ class SettingsActivity : AppCompatActivity(),
                 setOnPreferenceChangeListener { _, newValue ->
                     UserPDS.putDSPString("dsp_theme", newValue as String)
                     if (newValue != value) {
-                        requireActivity().run {
-                            lifecycleScope.launch(Dispatchers.Main) {
+                        requireActivity().let { activity ->
+                            activity.lifecycleScope.launch(Dispatchers.Main) {
                                 delay(300L)
-                                recreate()
+                                activity.recreate()
                             }
                         }
                     }
