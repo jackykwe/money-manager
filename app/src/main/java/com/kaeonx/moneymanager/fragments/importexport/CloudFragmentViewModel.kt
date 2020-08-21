@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-private const val TAG = "cfvm"
-
 // TODO SWITCH ALL BARE FUNS/PROPERTIES TO INTERNAL
 internal class CloudFragmentViewModel : ViewModel() {
 

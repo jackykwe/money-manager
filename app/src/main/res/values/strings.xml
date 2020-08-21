@@ -97,4 +97,9 @@
     <string name="button_delete_cloud_data">Delete Cloud Data</string>
     <string name="no_cloud_data_found">No cloud data found</string>
 
+    <!-- fragment_title -->
+    <string name="title_tv_initial_progress">[…, …, …]</string>
+    <string name="title_tv_progress">[%1$s, %2$s, %3$s]</string>
+    <string name="title_tv_final_progress">[OK, OK, OK]</string>
+
 </resources>
