@@ -6,8 +6,10 @@ import android.app.Application
 class App : Application() {
 
     companion object {
-        lateinit var context: App
+        internal lateinit var context: App
             private set
+
+        internal var setPersistenceEnabledCalled = false
     }
 
     override fun onCreate() {

@@ -261,9 +261,8 @@ class ImportExportFragment : Fragment() {
                 }
 
                 updateUI("Overwriting Data…", progressIterator.next())
-                UserPDS.getString("dsp_theme").also { Log.d(TAG, "userTheme is $it") }
+                UserPDS.getString("dsp_theme")
                 UserPDS.getDSPString("dsp_theme", "light")
-                    .also { Log.d(TAG, "sharedPrefTheme is $it") }
                 val userRepository = UserRepository.getInstance()
                 userRepository.overwriteDatabaseTransactionSuspend(
                     transactionsList = transactions,

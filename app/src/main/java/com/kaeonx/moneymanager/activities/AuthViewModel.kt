@@ -2,23 +2,17 @@ package com.kaeonx.moneymanager.activities
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageException
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.*
 import com.google.firebase.storage.ktx.storage
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
-import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler
 import java.io.File
 
 private const val TAG = "authVM"
@@ -45,54 +39,59 @@ class AuthViewModel : ViewModel() {
         }
         private val storageRef by lazy { storage.reference.child("user_data") }
 
-        private fun generateUserRef(localUserId: String): StorageReference =
-            storageRef.child("user_database_$localUserId")
+        ////////////////////////////////////////////////////////////////////////////////
 
-        internal fun uploadJSON(localUserId: String): UploadTask {
-            val userRef = generateUserRef(localUserId)
-            val dbFile = File(IEFileHandler.buildUserFilePath(localUserId))
+        private fun generateCloudDBStorageRef(userId: String): StorageReference =
+            storageRef.child("database_$userId.json")
+
+        internal fun buildUploadableDBFilePath(uid: String): String {
+            return App.context.filesDir.path + "/uploadable_database_$uid.json"
+        }
+
+        internal fun buildDownloadedDBFilePath(uid: String): String {
+            return App.context.filesDir.path + "/downloaded_database_$uid.json"
+        }
+
+        internal fun uploadDBJSONToCloud(userId: String): UploadTask {
+            val userRef = generateCloudDBStorageRef(userId)
+            val dbFile = File(buildUploadableDBFilePath(userId))
             return userRef.putFile(Uri.fromFile(dbFile))
         }
 
-        internal fun deleteJSON(localUserId: String): Task<Void> =
-            generateUserRef(localUserId).delete()
+        internal fun deleteDBJSONFromCloud(userId: String): Task<Void> =
+            generateCloudDBStorageRef(userId).delete()
 
-        internal fun downloadDatabase(localUserId: String) {
-            val userRef = generateUserRef(localUserId)
-            val dbFile = File(IEFileHandler.buildUserFilePath(localUserId))
-
-            val uploadTask = userRef.getFile(Uri.fromFile(dbFile))
-            uploadTask.addOnFailureListener { exception ->
-                Log.d(
-                    TAG,
-                    "uploadTask: failed, with exception $exception, errorCode ${(exception as StorageException).errorCode}, message ${exception.message}, cause ${exception.cause}, stacktrace ${exception.stackTrace.joinToString(
-                        "\n"
-                    )}"
-                )
-                uploadTask.cancel()
-            }
-            uploadTask.addOnSuccessListener { taskSnapshot ->
-                Log.d(
-                    TAG,
-                    "uploadTask: succeeded with taskSnapshot $taskSnapshot, bytesTransferred is ${taskSnapshot.bytesTransferred}"
-                )
-            }
-            uploadTask.addOnCanceledListener {
-                Log.d(TAG, "uploadTask: cancelled")
-            }
-            uploadTask.addOnPausedListener { taskSnapshot ->
-                Log.d(
-                    TAG,
-                    "uploadTask: paused with taskSnapshot $taskSnapshot, bytesTransferred is ${taskSnapshot.bytesTransferred}"
-                )
-            }
-            uploadTask.addOnProgressListener { taskSnapshot ->
-                Log.d(
-                    TAG,
-                    "uploadTask: progress listener with taskSnapshot $taskSnapshot, bytesTransferred is ${taskSnapshot.bytesTransferred}"
-                )
-            }
+        internal fun downloadDBJSONFromCloud(userId: String): FileDownloadTask {
+            val userRef = generateCloudDBStorageRef(userId)
+            val dbFile = File(buildDownloadedDBFilePath(userId))
+            return userRef.getFile(Uri.fromFile(dbFile))
         }
+
+        internal fun getDBJSONMetadataFromCloud(userId: String): Task<StorageMetadata> =
+            generateCloudDBStorageRef(userId).metadata
+
+        ////////////////////////////////////////////////////////////////////////////////
+
+        private fun generateCloudMetadataStorageRef(userId: String): StorageReference =
+            storageRef.child("metadata_$userId.json")
+
+        internal fun uploadMetadataJSONToCloud(
+            userId: String,
+            metadataBuilder: CloudMetadata.Builder
+        ): UploadTask {
+            val userRef = generateCloudMetadataStorageRef(userId)
+            val stream = metadataBuilder.toByteInputStream()
+            return userRef.putStream(stream)
+        }
+
+        internal fun deleteMetadataJSONFromCloud(userId: String): Task<Void> =
+            generateCloudMetadataStorageRef(userId).delete()
+
+        internal fun downloadMetadataJSONFromCloud(userId: String): StreamDownloadTask {
+            val userRef = generateCloudMetadataStorageRef(userId)
+            return userRef.stream
+        }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -143,94 +142,11 @@ class AuthViewModel : ViewModel() {
     }
 
     internal fun logout() {
-        Log.d(
-            TAG,
-            "logout() called in VM: Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-        )
         AuthUI.getInstance()
             .signOut(App.context)
-            .addOnSuccessListener {
-                Log.d(
-                    TAG,
-                    "logout() succeeded in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-                )
-                refreshAuthMLD()
-            }
-            .addOnCompleteListener {
-                Log.d(
-                    TAG,
-                    "logout() completed in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-                )
-                refreshAuthMLD()
-            }
-            .addOnFailureListener { exception ->
-                Log.e(
-                    TAG,
-                    "logout() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
-                        exception.stackTrace.joinToString(
-                            "\n"
-                        )
-                    }"
-                )
-            }
     }
 
-    internal fun delete(): Task<Void> {
-        Log.d(
-            TAG,
-            "delete() called in VM: Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-        )
-        return AuthUI.getInstance()
+    internal fun delete(): Task<Void> =
+        AuthUI.getInstance()
             .delete(App.context)
-            .addOnSuccessListener {
-                Log.d(
-                    TAG,
-                    "delete() succeeded in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-                )
-                refreshAuthMLD()
-            }
-            .addOnCompleteListener {
-                Log.d(
-                    TAG,
-                    "delete() completed in VM: refreshAuthMLD called. Firebase.auth.currentUser is ${Firebase.auth.currentUser}"
-                )
-                refreshAuthMLD()
-            }
-            .addOnFailureListener { exception ->
-                when (exception) {
-                    is FirebaseAuthException -> {
-                        Log.e(
-                            TAG,
-                            "delete() failed, with exception $exception, code is ${exception.errorCode}, message ${exception.message}, cause ${exception.cause}, stacktrace ${
-                                exception.stackTrace.joinToString(
-                                    "\n"
-                                )
-                            }"
-                        )
-                    }
-                    is FirebaseNetworkException -> {
-                        Log.e(
-                            TAG,
-                            "delete() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
-                                exception.stackTrace.joinToString(
-                                    "\n"
-                                )
-                            }"
-                        )
-                    }
-                    else -> {
-                        Log.e(
-                            TAG,
-                            "delete() failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
-                                exception.stackTrace.joinToString(
-                                    "\n"
-                                )
-                            }"
-                        )
-                    }
-                }
-            }
-
-    }
-
 }

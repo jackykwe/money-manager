@@ -26,6 +26,7 @@ import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 private const val TAG = "exitlobf"
 
@@ -73,6 +74,22 @@ class ExitLobbyFragment : Fragment() {
                 "user_database_${UserPDS.getDSPString("logged_in_uid", "")}"
             )
             if (file.exists()) file.delete()
+        }
+
+        fun deleteJSONFiles() {
+            val uploadableFile = File(
+                AuthViewModel.buildUploadableDBFilePath(
+                    UserPDS.getDSPString("logged_in_uid", "")
+                )
+            )
+            if (uploadableFile.exists()) uploadableFile.delete()
+
+            val downloadedFile = File(
+                AuthViewModel.buildDownloadedDBFilePath(
+                    UserPDS.getDSPString("logged_in_uid", "")
+                )
+            )
+            if (downloadedFile.exists()) downloadedFile.delete()
         }
 
         fun deleteDSPDspThemeIfExistsAndExit() = lifecycleScope.launch {
@@ -154,9 +171,12 @@ class ExitLobbyFragment : Fragment() {
             else -> {
                 authViewModel.logout()  // confirm success, even if offline
                 deleteLocalDatabase()
+                deleteJSONFiles()
                 UserPDS.removeDSPKeyIfExists(
                     "${UserPDS.getDSPString("logged_in_uid", "")}_last_upload_time"
                 )
+                UserPDS.removeDSPKeyIfExists("non_guest_sign_in_complete")
+                UserPDS.removeDSPKeyIfExists("non_guest_outdated_login")
                 UserPDS.removeDSPKeyIfExists("logged_in_uid")
                 deleteDSPDspThemeIfExistsAndExit()
             }

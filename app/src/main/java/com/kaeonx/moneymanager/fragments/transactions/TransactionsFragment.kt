@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
@@ -26,6 +28,7 @@ class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsViewModel by viewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,7 +118,6 @@ class TransactionsFragment : Fragment() {
         }
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.transactionsRVPacket.observe(viewLifecycleOwner) {

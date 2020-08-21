@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "MAIN ACTIVITY RECREATED")
         // This must be called before the onCreate. If not, onStart will run twice!
         previousLoadedTheme = UserPDS.getDSPString("dsp_theme", "light")
-            .also { Log.d(TAG, "previousLoadedTheme is now $it") }
         when (previousLoadedTheme) {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -89,6 +88,18 @@ class MainActivity : AppCompatActivity() {
                 }
             setupWithNavController(navController) // Connects navigation drawer to navController
             setNavigationItemSelectedListener {
+                fun navigateToExitLobbyFragment() {
+                    if (navController.currentDestination?.id !in listOf(
+                            R.id.titleFragment,
+                            R.id.lobbyFragment,
+                            R.id.exitLobbyFragment
+                        )
+                    ) {
+                        // Logout logic. Login logic is controlled from within RootTitleFragment.
+                        navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
+                    }
+                }
+
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
                     R.id.menuSettings -> {
@@ -103,23 +114,17 @@ class MainActivity : AppCompatActivity() {
                         false
                     }
                     R.id.menuLogout -> {
-                        AlertDialog.Builder(this@MainActivity)
-                            .setTitle("Logout and delete guest account?")
-                            .setMessage("If you do not claim this account or export your data, all data associated with this guest accout will be lost forever on successful logout.")
-                            .setPositiveButton(R.string.ok) { _, _ ->
-                                if (navController.currentDestination?.id !in listOf(
-                                        R.id.titleFragment,
-                                        R.id.lobbyFragment,
-                                        R.id.exitLobbyFragment
-                                    )
-                                ) {
-                                    // Logout logic. Login logic is controlled from within RootTitleFragment.
-                                    navController.navigate(TopLevelNavGraphDirections.actionGlobalExitLobbyFragment())
-                                }
-                            }
-                            .setNegativeButton(R.string.cancel) { _, _ -> }
-                            .create()
-                            .show()
+                        if (Firebase.auth.currentUser!!.isAnonymous) {
+                            AlertDialog.Builder(this@MainActivity)
+                                .setTitle("Logout and delete guest account?")
+                                .setMessage("If you do not claim this account or export your data, all data associated with this guest accout will be lost forever on successful logout.")
+                                .setPositiveButton(R.string.ok) { _, _ -> navigateToExitLobbyFragment() }
+                                .setNegativeButton(R.string.cancel) { _, _ -> }
+                                .create()
+                                .show()
+                        } else {
+                            navigateToExitLobbyFragment()
+                        }
                         false
                     }
                     R.id.menuAbout -> {
@@ -192,14 +197,6 @@ class MainActivity : AppCompatActivity() {
                 headerBinding.navHeaderEmailTV.text = it.email
             }
         }
-        Snackbar.make(
-            binding.root,
-            "Cloud Backup is disabled as you've logged in on another device.",
-            Snackbar.LENGTH_INDEFINITE
-        )
-            .setBehavior(NoSwipeBehaviour())
-            .setAction("OK") { Unit }
-            .show()
         //        setupRecurringWork()
     }
 

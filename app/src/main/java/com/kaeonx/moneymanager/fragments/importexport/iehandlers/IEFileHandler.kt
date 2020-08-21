@@ -2,7 +2,6 @@ package com.kaeonx.moneymanager.fragments.importexport.iehandlers
 
 import android.content.ContentResolver
 import android.content.Intent
-import com.kaeonx.moneymanager.activities.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.*
@@ -15,7 +14,6 @@ internal class IEFileHandler private constructor() {
         internal const val READ_FROM_FILE = 2
         internal const val UPLOAD_DATA = 2
         internal const val DELETE_DATA = 3
-
 
         /**
          * @param fileName Without .json
@@ -102,11 +100,5 @@ internal class IEFileHandler private constructor() {
                 }
             }
         }
-
-        internal fun buildUserFilePath(uid: String): String {
-            return App.context.filesDir.path + "/uploadable_$uid.json"
-        }
-
-
     }
 }

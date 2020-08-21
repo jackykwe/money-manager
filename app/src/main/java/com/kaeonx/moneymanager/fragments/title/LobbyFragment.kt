@@ -11,8 +11,12 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageException
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.AuthViewModel
+import com.kaeonx.moneymanager.activities.CloudMetadata
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -21,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
+import java.io.File
 
 private const val TAG = "lobbyfrag"
 
@@ -41,6 +46,63 @@ class LobbyFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        // 1. [Lobby] Download lastKnownLoginMillis from cloud (using InputStream)
+        // 2. [Lobby] If downloaded lastKnownLoginMillis is greater than Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp
+        //            then set "non_guest_outdated_login" flag to true
+        // Operations 1. and 2. will be cancelled if no internet connection is available.
+        requireActivity().let {
+            fun showOutdatedLoginSnackbar() {
+                Snackbar.make(
+                    (it as MainActivity).binding.root,
+                    "Cloud Backup is disabled as you've logged in on another device.",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setBehavior(NoSwipeBehaviour())
+                    .setAction("OK") { Unit }
+                    .show()
+            }
+
+            it.lifecycleScope.launch {
+                if (!UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+                    AuthViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+                        .addOnSuccessListener { taskSnapshot ->
+                            it.lifecycleScope.launch {
+                                val cloudMetadata = taskSnapshot.stream.use { inputStream ->
+                                    CloudMetadata.fromInputStream(inputStream)
+                                }
+                                if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
+                                    Log.d(TAG, "OUTDATED!!")
+                                    UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+                                    showOutdatedLoginSnackbar()
+                                } else {
+                                    Log.d(TAG, "Not outdated !!")
+                                }
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            when ((exception as StorageException).errorCode) {
+                                StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> {
+                                    Log.e(TAG, "limit exceeded here")
+                                }
+                                else -> {
+                                    Log.e(
+                                        TAG,
+                                        "downloadMetadataJSONFromCloud: failed, with exception $exception, message ${exception.message}, cause ${exception.cause}, stacktrace ${
+                                            exception.stackTrace.joinToString(
+                                                "\n"
+                                            )
+                                        }"
+                                    )
+                                }
+                            }
+                        }
+                } else {
+                    Log.d(TAG, "already outdated")
+                    showOutdatedLoginSnackbar()
+                }
+            }
+        }
+
         lifecycleScope.launch(Dispatchers.Main) {
             val xeRepository = XERepository.getInstance()
             val userRepository = UserRepository.getInstance()
@@ -57,10 +119,21 @@ class LobbyFragment : Fragment() {
 
             UserPDS.putDSPString("logged_in_uid", Firebase.auth.currentUser!!.uid)
 
+            val downloadedFile = File(
+                AuthViewModel.buildDownloadedDBFilePath(
+                    UserPDS.getDSPString("logged_in_uid", "")
+                )
+            )
+            if (downloadedFile.exists()) {
+                // IMPORT
+
+
+//                downloadedFile.delete()
+            }
+
             // Ensure theme is correct
-            val userTheme = UserPDS.getString("dsp_theme").also { Log.d(TAG, "userTheme is $it") }
+            val userTheme = UserPDS.getString("dsp_theme")
             val sharedPrefTheme = UserPDS.getDSPString("dsp_theme", "light")
-                .also { Log.d(TAG, "sharedPrefTheme is $it") }
             if (sharedPrefTheme != userTheme) {
                 UserPDS.putDSPString("dsp_theme", UserPDS.getString("dsp_theme"))
                 Snackbar.make(requireView(), "Applying theme…", Snackbar.LENGTH_SHORT).show()

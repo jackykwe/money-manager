@@ -11,6 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageException
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
@@ -27,6 +29,8 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 private const val TAG = "cloudfrag"
+
+// TODO MOVE ALL THESE CODE INTO VIEWMODEL
 
 class CloudFragment : Fragment() {
 
@@ -196,6 +200,8 @@ class CloudFragment : Fragment() {
         }
     }.iterator()
 
+    private var uploadTask: StorageTask<UploadTask.TaskSnapshot>? = null
+
     private fun uploadData() {
         startUI()
         lifecycleScope.launch(Dispatchers.Default) {
@@ -254,13 +260,22 @@ class CloudFragment : Fragment() {
 
                 updateUI("Writing to JSON…", progressIterator.next())
                 IEFileHandler.saveRootToFile(
-                    IEFileHandler.buildUserFilePath(Firebase.auth.currentUser!!.uid),
+                    AuthViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                     output.toString()
                 )
 
                 updateUI("Uploading…", progressIterator.next())
-                val uploadTask = AuthViewModel.uploadJSON(Firebase.auth.currentUser!!.uid)
-                uploadTask
+                if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+                    withContext(Dispatchers.Main) {
+                        doneUI(
+                            true,
+                            UPLOAD_DATA,
+                            "uploading from outdated login is not allowed"
+                        )
+                    }
+                    return@launch
+                }
+                uploadTask = AuthViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener { taskSnapshot ->
                         UserPDS.putDSPLong(
                             "${Firebase.auth.currentUser!!.uid}_last_upload_time",
@@ -271,10 +286,11 @@ class CloudFragment : Fragment() {
                             val timeFormat = UserPDS.getString("dsp_time_format")
                             updateUI("…", progressIterator.next())
                             withContext(Dispatchers.Main) {
-                                binding.lastUploadedTV.text = CalendarHandler.getFormattedString(
-                                    taskSnapshot.metadata!!.updatedTimeMillis,
-                                    "'Last uploaded:' $timeFormat 'on' $dateFormat"
-                                )
+                                binding.lastUploadedTV.text =
+                                    CalendarHandler.getFormattedString(
+                                        taskSnapshot.metadata!!.updatedTimeMillis,
+                                        "'Last uploaded:' $timeFormat 'on' $dateFormat"
+                                    )
                                 doneUI(false, UPLOAD_DATA, null)
                             }
                         }
@@ -296,23 +312,17 @@ class CloudFragment : Fragment() {
                         )
                     }
                     .addOnCanceledListener {
-                        lifecycleScope.launch {
-                            withContext(Dispatchers.Main) {
-                                doneUI(
-                                    true,
-                                    UPLOAD_DATA,
-                                    "upload cancelled"
-                                )
-                            }
-                        }
+                        Log.e(TAG, "uploadTask: cancelled")
                     }
-//                    .addOnPausedListener { taskSnapshot -> }
             } catch (e: Exception) {
-                doneUI(
-                    true,
-                    UPLOAD_DATA,
-                    "Unknown ${e.javaClass.toString().substring(6)}"
-                )
+                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    doneUI(
+                        true,
+                        UPLOAD_DATA,
+                        "Unknown ${e.javaClass.toString().substring(6)}"
+                    )
+                }
             }
         }
     }
@@ -323,7 +333,17 @@ class CloudFragment : Fragment() {
             try {
                 val progressIterator = generatePercentIterator(1)
                 updateUI("Deleting cloud data…", progressIterator.next())
-                AuthViewModel.deleteJSON(Firebase.auth.currentUser!!.uid)
+                if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+                    withContext(Dispatchers.Main) {
+                        doneUI(
+                            true,
+                            UPLOAD_DATA,
+                            "deleting from outdated login is not allowed"
+                        )
+                    }
+                    return@launch
+                }
+                AuthViewModel.deleteDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener {
                         UserPDS.removeDSPKeyIfExists("${Firebase.auth.currentUser!!.uid}_last_upload_time")
                         binding.lastUploadedTV.text = getString(R.string.no_cloud_data_found)
@@ -333,6 +353,13 @@ class CloudFragment : Fragment() {
                         when ((exception as StorageException).errorCode) {
                             StorageException.ERROR_OBJECT_NOT_FOUND -> {
                                 doneUI(true, DELETE_DATA, "Nothing to delete")
+                            }
+                            StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> {
+                                doneUI(
+                                    true,
+                                    DELETE_DATA,
+                                    "delete failed\nCheck your internet connection."
+                                )
                             }
                             else -> {
                                 Log.e(
@@ -347,7 +374,7 @@ class CloudFragment : Fragment() {
                                 doneUI(
                                     true,
                                     DELETE_DATA,
-                                    "delete failed [${exception.errorCode}]\nCheck your internet connection."
+                                    "delete failed [${exception.errorCode}]\nPlease report this bug."
                                 )
                             }
                         }
@@ -360,5 +387,10 @@ class CloudFragment : Fragment() {
                 )
             }
         }
+    }
+
+    override fun onDestroy() {
+        uploadTask?.cancel().also { Log.d(TAG, "upload task cancelled") }
+        super.onDestroy()
     }
 }

@@ -119,6 +119,15 @@ internal object UserPDS : PreferenceDataStore() {
             .putLong(key, value)
             .commit()
 
+    internal fun getDSPBoolean(key: String, defaultValue: Boolean): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context).getBoolean(key, defaultValue)
+
+    internal fun putDSPBoolean(key: String, value: Boolean): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+            .edit()
+            .putBoolean(key, value)
+            .commit()
+
     internal fun removeDSPKeyIfExists(key: String): Boolean =
         PreferenceManager.getDefaultSharedPreferences(App.context)
             .edit()
