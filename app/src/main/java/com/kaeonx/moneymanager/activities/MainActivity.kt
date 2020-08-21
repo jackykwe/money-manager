@@ -38,7 +38,7 @@ private const val START_CLAIM_LOGIN_INTENT = 1
 
 class MainActivity : AppCompatActivity() {
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val activityViewModel: ActivityViewModel by viewModels()
 
     internal lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -181,12 +181,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
-        authViewModel.currentUser.observe(this) {
+        activityViewModel.currentUser.observe(this) {
             if (it == null) return@observe
             if (it.isAnonymous) {
                 headerBinding.root.setOnClickListener {
                     startActivityForResult(
-                        authViewModel.loginIntentNoAnonymous(),
+                        activityViewModel.loginIntentNoAnonymous(),
                         START_CLAIM_LOGIN_INTENT
                     )
                 }
@@ -197,8 +197,24 @@ class MainActivity : AppCompatActivity() {
                 headerBinding.navHeaderEmailTV.text = it.email
             }
         }
+
+        activityViewModel.showOutdatedLoginSnackbar.observe(this) {
+            if (it) {
+                activityViewModel.showOutdatedLoginSnackbarHandled()
+                Snackbar.make(
+                    binding.root,
+                    "Cloud Backup is disabled as there is a newer login on another device.",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setBehavior(NoSwipeBehaviour())
+                    .setAction("OK") { Unit }
+                    .show()
+            }
+        }
+
         //        setupRecurringWork()
     }
+
 
 //    private fun setupRecurringWork() = lifecycleScope.launch {
 //        val constraints = Constraints.Builder()
@@ -254,7 +270,7 @@ class MainActivity : AppCompatActivity() {
                         "Successfully claimed this account!",
                         Snackbar.LENGTH_LONG
                     ).show()
-                    authViewModel.refreshAuthMLD()
+                    activityViewModel.refreshAuthMLD()
                     //TODO : SYNC WITH REALTIME DATABASE
                 } else {
                     val response = IdpResponse.fromResultIntent(data)

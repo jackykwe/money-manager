@@ -4,7 +4,10 @@ import android.content.ContentResolver
 import android.content.Intent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.OutputStreamWriter
 
 internal class IEFileHandler private constructor() {
 
@@ -37,17 +40,9 @@ internal class IEFileHandler private constructor() {
             // official Android documentation.
             if (data == null) throw IllegalStateException("data (Intent) is null")
             if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
-            val stringBuilder = StringBuilder()
-            contentResolver.openInputStream(data.data!!).use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                    var line: String? = reader.readLine()
-                    while (line != null) {
-                        stringBuilder.append(line + "\n")
-                        line = reader.readLine()
-                    }
-                }
+            return contentResolver.openInputStream(data.data!!).use { inputStream ->
+                inputStream!!.bufferedReader().readText().trim()
             }
-            return stringBuilder.trim().toString()
         }
 
         internal fun writeJSONString(

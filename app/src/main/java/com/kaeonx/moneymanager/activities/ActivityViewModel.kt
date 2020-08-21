@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
@@ -13,11 +14,16 @@ import com.google.firebase.storage.*
 import com.google.firebase.storage.ktx.storage
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
+import com.kaeonx.moneymanager.userrepository.UserPDS
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val TAG = "authVM"
+private const val TAG = "actVM"
 
-class AuthViewModel : ViewModel() {
+class ActivityViewModel : ViewModel() {
 
     companion object {
 
@@ -146,7 +152,60 @@ class AuthViewModel : ViewModel() {
             .signOut(App.context)
     }
 
-    internal fun delete(): Task<Void> =
-        AuthUI.getInstance()
-            .delete(App.context)
+    internal fun delete(): Task<Void> = AuthUI.getInstance().delete(App.context)
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     *  Initiated from LobbyFragment
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+    internal fun attemptToFetchLastKnownLoginMillis() {
+        // 1. [Lobby] Download lastKnownLoginMillis from cloud (using InputStream)
+        // 2. [Lobby] If downloaded lastKnownLoginMillis is greater than Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp
+        //            then set "non_guest_outdated_login" flag to true
+        // Operations 1. and 2. will be cancelled if no internet connection is available.
+        viewModelScope.launch {
+            if (!UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+                downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+                    .addOnSuccessListener { taskSnapshot ->
+                        viewModelScope.launch {
+                            val cloudMetadata = taskSnapshot.stream.use { inputStream ->
+                                CloudMetadata.fromInputStream(inputStream)
+                            }
+                            ensureActive()
+                            if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
+                                UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+                                withContext(Dispatchers.Main) {
+                                    _showOutdatedLoginSnackbar.value = true
+                                }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        when ((exception as StorageException).errorCode) {
+                            StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> {
+                                Unit
+                            }
+                            else -> {
+                                Unit
+                            }
+                        }
+                    }
+            } else {
+                withContext(Dispatchers.Main) {
+                    _showOutdatedLoginSnackbar.value = true
+                }
+            }
+        }
+    }
+
+    private val _showOutdatedLoginSnackbar = MutableLiveData2(false)
+    internal val showOutdatedLoginSnackbar: LiveData<Boolean>
+        get() = _showOutdatedLoginSnackbar
+
+    internal fun showOutdatedLoginSnackbarHandled() {
+        _showOutdatedLoginSnackbar.value = false
+    }
+
 }

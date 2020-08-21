@@ -10,7 +10,7 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.StreamDownloadTask
 import com.google.firebase.storage.UploadTask
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.AuthViewModel
+import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.CloudMetadata
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
@@ -76,7 +76,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = null
             } else {
                 uploadTask =
-                    AuthViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+                    ActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                         .addOnSuccessListener { taskSnapshot ->
                             UserPDS.putDSPLong(
                                 "${Firebase.auth.currentUser!!.uid}_last_upload_time",
@@ -210,7 +210,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = it
             }
             IEFileHandler.saveRootToFile(
-                AuthViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
+                ActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                 output.toString()
             )
 
@@ -221,7 +221,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = it
             }
             // Check that the current login is still the most recent login
-            AuthViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot, progressIterator)
                 }
@@ -278,7 +278,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 }
                 previousNewProgressText = null
             } else {
-                AuthViewModel.deleteDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
+                ActivityViewModel.deleteDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener {
                         UserPDS.removeDSPKeyIfExists("${Firebase.auth.currentUser!!.uid}_last_upload_time")
                         declareUpdateUIDone()
@@ -334,7 +334,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = it
             }
             // Check that the current login is still the most recent login
-            AuthViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     deleteDataInner(taskSnapshot, progressIterator)
                 }

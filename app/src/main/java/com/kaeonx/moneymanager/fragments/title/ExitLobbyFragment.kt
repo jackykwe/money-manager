@@ -14,8 +14,8 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.AuthViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
@@ -30,10 +30,11 @@ import java.io.File
 
 private const val TAG = "exitlobf"
 
+// TODO : ALLOW USER TO DISABLE AUTO BACKUP WHEN LOGGING OUT
 class ExitLobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentLobbyBinding
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val activityViewModel: ActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,14 +79,14 @@ class ExitLobbyFragment : Fragment() {
 
         fun deleteJSONFiles() {
             val uploadableFile = File(
-                AuthViewModel.buildUploadableDBFilePath(
+                ActivityViewModel.buildUploadableDBFilePath(
                     UserPDS.getDSPString("logged_in_uid", "")
                 )
             )
             if (uploadableFile.exists()) uploadableFile.delete()
 
             val downloadedFile = File(
-                AuthViewModel.buildDownloadedDBFilePath(
+                ActivityViewModel.buildDownloadedDBFilePath(
                     UserPDS.getDSPString("logged_in_uid", "")
                 )
             )
@@ -126,7 +127,7 @@ class ExitLobbyFragment : Fragment() {
                 lifecycleScope.launch { exit() }
             }
             Firebase.auth.currentUser!!.isAnonymous -> {
-                authViewModel.delete()  // fails immediately if offline
+                activityViewModel.delete()  // fails immediately if offline
                     .addOnSuccessListener {
                         // NB: By now, Firebase.auth.currentUser is already null
                         deleteLocalDatabase()
@@ -169,7 +170,7 @@ class ExitLobbyFragment : Fragment() {
                     }
             }
             else -> {
-                authViewModel.logout()  // confirm success, even if offline
+                activityViewModel.logout()  // confirm success, even if offline
                 deleteLocalDatabase()
                 deleteJSONFiles()
                 UserPDS.removeDSPKeyIfExists(

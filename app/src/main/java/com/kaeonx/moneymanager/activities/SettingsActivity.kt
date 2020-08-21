@@ -31,7 +31,7 @@ class SettingsActivity : AppCompatActivity(),
      */
     ////////////////////////////////////////////////////////////////////////////////
 
-    private val authViewModel: AuthViewModel by viewModels()
+    private val activityViewModel: ActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // This must be called before the onCreate. If not, onStart will run twice!
