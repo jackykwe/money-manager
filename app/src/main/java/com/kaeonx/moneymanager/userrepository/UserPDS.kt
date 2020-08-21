@@ -134,4 +134,10 @@ internal object UserPDS : PreferenceDataStore() {
             .remove(key)
             .commit()
 
+    internal fun removeAllDSPKeys(): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(App.context)
+            .edit()
+            .clear()
+            .commit()
+
 }

@@ -230,9 +230,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 }
                 previousNewProgressText = it
             }
-
             // Check that the current login is still the most recent login
-            ensureActive()
             ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot, progressIterator)
