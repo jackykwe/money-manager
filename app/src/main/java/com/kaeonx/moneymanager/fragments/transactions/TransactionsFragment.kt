@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
@@ -128,17 +125,6 @@ class TransactionsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        Log.d(TAG, "currentUser is ${Firebase.auth.currentUser}")
-        Log.d(
-            TAG,
-            "currentUser is last login ${Firebase.auth.currentUser?.metadata?.lastSignInTimestamp}"
-        )
-        Log.d(
-            TAG,
-            "currentUser is anonymous ${Firebase.auth.currentUser?.isAnonymous}"
-        )
-
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityToolbar.apply {
             (menu.getItem(0).actionView as SearchView).apply {
                 queryHint = "Find in memo"

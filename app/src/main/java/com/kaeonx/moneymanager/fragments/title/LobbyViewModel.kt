@@ -41,7 +41,9 @@ class LobbyViewModel : ViewModel() {
             if (downloadedFile.exists()) {
                 try {
                     ensureActive()
-                    val jsonObject = JSONObject(downloadedFile.bufferedReader().readText().trim())
+                    val jsonObject = JSONObject(
+                        downloadedFile.bufferedReader().use { it.readText() }.trim()
+                    )
 
 
                     // Transactions

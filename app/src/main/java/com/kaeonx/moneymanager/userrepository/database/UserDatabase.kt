@@ -43,24 +43,27 @@ abstract class UserDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE_USER_ID: String? = null
 
-        fun getInstance(userId: String? = Firebase.auth.currentUser!!.uid): UserDatabase {
+        fun getInstance(): UserDatabase {
             synchronized(this) {
-                if (userId == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
+                if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(TAG, "WARN: OPENING INSTANCE TO DATABASE FOR $userId")
+                    Log.d(
+                        TAG,
+                        "WARN: OPENING INSTANCE TO DATABASE FOR ${Firebase.auth.currentUser!!.uid}"
+                    )
                     // Opening a connection to a database is expensive!
                     instance = Room.databaseBuilder(
                         App.context,
                         UserDatabase::class.java,
-                        "user_database_$userId"
+                        "user_database_${Firebase.auth.currentUser!!.uid}"
                     )
                         .addMigrations(MIGRATION_1_2)
                         .createFromAsset("database/preload.db")
                         .build()
                     INSTANCE = instance
-                    INSTANCE_USER_ID = userId
-                } else if (userId != INSTANCE_USER_ID) {
+                    INSTANCE_USER_ID = Firebase.auth.currentUser!!.uid
+                } else if (Firebase.auth.currentUser!!.uid != INSTANCE_USER_ID) {
                     throw IllegalStateException("UserDatabase.getInstance() called with different userId")
                 }
                 return instance

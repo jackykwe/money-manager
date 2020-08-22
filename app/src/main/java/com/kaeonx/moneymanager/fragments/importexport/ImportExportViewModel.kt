@@ -374,7 +374,7 @@ class ImportExportViewModel : ViewModel() {
         get() = _doneUI
 
     internal fun doneUIHandled() {
-        _doneUI.value = null
+        // Unit so that "Successfully X data" message persists even after activity recreate
     }
 
     private val _showApplyingThemeSnackbar = MutableLiveData2(false)

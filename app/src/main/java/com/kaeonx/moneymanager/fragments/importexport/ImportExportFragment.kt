@@ -152,7 +152,7 @@ class ImportExportFragment : Fragment() {
                             "Applying theme…",
                             Snackbar.LENGTH_LONG
                         ).show()
-                        delay(3000L)
+                        delay(1000L)
                         activity.recreate()
                     }
                 }

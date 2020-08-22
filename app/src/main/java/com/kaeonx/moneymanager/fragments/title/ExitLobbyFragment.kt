@@ -19,6 +19,7 @@ import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -151,6 +152,9 @@ class ExitLobbyFragment : Fragment() {
             if (it) {
                 viewModel.exitHandled()
                 lifecycleScope.launch(Dispatchers.Main) {
+                    GlobalScope.launch {
+                        MainActivity.cancelWork()
+                    }
                     val animDuration =
                         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
                     binding.root.animate()

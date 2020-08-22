@@ -43,6 +43,8 @@ class ExitLobbyViewModel : ViewModel() {
         val file = App.context.getDatabasePath(
             "user_database_${UserPDS.getDSPString("logged_in_uid", "")}"
         )
+        File(file.absolutePath + "-shm").run { if (exists()) delete() }
+        File(file.absolutePath + "-wal").run { if (exists()) delete() }
         if (file.exists()) file.delete()
 
         // Delete JSON files

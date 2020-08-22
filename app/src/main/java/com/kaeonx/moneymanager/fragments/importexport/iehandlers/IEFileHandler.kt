@@ -4,10 +4,7 @@ import android.content.ContentResolver
 import android.content.Intent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.BufferedWriter
 import java.io.File
-import java.io.FileWriter
-import java.io.OutputStreamWriter
 
 internal class IEFileHandler private constructor() {
 
@@ -15,8 +12,6 @@ internal class IEFileHandler private constructor() {
 
         internal const val OUTPUT_TO_FILE = 1
         internal const val READ_FROM_FILE = 2
-        internal const val UPLOAD_DATA = 2
-        internal const val DELETE_DATA = 3
 
         /**
          * @param fileName Without .json
@@ -41,7 +36,7 @@ internal class IEFileHandler private constructor() {
             if (data == null) throw IllegalStateException("data (Intent) is null")
             if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
             return contentResolver.openInputStream(data.data!!).use { inputStream ->
-                inputStream!!.bufferedReader().readText().trim()
+                inputStream!!.bufferedReader().use { it.readText().trim() }
             }
         }
 
@@ -56,9 +51,11 @@ internal class IEFileHandler private constructor() {
             if (data == null) throw IllegalStateException("data (Intent) is null")
             if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
             contentResolver.openOutputStream(data.data!!)?.use { outputStream ->
-                BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
-                    writer.write(contentToWrite)
-                }
+                outputStream.bufferedWriter().use { it.write(contentToWrite) }
+                //TODO CLEANUP THIS FILE
+//                BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
+//                    writer.write(contentToWrite)
+//                }
             }
         }
 
@@ -87,7 +84,8 @@ internal class IEFileHandler private constructor() {
                 try {
                     val parentDir = File(file.parent!!)
                     if (!parentDir.exists()) parentDir.mkdirs()
-                    BufferedWriter(FileWriter(file)).use { it.write(jsonString) }
+                    file.bufferedWriter().use { it.write(jsonString) }
+//                    BufferedWriter(FileWriter(file)).use { it.write(jsonString) }
                     true
                 } catch (e: Exception) {
                     e.printStackTrace()

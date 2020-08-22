@@ -33,6 +33,7 @@ class UserRepository private constructor() {
     val preferences = Transformations.map(_preferences) { it.toMap() }
 
     private val liveDataActivator = Observer<Any> { }
+    private val preferenceChangeListener = Observer<Any> { }
 
     init {
         // These values are observed statically (they are accessed by items not bound to

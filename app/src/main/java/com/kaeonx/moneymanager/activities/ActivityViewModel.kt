@@ -2,9 +2,11 @@ package com.kaeonx.moneymanager.activities
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.*
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
@@ -15,11 +17,10 @@ import com.google.firebase.storage.ktx.storage
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserPDS
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.kaeonx.moneymanager.work.UploadDataWorker
+import kotlinx.coroutines.*
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "actVM"
 
@@ -208,4 +209,54 @@ class ActivityViewModel : ViewModel() {
         _showOutdatedLoginSnackbar.value = false
     }
 
+    internal fun updateWorkStatus() {
+        viewModelScope.launch {
+            if (!UserPDS.getBoolean("dap_auto_backup_enabled") || Firebase.auth.currentUser!!.isAnonymous) {
+                GlobalScope.launch {
+                    MainActivity.cancelWork()
+                }
+            } else {
+                if (WorkManager.getInstance(App.context)
+                        .getWorkInfosForUniqueWork(UploadDataWorker.WORK_NAME)
+                        .await()
+                        .run {
+                            isEmpty() || this[0].state == WorkInfo.State.CANCELLED
+                        }
+                ) {
+                    Log.d(
+                        TAG,
+                        "CREATING(KEEP) WORK with freq ${
+                            UserPDS.getString("dap_auto_backup_freq").toLong()
+                        } days"
+                    )
+                    val constraints = Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.NOT_ROAMING)
+                        .setRequiresBatteryNotLow(true)
+                        .setRequiresDeviceIdle(false)
+                        .build()
+
+                    val repeatingRequest =
+                        PeriodicWorkRequestBuilder<UploadDataWorker>(
+                            UserPDS.getString("dap_auto_backup_freq").toLong(),
+                            TimeUnit.DAYS
+                        )
+                            .setInitialDelay(1, TimeUnit.HOURS)
+                            .setConstraints(constraints)
+                            .setBackoffCriteria(
+                                BackoffPolicy.EXPONENTIAL,
+                                PeriodicWorkRequest.MIN_BACKOFF_MILLIS,
+                                TimeUnit.MILLISECONDS
+                            )
+                            .addTag("frequency is ${UserPDS.getString("dap_auto_backup_freq")}")
+                            .build()
+
+                    WorkManager.getInstance(App.context).enqueueUniquePeriodicWork(
+                        UploadDataWorker.WORK_NAME,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        repeatingRequest
+                    )
+                }
+            }
+        }
+    }
 }

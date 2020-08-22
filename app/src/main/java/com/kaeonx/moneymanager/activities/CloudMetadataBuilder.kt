@@ -25,7 +25,7 @@ internal class CloudMetadata private constructor(
 
         internal suspend fun fromInputStream(inputStream: InputStream): CloudMetadata {
             return withContext(Dispatchers.IO) {
-                val jsonObject = JSONObject(inputStream.bufferedReader().readText())
+                val jsonObject = JSONObject(inputStream.bufferedReader().use { it.readText() })
                 return@withContext CloudMetadata(
                     lastKnownLoginMillis = jsonObject.getLong("last_known_login_millis")
                 )

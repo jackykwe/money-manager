@@ -64,6 +64,7 @@ class LobbyFragment : Fragment() {
         viewModel.initDone.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.initDoneHandled()
+                activityViewModel.updateWorkStatus()
                 lifecycleScope.launch(Dispatchers.Main) {
                     val animDuration =
                         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
