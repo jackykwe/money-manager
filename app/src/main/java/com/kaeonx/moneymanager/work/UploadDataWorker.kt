@@ -2,13 +2,12 @@ package com.kaeonx.moneymanager.work
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.WorkManager
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StreamDownloadTask
 import com.kaeonx.moneymanager.activities.ActivityViewModel
+import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.CloudMetadata
 import com.kaeonx.moneymanager.activities.Debug
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
@@ -21,6 +20,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "UploadDataWorker"
 
@@ -29,6 +29,56 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
 
     companion object {
         internal const val WORK_NAME = "MMUploadDataWorker"
+
+        /**
+         * Should be called with GlobalScope
+         */
+        internal suspend fun cancelWork() =
+            WorkManager.getInstance(App.context).cancelUniqueWork(WORK_NAME)
+                .await()
+
+        /**
+         * Should be called with GlobalScope
+         */
+        internal suspend fun overwriteWork() {
+            if (!UserPDS.getBoolean("dap_auto_backup_enabled") || Firebase.auth.currentUser!!.isAnonymous) {
+                cancelWork()
+            } else {
+                Log.d(
+                    TAG,
+                    "CREATING(REPLACE) WORK with freq ${
+                        UserPDS.getString("dap_auto_backup_freq").toLong()
+                    } days"
+                )
+                val constraints = Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.NOT_ROAMING)
+                    .setRequiresBatteryNotLow(true)
+                    .setRequiresDeviceIdle(false)
+                    .build()
+
+                val repeatingRequest =
+                    PeriodicWorkRequestBuilder<UploadDataWorker>(
+                        UserPDS.getString("dap_auto_backup_freq").toLong(),
+                        TimeUnit.DAYS
+                    )
+                        .setInitialDelay(1, TimeUnit.HOURS)
+                        .setConstraints(constraints)
+                        .setBackoffCriteria(
+                            BackoffPolicy.EXPONENTIAL,
+                            PeriodicWorkRequest.MIN_BACKOFF_MILLIS,
+                            TimeUnit.MILLISECONDS
+                        )
+                        .addTag("frequency is ${UserPDS.getString("dap_auto_backup_freq")}")
+                        .build()
+
+                WorkManager.getInstance(App.context).enqueueUniquePeriodicWork(
+                    WORK_NAME,
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    repeatingRequest
+                )
+            }
+        }
+
     }
 
     private suspend fun doWork2(outerTaskSnapshot: StreamDownloadTask.TaskSnapshot): Result {

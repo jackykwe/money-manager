@@ -2,6 +2,7 @@ package com.kaeonx.moneymanager.fragments.transactions
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsSearchBinding
+
+private const val TAG = "tssearch"
 
 class TransactionsSearchFragment : Fragment() {
 
@@ -61,7 +64,7 @@ class TransactionsSearchFragment : Fragment() {
         binding.transactionsRV.apply {
             setHasFixedSize(true)
             adapter = TransactionsSearchRVAdapter(
-                itemOnClickListener = TransactionOnClickListener { transaction ->
+                itemOnClickListener = TransactionOnClickListener { view, transaction ->
                     // Close the keyboard, if it's open
                     val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
                             as InputMethodManager
@@ -75,6 +78,9 @@ class TransactionsSearchFragment : Fragment() {
                             )
                         }
                     }
+                },
+                itemOnLongClickListener = TransactionOnClickListener { view, transaction ->
+                    Log.d(TAG, "oh? You long click this one? ${transaction.transactionId}")
                 }
             )
         }

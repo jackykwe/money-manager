@@ -17,7 +17,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.*
+import androidx.work.WorkManager
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.github.mikephil.charting.utils.Utils
@@ -33,66 +33,12 @@ import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.work.UploadDataWorker
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "matvt"
 private const val START_SETTING_ACTIVITY = 0
 private const val START_CLAIM_LOGIN_INTENT = 1
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-
-        /**
-         * Should be called with GlobalScope
-         */
-        internal suspend fun cancelWork() =
-            WorkManager.getInstance(App.context).cancelUniqueWork(UploadDataWorker.WORK_NAME)
-                .await()
-
-        /**
-         * Should be called with GlobalScope
-         */
-        internal suspend fun overwriteWork() {
-            if (!UserPDS.getBoolean("dap_auto_backup_enabled") || Firebase.auth.currentUser!!.isAnonymous) {
-                cancelWork()
-            } else {
-                Log.d(
-                    TAG,
-                    "CREATING(REPLACE) WORK with freq ${
-                        UserPDS.getString("dap_auto_backup_freq").toLong()
-                    } days"
-                )
-                val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.NOT_ROAMING)
-                    .setRequiresBatteryNotLow(true)
-                    .setRequiresDeviceIdle(false)
-                    .build()
-
-                val repeatingRequest =
-                    PeriodicWorkRequestBuilder<UploadDataWorker>(
-                        UserPDS.getString("dap_auto_backup_freq").toLong(),
-                        TimeUnit.DAYS
-                    )
-                        .setInitialDelay(1, TimeUnit.HOURS)
-                        .setConstraints(constraints)
-                        .setBackoffCriteria(
-                            BackoffPolicy.EXPONENTIAL,
-                            PeriodicWorkRequest.MIN_BACKOFF_MILLIS,
-                            TimeUnit.MILLISECONDS
-                        )
-                        .addTag("frequency is ${UserPDS.getString("dap_auto_backup_freq")}")
-                        .build()
-
-                WorkManager.getInstance(App.context).enqueueUniquePeriodicWork(
-                    UploadDataWorker.WORK_NAME,
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    repeatingRequest
-                )
-            }
-        }
-
-    }
 
     private val activityViewModel: ActivityViewModel by viewModels()
 

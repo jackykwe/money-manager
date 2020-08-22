@@ -219,4 +219,17 @@ class TransactionsViewModel : ViewModel() {
             }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Batch delete transactions
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+
+    internal fun deleteTransactions(idList: List<Int>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            userRepository.deleteTransactionsTransactionSuspend(idList)
+        }
+    }
+
 }

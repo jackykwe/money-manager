@@ -213,7 +213,7 @@ class ActivityViewModel : ViewModel() {
         viewModelScope.launch {
             if (!UserPDS.getBoolean("dap_auto_backup_enabled") || Firebase.auth.currentUser!!.isAnonymous) {
                 GlobalScope.launch {
-                    MainActivity.cancelWork()
+                    UploadDataWorker.cancelWork()
                 }
             } else {
                 if (WorkManager.getInstance(App.context)

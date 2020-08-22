@@ -18,6 +18,7 @@ import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
+import com.kaeonx.moneymanager.work.UploadDataWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -153,7 +154,7 @@ class ExitLobbyFragment : Fragment() {
                 viewModel.exitHandled()
                 lifecycleScope.launch(Dispatchers.Main) {
                     GlobalScope.launch {
-                        MainActivity.cancelWork()
+                        UploadDataWorker.cancelWork()
                     }
                     val animDuration =
                         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()

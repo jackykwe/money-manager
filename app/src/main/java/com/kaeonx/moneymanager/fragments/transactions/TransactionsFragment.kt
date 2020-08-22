@@ -1,28 +1,129 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.TypedValue
+import android.view.*
 import android.widget.SearchView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsBinding
+import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
-
-private const val TAG = "tsfrag"
 
 class TransactionsFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsViewModel by viewModels()
+
+    private val selectedViews by lazy { arrayListOf<View>() }
+    private val listOfIdsSelected by lazy { arrayListOf<Int>() }
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        // Called when the action mode is created; startActionMode() was called
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            // Inflate a menu resource providing context menu items
+            mode.menuInflater.inflate(R.menu.fragment_general_edit_deleteable, menu)
+            return true
+        }
+
+        // Called each time the action mode is shown. Always called after onCreateActionMode, but
+        // may be called multiple times if the mode is invalidated.
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
+            return false // Return false if nothing is done
+        }
+
+        // Called when the user selects a contextual menu item
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.app_bar_delete -> {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("Delete the selected transactions?")
+                        .setPositiveButton(R.string.ok) { _, _ ->
+                            viewModel.deleteTransactions(listOfIdsSelected.toList())
+                            mode.finish() // Action picked, so close the CAB
+                        }
+                        .setNegativeButton(R.string.cancel) { _, _ -> }
+                        .create()
+                        .show()
+
+                    true
+                }
+                else -> false
+            }
+        }
+
+        // Called when the user exits the action mode
+        override fun onDestroyActionMode(mode: ActionMode) {
+            actionMode = null
+            selectedViews.run {
+                forEach { toggleView(it, false) }
+                clear()
+            }
+            listOfIdsSelected.clear()
+        }
+    }
+
+    private fun interactWithActionMode(view: View, transaction: Transaction) {
+        if (actionMode == null) {
+            // Start the CAB using the ActionMode.Callback defined above
+            actionMode = requireActivity().startActionMode(actionModeCallback)
+            add(view, transaction)
+        } else {
+            if (transaction.transactionId!! in listOfIdsSelected) {
+                if (listOfIdsSelected.size == 1) {
+                    actionMode?.finish()
+                } else {
+                    // Remove
+                    remove(view, transaction)
+                }
+            } else {
+                // Add
+                add(view, transaction)
+            }
+        }
+        actionMode?.title = "${listOfIdsSelected.size} selected"
+    }
+
+    private fun toggleView(view: View, newIsSelected: Boolean) {
+        lifecycleScope.launch {
+            view.backgroundTintList = ColourHandler.getColourStateListThemedOf(
+                if (newIsSelected) "Grey" else "TRANSPARENT"
+            )
+            delay(500L)
+            view.foreground = if (newIsSelected) null else with(TypedValue()) {
+                requireContext().theme.resolveAttribute(
+                    android.R.attr.selectableItemBackground,
+                    this,
+                    true
+                )
+                ContextCompat.getDrawable(requireContext(), this.resourceId)
+            }
+        }
+    }
+
+    private fun add(view: View, transaction: Transaction) {
+        toggleView(view, true)
+        selectedViews.add(view)
+        listOfIdsSelected.add(transaction.transactionId!!)
+    }
+
+    private fun remove(view: View, transaction: Transaction) {
+        selectedViews.remove(view)
+        toggleView(view, false)
+        listOfIdsSelected.remove(transaction.transactionId!!)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,17 +139,24 @@ class TransactionsFragment : Fragment() {
         binding.transactionsRV.apply {
             setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
             adapter = TransactionsRVAdapter(
-                itemOnClickListener = TransactionOnClickListener { transaction ->
-                    findNavController().run {
-                        // Courtesy of https://stackoverflow.com/a/53737537/7254995
-                        if (currentDestination?.id == R.id.transactionsFragment) {
-                            navigate(
-                                TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
-                                    transaction.transactionId!!
+                itemOnClickListener = TransactionOnClickListener { view, transaction ->
+                    if (actionMode == null) {
+                        findNavController().run {
+                            // Courtesy of https://stackoverflow.com/a/53737537/7254995
+                            if (currentDestination?.id == R.id.transactionsFragment) {
+                                navigate(
+                                    TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
+                                        transaction.transactionId!!
+                                    )
                                 )
-                            )
+                            }
                         }
+                    } else {
+                        interactWithActionMode(view, transaction)
                     }
+                },
+                itemOnLongClickListener = TransactionOnClickListener { view, transaction ->
+                    interactWithActionMode(view, transaction)
                 },
                 headerLeftArrowClickListener = GenericOnClickListener { viewModel.monthMinusOne() },
                 headerMonthClickListener = GenericOnClickListener {

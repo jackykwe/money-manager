@@ -297,5 +297,6 @@
     <color name="white">#FFFFFF</color>
 
     <color name="dark_surface">#121212</color>
+    <color name="dark_action_mode_background">#313131</color>
 
 </resources>

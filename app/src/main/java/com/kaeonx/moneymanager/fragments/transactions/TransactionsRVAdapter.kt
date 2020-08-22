@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
@@ -21,6 +22,7 @@ private const val DAY_TRANSACTIONS_NO_DATA = 4
 
 class TransactionsRVAdapter(
     private val itemOnClickListener: TransactionOnClickListener,
+    private val itemOnLongClickListener: TransactionOnClickListener,
     private val headerLeftArrowClickListener: GenericOnClickListener,
     private val headerMonthClickListener: GenericOnClickListener,
     private val headerRightArrowClickListener: GenericOnClickListener,
@@ -114,7 +116,7 @@ class TransactionsRVAdapter(
             is TransactionsDayViewHolder -> {
                 val item =
                     (getItem(position) as TransactionsRVItem.TransactionsRVItemDayTransactions).dayTransactions
-                holder.rebind(item, itemOnClickListener)
+                holder.rebind(item, itemOnClickListener, itemOnLongClickListener)
             }
         }
     }
@@ -206,10 +208,15 @@ class TransactionsRVAdapter(
     class TransactionsDayViewHolder private constructor(private val binding: RvItemTransactionsDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
+        fun rebind(
+            item: DayTransactions,
+            itemOnClickListener: TransactionOnClickListener,
+            itemOnLongClickListener: TransactionOnClickListener
+        ) {
             binding.apply {
                 dayTransactions = item
                 onClickListener = itemOnClickListener
+                onLongClickListener = itemOnLongClickListener
                 executePendingBindings()
             }
             // It is always a good idea to execute pending bindings when using binding adapters
@@ -254,8 +261,8 @@ class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>
     }
 }
 
-class TransactionOnClickListener(val clickListener: (transaction: Transaction) -> Unit) {
-    fun onClick(transaction: Transaction) = clickListener(transaction)
+class TransactionOnClickListener(val clickListener: (view: View, transaction: Transaction) -> Unit) {
+    fun onClick(view: View, transaction: Transaction) = clickListener(view, transaction)
 }
 
 sealed class TransactionsRVItem {

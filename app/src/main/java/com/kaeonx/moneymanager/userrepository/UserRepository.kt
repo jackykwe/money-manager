@@ -129,6 +129,12 @@ class UserRepository private constructor() {
         }
     }
 
+    internal suspend fun deleteTransactionsTransactionSuspend(transactionIds: List<Int>) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteTransactionsByIdTransactionSuspend(transactionIds)
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Accounts

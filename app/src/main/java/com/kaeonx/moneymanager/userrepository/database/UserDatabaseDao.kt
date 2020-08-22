@@ -17,6 +17,14 @@ interface UserDatabaseDao {
     @Delete
     suspend fun deleteTransactionSuspend(databaseTransaction: DatabaseTransaction)
 
+    @Query("DELETE FROM transactions_table WHERE transactionId = :transactionId")
+    suspend fun deleteTransactionByIdSuspend(transactionId: Int)
+
+    @Transaction
+    suspend fun deleteTransactionsByIdTransactionSuspend(transactionIds: List<Int>) {
+        transactionIds.forEach { deleteTransactionByIdSuspend(it) }
+    }
+
 //    @Query("SELECT * FROM transactions_table ORDER BY timestamp DESC")
 //    fun getAllTransactions(): LiveData<List<DatabaseTransaction>>
 

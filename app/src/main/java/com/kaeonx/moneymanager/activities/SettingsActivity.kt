@@ -14,6 +14,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.work.UploadDataWorker
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -176,7 +177,7 @@ class SettingsActivity : AppCompatActivity(),
                 setOnPreferenceChangeListener { _, _ ->
                     GlobalScope.launch {
                         delay(1000L)  // to allow the Preference to update
-                        MainActivity.overwriteWork()
+                        UploadDataWorker.overwriteWork()
                     }
                     true
                 }
@@ -186,7 +187,7 @@ class SettingsActivity : AppCompatActivity(),
                 setOnPreferenceChangeListener { _, _ ->
                     GlobalScope.launch {
                         delay(1000L)  // to allow the Preference to update
-                        MainActivity.overwriteWork()
+                        UploadDataWorker.overwriteWork()
                     }
                     true
                 }

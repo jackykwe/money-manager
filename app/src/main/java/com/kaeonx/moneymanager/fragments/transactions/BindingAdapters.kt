@@ -82,10 +82,15 @@ fun TextView.setDayExpensesCurrencyTVVisibility(dayTransactions: DayTransactions
     visibility = if (cond1 || cond2) View.GONE else View.VISIBLE
 }
 
-@BindingAdapter("dayTransactionsLL_dayTransactions", "dayTransactionsLL_onClickListener")
+@BindingAdapter(
+    "dayTransactionsLL_dayTransactions",
+    "dayTransactionsLL_onClickListener",
+    "dayTransactionsLL_onLongClickListener"
+)
 fun LinearLayout.setDayTransactionsLLAdapter(
     dayTransactions: DayTransactions,
-    itemOnClickListener: TransactionOnClickListener
+    itemOnClickListener: TransactionOnClickListener,
+    itemOnLongClickListener: TransactionOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
@@ -93,6 +98,10 @@ fun LinearLayout.setDayTransactionsLLAdapter(
         val itemBinding = RvLlItemTransactionBinding.inflate(layoutInflater, null, false)
         itemBinding.transaction = transaction
         itemBinding.onClickListener = itemOnClickListener
+        itemBinding.transactionLL.setOnLongClickListener { view ->
+            itemOnLongClickListener.onClick(view, transaction)
+            true
+        }
         itemBinding.executePendingBindings()
         addView(itemBinding.root)
     }

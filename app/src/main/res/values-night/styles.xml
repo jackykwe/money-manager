@@ -28,8 +28,13 @@
         <item name="colorOnSurface">@color/black</item>
     </style>
 
+    <style name="Help" parent="Widget.AppCompat.ActionMode">
+        <item name="elevation">24dp</item>
+    </style>
     <!-- ActionBar required for SettingsActivity -->
     <style name="AppTheme" parent="Theme.MaterialComponents">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/dark_action_mode_background</item>
         <item name="textInputStyle">@style/Widget.App.TextInputLayout.OutlinedBox</item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
         <item name="materialButtonStyle">@style/Widget.App.Button</item>

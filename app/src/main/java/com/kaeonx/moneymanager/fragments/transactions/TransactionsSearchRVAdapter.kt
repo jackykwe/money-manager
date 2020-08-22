@@ -13,7 +13,10 @@ import kotlinx.coroutines.*
 private const val SUMMARY = 0
 private const val DAY_TRANSACTIONS = 1
 
-class TransactionsSearchRVAdapter(private val itemOnClickListener: TransactionOnClickListener) :
+class TransactionsSearchRVAdapter(
+    private val itemOnClickListener: TransactionOnClickListener,
+    private val itemOnLongClickListener: TransactionOnClickListener
+) :
     ListAdapter<TransactionsSummaryRVItem, RecyclerView.ViewHolder>(
         TransactionsSummaryRVItemDiffCallback()
     ) {
@@ -69,7 +72,7 @@ class TransactionsSearchRVAdapter(private val itemOnClickListener: TransactionOn
             is TransactionsDayViewHolder -> {
                 val item =
                     getItem(position) as TransactionsSummaryRVItem.TransactionsSummaryRVItemDayTransactions
-                holder.rebind(item.dayTransactions, itemOnClickListener)
+                holder.rebind(item.dayTransactions, itemOnClickListener, itemOnLongClickListener)
             }
         }
     }
@@ -96,9 +99,14 @@ class TransactionsSearchRVAdapter(private val itemOnClickListener: TransactionOn
     class TransactionsDayViewHolder private constructor(private val binding: RvItemTransactionsSearchDayBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(item: DayTransactions, itemOnClickListener: TransactionOnClickListener) {
+        fun rebind(
+            item: DayTransactions,
+            itemOnClickListener: TransactionOnClickListener,
+            itemOnLongClickListener: TransactionOnClickListener
+        ) {
             binding.dayTransactions = item
             binding.onClickListener = itemOnClickListener
+            binding.onLongClickListener = itemOnLongClickListener
             binding.executePendingBindings()
         }
 

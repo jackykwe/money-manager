@@ -12,16 +12,19 @@
         <variable
             name="onClickListener"
             type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
+
     </data>
 
     <LinearLayout
         android:id="@+id/transactionLL"
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_ll_item_height"
+        android:background="@drawable/basic_rectangle"
+        android:backgroundTint="@android:color/transparent"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(transaction)}"
+        android:onClick="@{() -> onClickListener.onClick(transactionLL, transaction)}"
         android:orientation="horizontal"
         android:padding="8dp">
 

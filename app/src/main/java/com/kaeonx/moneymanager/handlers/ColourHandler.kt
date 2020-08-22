@@ -49,6 +49,9 @@ class ColourHandler private constructor() {
 
         private fun getObj(resourceId: Int): Int = App.context.resources.getColor(resourceId, null)
 
+        /**
+         * Used for MPCharts
+         */
         internal fun getColourObjectThemedOf(colourFamily: String): Int {
             if (colourFamily == "TRANSPARENT") return getSpecificColourObjectOf(colourFamily)
             return when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
@@ -389,6 +392,28 @@ class ColourHandler private constructor() {
 
         internal fun getSpecificColorStateListOf(colourString: String): ColorStateList =
             ColorStateList.valueOf(getSpecificColourObjectOf(colourString))
+
+        /**
+         * Used for Highlights
+         */
+        internal fun getColourStateListThemedOf(colourFamily: String): ColorStateList {
+            if (colourFamily == "TRANSPARENT") return getSpecificColorStateListOf(colourFamily)
+            return when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
+                "light" -> {
+                    when (colourFamily) {
+                        "Grey" -> getSpecificColorStateListOf("Grey,300")
+                        else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
+                    }
+                }
+                "dark" -> {
+                    when (colourFamily) {
+                        "Grey" -> getSpecificColorStateListOf("Grey,800")
+                        else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
+                    }
+                }
+                else -> throw java.lang.IllegalArgumentException("Unknown dsp_theme $theme")
+            }
+        }
 
         internal fun getColorStateListOf(colourFamily: String): ColorStateList =
             when (colourFamily) {
