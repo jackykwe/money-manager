@@ -261,6 +261,7 @@ class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>
     }
 }
 
+// TODO: Change: only need to pass transactionId, no need transaction ( actually is it better to pass objects? Since pointers and all aren't recreated )
 class TransactionOnClickListener(val clickListener: (view: View, transaction: Transaction) -> Unit) {
     fun onClick(view: View, transaction: Transaction) = clickListener(view, transaction)
 }

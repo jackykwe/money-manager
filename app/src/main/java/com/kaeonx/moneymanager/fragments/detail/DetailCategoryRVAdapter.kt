@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.detail
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,7 +19,10 @@ import kotlinx.coroutines.launch
 private const val SUMMARY = 0
 private const val CATEGORIES = 1
 
-class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategoryOnClickListener) :
+class DetailCategoryRVAdapter(
+    private val itemOnClickListener: DetailCategoryOnClickListener,
+    private val itemOnLongClickListener: DetailCategoryOnClickListener
+) :
     ListAdapter<DetailCategoryRVItem, RecyclerView.ViewHolder>(DetailCategoryRVItemDiffCallback()) {
 
     private var initRun = true
@@ -62,7 +66,7 @@ class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategor
             is DetailCategoryTransactionsViewHolder -> {
                 val data =
                     (getItem(position) as DetailCategoryRVItem.DetailCategoryRVItemCategories).detailCategoryRVPacket
-                holder.rebind(data, itemTypeOnClickListener)
+                holder.rebind(data, itemOnClickListener, itemOnLongClickListener)
             }
         }
     }
@@ -90,10 +94,12 @@ class DetailCategoryRVAdapter(private val itemTypeOnClickListener: DetailCategor
 
         fun rebind(
             newPacket: DetailCategoryRVPacket,
-            onClickListener: DetailCategoryOnClickListener
+            onClickListener: DetailCategoryOnClickListener,
+            onLongClickListener: DetailCategoryOnClickListener
         ) {
             binding.packet = newPacket
             binding.onClickListener = onClickListener
+            binding.onLongClickListener = onLongClickListener
             binding.executePendingBindings()
         }
 
@@ -124,8 +130,8 @@ class DetailCategoryRVItemDiffCallback : DiffUtil.ItemCallback<DetailCategoryRVI
     }
 }
 
-class DetailCategoryOnClickListener(val clickListener: (transactionId: Int) -> Unit) {
-    fun onClick(transactionId: Int) = clickListener(transactionId)
+class DetailCategoryOnClickListener(val clickListener: (view: View, transactionId: Int) -> Unit) {
+    fun onClick(view: View, transactionId: Int) = clickListener(view, transactionId)
 }
 
 sealed class DetailCategoryRVItem {

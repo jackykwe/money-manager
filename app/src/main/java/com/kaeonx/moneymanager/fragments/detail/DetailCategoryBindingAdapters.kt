@@ -11,10 +11,15 @@ import com.kaeonx.moneymanager.databinding.RvLlItemDetailCategoryBinding
  * rv_item_detail_category_transactions
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("transactionsLL_transactionLLData", "transactionsLL_onClickListener")
+@BindingAdapter(
+    "transactionsLL_transactionLLData",
+    "transactionsLL_onClickListener",
+    "transactionsLL_onLongClickListener"
+)
 fun LinearLayout.setTransactionsLLAdapter(
     list: List<DetailCategoryTransactionLLData>,
-    itemOnClickListener: DetailCategoryOnClickListener
+    itemOnClickListener: DetailCategoryOnClickListener,
+    itemOnLongClickListener: DetailCategoryOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
@@ -25,6 +30,13 @@ fun LinearLayout.setTransactionsLLAdapter(
             val itemBinding = RvLlItemDetailCategoryBinding.inflate(layoutInflater, null, false)
             itemBinding.categoryTransactionLLData = categoryTransactionLLData
             itemBinding.onClickListener = itemOnClickListener
+            itemBinding.detailCategoryCL.setOnLongClickListener { view ->
+                itemOnLongClickListener.onClick(
+                    view,
+                    categoryTransactionLLData.transaction.transactionId!!
+                )
+                true
+            }
             itemBinding.executePendingBindings()
             addView(itemBinding.root)
         }

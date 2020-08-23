@@ -72,4 +72,17 @@ class TransactionsSearchViewModel(initQuery: String) : ViewModel() {
             _transactionsSearchRVPacket.addSource(previousLiveData!!) { recalculateDayTransactions() }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Batch delete transactions
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+
+    internal fun deleteTransactions(idList: List<Int>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            userRepository.deleteTransactionsTransactionSuspend(idList)
+        }
+    }
+
 }
