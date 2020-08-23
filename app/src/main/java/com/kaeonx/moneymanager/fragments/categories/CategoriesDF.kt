@@ -27,14 +27,17 @@ class CategoriesDF : DialogFragment() {
         binding = FragmentCategoriesBinding.inflate(inflater, container, false)
         binding.catPickerVP.offscreenPageLimit = 1
         binding.catPickerVP.adapter =
-            TypeDisplayFragmentStateAdapter(this, false,
-                CategoryOnClickListener { category ->
+            TypeDisplayFragmentStateAdapter(
+                parentFragment = this,
+                editable = false,
+                itemOnClickListener = CategoryOnClickListener { _, category ->
                     findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(
                         CATEGORIES_DF_RESULT,
                         category
                     )
                     findNavController().navigateUp()
-                }
+                },
+                itemOnLongClickListener = CategoryOnClickListener { _, _ -> Unit }
             )
         binding.catPickerVP.setCurrentItem(UserPDS.getString("tst_default_type").let {
             when (it) {

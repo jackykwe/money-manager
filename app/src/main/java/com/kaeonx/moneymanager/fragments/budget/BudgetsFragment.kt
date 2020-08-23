@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +47,7 @@ class BudgetsFragment : Fragment() {
             override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
                 // Inflate a menu resource providing context menu items
                 mode.menuInflater.inflate(R.menu.fragment_general_edit_deleteable, menu)
+                (requireActivity() as MainActivity).binding.rootDL.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                 return true
             }
 
@@ -82,6 +84,7 @@ class BudgetsFragment : Fragment() {
                     clear()
                 }
                 listOfCategoriesSelected.clear()
+                (requireActivity() as MainActivity).binding.rootDL.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
         }
     }
@@ -232,6 +235,11 @@ class BudgetsFragment : Fragment() {
                 submitList2(it)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        if (actionMode != null) actionMode!!.finish()
+        super.onDestroyView()
     }
 
 }

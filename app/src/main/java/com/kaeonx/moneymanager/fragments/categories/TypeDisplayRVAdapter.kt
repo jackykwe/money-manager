@@ -13,7 +13,8 @@ import kotlinx.coroutines.*
 class TypeDisplayRVAdapter(
     private val type: String,
     private val editable: Boolean,
-    private val itemOnClickListener: CategoryOnClickListener
+    private val itemOnClickListener: CategoryOnClickListener,
+    private val itemOnLongClickListener: CategoryOnClickListener
 ) : ListAdapter<Category, TypeDisplayRVAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     fun submitListAndAddTailIfNecessary(list: List<Category>) {
@@ -36,24 +37,23 @@ class TypeDisplayRVAdapter(
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.rebind(getItem(position), itemOnClickListener)
+        holder.rebind(getItem(position), itemOnClickListener, itemOnLongClickListener)
     }
 
-    class CategoryViewHolder private constructor(private val binding: RvItemTypeDisplayBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CategoryViewHolder private constructor(private val binding: RvItemTypeDisplayBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(category: Category, itemOnClickListener: CategoryOnClickListener) {
+        fun rebind(
+            category: Category,
+            itemOnClickListener: CategoryOnClickListener,
+            itemOnLongClickListener: CategoryOnClickListener
+        ) {
             binding.category = category
             binding.onClickListener = itemOnClickListener
-//            binding.categoryIconInclude.iconTV.apply {
-//                when (category.name) {
-//                    "Add…" -> binding.categoryIconInclude.iconTV.setTextColor(
-//                        ColourHandler.getColorStateListOf("Black")
-//                    )
-//                    else -> binding.categoryIconInclude.iconTV.setTextColor(
-//                        ColourHandler.getColorStateListOf("White")
-//                    )
-//                }
-//            }
+            binding.categoryLL.setOnLongClickListener { view ->
+                itemOnLongClickListener.onClick(view, category)
+                true
+            }
             binding.executePendingBindings()
         }
 
@@ -82,6 +82,6 @@ class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
     }
 }
 
-class CategoryOnClickListener(val clickListener: (category: Category) -> Unit) {
-    fun onClick(category: Category) = clickListener(category)
+class CategoryOnClickListener(val clickListener: (view: View, category: Category) -> Unit) {
+    fun onClick(view: View, category: Category) = clickListener(view, category)
 }

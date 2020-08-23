@@ -11,7 +11,8 @@ internal const val CAT_PICKER_EDITABLE = "editable"
 class TypeDisplayFragmentStateAdapter(
     parentFragment: Fragment,
     private val editable: Boolean,
-    internal val itemOnClickListener: CategoryOnClickListener
+    internal val itemOnClickListener: CategoryOnClickListener,
+    internal val itemOnLongClickListener: CategoryOnClickListener
 ) : FragmentStateAdapter(parentFragment) {
 
     override fun getItemCount(): Int = 2

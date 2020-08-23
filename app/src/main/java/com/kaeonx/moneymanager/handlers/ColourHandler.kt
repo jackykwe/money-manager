@@ -69,7 +69,8 @@ class ColourHandler private constructor() {
                         "Red" -> getSpecificColourObjectOf("Red,400")
                         "Amber" -> getSpecificColourObjectOf("Amber,400")
                         "Green" -> getSpecificColourObjectOf("Green,500")
-                        "Grey" -> getSpecificColourObjectOf("Grey,900")
+//                        "Grey" -> getSpecificColourObjectOf("Grey,800")
+                        "Grey" -> getObj(R.color.dark_action_mode_background)
                         else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
                     }
                 }

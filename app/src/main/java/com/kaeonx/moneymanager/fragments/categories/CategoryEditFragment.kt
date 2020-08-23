@@ -48,7 +48,7 @@ class CategoryEditFragment : Fragment() {
                     R.id.app_bar_delete -> {
                         AlertDialog.Builder(requireContext())
                             .setTitle("Delete category \"${viewModel.currentCategory.value!!.name}\"?")
-                            .setMessage("The transactions under \"${viewModel.currentCategory.value!!.name}\" will not be deleted.")
+                            .setMessage("The budget and transactions under \"${viewModel.currentCategory.value!!.name}\" will not be deleted.")
                             .setPositiveButton(R.string.ok) { _, _ ->
                                 viewModel.deleteOldCategory()
                             }

@@ -164,6 +164,14 @@ interface UserDatabaseDao {
     @Delete
     suspend fun deleteCategorySuspend(databaseCategory: DatabaseCategory)
 
+    @Query("DELETE FROM categories_table WHERE categoryId = :categoryId")
+    suspend fun deleteCategoryByIdSuspend(categoryId: Int)
+
+    @Transaction
+    suspend fun deleteCategoriesByIdTransactionSuspend(categoryIds: List<Int>) {
+        categoryIds.forEach { deleteCategoryByIdSuspend(it) }
+    }
+
     @Query("SELECT * FROM categories_table ORDER BY name COLLATE NOCASE")
     fun getAllCategories(): LiveData<List<DatabaseCategory>>
 

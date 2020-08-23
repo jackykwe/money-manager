@@ -225,4 +225,10 @@ class TransactionsSearchFragment : Fragment() {
             findNavController().navigateUp()
         }
     }
+
+    override fun onDestroyView() {
+        if (actionMode != null) actionMode!!.finish()
+        super.onDestroyView()
+    }
+
 }

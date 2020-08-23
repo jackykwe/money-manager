@@ -15,12 +15,15 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/categoryLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/basic_rectangle"
+        android:backgroundTint="@android:color/transparent"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(category)}"
+        android:onClick="@{() -> onClickListener.onClick(categoryLL, category)}"
         android:orientation="vertical"
         android:paddingHorizontal="4dp"
         android:paddingTop="8dp"
@@ -38,7 +41,7 @@
         </FrameLayout>
 
         <TextView
-            android:id="@+id/budgetCategoryTV"
+            android:id="@+id/categoryNameTV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"

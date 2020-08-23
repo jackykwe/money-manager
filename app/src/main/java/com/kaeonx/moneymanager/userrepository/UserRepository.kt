@@ -205,6 +205,12 @@ class UserRepository private constructor() {
         }
     }
 
+    internal suspend fun deleteCategoriesTransactionSuspend(categoryIds: List<Int>) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteCategoriesByIdTransactionSuspend(categoryIds)
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Budget
@@ -302,7 +308,7 @@ class UserRepository private constructor() {
 
         fun getInstance(): UserRepository {
             synchronized(this) {
-                if (Firebase.auth.currentUser!!.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
+                if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(

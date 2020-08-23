@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +38,7 @@ class TransactionsFragment : Fragment() {
             override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
                 // Inflate a menu resource providing context menu items
                 mode.menuInflater.inflate(R.menu.fragment_general_edit_deleteable, menu)
+                (requireActivity() as MainActivity).binding.rootDL.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                 return true
             }
 
@@ -73,6 +75,7 @@ class TransactionsFragment : Fragment() {
                     clear()
                 }
                 listOfIdsSelected.clear()
+                (requireActivity() as MainActivity).binding.rootDL.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
         }
     }
@@ -146,6 +149,7 @@ class TransactionsFragment : Fragment() {
                         findNavController().run {
                             // Courtesy of https://stackoverflow.com/a/53737537/7254995
                             if (currentDestination?.id == R.id.transactionsFragment) {
+                                if (actionMode != null) actionMode!!.finish()
                                 navigate(
                                     TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
                                         transaction.transactionId!!
@@ -174,6 +178,7 @@ class TransactionsFragment : Fragment() {
                 summaryBudgetClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
+                            if (actionMode != null) actionMode!!.finish()
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToBudgetsFragment(
                                     initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar
@@ -185,6 +190,7 @@ class TransactionsFragment : Fragment() {
                 summaryIncomeClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
+                            if (actionMode != null) actionMode!!.finish()
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToDetailTypeFragment(
                                     initType = "Income",
@@ -197,6 +203,7 @@ class TransactionsFragment : Fragment() {
                 summaryExpensesClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
+                            if (actionMode != null) actionMode!!.finish()
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToDetailTypeFragment(
                                     initType = "Expenses",
@@ -209,6 +216,7 @@ class TransactionsFragment : Fragment() {
                 summaryPieChartClickListener = GenericOnClickListener {
                     findNavController().run {
                         if (currentDestination?.id == R.id.transactionsFragment) {
+                            if (actionMode != null) actionMode!!.finish()
                             navigate(
                                 TransactionsFragmentDirections.actionTransactionsFragmentToBudgetDetailFragment(
                                     initCalendar = viewModel.displayCalendar.value!!.clone() as Calendar,
@@ -246,6 +254,7 @@ class TransactionsFragment : Fragment() {
                                 if (query.isEmpty()) return@let
                                 findNavController().run {
                                     if (currentDestination?.id == R.id.transactionsFragment) {
+                                        if (actionMode != null) actionMode!!.finish()
                                         navigate(
                                             TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsSearchFragment(
                                                 query
@@ -264,6 +273,7 @@ class TransactionsFragment : Fragment() {
         (requireActivity() as MainActivity).binding.appBarMainInclude.mainActivityFAB.setOnClickListener {
             findNavController().run {
                 if (currentDestination?.id == R.id.transactionsFragment) {
+                    if (actionMode != null) actionMode!!.finish()
                     navigate(
                         TransactionsFragmentDirections.actionTransactionsFragmentToTransactionsBSDF(
                             Transaction(
@@ -281,5 +291,10 @@ class TransactionsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        if (actionMode != null) actionMode!!.finish()
+        super.onDestroyView()
     }
 }

@@ -25,12 +25,17 @@ class TypeDisplayFragment(private val fragmentStateAdapter: TypeDisplayFragmentS
     private lateinit var binding: FragmentTypeDisplayBinding
     private val viewModel: TypeDisplayViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentTypeDisplayBinding.inflate(inflater, container, false)
         binding.root.adapter = TypeDisplayRVAdapter(
             type,
             requireArguments().getBoolean(CAT_PICKER_EDITABLE),
-            fragmentStateAdapter.itemOnClickListener
+            fragmentStateAdapter.itemOnClickListener,
+            fragmentStateAdapter.itemOnLongClickListener
         )
         return binding.root
     }

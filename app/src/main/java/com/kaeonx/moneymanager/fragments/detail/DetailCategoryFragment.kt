@@ -204,4 +204,9 @@ class DetailCategoryFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        if (actionMode != null) actionMode!!.finish()
+        super.onDestroyView()
+    }
+
 }

@@ -21,11 +21,14 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     }
 
     private val userRepository = UserRepository.getInstance()
-    private val otherCategoryNames = userRepository.categories.value!!.filter { it.type == oldCategory.type && it.name != oldCategory.name }.map { it.name } // TODO: ASYNC
+    private val otherCategoryNames = userRepository.categories.value!!
+        .filter { it.type == oldCategory.type && it.name != oldCategory.name }
+        .map { it.name } // TODO: ASYNC
 
     private var _currentCategory = MutableLiveData2(oldCategory.copy())
     val currentCategory: LiveData<Category>
         get() = _currentCategory
+
     fun changesWereMade(): Boolean {
         return oldCategory != _currentCategory.value
     }
@@ -71,11 +74,14 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
         }
     }
 
-    val iconHexETText = MutableLiveData<String>(_currentCategory.value.iconHex)  // Two-way binding; cannot use MutableLiveData2
+    val iconHexETText =
+        MutableLiveData<String>(_currentCategory.value.iconHex)  // Two-way binding; cannot use MutableLiveData2
     val iconHexETError = Transformations.map(iconHexETText) {
         val trimmed = it.trim()
         val errorText = when {
-            trimmed.isBlank() || !trimmed.startsWith("F") -> { "Icon ID must start with \"F\"" }
+            trimmed.isBlank() || !trimmed.startsWith("F") -> {
+                "Icon ID must start with \"F\""
+            }
             trimmed == "F02D6" -> "This Icon ID is reserved"
             !IconHandler.iconHexIsValid(trimmed) -> "This Icon ID is invalid"
             else -> null
@@ -115,14 +121,17 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     }
 
     private val _showSnackBarText = MutableLiveData2<String?>(null)
-    val showSnackBarText : LiveData<String?>
+    val showSnackBarText: LiveData<String?>
         get() = _showSnackBarText
+
     fun snackBarShown() {
         _showSnackBarText.value = null
     }
+
     private val _navigateUp = MutableLiveData2(false)
-    val navigateUp : LiveData<Boolean>
+    val navigateUp: LiveData<Boolean>
         get() = _navigateUp
+
     fun navigateUpHandled() {
         _navigateUp.value = false
     }
