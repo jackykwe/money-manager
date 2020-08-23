@@ -12,6 +12,10 @@
         <variable
             name="onClickListener"
             type="com.kaeonx.moneymanager.fragments.budget.BudgetOnClickListener" />
+
+        <variable
+            name="onLongClickListener"
+            type="com.kaeonx.moneymanager.fragments.budget.BudgetOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -46,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:budgetsLL_onClickListener="@{onClickListener}"
+                app:budgetsLL_onLongClickListener="@{onLongClickListener}"
                 app:budgetsLL_budgetLLData="@{packet.budgetLLData}" />
 
         </LinearLayout>

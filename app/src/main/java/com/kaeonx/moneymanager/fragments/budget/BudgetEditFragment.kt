@@ -49,7 +49,7 @@ class BudgetEditFragment : Fragment() {
                 when (it.itemId) {
                     R.id.app_bar_delete -> {
                         AlertDialog.Builder(requireContext())
-                            .setTitle("Delete this budget?")
+                            .setMessage("Delete this budget?")
                             .setPositiveButton(R.string.ok) { _, _ ->
                                 viewModel.deleteOldBudget()
                             }

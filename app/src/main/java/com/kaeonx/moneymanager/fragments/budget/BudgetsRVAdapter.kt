@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.budget
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,7 +16,10 @@ import kotlinx.coroutines.launch
 
 private const val CATEGORIES = 0
 
-class BudgetsRVAdapter(private val itemOnClickListener: BudgetOnClickListener) :
+class BudgetsRVAdapter(
+    private val itemOnClickListener: BudgetOnClickListener,
+    private val itemOnLongClickListener: BudgetOnClickListener
+) :
     ListAdapter<BudgetRVItem, RecyclerView.ViewHolder>(BudgetRVItemDiffCallback()) {
 
     private var initRun = true
@@ -51,7 +55,7 @@ class BudgetsRVAdapter(private val itemOnClickListener: BudgetOnClickListener) :
             is BudgetCategoriesViewHolder -> {
                 val data =
                     (getItem(position) as BudgetRVItem.BudgetRVItemCategories).budgetsRVPacket
-                holder.rebind(data, itemOnClickListener)
+                holder.rebind(data, itemOnClickListener, itemOnLongClickListener)
             }
         }
     }
@@ -59,9 +63,14 @@ class BudgetsRVAdapter(private val itemOnClickListener: BudgetOnClickListener) :
     class BudgetCategoriesViewHolder private constructor(private val binding: RvItemBudgetsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(newPacket: BudgetsRVPacket, onClickListener: BudgetOnClickListener) {
+        fun rebind(
+            newPacket: BudgetsRVPacket,
+            onClickListener: BudgetOnClickListener,
+            onLongClickListener: BudgetOnClickListener
+        ) {
             binding.packet = newPacket
             binding.onClickListener = onClickListener
+            binding.onLongClickListener = onLongClickListener
             binding.executePendingBindings()
         }
 
@@ -93,8 +102,8 @@ sealed class BudgetRVItem {
     }
 }
 
-class BudgetOnClickListener(val clickListener: (category: String) -> Unit) {
-    fun onClick(category: String) = clickListener(category)
+class BudgetOnClickListener(val clickListener: (view: View, category: String) -> Unit) {
+    fun onClick(view: View, category: String) = clickListener(view, category)
 }
 
 data class BudgetsRVPacket(

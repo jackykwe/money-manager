@@ -104,5 +104,6 @@
 
     <!-- action_mode -->
     <string name="action_mode_batch_delete_transactions">Delete the selected transactions?</string>
+    <string name="action_mode_batch_delete_budgets">Delete the selected budgets?</string>
 
 </resources>

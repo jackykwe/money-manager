@@ -211,4 +211,17 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
             withContext(Dispatchers.Main) { _budgetLLData.value = result }
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Batch delete budgets
+     */
+    ////////////////////////////////////////////////////////////////////////////////
+
+    internal fun deleteBudgets(categoriesList: List<String>) {
+        viewModelScope.launch(Dispatchers.Default) {
+            userRepository.deleteBudgetsTransactionSuspend(categoriesList)
+        }
+    }
+
 }

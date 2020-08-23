@@ -232,6 +232,12 @@ class UserRepository private constructor() {
         }
     }
 
+    internal suspend fun deleteBudgetsTransactionSuspend(categories: List<String>) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteBudgetsByIdTransactionSuspend(categories)
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Preferences

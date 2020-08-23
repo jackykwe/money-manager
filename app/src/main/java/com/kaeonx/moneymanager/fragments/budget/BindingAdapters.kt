@@ -19,10 +19,15 @@ import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
  * rv_item_budgets
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("budgetsLL_budgetLLData", "budgetsLL_onClickListener")
+@BindingAdapter(
+    "budgetsLL_budgetLLData",
+    "budgetsLL_onClickListener",
+    "budgetsLL_onLongClickListener"
+)
 fun LinearLayout.setBudgetsLLAdapter(
     list: List<BudgetLLData>,
-    onClickListener: BudgetOnClickListener
+    onClickListener: BudgetOnClickListener,
+    onLongClickListener: BudgetOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)
@@ -33,6 +38,10 @@ fun LinearLayout.setBudgetsLLAdapter(
             val itemBinding = LlItemBudgetBinding.inflate(layoutInflater, null, false)
             itemBinding.budgetLLData = budgetLLData
             itemBinding.onClickListener = onClickListener
+            itemBinding.budgetCL.setOnLongClickListener { view ->
+                onLongClickListener.onClick(view, budgetLLData.budget.category)
+                true
+            }
             itemBinding.executePendingBindings()
             addView(itemBinding.root)
         }

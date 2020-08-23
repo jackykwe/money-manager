@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity() {
                 workInfos.forEachIndexed { index, workInfo ->
                     Log.d(
                         TAG,
-                        "workInfo #$index state is ${workInfo.state.name} with tags ${workInfo.tags}"
+                        "workInfo #$index state is ${workInfo.state.name} with tags ${workInfo.tags}, runAttemptCount ${workInfo.runAttemptCount}, progress ${workInfo.progress}"
                     )
 //                    if (workInfo.state == WorkInfo.State.SUCCEEDED) {
 //                        Snackbar.make(

@@ -184,6 +184,14 @@ interface UserDatabaseDao {
     @Delete
     suspend fun deleteBudgetSuspend(databaseBudget: DatabaseBudget)
 
+    @Query("DELETE FROM budgets_table WHERE category = :category")
+    suspend fun deleteBudgetByCategorySuspend(category: String)
+
+    @Transaction
+    suspend fun deleteBudgetsByIdTransactionSuspend(categories: List<String>) {
+        categories.forEach { deleteBudgetByCategorySuspend(it) }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Preferences

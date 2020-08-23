@@ -27,6 +27,7 @@ class TransactionsFragment : Fragment() {
     private lateinit var binding: FragmentTransactionsBinding
     private val viewModel: TransactionsViewModel by viewModels()
 
+    // TODO future: Make this into a generic class? Instantiate it in each fragment as desired
     private val selectedViews by lazy { arrayListOf<View>() }
     private val listOfIdsSelected by lazy { arrayListOf<Int>() }
     private var actionMode: ActionMode? = null
