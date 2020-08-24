@@ -22,6 +22,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.io.File
 
 // TODO SWITCH ALL BARE FUNS/PROPERTIES TO INTERNAL
 internal class CloudFragmentViewModel : ViewModel() {
@@ -81,6 +82,11 @@ internal class CloudFragmentViewModel : ViewModel() {
                 uploadTask =
                     MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                         .addOnSuccessListener { taskSnapshot ->
+                            File(
+                                MainActivityViewModel.buildUploadableDBFilePath(
+                                    Firebase.auth.currentUser!!.uid
+                                )
+                            ).run { if (exists()) delete() }
                             UserPDS.putDSPLong(
                                 "${Firebase.auth.currentUser!!.uid}_last_upload_time",
                                 taskSnapshot.metadata!!.updatedTimeMillis

@@ -95,6 +95,11 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             var result: Result? = null
             MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { innerTaskSnapshot ->
+                    File(
+                        MainActivityViewModel.buildUploadableDBFilePath(
+                            Firebase.auth.currentUser!!.uid
+                        )
+                    ).run { if (exists()) delete() }
                     UserPDS.putDSPLong(
                         "${Firebase.auth.currentUser!!.uid}_last_upload_time",
                         innerTaskSnapshot.metadata!!.updatedTimeMillis
