@@ -10,6 +10,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -44,6 +45,17 @@ class LobbyViewModel : ViewModel() {
                     val jsonObject = JSONObject(
                         downloadedFile.bufferedReader().use { it.readText() }.trim()
                     )
+
+
+                    // Database version
+                    val version = jsonObject.optInt("db")
+                    if (version == 0) {
+                        throw IllegalStateException("JSON missing valid \"db\"")
+                    } else {
+                        val dbVersion =
+                            UserDatabase.getInstance().openHelper.readableDatabase.version
+                        if (version > dbVersion) throw IllegalStateException("\"db\" is too high")
+                    }
 
 
                     // Transactions

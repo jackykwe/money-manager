@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.Debug
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import kotlinx.coroutines.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -43,7 +43,7 @@ class ImportExportViewModel : ViewModel() {
         _startUI.value = true
         viewModelScope.launch {
             try {
-                val progressIterator = generatePercentIterator(8)
+                val progressIterator = generatePercentIterator(9)
 
                 "Reading from JSON…".let {
                     withContext(Dispatchers.Main) {
@@ -56,6 +56,23 @@ class ImportExportViewModel : ViewModel() {
                 }
                 ensureActive()
                 val jsonObject = JSONObject(readData)
+
+
+                // Database version
+                "Validating JSON DB Version…".let {
+                    withContext(Dispatchers.Main) {
+                        _updateUI.value = Pair(it, progressIterator.next())
+                    }
+                    previousNewProgressText = it
+                }
+                val version = jsonObject.optInt("db")
+                if (version == 0) {
+                    throw IllegalStateException("JSON missing valid \"db\"")
+                } else {
+                    val dbVersion = UserDatabase.getInstance().openHelper.readableDatabase.version
+                    if (version > dbVersion) throw IllegalStateException("\"db\" is too high")
+                }
+                // TODO: FIREBASE RULES (STORAGE, AUTH)
 
 
                 // Transactions
@@ -234,7 +251,6 @@ class ImportExportViewModel : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
-                Debug.extendedDebug("accfrag", "prefCheck", e)
                 withContext(Dispatchers.Main) {
                     _doneUI.value = DoneUIData(
                         resultIVDrawableId = R.drawable.mdi_cloud_alert_amber,
@@ -257,7 +273,11 @@ class ImportExportViewModel : ViewModel() {
         viewModelScope.launch {
             val output = JSONObject()
             val repository = UserRepository.getInstance()
+            val version = UserDatabase.getInstance().openHelper.readableDatabase.version
             val progressIterator = generatePercentIterator(7)
+            // Database version (for future migrations, if needed)
+            output.put("db", version)
+
 
             // Transactions
             ensureActive()

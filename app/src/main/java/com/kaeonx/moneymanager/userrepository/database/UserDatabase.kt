@@ -18,7 +18,7 @@ private const val TAG = "dtb"
         DatabaseTransaction::class,
         DatabasePreference::class
     ],
-    version = 2
+    version = 1
 )
 abstract class UserDatabase : RoomDatabase() {
 
