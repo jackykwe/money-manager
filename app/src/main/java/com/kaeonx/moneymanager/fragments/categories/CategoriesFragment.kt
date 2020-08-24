@@ -31,11 +31,11 @@ class CategoriesFragment : Fragment() {
     private lateinit var binding: FragmentCategoriesBinding
     private val viewModel: CategoriesViewModel by viewModels()
 
-    private var numberOfCategories = Pair(1, 1)  // Income, Expenses
+    private var numberOfSavedCategories = Pair(1, 1)  // Income, Expenses
     private fun getCurrentPageMax(): Int {
         return when (val position = binding.catPickerTL.selectedTabPosition) {
-            0 -> numberOfCategories.first
-            1 -> numberOfCategories.second
+            0 -> numberOfSavedCategories.first
+            1 -> numberOfSavedCategories.second
             else -> throw IllegalStateException("Unknown tab position $position")
         }
     }
@@ -107,8 +107,10 @@ class CategoriesFragment : Fragment() {
 
         if (actionMode == null) {
             // Start the CAB using the ActionMode.Callback defined above
-            actionMode = requireActivity().startActionMode(actionModeCallback)
-            add(view, category)
+            if (listOfIdsSelected.size + 1 < getCurrentPageMax()) {
+                actionMode = requireActivity().startActionMode(actionModeCallback)
+                add(view, category)
+            }
         } else {
             if (category.categoryId!! in listOfIdsSelected) {
                 if (listOfIdsSelected.size == 1) {
@@ -224,7 +226,7 @@ class CategoriesFragment : Fragment() {
 
         viewModel.categoriesSize.observe(viewLifecycleOwner) {
             if (it == null) return@observe
-            numberOfCategories = it
+            numberOfSavedCategories = it
         }
     }
 

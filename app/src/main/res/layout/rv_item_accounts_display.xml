@@ -17,12 +17,12 @@
     </data>
 
     <FrameLayout
+        android:id="@+id/horizontalBarFL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(account)}"
         android:orientation="vertical">
 
         <ImageView
@@ -30,12 +30,21 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:scaleType="fitXY"
+            android:src="@drawable/basic_rectangle"
             android:visibility="@{account.colourFamily == `TRANSPARENT` ? View.INVISIBLE : View.VISIBLE}"
             app:horizontalBarIV_tint="@{account.colourFamily}"
-            app:srcCompat="@drawable/basic_rectangle"
             tools:tint="@color/grey_500" />
 
-        <!-- TODO SET TEXT COLOUR BASED ON BG COLOUR-->
+        <View
+            android:id="@+id/scrimV"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/basic_rectangle"
+            android:backgroundTint="@android:color/transparent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:onClick="@{() -> onClickListener.onClick(scrimV, account)}"
+            android:scaleType="fitXY" />
+
         <TextView
             android:id="@+id/accountNameTV"
             style="@style/AccountDisplayStrip"

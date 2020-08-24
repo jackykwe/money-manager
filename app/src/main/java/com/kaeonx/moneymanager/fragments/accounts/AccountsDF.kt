@@ -14,8 +14,8 @@ internal const val ACCOUNTS_DF_RESULT = "accounts_df_result"
 // Essentially the same code as AccountsFragment, except for the childFragment arguments.
 class AccountsDF : DialogFragment() {
 
-    internal val accountOnClickListener by lazy {
-        AccountOnClickListener { account ->
+    internal val itemOnClickListener by lazy {
+        AccountOnClickListener { _, account ->
             findNavController().getBackStackEntry(R.id.transactionsBSDF).savedStateHandle.set(
                 ACCOUNTS_DF_RESULT,
                 account

@@ -120,6 +120,28 @@ interface UserDatabaseDao {
         }
     }
 
+    @Query("DELETE FROM accounts_table WHERE accountId = :accountId")
+    suspend fun deleteAccountByIdSuspend(accountId: Int)
+
+    @Transaction
+    suspend fun deleteAccountsByIdTransactionSuspend(
+        accountIds: List<Int>,
+        updateTstDefaultAccount: Boolean,
+        newTstDefaultAccount: String
+    ) {
+        accountIds.forEach { deleteAccountByIdSuspend(it) }
+        if (updateTstDefaultAccount) {
+            upsertPreferenceSuspend(
+                DatabasePreference(
+                    key = "tst_default_account",
+                    valueInteger = null,
+                    valueText = newTstDefaultAccount
+                )
+            )
+        }
+    }
+
+
     @Query("SELECT * FROM accounts_table ORDER BY name COLLATE NOCASE")
     fun getAllAccounts(): LiveData<List<DatabaseAccount>>
 

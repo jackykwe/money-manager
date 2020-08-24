@@ -107,5 +107,7 @@
     <string name="action_mode_batch_delete_budgets">Delete the selected budgets?</string>
     <string name="action_mode_batch_delete_categories_title">Delete the selected categories?</string>
     <string name="action_mode_batch_delete_categories_message">Their budgets and transactions will not be deleted.</string>
+    <string name="action_mode_batch_delete_accounts_title">Delete the selected accounts?</string>
+    <string name="action_mode_batch_delete_accounts_message">Their transactions will not be deleted.</string>
 
 </resources>

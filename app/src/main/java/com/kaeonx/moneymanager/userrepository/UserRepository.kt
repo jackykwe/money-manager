@@ -177,6 +177,20 @@ class UserRepository private constructor() {
         }
     }
 
+    internal suspend fun deleteAccountsTransactionSuspend(
+        accountIds: List<Int>,
+        updateTstDefaultAccount: Boolean,
+        newTstDefaultAccount: String
+    ) {
+        withContext(Dispatchers.IO) {
+            database.userDatabaseDao.deleteAccountsByIdTransactionSuspend(
+                accountIds = accountIds,
+                updateTstDefaultAccount = updateTstDefaultAccount,
+                newTstDefaultAccount = newTstDefaultAccount
+            )
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Categories

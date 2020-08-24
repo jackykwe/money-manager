@@ -1,6 +1,7 @@
 package com.kaeonx.moneymanager.fragments.accounts
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 class AccountsDisplayRVAdapter(
     private val editable: Boolean,
-    private val itemOnClickListener: AccountOnClickListener
+    private val itemOnClickListener: AccountOnClickListener,
+    private val itemOnLongClickListener: AccountOnClickListener
 ) : ListAdapter<Account, AccountsDisplayRVAdapter.AccountViewHolder>(AccountDiffCallback()) {
 
     fun submitListAndAddTailIfNecessary(list: List<Account>) {
@@ -33,14 +35,23 @@ class AccountsDisplayRVAdapter(
     }
 
     override fun onBindViewHolder(holder: AccountViewHolder, position: Int) {
-        holder.rebind(getItem(position), itemOnClickListener)
+        holder.rebind(getItem(position), itemOnClickListener, itemOnLongClickListener)
     }
 
-    class AccountViewHolder private constructor(private val binding: RvItemAccountsDisplayBinding) : RecyclerView.ViewHolder(binding.root) {
+    class AccountViewHolder private constructor(private val binding: RvItemAccountsDisplayBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun rebind(account: Account, itemOnClickListener: AccountOnClickListener) {
+        fun rebind(
+            account: Account,
+            itemOnClickListener: AccountOnClickListener,
+            itemOnLongClickListener: AccountOnClickListener
+        ) {
             binding.account = account
             binding.onClickListener = itemOnClickListener
+            binding.scrimV.setOnLongClickListener { view ->
+                itemOnLongClickListener.onClick(view, account)
+                true
+            }
             binding.executePendingBindings()
         }
 
@@ -64,6 +75,6 @@ class AccountDiffCallback : DiffUtil.ItemCallback<Account>() {
     }
 }
 
-class AccountOnClickListener(val clickListener: (account: Account) -> Unit) {
-    fun onClick(account: Account) = clickListener(account)
+class AccountOnClickListener(val clickListener: (view: View, account: Account) -> Unit) {
+    fun onClick(view: View, account: Account) = clickListener(view, account)
 }

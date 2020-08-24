@@ -17,16 +17,24 @@ class AccountsDisplayFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentAccountsDisplayBinding.inflate(inflater, container, false)
 
-        val accountOnClickListener: AccountOnClickListener =
+        val itemOnClickListener: AccountOnClickListener =
             when (val parent = requireParentFragment()) {
-                is AccountsFragment -> parent.accountOnClickListener
-                is AccountsDF -> parent.accountOnClickListener
+                is AccountsFragment -> parent.itemOnClickListener
+                is AccountsDF -> parent.itemOnClickListener
+                else -> throw IllegalStateException("AccountsDisplayFragment has unexpected parent $parent")
+            }
+
+        val itemOnLongClickListener: AccountOnClickListener =
+            when (val parent = requireParentFragment()) {
+                is AccountsFragment -> parent.itemOnLongClickListener
+                is AccountsDF -> AccountOnClickListener { _, _ -> Unit }
                 else -> throw IllegalStateException("AccountsDisplayFragment has unexpected parent $parent")
             }
 
         binding.root.adapter = AccountsDisplayRVAdapter(
             requireArguments().getBoolean(ACC_PICKER_EDITABLE),
-            accountOnClickListener
+            itemOnClickListener,
+            itemOnLongClickListener
         )
         return binding.root
     }
