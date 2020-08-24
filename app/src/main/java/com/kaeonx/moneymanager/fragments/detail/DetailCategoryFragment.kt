@@ -20,8 +20,6 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "dcfrag"
-
 class DetailCategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentDetailCategoryBinding

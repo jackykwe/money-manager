@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -17,7 +16,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
-import androidx.work.WorkManager
 import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.github.mikephil.charting.utils.Utils
@@ -32,9 +30,7 @@ import com.kaeonx.moneymanager.databinding.ActivityMainBinding
 import com.kaeonx.moneymanager.databinding.NavHeaderMainBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
-import com.kaeonx.moneymanager.work.UploadDataWorker
 
-private const val TAG = "matvt"
 private const val START_SETTING_ACTIVITY = 0
 private const val START_CLAIM_LOGIN_INTENT = 1
 
@@ -50,7 +46,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "MAIN ACTIVITY RECREATED")
         // This must be called before the onCreate. If not, onStart will run twice!
         previousLoadedTheme = UserPDS.getDSPString("dsp_theme", "light")
         when (previousLoadedTheme) {
@@ -150,7 +145,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-//            Log.d(TAG, "MOVING TO: ${destination.displayName}")
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
@@ -188,7 +182,6 @@ class MainActivity : AppCompatActivity() {
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
         mainActivityViewModel.currentUser.observe(this) {
             if (it == null) return@observe
-            Log.d(TAG, "currentUser changed: id: ${it.uid}, anonymous? ${it.isAnonymous}")
             if (it.isAnonymous) {
                 headerBinding.root.setOnClickListener {
                     startActivityForResult(
@@ -220,26 +213,6 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
         }
-
-        WorkManager.getInstance(applicationContext)
-            .getWorkInfosForUniqueWorkLiveData(UploadDataWorker.WORK_NAME)
-            .observe(this)
-            { workInfos ->
-                Log.d(TAG, "workInfos.size = ${workInfos.size}")
-                workInfos.forEachIndexed { index, workInfo ->
-                    Log.d(
-                        TAG,
-                        "workInfo #$index state is ${workInfo.state.name} with tags ${workInfo.tags}, runAttemptCount ${workInfo.runAttemptCount}, progress ${workInfo.progress}"
-                    )
-//                    if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-//                        Snackbar.make(
-//                            requireView(),
-//                            R.string.work_completed, Snackbar.LENGTH_SHORT
-//                        )
-//                            .show()
-//                    }
-                }
-            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -305,14 +278,6 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-                Firebase.auth.currentUser?.let {
-                    Log.d(
-                        TAG,
-                        "uid is now ${it.uid} and last login is ${it.metadata?.lastSignInTimestamp}"
-                    )
-                }
-
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.transactions
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.customclasses.sumByBigDecimal
 import com.kaeonx.moneymanager.handlers.CalendarHandler
@@ -27,12 +24,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-private const val TAG = "tfvm"
-
 class TransactionsViewModel : ViewModel() {
-    init {
-        Log.d(TAG, "TFVM started, with userId ${Firebase.auth.currentUser!!.uid}")
-    }
 
     private val userRepository = UserRepository.getInstance()
     private val xeRepository = XERepository.getInstance()

@@ -24,8 +24,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "exitlobf"
-
 class ExitLobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentLobbyBinding

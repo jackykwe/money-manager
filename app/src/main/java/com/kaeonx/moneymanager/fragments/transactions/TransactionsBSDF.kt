@@ -25,8 +25,6 @@ import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import java.util.*
 
-private const val TAG = "TBSDF"
-
 class TransactionsBSDF : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogFragmentTransactionsBsdfBinding

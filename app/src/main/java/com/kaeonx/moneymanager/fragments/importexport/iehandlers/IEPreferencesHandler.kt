@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.fragments.importexport.iehandlers
 
-import android.util.Log
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.IEFileHandler.Companion.parseJsonDataException
 import com.kaeonx.moneymanager.userrepository.domain.Preference
@@ -35,7 +34,6 @@ internal class IEPreferencesHandler private constructor() {
             JSONArray(moshiAdapter.toJson(list))
 
         internal fun getValuesStringArrayOf(key: String): Array<String> {
-            Log.d("accfrag", "key getValuesStringArrayOf $key called")
             return App.context.resources.getStringArray(
                 App.context.resources.getIdentifier(
                     "${key}_values",

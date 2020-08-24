@@ -1,11 +1,8 @@
 package com.kaeonx.moneymanager.xerepository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.database.XEDatabase
@@ -14,8 +11,6 @@ import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
 import kotlinx.coroutines.*
-
-private const val TAG = "xeRepository"
 
 /**
  * The repository will provide a unified view of our data from several sources.
@@ -56,7 +51,6 @@ class XERepository private constructor() {
         database.xeDatabaseDao.getXERows(homeCurrency)
     }
     val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) {
-        Log.d(TAG, "xeRows has size ${_xeRows.value!!.size}")
         it.toDomain()
     }
 
@@ -66,7 +60,6 @@ class XERepository private constructor() {
     // This is called every time a preference is changed. (Hm. TODO Future)
     private fun checkAndUpdateIfNecessary(baseCurrency: String) {
         CoroutineScope(Dispatchers.Default).launch {
-            Log.d(TAG, "checkAndUpdateIfNecessary(): called")
             val xeRowsResult = withContext(Dispatchers.IO) {
                 database.xeDatabaseDao.getXERowsSuspend(baseCurrency)
             }
@@ -77,12 +70,9 @@ class XERepository private constructor() {
                         UserPDS.getString("ccv_online_update_ttl").toLong()
                         )
             ) {
-                Log.d(TAG, " checkAndUpdateIfNecessary(): updating")
                 withContext(Dispatchers.IO) {
                     refreshRatesTable(baseCurrency)
                 }
-            } else {
-                Log.d(TAG, " checkAndUpdateIfNecessary(): no need to update")
             }
         }
     }
@@ -112,20 +102,13 @@ class XERepository private constructor() {
         // Hence withContext(Dispatchers.IO) to force Kotlin to switch to a IO thread
         // from the relevant thread pool optimised for IO operations.
         withContext(Dispatchers.IO) {
-            Log.d("ntwksvc", "WARNING: NETWORK CALL HAPPENING RIGHT NOW")
             try {
                 val networkXEContainer =
                     XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
-                Log.d("ntwksvc", "WARNING: NETWORK CALL DONE")
                 ensureActive()
-                Log.d("ntwksvc", "WARNING: UPSERT CALL HAPPENING RIGHT NOW")
                 database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase(System.currentTimeMillis()))
-                Log.d("ntwksvc", "WARNING: UPSERT DONE")
             } catch (e: Exception) {
-                Log.d(
-                    "ntwksvc",
-                    "WARNING: NETWORK CALL FAILED due to CAUSE ${e.cause}, CLASS ${e.javaClass}, MESSAGE ${e.message}"
-                )
+                Unit
             }
         }
     }
@@ -139,10 +122,6 @@ class XERepository private constructor() {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(
-                        TAG,
-                        "WARN: OPENING INSTANCE TO XE REPOSITORY FOR ${Firebase.auth.currentUser!!.uid}"
-                    )
                     // Opening a connection to a database is expensive!
                     instance = XERepository()
                     INSTANCE = instance
@@ -153,7 +132,6 @@ class XERepository private constructor() {
 
         // Used when logging out
         fun dropInstance() {
-            Log.d(TAG, "WARN: XE REPOSITORY INSTANCE DROPPED")
             INSTANCE?.clearPermanentObservers()
             INSTANCE = null
         }

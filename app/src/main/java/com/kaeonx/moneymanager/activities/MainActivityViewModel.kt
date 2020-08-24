@@ -2,7 +2,6 @@ package com.kaeonx.moneymanager.activities
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,8 +20,6 @@ import com.kaeonx.moneymanager.work.UploadDataWorker
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.concurrent.TimeUnit
-
-private const val TAG = "actVM"
 
 class MainActivityViewModel : ViewModel() {
 
@@ -222,12 +219,6 @@ class MainActivityViewModel : ViewModel() {
                             isEmpty() || this[0].state == WorkInfo.State.CANCELLED
                         }
                 ) {
-                    Log.d(
-                        TAG,
-                        "CREATING(KEEP) WORK with freq ${
-                            UserPDS.getString("dap_auto_backup_freq").toLong()
-                        } days"
-                    )
                     val constraints = Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.NOT_ROAMING)
                         .setRequiresBatteryNotLow(true)

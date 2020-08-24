@@ -1,14 +1,12 @@
 package com.kaeonx.moneymanager.work
 
 import android.content.Context
-import android.util.Log
 import androidx.work.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StreamDownloadTask
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.CloudMetadata
-import com.kaeonx.moneymanager.activities.Debug
 import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -21,8 +19,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
 import java.io.File
 import java.util.concurrent.TimeUnit
-
-private const val TAG = "UploadDataWorker"
 
 class UploadDataWorker(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
@@ -44,12 +40,6 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             if (!UserPDS.getBoolean("dap_auto_backup_enabled") || Firebase.auth.currentUser!!.isAnonymous) {
                 cancelWork()
             } else {
-                Log.d(
-                    TAG,
-                    "CREATING(REPLACE) WORK with freq ${
-                        UserPDS.getString("dap_auto_backup_freq").toLong()
-                    } days"
-                )
                 val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.NOT_ROAMING)
                     .setRequiresBatteryNotLow(true)
@@ -104,11 +94,9 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                         "${Firebase.auth.currentUser!!.uid}_last_upload_time",
                         innerTaskSnapshot.metadata!!.updatedTimeMillis
                     )
-                    Log.d(TAG, "DO WORK RAN SUCCESSFULLY, OH YEAH!?")
                     result = Result.success()
                 }
-                .addOnFailureListener { exception ->
-                    Debug.extendedDebug(TAG, "uploadDataInner", exception)
+                .addOnFailureListener { _ ->
                     result = Result.retry()
                 }
                 .addOnCanceledListener { Unit }
@@ -120,12 +108,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             }
             return if (uploadTimeout == null) {
                 // Timed out
-                Result.retry().also {
-                    Log.d(
-                        TAG,
-                        "retrying doWork(): because timeout in Step 2"
-                    )
-                }
+                Result.retry()
             } else {
                 result!!
             }
@@ -135,13 +118,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
     override suspend fun doWork(): Result = coroutineScope {
         val currentUserId: String
         try {
-            Log.d(TAG, "doWork() called and starting in try block")
-            currentUserId = Firebase.auth.currentUser!!.uid.also {
-                Log.d(
-                    TAG,
-                    "doWork(): currentUserId succeeded with currentUser $it"
-                )
-            }
+            currentUserId = Firebase.auth.currentUser!!.uid
         } catch (e: NullPointerException) {
             WorkManager.getInstance(applicationContext).cancelUniqueWork(WORK_NAME)
             return@coroutineScope Result.failure()
@@ -229,11 +206,6 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                 }
                 .addOnFailureListener { exception ->
                     mostRecentLoginCheckSuccess = false
-                    Debug.extendedDebug(
-                        TAG,
-                        "doWork (mostRecentLoginCheck onFailureListener)",
-                        exception
-                    )
                 }
             val timeout = withTimeoutOrNull(10000L) {
                 while (mostRecentLoginCheckSuccess == null) {
@@ -242,17 +214,11 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                 true
             }
             return@coroutineScope when {
-                timeout == null -> Result.retry().also {
-                    Log.d(
-                        TAG,
-                        "retrying doWork(): because timeout for Step 1"
-                    )
-                }
+                timeout == null -> Result.retry()
                 mostRecentLoginCheckSuccess!! -> doWork2(usableTaskSnapshot)
                 else -> Result.retry()
             }
         } catch (e: Exception) {
-            Debug.extendedDebug(TAG, "doWork", e)
             return@coroutineScope Result.retry()
         }
     }

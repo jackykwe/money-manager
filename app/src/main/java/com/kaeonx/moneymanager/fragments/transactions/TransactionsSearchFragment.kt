@@ -22,8 +22,6 @@ import com.kaeonx.moneymanager.handlers.ColourHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "tssearch"
-
 class TransactionsSearchFragment : Fragment() {
 
     private lateinit var binding: FragmentTransactionsSearchBinding

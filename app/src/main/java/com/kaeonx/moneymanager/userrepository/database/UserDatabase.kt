@@ -1,14 +1,11 @@
 package com.kaeonx.moneymanager.userrepository.database
 
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.activities.App
-
-private const val TAG = "dtb"
 
 @Database(
     entities = [
@@ -45,10 +42,6 @@ abstract class UserDatabase : RoomDatabase() {
                 if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(
-                        TAG,
-                        "WARN: OPENING INSTANCE TO DATABASE FOR ${Firebase.auth.currentUser!!.uid}"
-                    )
                     // Opening a connection to a database is expensive!
                     instance = Room.databaseBuilder(
                         App.context,
@@ -69,7 +62,6 @@ abstract class UserDatabase : RoomDatabase() {
 
         // Used when logging out
         fun dropInstance() {
-            Log.d(TAG, "WARN: DATABASE INSTANCE DROPPED")
             INSTANCE?.let {
                 if (it.isOpen) it.close()
             }

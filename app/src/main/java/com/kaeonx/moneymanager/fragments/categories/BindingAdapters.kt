@@ -33,14 +33,12 @@ fun TextView.setCategoryNameTVText(name: String) {
 @BindingAdapter("autoCompleteTextView_text")
 fun AutoCompleteTextView.setText2(newText: String?) {
     if (newText != text.toString()) {
-//        Log.d(TAG, "SETTING $tag displayed value to $newText")
         if (newText == null) clearListSelection() else setText(newText, false)
     }
 }
 
 @InverseBindingAdapter(attribute = "autoCompleteTextView_text", event = "android:textAttrChanged")
 fun AutoCompleteTextView.getText2(): String {
-//    Log.d(TAG, "GETTING $tag")
     return text.toString()
 }
 

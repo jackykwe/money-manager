@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.userrepository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
@@ -12,8 +11,6 @@ import com.kaeonx.moneymanager.userrepository.database.toMap
 import com.kaeonx.moneymanager.userrepository.domain.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-private const val TAG = "repository"
 
 class UserRepository private constructor() {
 
@@ -320,10 +317,6 @@ class UserRepository private constructor() {
                 if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
                 if (instance == null) {
-                    Log.d(
-                        TAG,
-                        "WARN: OPENING INSTANCE TO REPOSITORY FOR ${Firebase.auth.currentUser!!.uid}"
-                    )
                     // Opening a connection to a database is expensive!
                     instance = UserRepository()
                     INSTANCE = instance
@@ -334,7 +327,6 @@ class UserRepository private constructor() {
 
         // Used when logging out
         fun dropInstance() {
-            Log.d(TAG, "WARN: REPOSITORY INSTANCE DROPPED")
             INSTANCE?.clearPermanentObservers()
             INSTANCE = null
         }

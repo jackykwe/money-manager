@@ -23,8 +23,6 @@ import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "categoriesFrag"
-
 // Essentially the same code as CategoriesDF, except for the adapter.
 class CategoriesFragment : Fragment() {
 
