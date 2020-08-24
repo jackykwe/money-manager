@@ -118,7 +118,6 @@ class MainActivityViewModel : ViewModel() {
         // Choose authentication providers
         val providers = arrayListOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build(),
             AuthUI.IdpConfig.AnonymousBuilder().build()
         )
         // Create and launch sign-in intent}
@@ -134,8 +133,7 @@ class MainActivityViewModel : ViewModel() {
     internal fun loginIntentNoAnonymous(): Intent {
         // Choose authentication providers
         val providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build()
+            AuthUI.IdpConfig.EmailBuilder().build()
         )
         // Create and launch sign-in intent}
         return AuthUI.getInstance()
