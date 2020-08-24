@@ -70,7 +70,7 @@ data class Budget(
                 category
             )
         )
-        if (originalCurrency !in App.context.resources.getStringArray(R.array.ccc_currencies_values)) throw IllegalStateException(
+        if (originalCurrency !in App.context.resources.getStringArray(R.array.ccc_home_currency_values)) throw IllegalStateException(
             errorText("invalid currency", originalCurrency)
         )
         try {

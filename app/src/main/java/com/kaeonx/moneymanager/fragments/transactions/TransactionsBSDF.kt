@@ -101,12 +101,12 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.tbsdMemoET.fixCursorFocusProblems()
 
-        val currencyArray = resources.getStringArray(R.array.ccc_currencies_values)
+        val currencyArray = resources.getStringArray(R.array.ccc_home_currency_values)
         binding.tbsdCurrencyTV.setOnClickListener {
             AlertDialog.Builder(requireContext())
                 .setTitle("Select Currency")
                 .setSingleChoiceItems(
-                    R.array.ccc_currencies_entries,
+                    R.array.ccc_home_currency_entries,
                     currencyArray.indexOf(viewModel.currentTransaction.value!!.originalCurrency)
                 ) { pickerDialog, which ->
                     viewModel.updateCurrency(currencyArray[which])

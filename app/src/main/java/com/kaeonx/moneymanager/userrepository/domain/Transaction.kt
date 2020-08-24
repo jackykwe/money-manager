@@ -119,7 +119,7 @@ data class Transaction(
                 "memo is too long"
             )
         )
-        if (originalCurrency !in App.context.resources.getStringArray(R.array.ccc_currencies_values)) throw IllegalStateException(
+        if (originalCurrency !in App.context.resources.getStringArray(R.array.ccc_home_currency_values)) throw IllegalStateException(
             errorText("invalid currency", originalCurrency)
         )
         if (originalAmount.isBlank()) throw IllegalStateException(

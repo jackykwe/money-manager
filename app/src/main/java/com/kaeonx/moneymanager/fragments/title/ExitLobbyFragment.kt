@@ -14,8 +14,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.storage.StorageException
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import com.kaeonx.moneymanager.work.UploadDataWorker
@@ -30,7 +30,7 @@ class ExitLobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentLobbyBinding
     private val viewModel: ExitLobbyViewModel by viewModels()
-    private val activityViewModel: ActivityViewModel by activityViewModels()
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,7 +120,7 @@ class ExitLobbyFragment : Fragment() {
         viewModel.activityVMDelete.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.activityVMDeleteHandled()
-                activityViewModel.delete()  // fails immediately if offline
+                mainActivityViewModel.delete()  // fails immediately if offline
                     .addOnSuccessListener {
                         // NB: By now, Firebase.auth.currentUser is already null
                         viewModel.deleteEverythingAndExit()
@@ -134,7 +134,7 @@ class ExitLobbyFragment : Fragment() {
         viewModel.activityVMLogout.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.activityVMLogoutHandled()
-                activityViewModel.logout()  // confirm success, even if offline
+                mainActivityViewModel.logout()  // confirm success, even if offline
                 viewModel.deleteEverythingAndExit()
             }
         }

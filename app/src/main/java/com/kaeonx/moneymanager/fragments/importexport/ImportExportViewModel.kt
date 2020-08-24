@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
+import com.kaeonx.moneymanager.activities.Debug
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -131,8 +132,7 @@ class ImportExportViewModel : ViewModel() {
                 if (categories.map { it.name }.toSet().size != categories.size)
                     throw IllegalStateException("duplicate names found among Categories")
                 ensureActive()
-                val uniqueCategories = categories.map { it.name }.toSet()
-                if (uniqueCategories.size != categories.size)
+                if (categories.map { it.name }.toSet().size != categories.size)
                     throw IllegalStateException("duplicate names found among Categories")
 
 
@@ -156,7 +156,8 @@ class ImportExportViewModel : ViewModel() {
                 if (accounts.map { it.accountId }.toSet().size != accounts.size)
                     throw IllegalStateException("duplicate ids found among Accounts")
                 ensureActive()
-                if (accounts.map { it.name }.toSet().size != accounts.size)
+                val uniqueAccounts = accounts.map { it.name }.toSet()
+                if (uniqueAccounts.size != accounts.size)
                     throw IllegalStateException("duplicate names found among Accounts")
 
 
@@ -173,13 +174,27 @@ class ImportExportViewModel : ViewModel() {
                         ?: throw IllegalStateException("JSON missing \"settings\"")
                 )
                 preferences.forEach {
-                    // TODO: VERIFY THAT EACH SETTING HAS VALID VALUES
                     ensureActive()
                     if (it.key !in validKeys) throw IllegalStateException("unknown Setting: \"${it.key}\"")
                     if (it.valueText == null && it.valueInteger == null)
-                        throw IllegalStateException("Setting without any value: \"${it.key}\"")
+                        throw IllegalStateException("setting without any value: \"${it.key}\"")
                     if (it.valueText != null && it.valueInteger != null)
-                        throw IllegalStateException("Setting with two values: \"${it.key}\"")
+                        throw IllegalStateException("setting with two values: \"${it.key}\"")
+                    it.valueText?.let { valueText ->
+                        when (it.key) {
+                            // Handle any keys not controlled by string arrays here
+                            "tst_default_account" -> {
+                                if (valueText !in uniqueAccounts)
+                                    throw IllegalStateException("invalid \"${it.key}\" value\nThis account does not exist.")
+                            }
+                            else -> if (valueText !in IEPreferencesHandler.getValuesStringArrayOf(it.key))
+                                throw IllegalStateException("invalid \"${it.key}\" value")
+                        }
+                    }
+                    it.valueInteger?.let { valueInteger ->
+                        if (valueInteger != 0 && valueInteger != 1)
+                            throw IllegalStateException("invalid \"${it.key}\" value")
+                    }
                 }
 
                 "Overwriting Data…".let {
@@ -219,6 +234,7 @@ class ImportExportViewModel : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
+                Debug.extendedDebug("accfrag", "prefCheck", e)
                 withContext(Dispatchers.Main) {
                     _doneUI.value = DoneUIData(
                         resultIVDrawableId = R.drawable.mdi_cloud_alert_amber,

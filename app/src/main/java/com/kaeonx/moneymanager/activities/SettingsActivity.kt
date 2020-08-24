@@ -5,12 +5,17 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import androidx.preference.*
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
+import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
+import com.kaeonx.moneymanager.databinding.SettingsActivityBinding
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -27,6 +32,8 @@ private const val TAG = "statvt"
 class SettingsActivity : AppCompatActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
+    internal lateinit var binding: SettingsActivityBinding
+
     ////////////////////////////////////////////////////////////////////////////////
     /**
      * Activity
@@ -42,7 +49,10 @@ class SettingsActivity : AppCompatActivity(),
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_activity)
+
+        binding = SettingsActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
@@ -114,14 +124,75 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.preferences_home, rootKey)
-
         }
     }
 
     class PreferencesUserProfileFragment : PreferenceFragmentCompat() {
+
+        private val settingsViewModel: SettingsViewModel by activityViewModels()
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            preferenceManager.preferenceDataStore = UserPDS
             setPreferencesFromResource(R.xml.user_profile_preferences, rootKey)
+
+            Firebase.auth.currentUser!!.isAnonymous.let {
+                findPreference<Preference>("acc_desc0")!!.isVisible = it
+                findPreference<PreferenceCategory>("acc_category_account_settings")!!
+                    .isEnabled = !it
+            }
+
+            findPreference<EditTextPreference>("acc_account_name")!!
+                .setOnPreferenceChangeListener { _, newValue ->
+                    val view = (requireActivity() as SettingsActivity).binding.root
+                    Snackbar.make(
+                        view,
+                        "Updating name… Please wait.",
+                        Snackbar.LENGTH_INDEFINITE
+                    )
+                        .setBehavior(NoSwipeBehaviour())
+                        .show()
+                    settingsViewModel.updateName(newValue as String)
+                        .addOnSuccessListener {
+                            Snackbar.make(
+                                view,
+                                "Successfully updated name",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                        .addOnFailureListener { exception ->
+                            when (exception) {
+                                is FirebaseNetworkException -> {
+                                    Snackbar.make(
+                                        view,
+                                        "Unable to update name.\nPlease check your internet connection.",
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
+                                }
+                                else -> {
+                                    Snackbar.make(
+                                        view,
+                                        "Unable to update name [Unknown error].\nPlease report this bug.",
+                                        Snackbar.LENGTH_INDEFINITE
+                                    )
+                                        .setBehavior(NoSwipeBehaviour())
+                                        .show()
+                                }
+                            }
+                        }
+                    true
+                }
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            settingsViewModel.currentUser.observe(viewLifecycleOwner) {
+                if (it == null) return@observe
+                if (!it.isAnonymous) {
+                    findPreference<EditTextPreference>("acc_account_name")!!.apply {
+                        summary = it.displayName
+                        text = it.displayName
+                    }
+                }
+            }
+            super.onViewCreated(view, savedInstanceState)
         }
     }
 
@@ -156,7 +227,6 @@ class SettingsActivity : AppCompatActivity(),
                         "Base currency: $homeCurrency\nLast updated: $lastUpdated"
                 }
             }
-            super.onViewCreated(view, savedInstanceState)
         }
     }
 
@@ -167,9 +237,9 @@ class SettingsActivity : AppCompatActivity(),
 
             Firebase.auth.currentUser!!.isAnonymous.let {
                 findPreference<Preference>("dap_desc0")!!.isVisible = it
-                findPreference<PreferenceCategory>("dap_privacy_category_automatic_backup")!!
+                findPreference<PreferenceCategory>("dap_category_automatic_backup")!!
                     .isEnabled = !it
-                findPreference<PreferenceCategory>("dap_privacy_category_delete_account")!!
+                findPreference<PreferenceCategory>("dap_category_delete_account")!!
                     .isEnabled = !it
             }
 

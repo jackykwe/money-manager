@@ -8,8 +8,8 @@
         android:summary="The home currency is used only for tabulating totals. Individual transaction records always display the original currency used." />
 
     <ListPreference
-        android:entries="@array/ccc_currencies_entries"
-        android:entryValues="@array/ccc_currencies_values"
+        android:entries="@array/ccc_home_currency_entries"
+        android:entryValues="@array/ccc_home_currency_values"
         android:key="ccc_home_currency"
         android:title="Home currency"
         app:useSimpleSummaryProvider="true" />

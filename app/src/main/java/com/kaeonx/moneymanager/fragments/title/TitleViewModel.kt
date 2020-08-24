@@ -7,9 +7,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageException
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.CloudMetadata
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import kotlinx.coroutines.delay
@@ -32,7 +32,7 @@ class TitleViewModel : ViewModel() {
 
         // 1. [Title] Upload lastKnownLoginMillis to cloud l(using InputStream)
         var writeLastKnownLoginMillisDone = LoginProgress.STARTED
-        ActivityViewModel.uploadMetadataJSONToCloud(
+        MainActivityViewModel.uploadMetadataJSONToCloud(
             Firebase.auth.currentUser!!.uid,
             CloudMetadata.Builder(
                 lastKnownLoginMillis = Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp
@@ -51,7 +51,7 @@ class TitleViewModel : ViewModel() {
 
         // 2. [Title] Download JSON Metadata from cloud if exists
         var downloadDBJSONMetadataFromCloudDone = LoginProgress.STARTED
-        ActivityViewModel.getDBJSONMetadataFromCloud(Firebase.auth.currentUser!!.uid)
+        MainActivityViewModel.getDBJSONMetadataFromCloud(Firebase.auth.currentUser!!.uid)
             .addOnSuccessListener { metadata ->
                 UserPDS.putDSPLong(
                     "${Firebase.auth.currentUser!!.uid}_last_upload_time",
@@ -71,7 +71,7 @@ class TitleViewModel : ViewModel() {
         // 3. [Title] Download JSON from cloud if exists (creates downloaded_database_<uid>.json)
         // Processing of CloudDB done in LobbyFragment
         var downloadDBJSONFromCloudDone = LoginProgress.STARTED
-        ActivityViewModel.downloadDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
+        MainActivityViewModel.downloadDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
             .addOnSuccessListener {
                 downloadDBJSONFromCloudDone = LoginProgress.SUCCESS
             }

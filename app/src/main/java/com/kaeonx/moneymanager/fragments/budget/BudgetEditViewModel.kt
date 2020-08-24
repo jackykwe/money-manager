@@ -49,8 +49,8 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
     }
 
 
-    private val entryArray = App.context.resources.getStringArray(R.array.ccc_currencies_entries)
-    private val valueArray = App.context.resources.getStringArray(R.array.ccc_currencies_values)
+    private val entryArray = App.context.resources.getStringArray(R.array.ccc_home_currency_entries)
+    private val valueArray = App.context.resources.getStringArray(R.array.ccc_home_currency_values)
     private fun valueToEntry(value: String): String = entryArray[valueArray.indexOf(value)]
     private fun entryToValue(entry: String): String = valueArray[entryArray.indexOf(entry)]
 

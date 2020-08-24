@@ -8,9 +8,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.StreamDownloadTask
 import com.google.firebase.storage.UploadTask
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.CloudMetadata
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -49,12 +49,12 @@ class ExitLobbyViewModel : ViewModel() {
 
         // Delete JSON files
         val uploadableFile = File(
-            ActivityViewModel.buildUploadableDBFilePath(
+            MainActivityViewModel.buildUploadableDBFilePath(
                 UserPDS.getDSPString("logged_in_uid", "")
             )
         )
         val downloadedFile = File(
-            ActivityViewModel.buildDownloadedDBFilePath(
+            MainActivityViewModel.buildDownloadedDBFilePath(
                 UserPDS.getDSPString("logged_in_uid", "")
             )
         )
@@ -89,7 +89,7 @@ class ExitLobbyViewModel : ViewModel() {
                 _activityVMLogout.value = true
             } else {
                 uploadTask =
-                    ActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+                    MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                         .addOnSuccessListener {
                             _activityVMLogout.value = true
                         }
@@ -156,7 +156,7 @@ class ExitLobbyViewModel : ViewModel() {
 
             ensureActive()
             IEFileHandler.saveRootToFile(
-                ActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
+                MainActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                 output.toString()
             )
 
@@ -166,7 +166,7 @@ class ExitLobbyViewModel : ViewModel() {
 
             ensureActive()
             // Check that the current login is still the most recent login
-            ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot)
                 }

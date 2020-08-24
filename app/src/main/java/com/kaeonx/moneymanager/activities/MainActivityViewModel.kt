@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 private const val TAG = "actVM"
 
-class ActivityViewModel : ViewModel() {
+class MainActivityViewModel : ViewModel() {
 
     companion object {
 
@@ -154,7 +154,6 @@ class ActivityViewModel : ViewModel() {
     }
 
     internal fun delete(): Task<Void> = AuthUI.getInstance().delete(App.context)
-
 
     ////////////////////////////////////////////////////////////////////////////////
     /**

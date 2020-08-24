@@ -40,7 +40,7 @@ private const val START_CLAIM_LOGIN_INTENT = 1
 
 class MainActivity : AppCompatActivity() {
 
-    private val activityViewModel: ActivityViewModel by viewModels()
+    private val mainActivityViewModel: MainActivityViewModel by viewModels()
 
     internal lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -186,13 +186,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
-        activityViewModel.currentUser.observe(this) {
+        mainActivityViewModel.currentUser.observe(this) {
             if (it == null) return@observe
             Log.d(TAG, "currentUser changed: id: ${it.uid}, anonymous? ${it.isAnonymous}")
             if (it.isAnonymous) {
                 headerBinding.root.setOnClickListener {
                     startActivityForResult(
-                        activityViewModel.loginIntentNoAnonymous(),
+                        mainActivityViewModel.loginIntentNoAnonymous(),
                         START_CLAIM_LOGIN_INTENT
                     )
                 }
@@ -206,10 +206,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        activityViewModel.showOutdatedLoginSnackbar.observe(this)
+        mainActivityViewModel.showOutdatedLoginSnackbar.observe(this)
         {
             if (it) {
-                activityViewModel.showOutdatedLoginSnackbarHandled()
+                mainActivityViewModel.showOutdatedLoginSnackbarHandled()
                 Snackbar.make(
                     binding.root,
                     "Cloud Backup is disabled as there is a newer login on another device.",
@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
             START_SETTING_ACTIVITY -> if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
             START_CLAIM_LOGIN_INTENT -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    activityViewModel.refreshAuthMLD()
+                    mainActivityViewModel.refreshAuthMLD()
                     if (navController.currentDestination?.id !in listOf(
                             R.id.titleFragment,
                             R.id.lobbyFragment,

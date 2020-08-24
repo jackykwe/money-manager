@@ -12,8 +12,8 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentLobbyBinding
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class LobbyFragment : Fragment() {
 
     private lateinit var binding: FragmentLobbyBinding
     private val viewModel: LobbyViewModel by viewModels()
-    private val activityViewModel: ActivityViewModel by activityViewModels()
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +38,7 @@ class LobbyFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activityViewModel.attemptToFetchLastKnownLoginMillis()
+        mainActivityViewModel.attemptToFetchLastKnownLoginMillis()
         viewModel.initialise()
 
         viewModel.showErrorSnackbar.observe(viewLifecycleOwner) {
@@ -64,7 +64,7 @@ class LobbyFragment : Fragment() {
         viewModel.initDone.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.initDoneHandled()
-                activityViewModel.updateWorkStatus()
+                mainActivityViewModel.updateWorkStatus()
                 lifecycleScope.launch(Dispatchers.Main) {
                     val animDuration =
                         resources.getInteger(android.R.integer.config_shortAnimTime).toLong()

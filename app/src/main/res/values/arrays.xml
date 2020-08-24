@@ -81,7 +81,7 @@
         <item>Expenses</item>
     </string-array>
 
-    <string-array name="ccc_currencies_entries">
+    <string-array name="ccc_home_currency_entries">
         <item>AUD - Australian Dollar</item>
         <item>BGN - Bulgarian Lev</item>
         <item>BRL - Brazilian Real</item>
@@ -117,7 +117,7 @@
         <item>ZAR - Rand</item>
     </string-array>
 
-    <string-array name="ccc_currencies_values">
+    <string-array name="ccc_home_currency_values">
         <item>AUD</item>
         <item>BGN</item>
         <item>BRL</item>

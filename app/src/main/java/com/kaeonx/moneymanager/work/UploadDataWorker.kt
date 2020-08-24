@@ -6,10 +6,10 @@ import androidx.work.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StreamDownloadTask
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.App
 import com.kaeonx.moneymanager.activities.CloudMetadata
 import com.kaeonx.moneymanager.activities.Debug
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
@@ -93,7 +93,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             return Result.failure()
         } else {
             var result: Result? = null
-            ActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { innerTaskSnapshot ->
                     UserPDS.putDSPLong(
                         "${Firebase.auth.currentUser!!.uid}_last_upload_time",
@@ -146,7 +146,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             UserDatabase.dropInstance()  // Ensures database is closed properly
             delay(1000L)  // delay just in case the closing takes time
 
-            val file = File(ActivityViewModel.buildUploadableDBFilePath(currentUserId))
+            val file = File(MainActivityViewModel.buildUploadableDBFilePath(currentUserId))
             if (!file.exists()) {
                 val output = JSONObject()
                 val repository = UserRepository.getInstance()
@@ -201,7 +201,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
 
                 ensureActive()
                 IEFileHandler.saveRootToFile(
-                    ActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
+                    MainActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                     output.toString()
                 )
             }
@@ -210,7 +210,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             // Code from CloudFragmentViewModel
             var mostRecentLoginCheckSuccess: Boolean? = null
             lateinit var usableTaskSnapshot: StreamDownloadTask.TaskSnapshot
-            ActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     usableTaskSnapshot = taskSnapshot
                     mostRecentLoginCheckSuccess = true

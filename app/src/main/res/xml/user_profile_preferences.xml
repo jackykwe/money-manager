@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:enabled="false"
-        android:key="acc_account_name"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="Account Name"
-        app:useSimpleSummaryProvider="true" />
+    <Preference
+        android:icon="@drawable/mdi_information_outline"
+        android:key="acc_desc0"
+        android:persistent="false"
+        android:selectable="false"
+        android:summary="Claim this Guest account to enable these settings." />
+
+    <PreferenceCategory
+        android:key="acc_category_account_settings"
+        android:title="Account Settings">
+
+        <Preference
+            android:key="acc_desc1"
+            android:persistent="false"
+            android:selectable="false"
+            android:summary="This is the name used to address you when completing a new login." />
+
+        <EditTextPreference
+            android:key="acc_account_name"
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Account Name" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

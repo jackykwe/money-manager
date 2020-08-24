@@ -16,8 +16,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.R
-import com.kaeonx.moneymanager.activities.ActivityViewModel
 import com.kaeonx.moneymanager.activities.MainActivity
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.NoSwipeBehaviour
 import com.kaeonx.moneymanager.databinding.FragmentTitleBinding
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 class TitleFragment : Fragment() {
 
-    private val activityViewModel: ActivityViewModel by activityViewModels()
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
     private lateinit var binding: FragmentTitleBinding
     private val viewModel: TitleViewModel by viewModels()
 
@@ -38,7 +38,7 @@ class TitleFragment : Fragment() {
             Snackbar.LENGTH_INDEFINITE
         )
             .setBehavior(NoSwipeBehaviour())
-            .setAction("LOGIN") { startActivityForResult(activityViewModel.loginIntent(), 0) }
+            .setAction("LOGIN") { startActivityForResult(mainActivityViewModel.loginIntent(), 0) }
             .show()
     }
 
@@ -151,7 +151,7 @@ class TitleFragment : Fragment() {
         if (requestCode == 0) {
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
-                activityViewModel.refreshAuthMLD()
+                mainActivityViewModel.refreshAuthMLD()
                 if (Firebase.auth.currentUser!!.isAnonymous) {
                     kickStartUIAndNavigateToLobby()
                 } else {

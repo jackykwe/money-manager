@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.kaeonx.moneymanager.activities.ActivityViewModel
+import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -34,7 +34,7 @@ class LobbyViewModel : ViewModel() {
             UserPDS.putDSPString("logged_in_uid", Firebase.auth.currentUser!!.uid)
 
             val downloadedFile = File(
-                ActivityViewModel.buildDownloadedDBFilePath(
+                MainActivityViewModel.buildDownloadedDBFilePath(
                     UserPDS.getDSPString("logged_in_uid", "")
                 )
             )
@@ -96,8 +96,7 @@ class LobbyViewModel : ViewModel() {
                     if (categories.map { it.name }.toSet().size != categories.size)
                         throw IllegalStateException("duplicate names found among Categories")
                     ensureActive()
-                    val uniqueCategories = categories.map { it.name }.toSet()
-                    if (uniqueCategories.size != categories.size)
+                    if (categories.map { it.name }.toSet().size != categories.size)
                         throw IllegalStateException("duplicate names found among Categories")
 
 
@@ -115,7 +114,8 @@ class LobbyViewModel : ViewModel() {
                     if (accounts.map { it.accountId }.toSet().size != accounts.size)
                         throw IllegalStateException("duplicate ids found among Accounts")
                     ensureActive()
-                    if (accounts.map { it.name }.toSet().size != accounts.size)
+                    val uniqueAccounts = accounts.map { it.name }.toSet()
+                    if (uniqueAccounts.size != accounts.size)
                         throw IllegalStateException("duplicate names found among Accounts")
 
 
@@ -132,6 +132,24 @@ class LobbyViewModel : ViewModel() {
                             throw IllegalStateException("Setting without any value: \"${it.key}\"")
                         if (it.valueText != null && it.valueInteger != null)
                             throw IllegalStateException("Setting with two values: \"${it.key}\"")
+                        it.valueText?.let { valueText ->
+                            when (it.key) {
+                                // Handle any keys not controlled by string arrays here
+                                "tst_default_account" -> {
+                                    if (valueText !in uniqueAccounts)
+                                        throw IllegalStateException("invalid \"${it.key}\" value\nThis account does not exist.")
+                                }
+                                else -> if (valueText !in IEPreferencesHandler.getValuesStringArrayOf(
+                                        it.key
+                                    )
+                                )
+                                    throw IllegalStateException("invalid \"${it.key}\" value")
+                            }
+                        }
+                        it.valueInteger?.let { valueInteger ->
+                            if (valueInteger != 0 && valueInteger != 1)
+                                throw IllegalStateException("invalid \"${it.key}\" value")
+                        }
                     }
 
 

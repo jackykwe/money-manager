@@ -75,7 +75,7 @@ class BudgetEditFragment : Fragment() {
             setAdapter(
                 ArrayAdapter.createFromResource(
                     requireContext(),
-                    R.array.ccc_currencies_entries,
+                    R.array.ccc_home_currency_entries,
                     R.layout.dropdown_item_currency
                 )
             )

@@ -1,6 +1,5 @@
 package com.kaeonx.moneymanager.userrepository
 
-import android.content.SharedPreferences
 import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceManager
 import com.kaeonx.moneymanager.activities.App
@@ -15,29 +14,29 @@ internal object UserPDS : PreferenceDataStore() {
 
     private val defaultPreferences = mapOf(
         // Account
-        "acc_account_name" to "NAMEHM",
+        // NONE
 
         // Currency
-        "ccc_home_currency" to "SGD",
+        "ccc_home_currency" to "SGD",  // controlled by array
         "ccc_hide_matching_currency" to true,
 
         // Currency Converter
         "ccv_enable_online" to true,
-        "ccv_online_update_ttl" to "86400000",
+        "ccv_online_update_ttl" to "86400000",  // controlled by array
 
         // Data and Privacy
         "dap_auto_backup_enabled" to true,
-        "dap_auto_backup_freq" to "1",
+        "dap_auto_backup_freq" to "1",  // controlled by array
 
         // Display
-        "dsp_theme" to "light",
-        "dsp_date_format" to "ddMMyy",
-        "dsp_time_format" to "HHmm",
-        "dsp_sign_position" to "after_currency",
+        "dsp_theme" to "light",  // controlled by array
+        "dsp_date_format" to "ddMMyy",  // controlled by array
+        "dsp_time_format" to "HHmm",  // controlled by array
+        "dsp_sign_position" to "after_currency",  // controlled by array
 
         // Page Transactions
-        "tst_default_account" to "Cash",
-        "tst_default_type" to "Expenses"
+        "tst_default_account" to "Cash",  // **NOT controlled by array**
+        "tst_default_type" to "Expenses"  // controlled by array
 
         // Page Budget
         // NONE
@@ -97,9 +96,6 @@ internal object UserPDS : PreferenceDataStore() {
             )
         }
     }
-
-    internal fun getDSP(): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(App.context)
 
     internal fun getDSPString(key: String, defaultValue: String): String =
         PreferenceManager.getDefaultSharedPreferences(App.context).getString(key, defaultValue)!!

@@ -8,7 +8,7 @@ import java.io.Serializable
 @JsonClass(generateAdapter = true)
 data class Preference(
     @Json(name = "k") val key: String,
-    @Json(name = "i") val valueInteger: Int?,
+    @Json(name = "i") val valueInteger: Int?,  // for storing booleans
     @Json(name = "t") val valueText: String?
 ) : Serializable {
 

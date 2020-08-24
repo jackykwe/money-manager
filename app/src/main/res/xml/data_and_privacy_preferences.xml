@@ -10,7 +10,7 @@
         android:summary="Claim this Guest account to enable these settings." />
 
     <!--    <PreferenceCategory-->
-    <!--        android:key="dap_privacy_category_privacy"-->
+    <!--        android:key="dap_category_privacy"-->
     <!--        android:title="Privacy"-->
     <!--        app:isPreferenceVisible="false">-->
 
@@ -23,7 +23,7 @@
     <!--    </PreferenceCategory>-->
 
     <PreferenceCategory
-        android:key="dap_privacy_category_automatic_backup"
+        android:key="dap_category_automatic_backup"
         android:title="Automatic Backup">
 
         <Preference
@@ -54,7 +54,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="dap_privacy_category_delete_account"
+        android:key="dap_category_delete_account"
         android:title="Delete Account"
         app:isPreferenceVisible="false">
 
