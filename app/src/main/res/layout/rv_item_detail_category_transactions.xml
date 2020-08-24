@@ -13,11 +13,11 @@
 
         <variable
             name="onClickListener"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
 
         <variable
             name="onLongClickListener"
-            type="com.kaeonx.moneymanager.fragments.detail.DetailCategoryOnClickListener" />
+            type="com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView style="@style/RVItemDetailXBodyCard">

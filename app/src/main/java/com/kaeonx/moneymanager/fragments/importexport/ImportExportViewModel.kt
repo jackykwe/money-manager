@@ -99,7 +99,7 @@ class ImportExportViewModel : ViewModel() {
                     throw IllegalStateException("duplicate categories found among Budgets")
 
 
-                // Debts (TODO)
+                // Debts (TODO Future)
                 "Validating JSON Debts…".let {
                     withContext(Dispatchers.Main) {
                         _updateUI.value = Pair(it, progressIterator.next())
@@ -273,7 +273,7 @@ class ImportExportViewModel : ViewModel() {
                 )
             )
 
-            // Debts (TODO)
+            // Debts (TODO Future)
             ensureActive()
             "Exporting Debts…".let {
                 withContext(Dispatchers.Main) {

@@ -5,6 +5,7 @@ import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import com.kaeonx.moneymanager.databinding.LlItemDetailTypeNoDataBinding
 import com.kaeonx.moneymanager.databinding.RvLlItemDetailCategoryBinding
+import com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener
 
 ////////////////////////////////////////////////////////////////////////////////
 /**
@@ -18,8 +19,8 @@ import com.kaeonx.moneymanager.databinding.RvLlItemDetailCategoryBinding
 )
 fun LinearLayout.setTransactionsLLAdapter(
     list: List<DetailCategoryTransactionLLData>,
-    itemOnClickListener: DetailCategoryOnClickListener,
-    itemOnLongClickListener: DetailCategoryOnClickListener
+    itemOnClickListener: TransactionOnClickListener,
+    itemOnLongClickListener: TransactionOnClickListener
 ) {
     removeAllViews()
     val layoutInflater = LayoutInflater.from(context)

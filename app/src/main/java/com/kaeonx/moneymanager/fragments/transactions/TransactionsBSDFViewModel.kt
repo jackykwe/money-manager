@@ -7,6 +7,7 @@ import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
+import com.kaeonx.moneymanager.userrepository.domain.TRANSACTION_MEMO_MAX_LENGTH
 import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -245,10 +246,10 @@ class TransactionsBSDFViewModel(private val oldTransaction: Transaction): ViewMo
 
     val memoText = MutableLiveData<String>(oldTransaction.memo)  // Exception where MutableLiveData2 fails - two-way data binding
     private val memoIsNullOrBlank = Transformations.map(memoText) {
-        // TODO: Add this check to all other so far "unbounded" free text fields
-        if (it.trim().length > 255) throw IllegalStateException("Memo string exceeded 255 character limit")
+        val trimmed = it.trim()
+        if (trimmed.length > TRANSACTION_MEMO_MAX_LENGTH) throw IllegalStateException("Memo string exceeded $TRANSACTION_MEMO_MAX_LENGTH character limit")
         _currentTransaction.value = _currentTransaction.value.copy(
-            memo = it.trim()
+            memo = trimmed
         )
         it.isNullOrBlank()
     }

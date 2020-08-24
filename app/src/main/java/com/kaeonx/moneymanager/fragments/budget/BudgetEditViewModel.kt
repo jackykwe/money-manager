@@ -7,6 +7,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.CalendarHandler
 import com.kaeonx.moneymanager.handlers.CurrencyHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.domain.BUDGET_ORIGAMT_MAX_LENGTH
 import com.kaeonx.moneymanager.userrepository.domain.Budget
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -92,10 +93,11 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
         }
     }
     val amountETError = Transformations.map(amountETText) {
+        if (it.trim().length > BUDGET_ORIGAMT_MAX_LENGTH) throw IllegalStateException("Amount exceeded $BUDGET_ORIGAMT_MAX_LENGTH character limit")
         when {
             it.isNullOrEmpty() -> "Monthly Budget cannot be empty"
             else -> {
-                when (val display = CurrencyHandler.displayAmount(BigDecimal(it))) {
+                when (CurrencyHandler.displayAmount(BigDecimal(it))) {
                     "0" -> "Monthly Budget must be positive"
                     else -> null
                 }

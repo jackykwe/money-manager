@@ -24,7 +24,7 @@
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         android:gravity="center"
-        android:onClick="@{() -> onClickListener.onClick(transactionLL, transaction)}"
+        android:onClick="@{() -> onClickListener.onClick(transactionLL, transaction.transactionId)}"
         android:orientation="horizontal"
         android:padding="8dp">
 

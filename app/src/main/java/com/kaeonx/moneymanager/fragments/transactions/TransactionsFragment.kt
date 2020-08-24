@@ -80,34 +80,34 @@ class TransactionsFragment : Fragment() {
         }
     }
 
-    private fun interactWithActionMode(view: View, transaction: Transaction) {
-        fun add(view: View, transaction: Transaction) {
+    private fun interactWithActionMode(view: View, transactionId: Int) {
+        fun add(view: View, _transactionId: Int) {
             toggleView(view, true)
             selectedViews.add(view)
-            listOfIdsSelected.add(transaction.transactionId!!)
+            listOfIdsSelected.add(_transactionId)
         }
 
-        fun remove(view: View, transaction: Transaction) {
+        fun remove(view: View, _transactionId: Int) {
             selectedViews.remove(view)
             toggleView(view, false)
-            listOfIdsSelected.remove(transaction.transactionId!!)
+            listOfIdsSelected.remove(_transactionId)
         }
 
         if (actionMode == null) {
             // Start the CAB using the ActionMode.Callback defined above
             actionMode = requireActivity().startActionMode(actionModeCallback)
-            add(view, transaction)
+            add(view, transactionId)
         } else {
-            if (transaction.transactionId!! in listOfIdsSelected) {
+            if (transactionId in listOfIdsSelected) {
                 if (listOfIdsSelected.size == 1) {
                     actionMode?.finish()
                 } else {
                     // Remove
-                    remove(view, transaction)
+                    remove(view, transactionId)
                 }
             } else {
                 // Add
-                add(view, transaction)
+                add(view, transactionId)
             }
         }
         actionMode?.title = "${listOfIdsSelected.size} selected"
@@ -144,7 +144,7 @@ class TransactionsFragment : Fragment() {
         binding.transactionsRV.apply {
             setHasFixedSize(true)  // an optimisation, clarified by https://stackoverflow.com/a/39736376/7254995
             adapter = TransactionsRVAdapter(
-                itemOnClickListener = TransactionOnClickListener { view, transaction ->
+                itemOnClickListener = TransactionOnClickListener { view, transactionId ->
                     if (actionMode == null) {
                         findNavController().run {
                             // Courtesy of https://stackoverflow.com/a/53737537/7254995
@@ -152,17 +152,17 @@ class TransactionsFragment : Fragment() {
                                 if (actionMode != null) actionMode!!.finish()
                                 navigate(
                                     TransactionsFragmentDirections.actionTransactionsFragmentToTransactionEditFragment(
-                                        transaction.transactionId!!
+                                        transactionId
                                     )
                                 )
                             }
                         }
                     } else {
-                        interactWithActionMode(view, transaction)
+                        interactWithActionMode(view, transactionId)
                     }
                 },
-                itemOnLongClickListener = TransactionOnClickListener { view, transaction ->
-                    interactWithActionMode(view, transaction)
+                itemOnLongClickListener = TransactionOnClickListener { view, transactionId ->
+                    interactWithActionMode(view, transactionId)
                 },
                 headerLeftArrowClickListener = GenericOnClickListener { viewModel.monthMinusOne() },
                 headerMonthClickListener = GenericOnClickListener {

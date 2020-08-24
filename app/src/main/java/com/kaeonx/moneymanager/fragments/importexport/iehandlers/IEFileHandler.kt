@@ -52,10 +52,6 @@ internal class IEFileHandler private constructor() {
             if (data.data == null) throw IllegalStateException("data.data (Intent.data) is null")
             contentResolver.openOutputStream(data.data!!)?.use { outputStream ->
                 outputStream.bufferedWriter().use { it.write(contentToWrite) }
-                //TODO CLEANUP THIS FILE
-//                BufferedWriter(OutputStreamWriter(outputStream)).use { writer ->
-//                    writer.write(contentToWrite)
-//                }
             }
         }
 

@@ -187,13 +187,20 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         val accumulatorPercentDisplay =
                             accumulatorPercent.setScale(1, RoundingMode.HALF_EVEN)
 
-                        val accumulatorColourInt = ColourHandler.getColourObjectThemedOf("Black")
+//                        val accumulatorColourInt = ColourHandler.getColourObjectThemedOf("Black")
+                        val accumulatorColourInt = ColourHandler.getSpecificColourObjectOf(
+                            when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
+                                "dark" -> "Grey,200"
+                                "light" -> "Black"
+                                else -> throw IllegalArgumentException("Unknown dsp_theme $theme")
+                            }
+                        )
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
                             PieChartLegendLLData.DetailCategoryPCLLD(
                                 noDataFlag = false,
-                                colour = accumulatorColourInt,  // todo: sensitive to theme (white or sth for dark theme)
+                                colour = accumulatorColourInt,
                                 categoryName = "(multiple)",
                                 categoryPercent = "($accumulatorPercentDisplay%)"
                             )

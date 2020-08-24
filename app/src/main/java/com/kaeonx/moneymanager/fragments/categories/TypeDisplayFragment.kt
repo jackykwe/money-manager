@@ -10,7 +10,7 @@ import androidx.lifecycle.observe
 import com.kaeonx.moneymanager.databinding.FragmentTypeDisplayBinding
 
 // tabLayoutControllerFragment: where the TabLayout is controlled
-// retaining instance of fragmentStateAdapter to access the clickListener. A cheap solution that might not be the best. // TODO(FUTURE)
+// retaining instance of fragmentStateAdapter to access the clickListener. A cheap solution that might not be the best. // TODO Future
 // SOF Article to continue from: https://stackoverflow.com/a/53935427/7254995
 class TypeDisplayFragment(private val fragmentStateAdapter: TypeDisplayFragmentStateAdapter) :
     Fragment() {

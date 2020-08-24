@@ -19,7 +19,6 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentTransactionsSearchBinding
 import com.kaeonx.moneymanager.handlers.ColourHandler
-import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -82,34 +81,34 @@ class TransactionsSearchFragment : Fragment() {
         }
     }
 
-    private fun interactWithActionMode(view: View, transaction: Transaction) {
-        fun add(view: View, transaction: Transaction) {
+    private fun interactWithActionMode(view: View, transactionId: Int) {
+        fun add(view: View, _transactionId: Int) {
             toggleView(view, true)
             selectedViews.add(view)
-            listOfIdsSelected.add(transaction.transactionId!!)
+            listOfIdsSelected.add(_transactionId)
         }
 
-        fun remove(view: View, transaction: Transaction) {
+        fun remove(view: View, _transactionId: Int) {
             selectedViews.remove(view)
             toggleView(view, false)
-            listOfIdsSelected.remove(transaction.transactionId!!)
+            listOfIdsSelected.remove(_transactionId)
         }
 
         if (actionMode == null) {
             // Start the CAB using the ActionMode.Callback defined above
             actionMode = requireActivity().startActionMode(actionModeCallback)
-            add(view, transaction)
+            add(view, transactionId)
         } else {
-            if (transaction.transactionId!! in listOfIdsSelected) {
+            if (transactionId in listOfIdsSelected) {
                 if (listOfIdsSelected.size == 1) {
                     actionMode?.finish()
                 } else {
                     // Remove
-                    remove(view, transaction)
+                    remove(view, transactionId)
                 }
             } else {
                 // Add
-                add(view, transaction)
+                add(view, transactionId)
             }
         }
         actionMode?.title = "${listOfIdsSelected.size} selected"
@@ -168,7 +167,7 @@ class TransactionsSearchFragment : Fragment() {
         binding.transactionsRV.apply {
             setHasFixedSize(true)
             adapter = TransactionsSearchRVAdapter(
-                itemOnClickListener = TransactionOnClickListener { view, transaction ->
+                itemOnClickListener = TransactionOnClickListener { view, transactionId ->
                     // Close the keyboard, if it's open
                     val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
                             as InputMethodManager
@@ -178,13 +177,13 @@ class TransactionsSearchFragment : Fragment() {
                             if (currentDestination?.id == R.id.transactionsSearchFragment) {
                                 navigate(
                                     TransactionsSearchFragmentDirections.actionTransactionsSearchFragmentToTransactionEditFragment(
-                                        transaction.transactionId!!
+                                        transactionId
                                     )
                                 )
                             }
                         }
                     } else {
-                        interactWithActionMode(view, transaction)
+                        interactWithActionMode(view, transactionId)
                     }
                 },
                 itemOnLongClickListener = TransactionOnClickListener { view, transaction ->

@@ -21,7 +21,7 @@ import com.kaeonx.moneymanager.adapters.ColourFamilyPickerArrayAdapter
 import com.kaeonx.moneymanager.databinding.FragmentCategoryEditBinding
 
 class CategoryEditFragment : Fragment() {
-    // TODO: NOT OPTIMISED YET FOR SMOOTHNESS - INTRODUCE SOME DELAYS?
+
     private lateinit var binding: FragmentCategoryEditBinding
 
     private val args: CategoryEditFragmentArgs by navArgs()

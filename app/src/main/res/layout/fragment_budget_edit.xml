@@ -38,9 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
-            app:helperText="@{viewModel.categoryNameETHelper}"
-            app:error_text="@{viewModel.categoryNameETError}"
             android:hint="@string/hint_category_name"
+            app:error_text="@{viewModel.categoryNameETError}"
+            app:helperText="@{viewModel.categoryNameETHelper}"
             app:layout_constraintTop_toBottomOf="@+id/categoryIconFL">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -92,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
+                android:maxLength="10"
                 android:nextFocusDown="@id/categoryIconFL"
                 android:text="@={viewModel.amountETText}" />
 

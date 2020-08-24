@@ -99,7 +99,7 @@ fun LinearLayout.setDayTransactionsLLAdapter(
         itemBinding.transaction = transaction
         itemBinding.onClickListener = itemOnClickListener
         itemBinding.transactionLL.setOnLongClickListener { view ->
-            itemOnLongClickListener.onClick(view, transaction)
+            itemOnLongClickListener.onClick(view, transaction.transactionId!!)
             true
         }
         itemBinding.executePendingBindings()

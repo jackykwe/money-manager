@@ -76,7 +76,7 @@ class LobbyViewModel : ViewModel() {
                         throw IllegalStateException("duplicate categories found among Budgets")
 
 
-                    // Debts (TODO)
+                    // Debts (TODO Future)
 
 
                     // Categories

@@ -19,6 +19,8 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 
+internal const val TRANSACTION_MEMO_MAX_LENGTH = 255
+
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Transaction(
@@ -112,7 +114,11 @@ data class Transaction(
                 memo
             )
         )
-        if (memo.trim().length > 255) throw IllegalStateException(errorText("memo is too long"))
+        if (memo.trim().length > TRANSACTION_MEMO_MAX_LENGTH) throw IllegalStateException(
+            errorText(
+                "memo is too long"
+            )
+        )
         if (originalCurrency !in App.context.resources.getStringArray(R.array.ccc_currencies_values)) throw IllegalStateException(
             errorText("invalid currency", originalCurrency)
         )

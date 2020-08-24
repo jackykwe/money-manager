@@ -11,7 +11,6 @@ import com.github.mikephil.charting.data.PieData
 import com.kaeonx.moneymanager.customclasses.GenericOnClickListener
 import com.kaeonx.moneymanager.databinding.*
 import com.kaeonx.moneymanager.userrepository.domain.DayTransactions
-import com.kaeonx.moneymanager.userrepository.domain.Transaction
 import kotlinx.coroutines.*
 
 private const val HEADER = 0
@@ -261,9 +260,8 @@ class TransactionsRVItemDiffCallback : DiffUtil.ItemCallback<TransactionsRVItem>
     }
 }
 
-// TODO: Change: only need to pass transactionId, no need transaction ( actually is it better to pass objects? Since pointers and all aren't recreated )
-class TransactionOnClickListener(val clickListener: (view: View, transaction: Transaction) -> Unit) {
-    fun onClick(view: View, transaction: Transaction) = clickListener(view, transaction)
+class TransactionOnClickListener(val clickListener: (view: View, transactionId: Int) -> Unit) {
+    fun onClick(view: View, transactionId: Int) = clickListener(view, transactionId)
 }
 
 sealed class TransactionsRVItem {

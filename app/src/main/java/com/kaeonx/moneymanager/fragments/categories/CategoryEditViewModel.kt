@@ -5,6 +5,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.domain.CATEGORY_NAME_MAX_LENGTH
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import kotlinx.coroutines.launch
 
@@ -37,7 +38,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     /**
      * Spinners
      * Note that if you edit any of the code inside here, please do the same
-     * for the AccountEditViewModel (maybe make this into a class?) //TODO
+     * for AccountEditViewModel.
      */
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -63,6 +64,7 @@ class CategoryEditViewModel(private val oldCategory: Category) : ViewModel() {
     val categoryNameETText = MutableLiveData<String>(_currentCategory.value.name)
     val categoryNameETError = Transformations.map(categoryNameETText) {
         val trimmed = it.trim()
+        if (trimmed.length > CATEGORY_NAME_MAX_LENGTH) throw IllegalStateException("Category name exceeded $CATEGORY_NAME_MAX_LENGTH character limit")
         when {
             trimmed.isBlank() -> "Category Name must not be empty"
             trimmed in listOf("Add…", "(multiple)", "Overall") -> "This Category Name is reserved"

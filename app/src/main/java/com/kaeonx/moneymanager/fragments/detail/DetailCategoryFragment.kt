@@ -15,6 +15,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 import com.kaeonx.moneymanager.databinding.FragmentDetailCategoryBinding
 import com.kaeonx.moneymanager.fragments.transactions.MYPickerDialog
+import com.kaeonx.moneymanager.fragments.transactions.TransactionOnClickListener
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -171,7 +172,7 @@ class DetailCategoryFragment : Fragment() {
         binding.detailCategoryRV.apply {
             setHasFixedSize(true)
             adapter = DetailCategoryRVAdapter(
-                itemOnClickListener = DetailCategoryOnClickListener { view, transactionId ->
+                itemOnClickListener = TransactionOnClickListener { view, transactionId ->
                     if (actionMode == null) {
                         findNavController().run {
                             if (currentDestination?.id == R.id.detailCategoryFragment) {
@@ -186,7 +187,7 @@ class DetailCategoryFragment : Fragment() {
                         interactWithActionMode(view, transactionId)
                     }
                 },
-                itemOnLongClickListener = DetailCategoryOnClickListener { view, transactionId ->
+                itemOnLongClickListener = TransactionOnClickListener { view, transactionId ->
                     interactWithActionMode(view, transactionId)
                 }
             )

@@ -7,6 +7,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
+internal const val ACCOUNT_NAME_MAX_LENGTH = 100
+
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Account(
@@ -40,6 +42,9 @@ data class Account(
         if (accountId <= 0) throw IllegalStateException(errorText("non-positive id", accountId))
         if (name == "Add…") throw IllegalStateException(errorText("reserved name", name))
         if (name.trim().isBlank()) throw IllegalStateException(errorText("blank name"))
+        if (name.trim().length > ACCOUNT_NAME_MAX_LENGTH) throw IllegalStateException(
+            errorText("name is too long")
+        )
         if (name.trim() != name) throw IllegalStateException(
             errorText(
                 "name has extra whitespace",

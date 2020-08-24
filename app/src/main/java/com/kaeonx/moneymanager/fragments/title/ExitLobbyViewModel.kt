@@ -124,7 +124,7 @@ class ExitLobbyViewModel : ViewModel() {
                 )
             )
 
-            // Debts (TODO)
+            // Debts (TODO Future)
             ensureActive()
 
             // Categories

@@ -11,6 +11,8 @@ import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 
+internal const val BUDGET_ORIGAMT_MAX_LENGTH = 10
+
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Budget(
@@ -46,9 +48,11 @@ data class Budget(
 
         fun errorText(text: String, field: Any? = null, additionalHint: String? = null): String {
             return when {
-                additionalHint == null && field == null -> "error at Budget for category: \"${truncate(
-                    category
-                )}\"\n$text"
+                additionalHint == null && field == null -> "error at Budget for category: \"${
+                    truncate(
+                        category
+                    )
+                }\"\n$text"
                 additionalHint == null -> "error at Budget for category: \"${truncate(category)}\"\n$text: \"$field\""
                 field == null -> "error at Budget for category: \"${truncate(category)}\"\n$text\n$additionalHint"
                 else -> "error at Budget for category: \"${truncate(category)}\"\n$text: \"$field\"\n$additionalHint"
@@ -85,6 +89,9 @@ data class Budget(
                 "blank amount",
                 originalAmount
             )
+        )
+        if (originalAmount.trim().length > BUDGET_ORIGAMT_MAX_LENGTH) throw IllegalStateException(
+            errorText("amount is too long")
         )
         if (BigDecimal(originalAmount) <= BigDecimal.ZERO) throw IllegalStateException(
             errorText(
