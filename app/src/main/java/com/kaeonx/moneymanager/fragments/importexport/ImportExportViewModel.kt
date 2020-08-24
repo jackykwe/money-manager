@@ -273,9 +273,18 @@ class ImportExportViewModel : ViewModel() {
         viewModelScope.launch {
             val output = JSONObject()
             val repository = UserRepository.getInstance()
-            val version = UserDatabase.getInstance().openHelper.readableDatabase.version
-            val progressIterator = generatePercentIterator(7)
+            val progressIterator = generatePercentIterator(8)
+
+
             // Database version (for future migrations, if needed)
+            ensureActive()
+            "Exporting DB Version…".let {
+                withContext(Dispatchers.Main) {
+                    _updateUI.value = Pair(it, progressIterator.next())
+                }
+                previousNewProgressText = it
+            }
+            val version = UserDatabase.getInstance().openHelper.readableDatabase.version
             output.put("db", version)
 
 

@@ -151,6 +151,13 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                 val output = JSONObject()
                 val repository = UserRepository.getInstance()
 
+
+                // Database version (for future migrations, if needed)
+                val version = UserDatabase.getInstance().openHelper.readableDatabase.version
+                UserDatabase.dropInstance()
+                output.put("db", version)
+
+
                 // Transactions
                 ensureActive()
                 output.put(

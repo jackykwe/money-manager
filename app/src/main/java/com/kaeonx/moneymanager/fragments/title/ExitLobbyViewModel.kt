@@ -106,6 +106,13 @@ class ExitLobbyViewModel : ViewModel() {
             val output = JSONObject()
             val repository = UserRepository.getInstance()
 
+
+            // Database version (for future migrations, if needed)
+            // Will be closed later on
+            val version = UserDatabase.getInstance().openHelper.readableDatabase.version
+            output.put("db", version)
+
+
             // Transactions
             ensureActive()
             output.put(

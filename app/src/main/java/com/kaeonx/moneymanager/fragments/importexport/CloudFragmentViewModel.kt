@@ -16,6 +16,7 @@ import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.fragments.importexport.iehandlers.*
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.UserRepository
+import com.kaeonx.moneymanager.userrepository.database.UserDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
@@ -125,7 +126,20 @@ internal class CloudFragmentViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.Default) {
             val output = JSONObject()
             val repository = UserRepository.getInstance()
-            val progressIterator = generatePercentIterator(9)
+            val progressIterator = generatePercentIterator(10)
+
+
+            // Database version (for future migrations, if needed)
+            ensureActive()
+            "Exporting DB Version…".let {
+                withContext(Dispatchers.Main) {
+                    _updateUI.value = Pair(it, progressIterator.next())
+                }
+                previousNewProgressText = it
+            }
+            val version = UserDatabase.getInstance().openHelper.readableDatabase.version
+            output.put("db", version)
+
 
             // Transactions
             ensureActive()
