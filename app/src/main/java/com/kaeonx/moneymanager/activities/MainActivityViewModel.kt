@@ -41,12 +41,14 @@ class MainActivityViewModel : ViewModel() {
                 maxOperationRetryTimeMillis = 0L
             }
         }
-        private val storageRef by lazy { storage.reference.child("user_data") }
 
         ////////////////////////////////////////////////////////////////////////////////
 
+        private fun generateRootStorageRef(userId: String): StorageReference =
+            storage.reference.child(userId)
+
         private fun generateCloudDBStorageRef(userId: String): StorageReference =
-            storageRef.child("database_$userId.json")
+            generateRootStorageRef(userId).child("database_$userId.json")
 
         internal fun buildUploadableDBFilePath(uid: String): String {
             return App.context.filesDir.path + "/uploadable_database_$uid.json"
@@ -77,7 +79,7 @@ class MainActivityViewModel : ViewModel() {
         ////////////////////////////////////////////////////////////////////////////////
 
         private fun generateCloudMetadataStorageRef(userId: String): StorageReference =
-            storageRef.child("metadata_$userId.json")
+            generateRootStorageRef(userId).child("metadata_$userId.json")
 
         internal fun uploadMetadataJSONToCloud(
             userId: String,
@@ -88,8 +90,8 @@ class MainActivityViewModel : ViewModel() {
             return userRef.putStream(stream)
         }
 
-        internal fun deleteMetadataJSONFromCloud(userId: String): Task<Void> =
-            generateCloudMetadataStorageRef(userId).delete()
+//        internal fun deleteMetadataJSONFromCloud(userId: String): Task<Void> =
+//            generateCloudMetadataStorageRef(userId).delete()
 
         internal fun downloadMetadataJSONFromCloud(userId: String): StreamDownloadTask {
             val userRef = generateCloudMetadataStorageRef(userId)
