@@ -192,7 +192,7 @@ class SettingsActivity : AppCompatActivity(),
                     }
                 }
             }
-            super.onViewCreated(view, savedInstanceState)
+            super.onViewCreated(view, savedInstanceState)  // IMPORTANT
         }
     }
 
@@ -227,6 +227,7 @@ class SettingsActivity : AppCompatActivity(),
                         "Base currency: $homeCurrency\nLast updated: $lastUpdated"
                 }
             }
+            super.onViewCreated(view, savedInstanceState)  // IMPORTANT
         }
     }
 
