@@ -16,7 +16,7 @@ internal class CloudMetadata private constructor(
 
         internal fun toByteInputStream(): ByteArrayInputStream =
             JSONObject().apply {
-                put("last_known_login_millis", lastKnownLoginMillis)
+                put("l", lastKnownLoginMillis)
             }.toString().byteInputStream()
 
     }
@@ -27,7 +27,7 @@ internal class CloudMetadata private constructor(
             return withContext(Dispatchers.IO) {
                 val jsonObject = JSONObject(inputStream.bufferedReader().use { it.readText() })
                 return@withContext CloudMetadata(
-                    lastKnownLoginMillis = jsonObject.getLong("last_known_login_millis")
+                    lastKnownLoginMillis = jsonObject.getLong("l")
                 )
             }
         }

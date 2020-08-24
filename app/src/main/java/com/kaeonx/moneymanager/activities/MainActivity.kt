@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            Log.d(TAG, "MOVING TO: ${destination.displayName}")
+//            Log.d(TAG, "MOVING TO: ${destination.displayName}")
 
             binding.appBarMainInclude.mainActivityToolbar.apply {
                 // Resets any NavigationOnClickListeners for the Up button (e.g. in RootAccountEditFragment)
@@ -185,6 +185,7 @@ class MainActivity : AppCompatActivity() {
         val headerBinding = NavHeaderMainBinding.bind(binding.mainActivityNV.getHeaderView(0))
         activityViewModel.currentUser.observe(this) {
             if (it == null) return@observe
+            Log.d(TAG, "currentUser changed: id: ${it.uid}, anonymous? ${it.isAnonymous}")
             if (it.isAnonymous) {
                 headerBinding.root.setOnClickListener {
                     startActivityForResult(
@@ -242,13 +243,16 @@ class MainActivity : AppCompatActivity() {
             START_SETTING_ACTIVITY -> if (UserPDS.getString("dsp_theme") != previousLoadedTheme) recreate()
             START_CLAIM_LOGIN_INTENT -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    Snackbar.make(
-                        binding.root,
-                        "Successfully claimed this account!",
-                        Snackbar.LENGTH_LONG
-                    ).show()
                     activityViewModel.refreshAuthMLD()
-                    //TODO : SYNC WITH REALTIME DATABASE
+                    if (navController.currentDestination?.id !in listOf(
+                            R.id.titleFragment,
+                            R.id.lobbyFragment,
+                            R.id.exitLobbyFragment
+                        )
+                    ) {
+                        // To complete set up
+                        navController.navigate(TopLevelNavGraphDirections.actionGlobalTitleFragment())
+                    }
                 } else {
                     val response = IdpResponse.fromResultIntent(data)
                     when (val code = response?.error?.errorCode) {

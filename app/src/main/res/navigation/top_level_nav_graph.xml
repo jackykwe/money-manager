@@ -21,6 +21,17 @@
             app:popUpToInclusive="true"
             tools:ignore="PrivateResource" />
     </fragment>
+    <action
+        android:id="@+id/action_global_titleFragment"
+        app:destination="@id/titleFragment"
+        app:enterAnim="@anim/fragment_fade_enter"
+        app:exitAnim="@anim/fragment_fade_exit"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/fragment_fade_enter"
+        app:popExitAnim="@anim/fragment_fade_exit"
+        app:popUpTo="@id/top_level_nav_graph"
+        app:popUpToInclusive="true"
+        tools:ignore="PrivateResource" />
     <fragment
         android:id="@+id/exitLobbyFragment"
         android:name="com.kaeonx.moneymanager.fragments.title.ExitLobbyFragment"
@@ -51,9 +62,14 @@
     <action
         android:id="@+id/action_global_exitLobbyFragment"
         app:destination="@id/exitLobbyFragment"
+        app:enterAnim="@anim/fragment_fade_enter"
+        app:exitAnim="@anim/fragment_fade_exit"
         app:launchSingleTop="true"
+        app:popEnterAnim="@anim/fragment_fade_enter"
+        app:popExitAnim="@anim/fragment_fade_exit"
         app:popUpTo="@id/top_level_nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpToInclusive="true"
+        tools:ignore="PrivateResource" />
 
     <fragment
         android:id="@+id/transactionsFragment"
@@ -189,7 +205,12 @@
             tools:ignore="PrivateResource" />
         <action
             android:id="@+id/action_budgetDetailFragment_to_detailTypeFragment"
-            app:destination="@id/detailTypeFragment" />
+            app:destination="@id/detailTypeFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit"
+            tools:ignore="PrivateResource" />
 
     </fragment>
     <fragment

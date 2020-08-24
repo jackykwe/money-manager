@@ -22,7 +22,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 internal const val ACC_PICKER_EDITABLE = "editable"
-private const val TAG = "accfrag"
 
 // Essentially the same code as AccountsDF, except for the childFragment arguments.
 class AccountsFragment : Fragment() {
