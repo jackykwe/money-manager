@@ -169,7 +169,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                     )
                 )
 
-                // Debts (TODO)
+                // Debts (TODO Future)
                 ensureActive()
 
                 // Categories

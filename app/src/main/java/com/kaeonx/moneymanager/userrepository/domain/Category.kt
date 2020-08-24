@@ -76,12 +76,12 @@ data class Category(
             )
         )
         try {
-            if (colourFamily == "TRANSPARENT") throw Exception()
+            if (colourFamily in listOf("Black", "TRANSPARENT")) throw Exception()
             ColourHandler.getColourObjectOf(colourFamily)
         } catch (e: Exception) {
             throw IllegalStateException(
                 errorText(
-                    "invalid colour string",
+                    "invalid colour family",
                     colourFamily,
                     "Refer to examples from exported data."
                 )

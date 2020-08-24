@@ -29,7 +29,6 @@ interface XEDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(vararg databaseXERows: DatabaseXERow)
 
-    // TODO: Non Internet version of app? Future.
-//     REPOPULATION HOLY F YES https://developer.android.com/training/data-storage/room/prepopulate#from-asset
+    // TODO Future: Non Internet version of app? It would be independent of the online version - offline, editable currency table and all... Actually don't make if there's no demand. No point.
 
 }

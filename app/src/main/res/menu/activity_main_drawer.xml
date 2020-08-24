@@ -13,10 +13,10 @@
             android:id="@+id/budgetsFragment"
             android:icon="@drawable/mdi_file_excel"
             android:title="@string/drawer_menu_budget" />
-        <item
-            android:id="@+id/debtFragment"
-            android:icon="@drawable/mdi_file_excel"
-            android:title="@string/drawer_menu_debt" />
+        <!--        <item-->
+        <!--            android:id="@+id/debtFragment"-->
+        <!--            android:icon="@drawable/mdi_file_excel"-->
+        <!--            android:title="@string/drawer_menu_debt" />-->
     </group>
 
     <group

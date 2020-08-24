@@ -63,7 +63,7 @@ class XERepository private constructor() {
     // 1. On App Start
     // 2. On Preferences Change
     // Both of the above is factored in in the transformation for _homeCurrency above
-    // This is called every time a preference is changed. (Hm. TODO Future problem to worry about)
+    // This is called every time a preference is changed. (Hm. TODO Future)
     private fun checkAndUpdateIfNecessary(baseCurrency: String) {
         CoroutineScope(Dispatchers.Default).launch {
             Log.d(TAG, "checkAndUpdateIfNecessary(): called")

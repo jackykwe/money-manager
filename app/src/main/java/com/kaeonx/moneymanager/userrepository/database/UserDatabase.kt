@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.kaeonx.moneymanager.activities.App
@@ -28,14 +26,13 @@ abstract class UserDatabase : RoomDatabase() {
 
     companion object {
 
-        // TODO REMOVE: THIS IS FOR DEVELOPMENTAL PURPOSES ONLY
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                Log.d(TAG, "Migration 1 --> 2 happening!")
-                database.execSQL("CREATE TABLE IF NOT EXISTS `budgets_table` (`category` TEXT NOT NULL, `original_currency` TEXT NOT NULL, `original_amount` TEXT NOT NULL, PRIMARY KEY(`category`))")
-                Log.d(TAG, "Migration 1 --> 2 done!")
-            }
-        }
+//        private val MIGRATION_1_2 = object : Migration(1, 2) {
+//            override fun migrate(database: SupportSQLiteDatabase) {
+//                Log.d(TAG, "Migration 1 --> 2 happening!")
+//                database.execSQL("CREATE TABLE IF NOT EXISTS `budgets_table` (`category` TEXT NOT NULL, `original_currency` TEXT NOT NULL, `original_amount` TEXT NOT NULL, PRIMARY KEY(`category`))")
+//                Log.d(TAG, "Migration 1 --> 2 done!")
+//            }
+//        }
 
         @Volatile
         private var INSTANCE: UserDatabase? = null
@@ -58,7 +55,7 @@ abstract class UserDatabase : RoomDatabase() {
                         UserDatabase::class.java,
                         "user_database_${Firebase.auth.currentUser!!.uid}"
                     )
-                        .addMigrations(MIGRATION_1_2)
+//                        .addMigrations(MIGRATION_1_2)
                         .createFromAsset("database/preload.db")
                         .build()
                     INSTANCE = instance

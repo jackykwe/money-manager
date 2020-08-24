@@ -49,7 +49,6 @@
             app:iconTV_text="@{iconDetail.iconHex}"
             app:iconTV_textColour="@{iconDetail.iconBGColourFamily}"
             tools:text="@string/html_legacy_mdi_help" />
-        <!-- TODO: Text color to change depending ...? -->
 
     </merge>
 

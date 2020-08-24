@@ -187,7 +187,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                         val accumulatorPercentDisplay =
                             accumulatorPercent.setScale(1, RoundingMode.HALF_EVEN)
 
-                        val accumulatorColourInt = ColourHandler.getSpecificColourObjectOf("Black")
+                        val accumulatorColourInt = ColourHandler.getColourObjectThemedOf("Black")
                         entries.add(PieEntry(accumulatorPercent.toFloat(), entry.key))
                         colourList.add(accumulatorColourInt)
                         legendLLDataAL.add(
@@ -244,7 +244,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                 }
             } else {
                 PieDataSet(listOf(PieEntry(1f, "noData")), null).apply {
-                    colors = listOf(ColourHandler.getSpecificColourObjectOf("Grey,200"))
+                    colors = listOf(ColourHandler.getColourObjectThemedOf("Grey"))
                     setDrawValues(false)
                     selectionShift = 0f  // removes padding
                     sliceSpace = 2f  // in dp (as float)
@@ -255,7 +255,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                 legendLLDataAL.add(
                     PieChartLegendLLData.DetailCategoryPCLLD(
                         noDataFlag = true,
-                        colour = ColourHandler.getSpecificColourObjectOf("Grey,200"),
+                        colour = ColourHandler.getColourObjectThemedOf("Grey"),
                         categoryName = "Nothing to show",
                         categoryPercent = ""
                     )

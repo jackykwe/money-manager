@@ -15,7 +15,7 @@ class ColourHandler private constructor() {
          */
         ////////////////////////////////////////////////////////////////////////////////
 
-        private val allColourFamilies = listOf(
+        private val allowedColourFamilies = listOf(
             "Red",
             "Deep Purple",
             "Light Blue",
@@ -34,12 +34,10 @@ class ColourHandler private constructor() {
             "Teal",
             "Lime",
             "Orange",
-            "Grey",
-            "Black",
-            "White"
+            "Grey"
         )
 
-        internal fun getColourFamilies(): List<String> = allColourFamilies
+        internal fun getColourFamilies(): List<String> = allowedColourFamilies
 
         ////////////////////////////////////////////////////////////////////////////////
         /**
@@ -50,7 +48,7 @@ class ColourHandler private constructor() {
         private fun getObj(resourceId: Int): Int = App.context.resources.getColor(resourceId, null)
 
         /**
-         * Used for MPCharts
+         * Used exclusively for MPCharts
          */
         internal fun getColourObjectThemedOf(colourFamily: String): Int {
             if (colourFamily == "TRANSPARENT") return getSpecificColourObjectOf(colourFamily)
@@ -61,6 +59,7 @@ class ColourHandler private constructor() {
                         "Amber" -> getSpecificColourObjectOf("Amber,500")
                         "Green" -> getSpecificColourObjectOf("Green,500")
                         "Grey" -> getSpecificColourObjectOf("Grey,200")
+                        "Black" -> getSpecificColourObjectOf("Black")
                         else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
                     }
                 }
@@ -71,6 +70,7 @@ class ColourHandler private constructor() {
                         "Green" -> getSpecificColourObjectOf("Green,500")
 //                        "Grey" -> getSpecificColourObjectOf("Grey,800")
                         "Grey" -> getObj(R.color.dark_action_mode_background)
+                        "Black" -> getSpecificColourObjectOf("Black")
                         else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
                     }
                 }
@@ -358,32 +358,34 @@ class ColourHandler private constructor() {
             else -> throw IllegalArgumentException("Unknown colourString $colourString.")
         }
 
-        internal fun getColourObjectOf(colourFamily: String): Int =
-            when (colourFamily) {
-                "Red" -> getSpecificColourObjectOf("Red,400")
-                "Deep Purple" -> getSpecificColourObjectOf("Deep Purple,400")
-                "Light Blue" -> getSpecificColourObjectOf("Light Blue,400")  // NEW
-                "Green" -> getSpecificColourObjectOf("Green,600")
-                "Yellow" -> getSpecificColourObjectOf("Yellow,500")  // NEW
-                "Deep Orange" -> getSpecificColourObjectOf("Deep Orange,400")
-                "Blue Grey" -> getSpecificColourObjectOf("Blue Grey,400")
-                "Pink" -> getSpecificColourObjectOf("Pink,300")
-                "Indigo" -> getSpecificColourObjectOf("Indigo,400")
-                "Cyan" -> getSpecificColourObjectOf("Cyan,500")  // NEW
-                "Light Green" -> getSpecificColourObjectOf("Light Green,500")  // NEW
-                "Amber" -> getSpecificColourObjectOf("Amber,500")  // NEW
-                "Brown" -> getSpecificColourObjectOf("Brown,400")
-                "Purple" -> getSpecificColourObjectOf("Purple,300")
-                "Blue" -> getSpecificColourObjectOf("Blue,600")
-                "Teal" -> getSpecificColourObjectOf("Teal,400")
-                "Lime" -> getSpecificColourObjectOf("Lime,500")  // NEW
-                "Orange" -> getSpecificColourObjectOf("Orange,500")
-                "Grey" -> getSpecificColourObjectOf("Grey,500")  // NEW
-                "Black" -> getSpecificColourObjectOf("Black")
-                "White" -> getSpecificColourObjectOf("White")
-                "TRANSPARENT" -> getSpecificColourObjectOf("TRANSPARENT")
-                else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
-            }
+        /**
+         * Get colours used for icons
+         */
+        internal fun getColourObjectOf(colourFamily: String): Int = when (colourFamily) {
+            "Red" -> getSpecificColourObjectOf("Red,400")
+            "Deep Purple" -> getSpecificColourObjectOf("Deep Purple,400")
+            "Light Blue" -> getSpecificColourObjectOf("Light Blue,400")  // NEW
+            "Green" -> getSpecificColourObjectOf("Green,600")
+            "Yellow" -> getSpecificColourObjectOf("Yellow,500")  // NEW
+            "Deep Orange" -> getSpecificColourObjectOf("Deep Orange,400")
+            "Blue Grey" -> getSpecificColourObjectOf("Blue Grey,400")
+            "Pink" -> getSpecificColourObjectOf("Pink,300")
+            "Indigo" -> getSpecificColourObjectOf("Indigo,400")
+            "Cyan" -> getSpecificColourObjectOf("Cyan,500")  // NEW
+            "Light Green" -> getSpecificColourObjectOf("Light Green,500")  // NEW
+            "Amber" -> getSpecificColourObjectOf("Amber,500")  // NEW
+            "Brown" -> getSpecificColourObjectOf("Brown,400")
+            "Purple" -> getSpecificColourObjectOf("Purple,300")
+            "Blue" -> getSpecificColourObjectOf("Blue,600")
+            "Teal" -> getSpecificColourObjectOf("Teal,400")
+            "Lime" -> getSpecificColourObjectOf("Lime,500")  // NEW
+            "Orange" -> getSpecificColourObjectOf("Orange,500")
+            "Grey" -> getSpecificColourObjectOf("Grey,500")  // NEW
+            "Black" -> getSpecificColourObjectOf("Black")  // RESERVED COLOUR
+//            "White" -> getSpecificColourObjectOf("White")
+            "TRANSPARENT" -> getSpecificColourObjectOf("TRANSPARENT")  // RESERVED COLOUR
+            else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         /**
@@ -416,6 +418,9 @@ class ColourHandler private constructor() {
             }
         }
 
+        /**
+         * Get colours used for icons
+         */
         internal fun getColorStateListOf(colourFamily: String): ColorStateList =
             when (colourFamily) {
                 "Red" -> getSpecificColorStateListOf("Red,400")
@@ -437,9 +442,9 @@ class ColourHandler private constructor() {
                 "Lime" -> getSpecificColorStateListOf("Lime,500")  // NEW
                 "Orange" -> getSpecificColorStateListOf("Orange,500")
                 "Grey" -> getSpecificColorStateListOf("Grey,500")  // NEW
-                "Black" -> getSpecificColorStateListOf("Black")
-                "White" -> getSpecificColorStateListOf("White")
-                "TRANSPARENT" -> getSpecificColorStateListOf("TRANSPARENT")  // TODO SEE THIS BEING USED
+                "Black" -> getSpecificColorStateListOf("Black")  // RESERVED COLOUR
+//                "White" -> getSpecificColorStateListOf("White")
+                "TRANSPARENT" -> getSpecificColorStateListOf("TRANSPARENT")  // RESERVED COLOUR
                 else -> throw IllegalArgumentException("Unknown colourString $colourFamily.")
             }
     }

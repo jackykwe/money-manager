@@ -31,5 +31,3 @@ data class DatabaseTransaction(
 }
 
 fun List<DatabaseTransaction>.toDomain(): List<Transaction> = map { it.toDomain() }
-
-// TODO: Returning subsets of columns https://developer.android.com/training/data-storage/room/accessing-data#query-subset-cols

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.MainActivity
 
+// TODO Future
 class DebtFragment : Fragment() {
 
     override fun onCreateView(

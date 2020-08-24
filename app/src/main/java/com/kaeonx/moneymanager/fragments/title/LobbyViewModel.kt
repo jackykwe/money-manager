@@ -149,7 +149,7 @@ class LobbyViewModel : ViewModel() {
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         _showErrorSnackbar.value =
-                            "Cloud data is corrupted and auto-import failed. Please report this bug."
+                            "Cloud data is of improper form. Please report this bug."
                     }
                 }
             }

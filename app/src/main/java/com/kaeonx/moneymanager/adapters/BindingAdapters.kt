@@ -1,10 +1,13 @@
 package com.kaeonx.moneymanager.adapters
 
 import android.content.res.ColorStateList
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
+import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.handlers.ColourHandler
 import com.kaeonx.moneymanager.handlers.IconHandler
 
@@ -22,7 +25,18 @@ fun TextView.setIconTVText(iconHex: String) {
 fun TextView.setIconTVTextColour(colourFamily: String) {
     when (colourFamily) {
         "White" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Black"))
-        "TRANSPARENT" -> setTextColor(ColourHandler.getSpecificColourObjectOf("Red,500")) // TODO: USE NORMAL COLOUR
+        "TRANSPARENT" -> {
+            setTextColor(
+                with(TypedValue()) {
+                    context.theme.resolveAttribute(
+                        R.attr.colorControlNormal,
+                        this,
+                        true
+                    )
+                    ContextCompat.getColor(context, this.resourceId)
+                }
+            )
+        }
         else -> setTextColor(ColourHandler.getSpecificColourObjectOf("White"))
     }
 }

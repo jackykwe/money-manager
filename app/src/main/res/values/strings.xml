@@ -110,4 +110,8 @@
     <string name="action_mode_batch_delete_accounts_title">Delete the selected accounts?</string>
     <string name="action_mode_batch_delete_accounts_message">Their transactions will not be deleted.</string>
 
+    <!-- nav_header_main -->
+    <string name="nav_header_guest_account">Guest Account</string>
+    <string name="nav_header_click_here_to_claim_account">Click here to claim account</string>
+
 </resources>

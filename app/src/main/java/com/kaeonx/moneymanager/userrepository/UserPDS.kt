@@ -36,7 +36,7 @@ internal object UserPDS : PreferenceDataStore() {
         "dsp_sign_position" to "after_currency",
 
         // Page Transactions
-        "tst_default_account" to "Cash",  // TODO handle when this account is deleted. (& handle budgets when category is deleted)
+        "tst_default_account" to "Cash",
         "tst_default_type" to "Expenses"
 
         // Page Budget

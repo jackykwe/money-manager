@@ -104,6 +104,9 @@ class MainActivity : AppCompatActivity() {
 
                 binding.rootDL.closeDrawers()
                 when (it.itemId) {
+                    R.id.debtFragment -> {
+                        false
+                    }
                     R.id.menuSettings -> {
 //                        Snackbar.make(binding.appBarMainInclude.mainActivityFAB, "Function not available yet", Snackbar.LENGTH_SHORT).show()
 //                        startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
@@ -193,8 +196,10 @@ class MainActivity : AppCompatActivity() {
                         START_CLAIM_LOGIN_INTENT
                     )
                 }
-                headerBinding.navHeaderDisplayNameTV.text = "Guest Account"
-                headerBinding.navHeaderEmailTV.text = "Click here to claim account"
+                headerBinding.navHeaderDisplayNameTV.text =
+                    getString(R.string.nav_header_guest_account)
+                headerBinding.navHeaderEmailTV.text =
+                    getString(R.string.nav_header_click_here_to_claim_account)
             } else {
                 headerBinding.navHeaderDisplayNameTV.text = it.displayName
                 headerBinding.navHeaderEmailTV.text = it.email

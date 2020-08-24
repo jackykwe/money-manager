@@ -17,11 +17,7 @@ private const val TAG = "repository"
 
 class UserRepository private constructor() {
 
-    // TODO: Check for security holes
     private val database = UserDatabase.getInstance()
-
-//    private val _transactions = database.userDatabaseDao.getAllTransactions()
-//    val transactions = Transformations.map(_transactions) { it.toDomain() }
 
     private val _accounts = database.userDatabaseDao.getAllAccounts()
     val accounts = Transformations.map(_accounts) { it.toDomain() }
@@ -33,7 +29,6 @@ class UserRepository private constructor() {
     val preferences = Transformations.map(_preferences) { it.toMap() }
 
     private val liveDataActivator = Observer<Any> { }
-    private val preferenceChangeListener = Observer<Any> { }
 
     init {
         // These values are observed statically (they are accessed by items not bound to
@@ -322,7 +317,7 @@ class UserRepository private constructor() {
 
         fun getInstance(): UserRepository {
             synchronized(this) {
-                if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")  // TODO: relaunch after inactivity results in this error // This error occurs from anywhere - anywhere where UserRepository.getInstance() is requested. Typically on current screen ViewModel inits.
+                if (Firebase.auth.currentUser?.uid == null) throw IllegalStateException("UserDatabase.getInstance() called with null authViewModel userId")
                 var instance = INSTANCE
                 if (instance == null) {
                     Log.d(
