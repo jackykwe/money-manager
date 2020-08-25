@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.MyApp.Headline6" />
+
+    <TextView
+        android:id="@+id/versionTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.MyApp.Body1"
+        tools:text="Version 1.0.1" />
+
+    <TextView
+        android:id="@+id/releasesTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.25"
+        android:paddingTop="8dp"
+        android:text="@string/dialog_about_releases"
+        android:textAppearance="@style/TextAppearance.MyApp.Caption3" />
+</LinearLayout>

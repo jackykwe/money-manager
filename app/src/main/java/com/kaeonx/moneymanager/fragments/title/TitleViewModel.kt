@@ -8,7 +8,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageException
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.activities.App
-import com.kaeonx.moneymanager.activities.CloudMetadata
 import com.kaeonx.moneymanager.activities.MainActivityViewModel
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserPDS
@@ -30,14 +29,9 @@ class TitleViewModel : ViewModel() {
     internal fun completeLogin() {
         _completeLoginStart.value = true
 
-        // 1. [Title] Upload lastKnownLoginMillis to cloud l(using InputStream)
+        // 1. [Title] Upload lastKnownLoginMillis (and other metadata) to cloud l(using InputStream)
         var writeLastKnownLoginMillisDone = LoginProgress.STARTED
-        MainActivityViewModel.uploadMetadataJSONToCloud(
-            Firebase.auth.currentUser!!.uid,
-            CloudMetadata.Builder(
-                lastKnownLoginMillis = Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp
-            )
-        )
+        MainActivityViewModel.uploadNewMetadataToCloud()
             .addOnSuccessListener {
                 writeLastKnownLoginMillisDone = LoginProgress.SUCCESS
             }
@@ -51,7 +45,7 @@ class TitleViewModel : ViewModel() {
 
         // 2. [Title] Download JSON Metadata from cloud if exists
         var downloadDBJSONMetadataFromCloudDone = LoginProgress.STARTED
-        MainActivityViewModel.getDBJSONMetadataFromCloud(Firebase.auth.currentUser!!.uid)
+        MainActivityViewModel.getDBMetadataFromCloud(Firebase.auth.currentUser!!.uid)
             .addOnSuccessListener { metadata ->
                 UserPDS.putDSPLong(
                     "${Firebase.auth.currentUser!!.uid}_last_upload_time",
@@ -71,7 +65,7 @@ class TitleViewModel : ViewModel() {
         // 3. [Title] Download JSON from cloud if exists (creates downloaded_database_<uid>.json)
         // Processing of CloudDB done in LobbyFragment
         var downloadDBJSONFromCloudDone = LoginProgress.STARTED
-        MainActivityViewModel.downloadDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
+        MainActivityViewModel.downloadDBFromCloud(Firebase.auth.currentUser!!.uid)
             .addOnSuccessListener {
                 downloadDBJSONFromCloudDone = LoginProgress.SUCCESS
             }
@@ -83,7 +77,7 @@ class TitleViewModel : ViewModel() {
                 }
             }
 
-        // Only if 1. and 2. and 3. are done, sets "non_guest_sign_in_complete" flag to true.
+        // Only if 1. and 2. and 3. are done, sets "sign_in_complete" flag to true.
         viewModelScope.launch {
             while (downloadDBJSONMetadataFromCloudDone == LoginProgress.STARTED
                 || downloadDBJSONFromCloudDone == LoginProgress.STARTED
@@ -111,7 +105,7 @@ class TitleViewModel : ViewModel() {
                 _titleTVText.value = App.context.resources.getString(
                     R.string.title_tv_final_progress
                 )
-                UserPDS.putDSPBoolean("non_guest_sign_in_complete", true)
+                UserPDS.putDSPBoolean("sign_in_complete", true)
                 newLogin = true
                 _kickStartUIAndNavigateToLobby.value = true
             } else if (downloadDBJSONMetadataFromCloudDone == LoginProgress.ERROR_NO_INTERNET

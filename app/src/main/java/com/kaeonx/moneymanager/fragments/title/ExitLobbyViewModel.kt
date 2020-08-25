@@ -81,15 +81,15 @@ class ExitLobbyViewModel : ViewModel() {
                 CloudMetadata.fromInputStream(inputStream)
             }
             if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
-                UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+                UserPDS.putDSPBoolean("outdated_login", true)
             }
 
             ensureActive()
-            if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+            if (UserPDS.getDSPBoolean("outdated_login", false)) {
                 _activityVMLogout.value = true
             } else {
                 uploadTask =
-                    MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+                    MainActivityViewModel.uploadDBToCloud(Firebase.auth.currentUser!!.uid)
                         .addOnSuccessListener {
                             _activityVMLogout.value = true
                         }
@@ -173,7 +173,7 @@ class ExitLobbyViewModel : ViewModel() {
 
             ensureActive()
             // Check that the current login is still the most recent login
-            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot)
                 }

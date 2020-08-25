@@ -76,14 +76,14 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             CloudMetadata.fromInputStream(inputStream)
         }
         if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
-            UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+            UserPDS.putDSPBoolean("outdated_login", true)
         }
-        if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+        if (UserPDS.getDSPBoolean("outdated_login", false)) {
             WorkManager.getInstance(applicationContext).cancelUniqueWork(WORK_NAME)
             return Result.failure()
         } else {
             var result: Result? = null
-            MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.uploadDBToCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { innerTaskSnapshot ->
                     File(
                         MainActivityViewModel.buildUploadableDBFilePath(
@@ -199,7 +199,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
             // Code from CloudFragmentViewModel
             var mostRecentLoginCheckSuccess: Boolean? = null
             lateinit var usableTaskSnapshot: StreamDownloadTask.TaskSnapshot
-            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     usableTaskSnapshot = taskSnapshot
                     mostRecentLoginCheckSuccess = true

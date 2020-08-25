@@ -45,11 +45,13 @@ class TitleFragment : Fragment() {
     private fun kickStartUIAndNavigateToLobby() {
         if (viewModel.newLogin) {
             binding.titleIV.setImageResource(R.drawable.firebase_cloud_firestore_dark)
-            Snackbar.make(
-                binding.root,
-                "Hello, ${Firebase.auth.currentUser!!.displayName}!",
-                Snackbar.LENGTH_SHORT
-            ).show()
+            if (!Firebase.auth.currentUser!!.isAnonymous) {
+                Snackbar.make(
+                    binding.root,
+                    "Hello, ${Firebase.auth.currentUser!!.displayName}!",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
             lifecycleScope.launch(Dispatchers.Main) {
                 delay(1200L)
                 findNavController().run {
@@ -79,14 +81,12 @@ class TitleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (Firebase.auth.currentUser?.isAnonymous == false) {
-            if (!UserPDS.getDSPBoolean("non_guest_sign_in_complete", false)) {
+        if (Firebase.auth.currentUser != null) {
+            if (!UserPDS.getDSPBoolean("sign_in_complete", false)) {
                 viewModel.completeLogin()
             } else {
                 kickStartUIAndNavigateToLobby()
             }
-        } else if (Firebase.auth.currentUser?.isAnonymous == true) {
-            kickStartUIAndNavigateToLobby()
         } else {
             displayLogInSnackbar()
         }
@@ -131,8 +131,10 @@ class TitleFragment : Fragment() {
         }
 
         viewModel.kickStartUIAndNavigateToLobby.observe(viewLifecycleOwner) {
+            // Becomes true only if viewModel.completeLogin() is just completed
             if (it) {
                 viewModel.kickStartUIAndNavigateToLobbyHandled()
+                // Because metadata has been uploaded during viewModel.completeLogin()
                 kickStartUIAndNavigateToLobby()
             }
         }
@@ -152,11 +154,7 @@ class TitleFragment : Fragment() {
             if (resultCode == Activity.RESULT_OK) {
                 // Successfully signed in
                 mainActivityViewModel.refreshAuthMLD()
-                if (Firebase.auth.currentUser!!.isAnonymous) {
-                    kickStartUIAndNavigateToLobby()
-                } else {
-                    viewModel.completeLogin()
-                }
+                viewModel.completeLogin()
             } else {
                 displayLogInSnackbar()
             }

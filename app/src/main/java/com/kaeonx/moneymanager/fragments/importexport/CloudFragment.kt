@@ -25,7 +25,7 @@ class CloudFragment : Fragment() {
 
     private fun refreshLastUploadedTV() {
         binding.lastUploadedTV.text =
-            if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+            if (UserPDS.getDSPBoolean("outdated_login", false)) {
                 "Please re-login to enable Cloud Backup."
             } else {
                 val lastUploadTime = UserPDS.getDSPLong(

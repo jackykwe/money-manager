@@ -38,7 +38,8 @@ class LobbyFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        mainActivityViewModel.attemptToFetchLastKnownLoginMillis()
+        mainActivityViewModel.attemptFetchAndUpdate()
+        mainActivityViewModel.attemptToCheckVersionUpdates()
         viewModel.initialise()
 
         viewModel.attemptToRefreshRatesTable.observe(viewLifecycleOwner) {

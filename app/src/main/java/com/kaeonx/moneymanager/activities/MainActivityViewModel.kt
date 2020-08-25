@@ -13,12 +13,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.*
 import com.google.firebase.storage.ktx.storage
+import com.kaeonx.moneymanager.BuildConfig
 import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.work.UploadDataWorker
 import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -43,13 +45,13 @@ class MainActivityViewModel : ViewModel() {
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-
-        private fun generateRootStorageRef(userId: String): StorageReference =
+        private fun userRoot(userId: String): StorageReference =
             storage.reference.child(userId)
 
-        private fun generateCloudDBStorageRef(userId: String): StorageReference =
-            generateRootStorageRef(userId).child("database_$userId.json")
+        ////////////////////////////////////////////////////////////////////////////////
+        // User Database JSON
+        private fun userDBRef(userId: String): StorageReference =
+            userRoot(userId).child("database_$userId.json")
 
         internal fun buildUploadableDBFilePath(uid: String): String {
             return App.context.filesDir.path + "/uploadable_database_$uid.json"
@@ -59,44 +61,64 @@ class MainActivityViewModel : ViewModel() {
             return App.context.filesDir.path + "/downloaded_database_$uid.json"
         }
 
-        internal fun uploadDBJSONToCloud(userId: String): UploadTask {
-            val userRef = generateCloudDBStorageRef(userId)
+        internal fun uploadDBToCloud(userId: String): UploadTask {
+            val userRef = userDBRef(userId)
             val dbFile = File(buildUploadableDBFilePath(userId))
             return userRef.putFile(Uri.fromFile(dbFile))
         }
 
-        internal fun deleteDBJSONFromCloud(userId: String): Task<Void> =
-            generateCloudDBStorageRef(userId).delete()
+        internal fun getDBMetadataFromCloud(userId: String): Task<StorageMetadata> =
+            userDBRef(userId).metadata
 
-        internal fun downloadDBJSONFromCloud(userId: String): FileDownloadTask {
-            val userRef = generateCloudDBStorageRef(userId)
+        internal fun downloadDBFromCloud(userId: String): FileDownloadTask {
+            val userRef = userDBRef(userId)
             val dbFile = File(buildDownloadedDBFilePath(userId))
             return userRef.getFile(Uri.fromFile(dbFile))
         }
 
-        internal fun getDBJSONMetadataFromCloud(userId: String): Task<StorageMetadata> =
-            generateCloudDBStorageRef(userId).metadata
+        internal fun deleteDBFromCloud(userId: String): Task<Void> =
+            userDBRef(userId).delete()
 
         ////////////////////////////////////////////////////////////////////////////////
+        // User Login JSON
+        private fun userMetadataRef(userId: String): StorageReference =
+            userRoot(userId).child("metadata_$userId.json")
 
-        private fun generateCloudMetadataStorageRef(userId: String): StorageReference =
-            generateRootStorageRef(userId).child("metadata_$userId.json")
-
-        internal fun uploadMetadataJSONToCloud(
-            userId: String,
-            metadataBuilder: CloudMetadata.Builder
-        ): UploadTask {
-            val userRef = generateCloudMetadataStorageRef(userId)
-            val stream = metadataBuilder.toByteInputStream()
+        /**
+         * Convenience function
+         */
+        internal fun uploadNewMetadataToCloud(): UploadTask {
+            val userRef = userMetadataRef(Firebase.auth.currentUser!!.uid)
+            val stream = CloudMetadata(
+                lastKnownLoginMillis = Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp,
+                lastKnownOnline = System.currentTimeMillis(),
+                lastKnownOnlineVersion = BuildConfig.VERSION_NAME
+            ).toByteInputStream()
             return userRef.putStream(stream)
         }
 
-//        internal fun deleteMetadataJSONFromCloud(userId: String): Task<Void> =
-//            generateCloudMetadataStorageRef(userId).delete()
+        internal fun uploadMetadataToCloud(
+            userId: String,
+            cloudMetadata: CloudMetadata
+        ): UploadTask {
+            val userRef = userMetadataRef(userId)
+            val stream = cloudMetadata.toByteInputStream()
+            return userRef.putStream(stream)
+        }
 
-        internal fun downloadMetadataJSONFromCloud(userId: String): StreamDownloadTask {
-            val userRef = generateCloudMetadataStorageRef(userId)
+        internal fun downloadMetadataFromCloud(userId: String): StreamDownloadTask {
+            val userRef = userMetadataRef(userId)
             return userRef.stream
+        }
+
+//        internal fun deleteMetadataFromCloud(userId: String): Task<Void> =
+//            userMetadataRef(userId).delete()
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Superuser JSON
+        private fun downloadSuperuserMetadataJSONFromCloud(): StreamDownloadTask {
+            val superuserRef = userRoot("SUPERUSER").child("metadata.json")
+            return superuserRef.stream
         }
 
     }
@@ -162,44 +184,77 @@ class MainActivityViewModel : ViewModel() {
         viewModelScope.launch { XERepository.getInstance().checkAndUpdateIfNecessary() }
     }
 
-    internal fun attemptToFetchLastKnownLoginMillis() {
+    internal fun attemptFetchAndUpdate() {
+        // In sequence:
         // 1. [Lobby] Download lastKnownLoginMillis from cloud (using InputStream)
         // 2. [Lobby] If downloaded lastKnownLoginMillis is greater than Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp
-        //            then set "non_guest_outdated_login" flag to true
-        // Operations 1. and 2. will be cancelled if no internet connection is available.
+        //            then set "outdated_login" flag to true
+        // 3. [Lobby] Upload lastKnownOnlineMillis and LastKnownOnlineVersion to cloud (using InputStream)
+        // Operations 1., 2. and 3. will be cancelled if no internet connection is available.
         viewModelScope.launch {
-            if (!UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
-                downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
-                    .addOnSuccessListener { taskSnapshot ->
-                        viewModelScope.launch {
-                            val cloudMetadata = taskSnapshot.stream.use { inputStream ->
-                                CloudMetadata.fromInputStream(inputStream)
-                            }
-                            ensureActive()
-                            if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
-                                UserPDS.putDSPBoolean("non_guest_outdated_login", true)
-                                withContext(Dispatchers.Main) {
-                                    _showOutdatedLoginSnackbar.value = true
-                                }
+            downloadMetadataFromCloud(Firebase.auth.currentUser!!.uid)
+                .addOnSuccessListener { taskSnapshot ->
+                    viewModelScope.launch {
+                        val cloudMetadata = taskSnapshot.stream.use { inputStream ->
+                            CloudMetadata.fromInputStream(inputStream)
+                        }
+                        uploadMetadataToCloud(
+                            Firebase.auth.currentUser!!.uid,
+                            cloudMetadata.copy(
+                                lastKnownOnline = System.currentTimeMillis(),
+                                lastKnownOnlineVersion = BuildConfig.VERSION_NAME
+                            )
+                        )
+                            .addOnSuccessListener { Unit }
+                            .addOnFailureListener { Unit }
+                        ensureActive()
+                        if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
+                            UserPDS.putDSPBoolean("outdated_login", true)
+                            withContext(Dispatchers.Main) {
+                                _showOutdatedLoginSnackbar.value = true
                             }
                         }
                     }
-                    .addOnFailureListener { exception ->
-                        when ((exception as StorageException).errorCode) {
-                            StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> {
-                                Unit
-                            }
-                            else -> {
-                                Unit
-                            }
-                        }
-                    }
-            } else {
-                withContext(Dispatchers.Main) {
-                    _showOutdatedLoginSnackbar.value = true
                 }
-            }
+                .addOnFailureListener { exception ->
+                    when ((exception as StorageException).errorCode) {
+                        StorageException.ERROR_RETRY_LIMIT_EXCEEDED -> Unit
+                        StorageException.ERROR_OBJECT_NOT_FOUND -> {
+                            uploadNewMetadataToCloud()
+                                .addOnSuccessListener { Unit }
+                                .addOnFailureListener { Unit }
+                        }
+                        else -> Unit
+                    }
+                    if (UserPDS.getDSPBoolean("outdated_login", false))
+                        _showOutdatedLoginSnackbar.value = true
+                }
         }
+    }
+
+    internal fun attemptToCheckVersionUpdates() {
+        viewModelScope.launch {
+            downloadSuperuserMetadataJSONFromCloud()
+                .addOnSuccessListener { taskSnapshot ->
+                    viewModelScope.launch {
+                        val jsonObject = taskSnapshot.stream.use { inputStream ->
+                            JSONObject(inputStream.bufferedReader().use { it.readText() })
+                        }
+                        if (jsonObject.optInt("l", -1) > BuildConfig.VERSION_CODE) {
+                            _showOutdatedAppSnackbar.value = true
+                        }
+                    }
+                }
+                .addOnFailureListener { Unit }
+        }
+    }
+
+    private val _showOutdatedAppSnackbar = MutableLiveData2(false)
+    internal val showOutdatedAppSnackbar: LiveData<Boolean>
+        get() = _showOutdatedAppSnackbar
+
+    internal fun showOutdatedAppSnackbarHandled() {
+        _showOutdatedAppSnackbar.value = false
     }
 
     private val _showOutdatedLoginSnackbar = MutableLiveData2(false)
@@ -254,4 +309,5 @@ class MainActivityViewModel : ViewModel() {
             }
         }
     }
+
 }

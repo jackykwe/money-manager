@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.util.Linkify
 import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +45,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var previousLoadedTheme: String
+
+    @SuppressLint("InflateParams")
+    private fun showAboutDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_about, null).apply {
+            this.findViewById<TextView>(R.id.versionTV)!!.text =
+                getString(R.string.dialog_about_version, BuildConfig.VERSION_NAME)
+            Linkify.addLinks(
+                this.findViewById<TextView>(R.id.releasesTV)!!,
+                Linkify.WEB_URLS
+            )
+        }
+        AlertDialog.Builder(this@MainActivity)
+            .setView(view)
+            .create()
+            .show()
+    }
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,11 +146,7 @@ class MainActivity : AppCompatActivity() {
                         false
                     }
                     R.id.menuAbout -> {
-                        AlertDialog.Builder(this@MainActivity)
-                            .setTitle(R.string.app_name)
-                            .setMessage("Version ${BuildConfig.VERSION_NAME}")
-                            .create()
-                            .show()
+                        showAboutDialog()
                         false
                     }
                     navController.currentDestination!!.id -> {
@@ -196,6 +210,21 @@ class MainActivity : AppCompatActivity() {
             } else {
                 headerBinding.navHeaderDisplayNameTV.text = it.displayName
                 headerBinding.navHeaderEmailTV.text = it.email
+            }
+        }
+
+        mainActivityViewModel.showOutdatedAppSnackbar.observe(this)
+        {
+            if (it) {
+                mainActivityViewModel.showOutdatedLoginSnackbarHandled()
+                Snackbar.make(
+                    binding.root,
+                    "There is a new version for the app!",
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setBehavior(NoSwipeBehaviour())
+                    .setAction("SHOW") { showAboutDialog() }
+                    .show()
             }
         }
 

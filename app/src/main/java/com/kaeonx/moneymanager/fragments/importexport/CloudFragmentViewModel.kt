@@ -59,7 +59,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 CloudMetadata.fromInputStream(inputStream)
             }
             if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
-                UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+                UserPDS.putDSPBoolean("outdated_login", true)
             }
 
             ensureActive()
@@ -69,7 +69,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 }
                 previousNewProgressText = it
             }
-            if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+            if (UserPDS.getDSPBoolean("outdated_login", false)) {
                 withContext(Dispatchers.Main) {
                     _doneUI.value = DoneUIData(
                         resultIVDrawableId = R.drawable.mdi_cloud_alert_amber,
@@ -80,7 +80,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = null
             } else {
                 uploadTask =
-                    MainActivityViewModel.uploadDBJSONToCloud(Firebase.auth.currentUser!!.uid)
+                    MainActivityViewModel.uploadDBToCloud(Firebase.auth.currentUser!!.uid)
                         .addOnSuccessListener { taskSnapshot ->
                             File(
                                 MainActivityViewModel.buildUploadableDBFilePath(
@@ -251,7 +251,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = it
             }
             // Check that the current login is still the most recent login
-            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     uploadDataInner(taskSnapshot, progressIterator)
                 }
@@ -289,7 +289,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 CloudMetadata.fromInputStream(inputStream)
             }
             if (cloudMetadata.lastKnownLoginMillis > Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp) {
-                UserPDS.putDSPBoolean("non_guest_outdated_login", true)
+                UserPDS.putDSPBoolean("outdated_login", true)
             }
 
             "Deleting cloud data…".let {
@@ -298,7 +298,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 }
                 previousNewProgressText = it
             }
-            if (UserPDS.getDSPBoolean("non_guest_outdated_login", false)) {
+            if (UserPDS.getDSPBoolean("outdated_login", false)) {
                 withContext(Dispatchers.Main) {
                     _doneUI.value = DoneUIData(
                         resultIVDrawableId = R.drawable.mdi_cloud_alert_amber,
@@ -308,7 +308,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 }
                 previousNewProgressText = null
             } else {
-                MainActivityViewModel.deleteDBJSONFromCloud(Firebase.auth.currentUser!!.uid)
+                MainActivityViewModel.deleteDBFromCloud(Firebase.auth.currentUser!!.uid)
                     .addOnSuccessListener {
                         UserPDS.removeDSPKeyIfExists("${Firebase.auth.currentUser!!.uid}_last_upload_time")
                         declareUpdateUIDone()
@@ -364,7 +364,7 @@ internal class CloudFragmentViewModel : ViewModel() {
                 previousNewProgressText = it
             }
             // Check that the current login is still the most recent login
-            MainActivityViewModel.downloadMetadataJSONFromCloud(Firebase.auth.currentUser!!.uid)
+            MainActivityViewModel.downloadMetadataFromCloud(Firebase.auth.currentUser!!.uid)
                 .addOnSuccessListener { taskSnapshot ->
                     deleteDataInner(taskSnapshot, progressIterator)
                 }

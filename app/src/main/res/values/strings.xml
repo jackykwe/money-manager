@@ -114,4 +114,8 @@
     <string name="nav_header_guest_account">Guest Account</string>
     <string name="nav_header_click_here_to_claim_account">Click here to claim account</string>
 
+    <!-- dialog_about -->
+    <string name="dialog_about_version">Version %s</string>
+    <string name="dialog_about_releases">Find new releases at:\nhttps://github.com/jackykwe/money-manager-release/releases</string>
+
 </resources>

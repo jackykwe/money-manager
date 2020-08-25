@@ -6,20 +6,18 @@ import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
-internal class CloudMetadata private constructor(
-    val lastKnownLoginMillis: Long
+internal data class CloudMetadata(
+    internal val lastKnownLoginMillis: Long,
+    internal val lastKnownOnline: Long,
+    internal val lastKnownOnlineVersion: String
 ) {
 
-    internal class Builder(
-        private val lastKnownLoginMillis: Long
-    ) {
-
-        internal fun toByteInputStream(): ByteArrayInputStream =
-            JSONObject().apply {
-                put("l", lastKnownLoginMillis)
-            }.toString().byteInputStream()
-
-    }
+    internal fun toByteInputStream(): ByteArrayInputStream =
+        JSONObject().apply {
+            put("l", lastKnownLoginMillis)
+            put("o", lastKnownOnline)
+            put("v", lastKnownOnlineVersion)
+        }.toString().byteInputStream()
 
     companion object {
 
@@ -27,7 +25,9 @@ internal class CloudMetadata private constructor(
             return withContext(Dispatchers.IO) {
                 val jsonObject = JSONObject(inputStream.bufferedReader().use { it.readText() })
                 return@withContext CloudMetadata(
-                    lastKnownLoginMillis = jsonObject.getLong("l")
+                    lastKnownLoginMillis = jsonObject.getLong("l"),
+                    lastKnownOnline = jsonObject.getLong("o"),
+                    lastKnownOnlineVersion = jsonObject.getString("v")
                 )
             }
         }
