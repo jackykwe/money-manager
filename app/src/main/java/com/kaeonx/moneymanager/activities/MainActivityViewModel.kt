@@ -88,13 +88,14 @@ class MainActivityViewModel : ViewModel() {
          * Convenience function
          */
         internal fun uploadNewMetadataToCloud(): UploadTask {
-            val userRef = userMetadataRef(Firebase.auth.currentUser!!.uid)
-            val stream = CloudMetadata(
-                lastKnownLoginMillis = Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp,
-                lastKnownOnline = System.currentTimeMillis(),
-                lastKnownOnlineVersion = BuildConfig.VERSION_NAME
-            ).toByteInputStream()
-            return userRef.putStream(stream)
+            return uploadMetadataToCloud(
+                Firebase.auth.currentUser!!.uid,
+                CloudMetadata(
+                    lastKnownLoginMillis = Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp,
+                    lastKnownOnline = System.currentTimeMillis(),
+                    lastKnownOnlineVersion = BuildConfig.VERSION_NAME
+                )
+            )
         }
 
         internal fun uploadMetadataToCloud(
@@ -116,7 +117,7 @@ class MainActivityViewModel : ViewModel() {
 
         ////////////////////////////////////////////////////////////////////////////////
         // Superuser JSON
-        private fun downloadSuperuserMetadataJSONFromCloud(): StreamDownloadTask {
+        private fun downloadSuperuserMetadataFromCloud(): StreamDownloadTask {
             val superuserRef = userRoot("SUPERUSER").child("metadata.json")
             return superuserRef.stream
         }
@@ -234,7 +235,7 @@ class MainActivityViewModel : ViewModel() {
 
     internal fun attemptToCheckVersionUpdates() {
         viewModelScope.launch {
-            downloadSuperuserMetadataJSONFromCloud()
+            downloadSuperuserMetadataFromCloud()
                 .addOnSuccessListener { taskSnapshot ->
                     viewModelScope.launch {
                         val jsonObject = taskSnapshot.stream.use { inputStream ->
