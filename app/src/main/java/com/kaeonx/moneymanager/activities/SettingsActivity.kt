@@ -217,9 +217,8 @@ class SettingsActivity : AppCompatActivity(),
                 val timestamp = it.getOrNull(0)?.updateMillis
                 if (timestamp == null) {
                     findPreference<Preference>("ccv_active_table_stats")!!.summary =
-                        "No active table. Please enable internet connection for the app to retrieve one from the internet."
+                        "No table found. Please enable internet connection for the app to retrieve one from the internet."
                 } else {
-                    val homeCurrency = UserPDS.getString("ccc_home_currency")
                     val dateFormat = UserPDS.getString("dsp_date_format")
                     val timeFormat = UserPDS.getString("dsp_time_format")
                     val lastUpdated = CalendarHandler.getFormattedString(
@@ -227,7 +226,7 @@ class SettingsActivity : AppCompatActivity(),
                         "$timeFormat 'on' $dateFormat"
                     )
                     findPreference<Preference>("ccv_active_table_stats")!!.summary =
-                        "Base currency: $homeCurrency\nLast updated: $lastUpdated"
+                        "Last updated: $lastUpdated"
                 }
             }
             super.onViewCreated(view, savedInstanceState)  // IMPORTANT

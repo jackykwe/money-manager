@@ -72,7 +72,7 @@ fun TextView.setConvertedAmountTVTextVisibility(transaction: Transaction) {
     val homeCurrency = UserPDS.getString("ccc_home_currency")
     visibility = if (transactionCurrency != homeCurrency) {
         text = CurrencyHandler.displayAmount(
-            CurrencyHandler.convertAmount(
+            CurrencyHandler.convertAmountViaSGDProxy(
                 BigDecimal(transaction.originalAmount),
                 transactionCurrency,
                 homeCurrency

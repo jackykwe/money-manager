@@ -132,7 +132,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
                     it.homeAmount = if (it.originalCurrency == homeCurrency) {
                         BigDecimal(it.originalAmount)
                     } else {
-                        CurrencyHandler.convertAmount(
+                        CurrencyHandler.convertAmountViaSGDProxy(
                             BigDecimal(it.originalAmount),
                             it.originalCurrency,
                             homeCurrency
@@ -147,7 +147,7 @@ class DetailTypeViewModel(initType: String, initCalendar: Calendar) : ViewModel(
             val categoryLLDataAL = arrayListOf<DetailTypeCategoryLLData>()
 
             val rangeAmount = categoryAmountsMap.values.asIterable().sumByBigDecimal { it }
-            val highestCategory = categoryAmountsMap.maxBy { it.value }
+            val highestCategory = categoryAmountsMap.maxByOrNull { it.value }
             val repositoryCategories = userRepository.categories.value!!
 
             val entries = arrayListOf<PieEntry>()

@@ -103,10 +103,9 @@ class BudgetsViewModel(initCalendar: Calendar) : ViewModel() {
                                 if (it.originalCurrency == budget.originalCurrency) {
                                     BigDecimal(it.originalAmount)
                                 } else {
-                                    CurrencyHandler.convertAmountViaProxy(
+                                    CurrencyHandler.convertAmountViaSGDProxy(
                                         BigDecimal(it.originalAmount),
                                         foreignCurrencySrc = it.originalCurrency,
-                                        homeCurrencyPxy = homeCurrency,
                                         foreignCurrencyDst = budget.originalCurrency
                                     )
                                 }

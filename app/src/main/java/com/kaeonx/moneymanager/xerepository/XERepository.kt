@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.kaeonx.moneymanager.userrepository.UserPDS
-import com.kaeonx.moneymanager.userrepository.UserRepository
 import com.kaeonx.moneymanager.xerepository.database.XEDatabase
 import com.kaeonx.moneymanager.xerepository.database.toDomain
 import com.kaeonx.moneymanager.xerepository.domain.XERow
 import com.kaeonx.moneymanager.xerepository.network.XENetwork
 import com.kaeonx.moneymanager.xerepository.network.toDatabase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 
 /**
  * The repository will provide a unified view of our data from several sources.
@@ -29,51 +30,26 @@ import kotlinx.coroutines.*
 class XERepository private constructor() {
 
     private val database = XEDatabase.getInstance()
-    private val userRepository = UserRepository.getInstance()
-
-    // To know which currency to load from the XEDatabase, we must access ccc_home_currency.
-    // This value will not be stale, because userRepository.preferences is always fresh
-    // (due to observe forever).
-//    private val _homeCurrency = MutableLiveData2(UserPDS.getString("ccc_home_currency"))
-    private val _homeCurrency = Transformations.map(userRepository.preferences) {
-        val returnable =
-            it["ccc_home_currency"] as String? ?: UserPDS.getDefaultString("ccc_home_currency")
-        checkAndUpdateIfNecessary(returnable)
-        returnable
-    }
 
     // Load from cache
     // A LiveData anyone can use to observe XERows from the repository
     // LiveData is smart and only runs queries when someone is observing it (in the active state)
     // I.E. _xeRows is non-stale (because _homeCurrency is non-stale).
 //    private val _xeRows = database.xeDatabaseDao.getAllXERows()
-    private val _xeRows = Transformations.switchMap(_homeCurrency) { homeCurrency ->
-        database.xeDatabaseDao.getXERows(homeCurrency)
-    }
-    val xeRows: LiveData<List<XERow>> = Transformations.map(_xeRows) {
+    val xeRows: LiveData<List<XERow>> = Transformations.map(database.xeDatabaseDao.getAllXERows()) {
         it.toDomain()
     }
 
-    // 1. On App Start
-    // 2. On Preferences Change
-    // Both of the above is factored in in the transformation for _homeCurrency above
-    // This is called every time a preference is changed. (Hm. TODO Future)
-    private fun checkAndUpdateIfNecessary(baseCurrency: String) {
-        CoroutineScope(Dispatchers.Default).launch {
-            val xeRowsResult = withContext(Dispatchers.IO) {
-                database.xeDatabaseDao.getXERowsSuspend(baseCurrency)
-            }
+    internal suspend fun checkAndUpdateIfNecessary() {
+        withContext(Dispatchers.IO) {
+            val xeRowsResult = database.xeDatabaseDao.getAllXERowsSuspend()
             if (xeRowsResult.isEmpty() ||
                 (UserPDS.getBoolean("ccv_enable_online") &&
                         System.currentTimeMillis() -
                         xeRowsResult[0].updateMillis >
                         UserPDS.getString("ccv_online_update_ttl").toLong()
                         )
-            ) {
-                withContext(Dispatchers.IO) {
-                    refreshRatesTable(baseCurrency)
-                }
-            }
+            ) refreshRatesTable()
         }
     }
 
@@ -87,15 +63,15 @@ class XERepository private constructor() {
         xeRows.removeObserver(liveDataActivator)
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
     /**
      * Network
      */
-    ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-    // Refresh cache
-    // Won't return anything, so it won't be accidentally used to fetch data
-    private suspend fun refreshRatesTable(baseCurrency: String) {
+// Refresh cache
+// Won't return anything, so it won't be accidentally used to fetch data
+    private suspend fun refreshRatesTable() {
         // Disc IO is much slower than RAM IO
         // Low level APIs (for read, write, etc.) that the Database uses are blocking,
         // so we have to treat Disc IO separately when using Coroutines.
@@ -103,8 +79,7 @@ class XERepository private constructor() {
         // from the relevant thread pool optimised for IO operations.
         withContext(Dispatchers.IO) {
             try {
-                val networkXEContainer =
-                    XENetwork.retrofitService.fetchNetworkXEContainer(baseCurrency)
+                val networkXEContainer = XENetwork.retrofitService.fetchNetworkXEContainer("SGD")
                 ensureActive()
                 database.xeDatabaseDao.upsertAll(*networkXEContainer.toDatabase(System.currentTimeMillis()))
             } catch (e: Exception) {

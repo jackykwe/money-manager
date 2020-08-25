@@ -119,7 +119,7 @@ class BudgetEditViewModel(private val oldBudget: Budget) : ViewModel() {
                         if (it.originalCurrency == _currentBudget.value.originalCurrency) {
                             BigDecimal(it.originalAmount)
                         } else {
-                            CurrencyHandler.convertAmount(
+                            CurrencyHandler.convertAmountViaSGDProxy(
                                 BigDecimal(it.originalAmount),
                                 it.originalCurrency,
                                 _currentBudget.value.originalCurrency

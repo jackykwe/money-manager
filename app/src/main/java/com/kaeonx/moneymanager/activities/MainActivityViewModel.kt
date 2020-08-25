@@ -17,6 +17,7 @@ import com.kaeonx.moneymanager.R
 import com.kaeonx.moneymanager.customclasses.MutableLiveData2
 import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.work.UploadDataWorker
+import com.kaeonx.moneymanager.xerepository.XERepository
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -157,6 +158,10 @@ class MainActivityViewModel : ViewModel() {
      *  Initiated from LobbyFragment
      */
     ////////////////////////////////////////////////////////////////////////////////
+    internal fun attemptToRefreshRatesTable() {
+        viewModelScope.launch { XERepository.getInstance().checkAndUpdateIfNecessary() }
+    }
+
     internal fun attemptToFetchLastKnownLoginMillis() {
         // 1. [Lobby] Download lastKnownLoginMillis from cloud (using InputStream)
         // 2. [Lobby] If downloaded lastKnownLoginMillis is greater than Firebase.auth.currentUser!!.metadata!!.lastSignInTimestamp

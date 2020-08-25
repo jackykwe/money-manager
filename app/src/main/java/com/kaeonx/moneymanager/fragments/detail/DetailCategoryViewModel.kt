@@ -152,7 +152,7 @@ class DetailCategoryViewModel(
                 it.homeAmount = if (it.originalCurrency == homeCurrency) {
                     BigDecimal(it.originalAmount)
                 } else {
-                    CurrencyHandler.convertAmount(
+                    CurrencyHandler.convertAmountViaSGDProxy(
                         BigDecimal(it.originalAmount),
                         it.originalCurrency,
                         homeCurrency

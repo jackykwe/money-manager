@@ -67,10 +67,9 @@ class BudgetDetailViewModel(category: String, initCalendar: Calendar) : ViewMode
                         if (it.originalCurrency == budgetObj.originalCurrency) {
                             BigDecimal(it.originalAmount)
                         } else {
-                            CurrencyHandler.convertAmountViaProxy(
+                            CurrencyHandler.convertAmountViaSGDProxy(
                                 BigDecimal(it.originalAmount),
                                 foreignCurrencySrc = it.originalCurrency,
-                                homeCurrencyPxy = homeCurrency,
                                 foreignCurrencyDst = budgetObj.originalCurrency
                             )
                         }

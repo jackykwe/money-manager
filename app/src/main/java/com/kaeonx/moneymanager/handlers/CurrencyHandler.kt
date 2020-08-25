@@ -49,47 +49,46 @@ class CurrencyHandler private constructor() {
 //            return if (twoDPSTZ.scale() <= 0) twoDPSTZ else twoDP
 //        }
 
-        internal fun convertAmount(
-            bigDecimal: BigDecimal,
-            foreignCurrencySrc: String,
-            homeCurrencyDst: String
-        ): BigDecimal {
-            // value(home) x rate = value(foreign)
-            // value(foreign) / rate = value(home)
-            val rateString = XERepository.getInstance().xeRows.value!!
-                .find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == homeCurrencyDst }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
-                ?.rate
-            return when (rateString) {
-                null -> BigDecimal.ZERO
-                else -> bigDecimal.divide(
-                    BigDecimal(rateString),
-                    2,
-                    RoundingMode.HALF_UP
-                )
-            }
-        }
+//        internal fun convertAmount(
+//            bigDecimal: BigDecimal,
+//            foreignCurrencySrc: String,
+//            homeCurrencyDst: String
+//        ): BigDecimal {
+//            // value(home) x rate = value(foreign)
+//            // value(foreign) / rate = value(home)
+//            val rateString = XERepository.getInstance().xeRows.value!!
+//                .find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == homeCurrencyDst }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
+//                ?.rate
+//            return when (rateString) {
+//                null -> BigDecimal.ZERO
+//                else -> bigDecimal.divide(
+//                    BigDecimal(rateString),
+//                    2,
+//                    RoundingMode.HALF_UP
+//                )
+//            }
+//        }
 
-        internal fun convertAmountViaProxy(
+        internal fun convertAmountViaSGDProxy(
             bigDecimal: BigDecimal,
             foreignCurrencySrc: String,
-            homeCurrencyPxy: String,
             foreignCurrencyDst: String
         ): BigDecimal {
-            // value(foreignSrc) / rate(homeSrc) = value(home)
-            // value(home) x rate(homeDst) = value(foreignDst)
-            val rateSrcHome: String?
-            val rateHomeDst: String?
+            // value(Src) / rate(SGDSrc) = value(SGD)
+            // value(SGD) x rate(SGDDst) = value(Dst)
+            val rateSGDSrc: String?
+            val rateSGDDst: String?
             XERepository.getInstance().xeRows.value!!.run {
-                rateSrcHome =
-                    find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == homeCurrencyPxy }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
+                rateSGDSrc =
+                    find { it.foreignCurrency == foreignCurrencySrc && it.baseCurrency == "SGD" }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
                         ?.rate
-                rateHomeDst =
-                    find { it.foreignCurrency == foreignCurrencyDst && it.baseCurrency == homeCurrencyPxy }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
+                rateSGDDst =
+                    find { it.foreignCurrency == foreignCurrencyDst && it.baseCurrency == "SGD" }  // This second condition is just a sanity check; not strictly needed, because xeRows should always be in homeCurrency.
                         ?.rate
             }
-            return if (rateSrcHome == null || rateHomeDst == null) BigDecimal.ZERO else {
-                bigDecimal.times(BigDecimal(rateHomeDst)).divide(
-                    BigDecimal(rateSrcHome),
+            return if (rateSGDSrc == null || rateSGDDst == null) BigDecimal.ZERO else {
+                bigDecimal.times(BigDecimal(rateSGDDst)).divide(
+                    BigDecimal(rateSGDSrc),
                     2,
                     RoundingMode.HALF_UP
                 )

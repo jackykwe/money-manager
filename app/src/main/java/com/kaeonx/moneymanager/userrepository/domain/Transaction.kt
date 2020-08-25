@@ -223,7 +223,7 @@ private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
                 income = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
                     income.plus(BigDecimal(it.originalAmount))
                 } else {
-                    val value = CurrencyHandler.convertAmount(
+                    val value = CurrencyHandler.convertAmountViaSGDProxy(
                         BigDecimal(it.originalAmount),
                         it.originalCurrency,
                         UserPDS.getString("ccc_home_currency")
@@ -236,7 +236,7 @@ private fun List<Transaction>.calculateIncomeExpenses(): IncomeExpenses {
                 expenses = if (it.originalCurrency == UserPDS.getString("ccc_home_currency")) {
                     expenses.plus(BigDecimal(it.originalAmount))
                 } else {
-                    val value = CurrencyHandler.convertAmount(
+                    val value = CurrencyHandler.convertAmountViaSGDProxy(
                         BigDecimal(it.originalAmount),
                         it.originalCurrency,
                         UserPDS.getString("ccc_home_currency")

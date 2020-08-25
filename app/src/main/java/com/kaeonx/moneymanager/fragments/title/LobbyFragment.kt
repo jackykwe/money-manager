@@ -41,6 +41,13 @@ class LobbyFragment : Fragment() {
         mainActivityViewModel.attemptToFetchLastKnownLoginMillis()
         viewModel.initialise()
 
+        viewModel.attemptToRefreshRatesTable.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.attemptToRefreshRatesTableHandled()
+                mainActivityViewModel.attemptToRefreshRatesTable()
+            }
+        }
+
         viewModel.showErrorSnackbar.observe(viewLifecycleOwner) {
             if (it == null) return@observe
             viewModel.showErrorSnackbarHandled()

@@ -184,6 +184,8 @@ class LobbyViewModel : ViewModel() {
                 }
             }
 
+            _attemptToRefreshRatesTable.value = true
+
             // Ensure theme is correct
             val userTheme = UserPDS.getString("dsp_theme")
             val sharedPrefTheme = UserPDS.getDSPString("dsp_theme", "light")
@@ -220,6 +222,14 @@ class LobbyViewModel : ViewModel() {
 
     internal fun initDoneHandled() {
         _initDone.value = false
+    }
+
+    private val _attemptToRefreshRatesTable = MutableLiveData2(false)
+    internal val attemptToRefreshRatesTable: LiveData<Boolean>
+        get() = _attemptToRefreshRatesTable
+
+    internal fun attemptToRefreshRatesTableHandled() {
+        _attemptToRefreshRatesTable.value = false
     }
 
 }

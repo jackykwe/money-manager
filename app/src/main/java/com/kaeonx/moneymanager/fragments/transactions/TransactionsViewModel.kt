@@ -123,10 +123,9 @@ class TransactionsViewModel : ViewModel() {
                         if (it.originalCurrency == budgetObj.originalCurrency) {
                             BigDecimal(it.originalAmount)
                         } else {
-                            CurrencyHandler.convertAmountViaProxy(
+                            CurrencyHandler.convertAmountViaSGDProxy(
                                 BigDecimal(it.originalAmount),
                                 foreignCurrencySrc = it.originalCurrency,
-                                homeCurrencyPxy = homeCurrency,
                                 foreignCurrencyDst = budgetObj.originalCurrency
                             )
                         }
@@ -182,11 +181,14 @@ class TransactionsViewModel : ViewModel() {
                     setDrawValues(false)
 //                    sliceSpace = 1f  // in dp (as float)
                 }
+                val showBudgetCurrency = budgetObj.originalCurrency != homeCurrency
+                val showHomeCurrencyMode1 = !(
+                        UserPDS.getBoolean("ccc_hide_matching_currency") && dayTransactionsList.all { it.expensesAllHome }
+                        )
+                val combinedShow = showBudgetCurrency || showHomeCurrencyMode1
                 TransactionsSummaryData(
-                    showBudgetCurrency = budgetObj.originalCurrency != homeCurrency,
-                    showHomeCurrencyMode1 = !(
-                            UserPDS.getBoolean("ccc_hide_matching_currency") && dayTransactionsList.all { it.expensesAllHome }
-                            ),
+                    showBudgetCurrency = combinedShow,
+                    showHomeCurrencyMode1 = combinedShow,
                     showHomeCurrencyMode2 = showHomeCurrencyMode2,
                     budgetCurrency = budgetObj.originalCurrency,
                     budget = budgetObj.originalAmount,
