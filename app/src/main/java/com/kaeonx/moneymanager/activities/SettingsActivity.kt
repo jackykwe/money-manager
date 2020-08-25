@@ -1,7 +1,6 @@
 package com.kaeonx.moneymanager.activities
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
@@ -79,7 +78,8 @@ class SettingsActivity : AppCompatActivity(),
         if (supportFragmentManager.popBackStackImmediate()) {
             return true
         }
-        return super.onSupportNavigateUp()
+        finish()
+        return true
     }
 
     override fun onPreferenceStartFragment(
@@ -88,30 +88,24 @@ class SettingsActivity : AppCompatActivity(),
     ): Boolean {
         // Instantiate the new Fragment
         val args = pref.extras
-        val fragment =
-            supportFragmentManager.fragmentFactory.instantiate(classLoader, pref.fragment).apply {
+        val fragment = supportFragmentManager.fragmentFactory
+            .instantiate(classLoader, pref.fragment).apply {
                 arguments = args
                 setTargetFragment(caller, 0)
             }
         // Replace the existing Fragment with the new Fragment
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.fragment_slide_fade_enter_300,
+                R.anim.fragment_fade_exit_300,
+                R.anim.fragment_fade_enter_300,
+                R.anim.fragment_slide_fade_exit_300
+            )
             .replace(R.id.settings, fragment)
             .addToBackStack(null)
             .commit()
         title = pref.title
         return true
-    }
-
-    // Required to fix weird Up button behaviour (*always* refreshes MainActivity, which I don't want)
-    // I only want MainActivity to refresh when RESULT_OK, a behaviour which is obeyed by the back button.
-    // This function ties the Up button behaviour to the back button behaviour.
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
-        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////

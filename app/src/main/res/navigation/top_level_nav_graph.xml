@@ -13,25 +13,23 @@
         <action
             android:id="@+id/action_titleFragment_to_lobbyFragment"
             app:destination="@id/lobbyFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150"
             app:popUpTo="@id/titleFragment"
-            app:popUpToInclusive="true"
-            tools:ignore="PrivateResource" />
+            app:popUpToInclusive="true" />
     </fragment>
     <action
         android:id="@+id/action_global_titleFragment"
         app:destination="@id/titleFragment"
-        app:enterAnim="@anim/fragment_fade_enter"
-        app:exitAnim="@anim/fragment_fade_exit"
+        app:enterAnim="@anim/fragment_fade_enter_150"
+        app:exitAnim="@anim/fragment_fade_exit_150"
         app:launchSingleTop="true"
-        app:popEnterAnim="@anim/fragment_fade_enter"
-        app:popExitAnim="@anim/fragment_fade_exit"
+        app:popEnterAnim="@anim/fragment_fade_enter_150"
+        app:popExitAnim="@anim/fragment_fade_exit_150"
         app:popUpTo="@id/top_level_nav_graph"
-        app:popUpToInclusive="true"
-        tools:ignore="PrivateResource" />
+        app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/exitLobbyFragment"
         android:name="com.kaeonx.moneymanager.fragments.title.ExitLobbyFragment"
@@ -40,36 +38,33 @@
         <action
             android:id="@+id/action_exitLobbyFragment_to_titleFragment"
             app:destination="@id/titleFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
             app:launchSingleTop="false"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150"
             app:popUpTo="@id/exitLobbyFragment"
-            app:popUpToInclusive="true"
-            tools:ignore="PrivateResource" />
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_exitLobbyFragment_to_transactionsFragment"
             app:destination="@id/transactionsFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150"
             app:popUpTo="@id/exitLobbyFragment"
-            app:popUpToInclusive="true"
-            tools:ignore="PrivateResource" />
+            app:popUpToInclusive="true" />
     </fragment>
     <action
         android:id="@+id/action_global_exitLobbyFragment"
         app:destination="@id/exitLobbyFragment"
-        app:enterAnim="@anim/fragment_fade_enter"
-        app:exitAnim="@anim/fragment_fade_exit"
+        app:enterAnim="@anim/fragment_fade_enter_150"
+        app:exitAnim="@anim/fragment_fade_exit_150"
         app:launchSingleTop="true"
-        app:popEnterAnim="@anim/fragment_fade_enter"
-        app:popExitAnim="@anim/fragment_fade_exit"
+        app:popEnterAnim="@anim/fragment_fade_enter_150"
+        app:popExitAnim="@anim/fragment_fade_exit_150"
         app:popUpTo="@id/top_level_nav_graph"
-        app:popUpToInclusive="true"
-        tools:ignore="PrivateResource" />
+        app:popUpToInclusive="true" />
 
     <fragment
         android:id="@+id/transactionsFragment"
@@ -82,43 +77,38 @@
         <action
             android:id="@+id/action_transactionsFragment_to_transactionEditFragment"
             app:destination="@id/transactionEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_transactionsFragment_to_budgetsFragment"
             app:destination="@id/budgetsFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_transactionsFragment_to_budgetDetailFragment"
             app:destination="@id/budgetDetailFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_transactionsFragment_to_detailTypeFragment"
             app:destination="@id/detailTypeFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_transactionsFragment_to_transactionsSearchFragment"
             app:destination="@id/transactionsSearchFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
     </fragment>
     <fragment
         android:id="@+id/transactionsSearchFragment"
@@ -128,11 +118,10 @@
         <action
             android:id="@+id/action_transactionsSearchFragment_to_transactionEditFragment"
             app:destination="@id/transactionEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <argument
             android:name="initSearchQuery"
             app:argType="string" />
@@ -158,19 +147,17 @@
         <action
             android:id="@+id/action_budgetsFragment_to_budgetEditFragment"
             app:destination="@id/budgetEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_budgetsFragment_to_budgetDetailFragment"
             app:destination="@id/budgetDetailFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <argument
             android:name="initCalendar"
             android:defaultValue="@null"
@@ -190,27 +177,24 @@
         <action
             android:id="@+id/action_budgetDetailFragment_to_detailCategoryFragment"
             app:destination="@id/detailCategoryFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_budgetDetailFragment_to_budgetEditFragment"
             app:destination="@id/budgetEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
         <action
             android:id="@+id/action_budgetDetailFragment_to_detailTypeFragment"
             app:destination="@id/detailTypeFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
 
     </fragment>
     <fragment
@@ -263,11 +247,10 @@
         <action
             android:id="@+id/action_accountsFragment_to_accountEditFragment"
             app:destination="@id/accountEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
     </fragment>
     <fragment
         android:id="@+id/accountEditFragment"
@@ -290,11 +273,10 @@
         <action
             android:id="@+id/action_categoriesFragment_to_categoryEditFragment"
             app:destination="@id/categoryEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
     </fragment>
     <fragment
         android:id="@+id/categoryEditFragment"
@@ -317,13 +299,12 @@
         <action
             android:id="@+id/action_lobbyFragment_to_transactionsFragment"
             app:destination="@id/transactionsFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150"
             app:popUpTo="@id/lobbyFragment"
-            app:popUpToInclusive="true"
-            tools:ignore="PrivateResource" />
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -339,11 +320,10 @@
         <action
             android:id="@+id/action_detailTypeFragment_to_detailCategoryFragment"
             app:destination="@id/detailCategoryFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
     </fragment>
     <fragment
         android:id="@+id/detailCategoryFragment"
@@ -367,11 +347,10 @@
         <action
             android:id="@+id/action_detailCategoryFragment_to_transactionEditFragment"
             app:destination="@id/transactionEditFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
-            app:popExitAnim="@anim/fragment_fade_exit"
-            tools:ignore="PrivateResource" />
+            app:enterAnim="@anim/fragment_fade_enter_150"
+            app:exitAnim="@anim/fragment_fade_exit_150"
+            app:popEnterAnim="@anim/fragment_fade_enter_150"
+            app:popExitAnim="@anim/fragment_fade_exit_150" />
     </fragment>
     <fragment
         android:id="@+id/importExportFragment"
