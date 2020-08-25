@@ -21,6 +21,7 @@ import com.kaeonx.moneymanager.databinding.DialogFragmentTransactionsBsdfBinding
 import com.kaeonx.moneymanager.fragments.accounts.ACCOUNTS_DF_RESULT
 import com.kaeonx.moneymanager.fragments.categories.CATEGORIES_DF_RESULT
 import com.kaeonx.moneymanager.handlers.CalendarHandler
+import com.kaeonx.moneymanager.userrepository.UserPDS
 import com.kaeonx.moneymanager.userrepository.domain.Account
 import com.kaeonx.moneymanager.userrepository.domain.Category
 import java.util.*
@@ -81,19 +82,34 @@ class TransactionsBSDF : BottomSheetDialogFragment() {
         val startHourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
         val startMinute = calendar.get(Calendar.MINUTE)
 
-        DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            viewModel.updateCalendar(calendar)
 
-            TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
+        DatePickerDialog(
+            requireContext(),
+            if (UserPDS.getString("dsp_theme") == "light") R.style.ThemeOverlay_MaterialComponents_Dialog_Alert else 0,
+            { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 viewModel.updateCalendar(calendar)
-            }, startHourOfDay, startMinute, true).show()
 
-        }, startYear, startMonth, startDayOfMonth).show()
+                TimePickerDialog(
+                    requireContext(),
+                    if (UserPDS.getString("dsp_theme") == "light") R.style.ThemeOverlay_MaterialComponents_Dialog_Alert else 0,
+                    { _, hourOfDay, minute ->
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        calendar.set(Calendar.MINUTE, minute)
+                        viewModel.updateCalendar(calendar)
+                    },
+                    startHourOfDay,
+                    startMinute,
+                    true
+                ).show()
+
+            },
+            startYear,
+            startMonth,
+            startDayOfMonth
+        ).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

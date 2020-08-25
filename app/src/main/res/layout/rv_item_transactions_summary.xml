@@ -64,7 +64,7 @@
                     android:id="@+id/summaryBudgetCurrencyTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{summaryData.homeCurrency}"
+                    android:text="@{summaryData.budgetCurrency}"
                     android:textAppearance="@style/TextAppearance.MyApp.Caption3"
                     android:visibility="@{summaryData.showHomeCurrencyMode1 ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@+id/summaryBudgetAmountTV"

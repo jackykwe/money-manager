@@ -130,7 +130,7 @@ class AccountsFragment : Fragment() {
     private fun toggleView(view: View, newIsSelected: Boolean) {
         lifecycleScope.launch {
             view.backgroundTintList = ColourHandler.getColourStateListThemedOf(
-                if (newIsSelected) "Grey" else "TRANSPARENT"
+                if (newIsSelected) "GreyAccountsFragDark" else "TRANSPARENT"
             )
             delay(500L)
             view.foreground = if (newIsSelected) null else with(TypedValue()) {

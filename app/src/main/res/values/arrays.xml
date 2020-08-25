@@ -33,7 +33,9 @@
 
     <string-array name="dsp_date_format_entries">
         <item>110170</item>
+        <item>700111</item>
         <item>11011970</item>
+        <item>19700111</item>
         <item>11 Jan 70</item>
         <item>11 Jan 1970</item>
         <item>11/01/70</item>
@@ -44,7 +46,9 @@
 
     <string-array name="dsp_date_format_values">
         <item>ddMMyy</item>
+        <item>yyMMdd</item>
         <item>ddMMyyyy</item>
+        <item>yyyyMMdd</item>
         <item>dd MMM yy</item>
         <item>dd MMM yyyy</item>
         <item>dd/MM/yy</item>

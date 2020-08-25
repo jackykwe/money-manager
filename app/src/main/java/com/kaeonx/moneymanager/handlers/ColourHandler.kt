@@ -405,6 +405,7 @@ class ColourHandler private constructor() {
                 "light" -> {
                     when (colourFamily) {
                         "Grey" -> getSpecificColorStateListOf("Grey,300")
+                        "GreyAccountsFragDark" -> getSpecificColorStateListOf("Grey,500")
                         else -> throw IllegalArgumentException("Unsupported $colourFamily - please add a when clause")
                     }
                 }

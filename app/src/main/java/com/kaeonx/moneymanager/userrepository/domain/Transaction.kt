@@ -173,7 +173,10 @@ internal suspend fun List<Transaction>.toDayTransactions(): List<DayTransactions
             val identifier = getYMDIdentifier(it.timestamp)
             grouping[identifier] = (grouping[identifier] ?: DayTransactions(
                 ymdIdentifier = identifier,
-                ymdCalendar = CalendarHandler.getCalendar(it.timestamp),  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
+                displayCalendarString = CalendarHandler.getFormattedString(
+                    it.timestamp,
+                    "EEE " + UserPDS.getString("dsp_date_format")
+                ),  // This calendar only needs to be accurate to the day. Hours/minutes/etc. don't matter.
                 dayIncome = null,
                 dayExpenses = null,
                 incomeAllHome = false,

@@ -3,6 +3,7 @@ package com.kaeonx.moneymanager.activities
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
@@ -126,6 +127,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesUserProfileFragment : PreferenceFragmentCompat() {
 
         private val settingsViewModel: SettingsViewModel by activityViewModels()
@@ -195,6 +197,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesCurrencyFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -202,6 +205,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesCurrencyConverterFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -230,6 +234,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesDataAndPrivacyFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -265,6 +270,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesDisplayFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -287,6 +293,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesPageTransactionsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -301,6 +308,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesPageBudgetFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS
@@ -308,6 +316,7 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
+    @Keep
     class PreferencesPageDebtsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = UserPDS

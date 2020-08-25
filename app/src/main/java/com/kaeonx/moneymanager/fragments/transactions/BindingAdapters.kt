@@ -58,13 +58,6 @@ fun PieChart.setBudgetPCAdapter(pieData: PieData) {
  * For rv_item_transactions_day.xml
  */
 ////////////////////////////////////////////////////////////////////////////////
-@BindingAdapter("dayDateTV_text")
-fun TextView.setDayDateTVText(dayTransactions: DayTransactions) {
-    text = CalendarHandler.getFormattedString(
-        dayTransactions.ymdCalendar,
-        "EEE " + UserPDS.getString("dsp_date_format")
-    )
-}
 
 @BindingAdapter("incomeCurrencyTV_textVisibility")
 fun TextView.setIncomeCurrencyTVVisibility(dayTransactions: DayTransactions) {

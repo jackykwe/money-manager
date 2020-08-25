@@ -75,6 +75,7 @@ class CategoryEditFragment : Fragment() {
         binding.colourFamilySpinner.apply {
             inputType = InputType.TYPE_NULL
             setAdapter(ColourFamilyPickerArrayAdapter(requireContext()))
+            setOnItemClickListener { _, _, _, _ -> binding.categoryIconFL.requestFocus() }
         }
 
 
@@ -82,13 +83,16 @@ class CategoryEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.categoryIconFL.setOnFocusChangeListener { _, focused ->
+        View.OnFocusChangeListener { _, focused ->
             if (focused) {
                 // Close the keyboard, if it's open
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
                         as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
             }
+        }.let {
+            binding.categoryIconFL.onFocusChangeListener = it
+            binding.colourFamilySpinner.onFocusChangeListener = it
         }
 
         viewModel.showSnackBarText.observe(viewLifecycleOwner) {

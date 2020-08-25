@@ -67,6 +67,7 @@
                 style="@style/FullWidthMaterialEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nextFocusDown="@id/categoryIconFL"
                 app:autoCompleteTextView_text="@={viewModel.currencySpinnerText}" />
 
         </com.google.android.material.textfield.TextInputLayout>

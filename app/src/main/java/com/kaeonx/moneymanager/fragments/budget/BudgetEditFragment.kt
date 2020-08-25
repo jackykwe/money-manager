@@ -79,6 +79,7 @@ class BudgetEditFragment : Fragment() {
                     R.layout.dropdown_item_currency
                 )
             )
+            setOnItemClickListener { _, _, _, _ -> binding.categoryIconFL.requestFocus() }
         }
         binding.amountETContainer.apply {
             setEndIconOnClickListener { showQuickBudgetDialog() }
@@ -110,13 +111,16 @@ class BudgetEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.categoryIconFL.setOnFocusChangeListener { _, focused ->
+        View.OnFocusChangeListener { _, focused ->
             if (focused) {
                 // Close the keyboard, if it's open
                 val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE)
                         as InputMethodManager
                 imm.hideSoftInputFromWindow(requireView().windowToken, 0)
             }
+        }.let {
+            binding.categoryIconFL.onFocusChangeListener = it
+            binding.currencySpinner.onFocusChangeListener = it
         }
 
         viewModel.showSnackBarText.observe(viewLifecycleOwner) {
