@@ -34,7 +34,6 @@ class MainActivityViewModel : ViewModel() {
          * (experiment whether writes are cached locally and persists after app reload!)
          */
         ////////////////////////////////////////////////////////////////////////////////
-//        private val context = getApplication<Application>().applicationContext
 
         private val storage by lazy {
             Firebase.storage.apply {
@@ -51,14 +50,14 @@ class MainActivityViewModel : ViewModel() {
         ////////////////////////////////////////////////////////////////////////////////
         // User Database JSON
         private fun userDBRef(userId: String): StorageReference =
-            userRoot(userId).child("database_$userId.json")
+            userRoot(userId).child("database_$userId.gz")
 
         internal fun buildUploadableDBFilePath(uid: String): String {
-            return App.context.filesDir.path + "/uploadable_database_$uid.json"
+            return App.context.filesDir.path + "/uploadable_database_$uid.gz"
         }
 
         internal fun buildDownloadedDBFilePath(uid: String): String {
-            return App.context.filesDir.path + "/downloaded_database_$uid.json"
+            return App.context.filesDir.path + "/downloaded_database_$uid.gz"
         }
 
         internal fun uploadDBToCloud(userId: String): UploadTask {

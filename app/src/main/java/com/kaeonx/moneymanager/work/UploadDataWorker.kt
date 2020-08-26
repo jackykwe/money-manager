@@ -189,7 +189,7 @@ class UploadDataWorker(appContext: Context, params: WorkerParameters) :
                 )
 
                 ensureActive()
-                IEFileHandler.saveRootToFile(
+                IEFileHandler.saveRootToGZ(
                     MainActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                     output.toString()
                 )

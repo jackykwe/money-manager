@@ -162,7 +162,7 @@ class ExitLobbyViewModel : ViewModel() {
             )
 
             ensureActive()
-            IEFileHandler.saveRootToFile(
+            IEFileHandler.saveRootToGZ(
                 MainActivityViewModel.buildUploadableDBFilePath(Firebase.auth.currentUser!!.uid),
                 output.toString()
             )

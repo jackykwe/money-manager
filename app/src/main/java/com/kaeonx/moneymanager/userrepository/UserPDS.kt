@@ -22,7 +22,7 @@ internal object UserPDS : PreferenceDataStore() {
 
         // Currency Converter
         "ccv_enable_online" to true,
-        "ccv_online_update_ttl" to "86400000",  // controlled by array
+        "ccv_online_update_ttl" to "604800000",  // controlled by array
 
         // Data and Privacy
         "dap_auto_backup_enabled" to true,

@@ -5,6 +5,8 @@ import android.content.Intent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 
 internal class IEFileHandler private constructor() {
 
@@ -74,6 +76,7 @@ internal class IEFileHandler private constructor() {
          * @param jsonString A JSON string obtained from `JSONObject.toString()`.
          * @return `true` if the write was successful, else `false`.
          */
+        @Deprecated("Use saveRootToGZ() instead.")
         internal suspend fun saveRootToFile(filePath: String, jsonString: String): Boolean {
             return withContext(Dispatchers.IO) {
                 val file = File(filePath)
@@ -86,6 +89,42 @@ internal class IEFileHandler private constructor() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                     false
+                }
+            }
+        }
+
+        /**
+         * Saves a JSON String into a compressed .gz file specified by [filePath]. Internally checks
+         * if the [filePath]'s parent directory exists. If not, the directories are created.
+         * @param filePath A full path including the destination GZ file name with extension
+         * @param jsonString A JSON string obtained from `JSONObject.toString()`.
+         * @return `true` if the write was successful, else `false`.
+         */
+        internal suspend fun saveRootToGZ(filePath: String, jsonString: String): Boolean {
+            return withContext(Dispatchers.IO) {
+                val file = File(filePath)
+                try {
+                    val parentDir = File(file.parent!!)
+                    if (!parentDir.exists()) parentDir.mkdirs()
+                    file.outputStream().buffered().use { ops ->
+                        GZIPOutputStream(ops).use { gops ->
+                            gops.bufferedWriter().use { it.write(jsonString) }
+                        }
+                    }
+                    true
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                }
+            }
+        }
+
+        internal suspend fun readGZToRoot(file: File): String {
+            return withContext(Dispatchers.IO) {
+                file.inputStream().buffered().use { ips ->
+                    GZIPInputStream(ips).use { gips ->
+                        gips.bufferedReader().use { it.readText().trim() }
+                    }
                 }
             }
         }

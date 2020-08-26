@@ -112,7 +112,7 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
         axisLeft.apply {
             axisMinimum = 0f
             setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
-            setDrawLimitLinesBehindData(true)
+            setDrawLimitLinesBehindData(false)
             setDrawAxisLine(false)
             textColor = when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
                 "dark" -> App.context.resources.getColor(R.color.grey_200, null)
@@ -153,9 +153,10 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 lineChartPacket.lowerLimitLineValue, lineChartPacket.lowerLimitLineText
             ).apply {
                 lineWidth = 1f
-                labelPosition = if (lineChartPacket.upperLimitLineValue != null)
-                    LimitLine.LimitLabelPosition.RIGHT_BOTTOM
-                else LimitLine.LimitLabelPosition.RIGHT_TOP
+//                labelPosition = if (lineChartPacket.upperLimitLineValue != null)
+//                    LimitLine.LimitLabelPosition.RIGHT_BOTTOM
+//                else LimitLine.LimitLabelPosition.RIGHT_TOP
+                labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
                 when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
                     "dark" -> App.context.resources.getColor(R.color.dark_surface, null)
                     "light" -> App.context.resources.getColor(R.color.white, null)
@@ -179,7 +180,8 @@ fun LineChart.setLineChartAdapter(lineChartPacket: LineChartPacket) {
                 lineChartPacket.upperLimitLineValue, lineChartPacket.upperLimitLineText
             ).apply {
                 lineWidth = 1f
-                labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
+//                labelPosition = LimitLine.LimitLabelPosition.RIGHT_TOP
+                labelPosition = LimitLine.LimitLabelPosition.LEFT_TOP
                 ColourHandler.getSpecificColourObjectOf(
                     when (val theme = UserPDS.getDSPString("dsp_theme", "light")) {
                         "dark" -> "Red,300"

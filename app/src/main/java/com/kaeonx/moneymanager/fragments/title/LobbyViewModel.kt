@@ -36,14 +36,14 @@ class LobbyViewModel : ViewModel() {
 
             val downloadedFile = File(
                 MainActivityViewModel.buildDownloadedDBFilePath(
-                    UserPDS.getDSPString("logged_in_uid", "")
+                    Firebase.auth.currentUser!!.uid
                 )
             )
             if (downloadedFile.exists()) {
                 try {
                     ensureActive()
                     val jsonObject = JSONObject(
-                        downloadedFile.bufferedReader().use { it.readText() }.trim()
+                        IEFileHandler.readGZToRoot(downloadedFile)
                     )
 
 

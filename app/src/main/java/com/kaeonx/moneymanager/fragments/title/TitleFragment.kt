@@ -31,6 +31,14 @@ class TitleFragment : Fragment() {
     private lateinit var binding: FragmentTitleBinding
     private val viewModel: TitleViewModel by viewModels()
 
+    private val gettingThingsReadySB by lazy {
+        Snackbar.make(
+            binding.root,
+            "Getting things ready…",
+            Snackbar.LENGTH_INDEFINITE
+        ).setBehavior(NoSwipeBehaviour())
+    }
+
     private fun displayLogInSnackbar() {
         Snackbar.make(
             binding.root,
@@ -94,13 +102,7 @@ class TitleFragment : Fragment() {
         viewModel.completeLoginStart.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.completeLoginStartHandled()
-                Snackbar.make(
-                    binding.root,
-                    "Getting things ready…",
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setBehavior(NoSwipeBehaviour())
-                    .show()
+                gettingThingsReadySB.show()
                 binding.titleTV.animate()
                     .alpha(1f)
                     .setDuration(
@@ -134,6 +136,7 @@ class TitleFragment : Fragment() {
             // Becomes true only if viewModel.completeLogin() is just completed
             if (it) {
                 viewModel.kickStartUIAndNavigateToLobbyHandled()
+                gettingThingsReadySB.dismiss()
                 // Because metadata has been uploaded during viewModel.completeLogin()
                 kickStartUIAndNavigateToLobby()
             }
